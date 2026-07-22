@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Use Case Discovery Screen</title>
+<style>
+  :root{
+    --red:#e8112d; --ink:#1a1a1a; --grey:#5f6368; --line:#e3e3e3; --bg:#f7f7f8;
+    --green:#1e7e44; --green-bg:#e8f5ee; --amber:#a07400; --amber-bg:#fdf4dd; --red-bg:#fdeaed;
+    --blue:#0b5c8a; --blue-bg:#e8f2f8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.5}
+  header{background:#fff;border-bottom:3px solid var(--red);padding:16px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:19px}
+  header .tag{font-size:11px;letter-spacing:.12em;color:var(--red);font-weight:700;text-transform:uppercase;display:block}
+  .hdr-actions{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:6px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink)}
+  button:hover{border-color:var(--red);color:var(--red)}
+  button.primary{background:var(--red);border-color:var(--red);color:#fff}
+  button.primary:hover{background:#c60e26;color:#fff}
+  main{max-width:960px;margin:0 auto;padding:24px 28px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+  .card h2{font-size:16px;margin-bottom:4px}
+  .hint{color:var(--grey);font-size:13px;margin-bottom:10px}
+  label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px;color:#333}
+  label small{font-weight:400;color:var(--grey)}
+  input,select,textarea{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  textarea{min-height:50px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:2px solid #f5b6c0;border-color:var(--red)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+  .q{margin:14px 0;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+  .q:last-child{border-bottom:none}
+  .q .qt{font-weight:600;font-size:13.5px;margin-bottom:2px}
+  .q .qh{font-size:12px;color:var(--grey);margin-bottom:6px}
+  .opts{display:flex;gap:6px;flex-wrap:wrap}
+  .opt{flex:1;min-width:130px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;cursor:pointer;background:#fff;color:var(--grey);text-align:center}
+  .opt.s0.sel{background:var(--red-bg);border-color:var(--red);color:var(--red);font-weight:700}
+  .opt.s1.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
+  .opt.s2.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
+  .opt.n.sel{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);font-weight:700}
+  .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
+  .scorebox{flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center}
+  .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
+  .scorebox .v{font-size:22px;font-weight:800}
+  .scorebox .v small{font-size:12px;font-weight:600;color:var(--grey)}
+  .verdict{border-radius:10px;padding:14px 18px;font-size:14px;margin-top:10px;border:1px solid var(--line)}
+  .verdict.good{background:var(--green-bg);border-color:var(--green)}
+  .verdict.mid{background:var(--amber-bg);border-color:var(--amber)}
+  .verdict.bad{background:var(--red-bg);border-color:var(--red)}
+  .verdict.blue{background:var(--blue-bg);border-color:var(--blue)}
+  .verdict h4{margin-bottom:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+  th{text-align:left;background:#222;color:#fff;padding:7px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  td{border:1px solid var(--line);padding:7px 9px;vertical-align:middle}
+  tr.active td{background:var(--blue-bg)}
+  .pill{display:inline-block;border-radius:12px;padding:2px 10px;font-size:11.5px;font-weight:700}
+  .pill.g{background:var(--green-bg);color:var(--green)}
+  .pill.a{background:var(--amber-bg);color:var(--amber)}
+  .pill.r{background:var(--red-bg);color:var(--red)}
+  .pill.b{background:var(--blue-bg);color:var(--blue)}
+  .matrix{position:relative;width:100%;max-width:440px;aspect-ratio:1;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);margin:26px 10px 34px 44px}
+  .matrix .half{position:absolute;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#bbb;font-weight:700}
+  .matrix .dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,50%);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer}
+  .matrix .axis{position:absolute;font-size:11px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.06em}
+  .matrix .grid{position:absolute;inset:0}
+  .matrix .grid:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--line)}
+  .matrix .grid:after{content:"";position:absolute;top:50%;left:0;right:0;border-top:1px dashed var(--line)}
+  .sizer{background:var(--blue-bg);border:1px solid var(--blue);border-radius:10px;padding:12px 16px;margin:12px 0}
+  .sizer .out{font-size:18px;font-weight:800;color:var(--blue)}
+  .save-note{font-size:12px;color:var(--grey)}
+  footer{text-align:center;color:var(--grey);font-size:12px;padding:18px}
+  @media print{header .hdr-actions,button,.no-print{display:none!important}body{background:#fff}main{padding:0;max-width:none}.card{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<script>if(sessionStorage.getItem("edt_auth")!=="1")location.replace("../index.html");</script>
+
+<header>
+  <div>
+    <span class="tag">Assess · Prioritise</span>
+    <h1>Use Case Discovery Screen</h1>
+  </div>
+  <div class="hdr-actions">
+    <span class="save-note" id="saveNote">Autosaves in this browser</span>
+    <button onclick="resetAll()">New client</button>
+    <button onclick="exportJSON()">Export JSON</button>
+    <button onclick="document.getElementById('importFile').click()">Import</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    <button onclick="window.print()">Print / PDF</button>
+    <button class="primary" onclick="copyBacklog()">Copy ranked backlog</button>
+  </div>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>How this works</h2>
+  <p class="hint" style="margin-bottom:0">Screen each candidate workflow in ~15 minutes with the person who knows it. Eight questions, three answers each — pick the closest; if you can't answer, pick the left option (an unknown is a finding). You get a <b>Value</b> score, an <b>AI-readiness</b> score (data · tech · skills), an indicative £ at stake, a build-vs-buy call and a ranked backlog — the shortlist that feeds Build. This is the light screen, not a full assessment: deep-dive the winners with the Value Assessment and Mini Op Model.</p>
+</div>
+
+<div class="card">
+  <h2>Candidates <span class="hint" style="display:inline">— click a row to edit, scores update live</span></h2>
+  <table>
+    <thead><tr><th>#</th><th>Workflow</th><th>Value /8</th><th>Readiness /8</th><th>£ at stake /yr</th><th>Buy / build</th><th>Verdict</th><th style="width:30px"></th></tr></thead>
+    <tbody id="candRows"></tbody>
+  </table>
+  <button onclick="addCand()">+ Add candidate</button>
+</div>
+
+<div class="card" id="formCard" style="display:none">
+  <h2 id="formTitle">Candidate</h2>
+  <div class="grid2">
+    <div><label>Workflow name</label><input id="f_name" oninput="upd('name',this.value)"></div>
+    <div><label>Area / team</label><input id="f_area" oninput="upd('area',this.value)"></div>
+  </div>
+  <label>The use case in one sentence — who does what today, and what would the AI do?</label>
+  <textarea id="f_desc" oninput="upd('desc',this.value)" placeholder="e.g. Customer service (8 people) triage ~200 emails/day by hand; AI would draft the triage and response for a person to approve"></textarea>
+
+  <h2 style="margin-top:18px;color:var(--red);font-size:14px">VALUE — is there a business case?</h2>
+  <div id="valQs"></div>
+  <div class="sizer">
+    <label style="margin-top:0">Rough sizing — three numbers, best guess <small>(sizing only; the Value Assessment builds the defensible number)</small></label>
+    <div class="grid3">
+      <div><label>People doing the task</label><input type="number" min="0" step="0.5" id="f_people" oninput="upd('people',this.value)"></div>
+      <div><label>Hours per person per week</label><input type="number" min="0" step="0.5" id="f_hours" oninput="upd('hours',this.value)"></div>
+      <div><label>Cost per person per year (£) <small>fully loaded</small></label><input type="number" min="0" id="f_pcost" oninput="upd('pcost',this.value)"></div>
+    </div>
+    <div style="margin-top:8px">Indicative time at stake: <span class="out" id="sizeOut">—</span></div>
+  </div>
+
+  <h2 style="margin-top:18px;color:var(--red);font-size:14px">AI-READINESS — data · tech · skills</h2>
+  <div id="easeQs"></div>
+
+  <label style="margin-top:14px">Build vs buy — first instinct <small>(is this a solved problem or something unique to this client?)</small></label>
+  <div class="opts" id="bvb"></div>
+
+  <div class="scorebar">
+    <div class="scorebox"><div class="lbl">Value</div><div class="v" id="sVal">–</div></div>
+    <div class="scorebox"><div class="lbl">AI-readiness</div><div class="v" id="sEase">–</div></div>
+    <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v" id="sMoney">–</div></div>
+    <div class="scorebox"><div class="lbl">Answered</div><div class="v" id="sDone">0/8</div></div>
+  </div>
+  <div class="verdict" id="candVerdict"></div>
+  <label>Notes — blockers, a keen sponsor, a better neighbouring task, why you'd override the verdict</label>
+  <textarea id="f_notes" oninput="upd('notes',this.value)"></textarea>
+</div>
+
+<div class="card">
+  <h2>Value × AI-readiness matrix</h2>
+  <p class="hint">Candidates appear once all eight questions are answered.</p>
+  <div class="matrix" id="matrix">
+    <div class="grid"></div>
+    <div class="axis" style="bottom:-26px;left:50%;transform:translateX(-50%)">AI-readiness →</div>
+    <div class="axis" style="left:-38px;top:50%;transform:rotate(-90deg) translateX(50%);transform-origin:left">Value →</div>
+    <div class="half" style="top:4px;right:6px">Do first</div>
+    <div class="half" style="top:4px;left:6px">Big bet — fix readiness</div>
+    <div class="half" style="bottom:4px;right:6px">Fill-in</div>
+    <div class="half" style="bottom:4px;left:6px">Park</div>
+  </div>
+</div>
+
+</main>
+<footer>Enablis · Use Case Discovery Screen · feeds the Value Assessment Tool and Mini Op Model · data stays in this browser</footer>
+
+<script>
+"use strict";
+/* 8 questions, each scored 0/1/2. Left option = 0 (weakest). */
+const VAL_QS = [
+ {k:"time", t:"How much time does this task eat?",
+  h:"Roughly — people × hours. The sinks are where the value is.",
+  o:["Small — odd hours here and there","Meaningful — a chunk of someone's week","Major — a team's core workload"]},
+ {k:"impact", t:"Does improving it move a number leadership cares about?",
+  h:"Cost, margin, revenue, customer experience — a metric with a name.",
+  o:["Unclear which number it moves","Indirectly — via freed time","Directly — a named metric"]},
+ {k:"volume", t:"How often does the task happen?",
+  h:"AI value compounds with repetition.",
+  o:["Occasionally / ad hoc","Regularly — weekly rhythm","High volume — daily or constant"]},
+ {k:"baseline", t:"Do we know what it costs today?",
+  h:"Volume, time per case, cost — measured, not remembered.",
+  o:["No — nobody tracks it","Rough numbers exist","Measured and vouched for"]}
+];
+const EASE_QS = [
+ {k:"nature", short:"fit", t:"Use case fit — what kind of work is it?",
+  h:"Repetitive judgement on digital information suits AI; physical or relationship work doesn't.",
+  o:["Mostly physical / relationship","Mixed","Mostly repetitive judgement"]},
+ {k:"data", short:"data", t:"Data — can we reach what it needs, and is it good enough?",
+  h:"Ask the person who'd grant access, not the enthusiast. Where does it live, who owns it, is it usable?",
+  o:["Locked away or poor quality","Reachable with some work","Accessible and good enough"]},
+ {k:"tech", short:"tech", t:"Tech — can we plug into the systems it touches?",
+  h:"Modern systems with APIs, or locked-down legacy nobody can integrate with?",
+  o:["Legacy / no way in","Partly — some systems open","Modern, connectable systems"]},
+ {k:"skills", short:"skills", t:"Skills — is there appetite and ability in the team?",
+  h:"Someone who'd use it daily, champion it, and could learn to check it — not just enthusiasm from above.",
+  o:["Resistant or no capacity","Willing, would need support","Keen, capable, a likely champion"]}
+];
+const BVB = [
+ {v:"buy", label:"Buy — off-the-shelf tools do this", cls:"n"},
+ {v:"configure", label:"Configure — buy + adapt to us", cls:"n"},
+ {v:"build", label:"Build — unique to this business", cls:"n"},
+ {v:"unknown", label:"Don't know yet", cls:"n"}
+];
+
+const KEY="discovery-screen-v2";
+let S = JSON.parse(localStorage.getItem(KEY)||"{}");
+S.cands = S.cands||[]; S.cur = (typeof S.cur==="number")? S.cur : -1;
+function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
+function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+const fmtK = n => !isFinite(n)||n<=0? "—" : n<1000? "<£1k" : n>=1e6? "£"+(n/1e6).toFixed(1)+"m" : "£"+Math.round(n/1000)+"k";
+
+function blank(){ return {name:"",area:"",desc:"",notes:"",people:"",hours:"",pcost:"",bvb:"",scores:{}}; }
+function addCand(){ S.cands.push(blank()); S.cur=S.cands.length-1; save(); renderAll(); document.getElementById("f_name").focus(); }
+function delCand(i,ev){ ev.stopPropagation(); if(!confirm("Remove this candidate?"))return; S.cands.splice(i,1); if(i<S.cur)S.cur--; else if(i===S.cur)S.cur=-1; if(S.cur>=S.cands.length)S.cur=S.cands.length-1; save(); renderAll(); }
+function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
+function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
+function selCand(i){ S.cur=i; save(); renderAll(); }
+function cur(){ return S.cands[S.cur]; }
+function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderRows(); renderMatrix(); renderSizer();
+  if(k==="name")document.getElementById("formTitle").textContent=v||"Candidate"; } }
+function setScore(k,v){ if(!cur())return; cur().scores[k] = (cur().scores[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); }
+function setBvb(v){ if(!cur())return; cur().bvb = (cur().bvb===v? "":v); save(); renderForm(); renderRows(); }
+
+function moneyOf(c){
+  const p=parseFloat(c.people)||0, h=parseFloat(c.hours)||0, cost=parseFloat(c.pcost)||0;
+  if(!p||!h||!cost) return 0;
+  return p*h*52*(cost/1820);
+}
+function scoreOf(c, qs){ let s=0,n=0; qs.forEach(q=>{ const v=c.scores[q.k]; if(v!==undefined&&v!==null){s+=v;n++;} }); return {s,n}; }
+function verdictOf(c){
+  const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
+  if(v.n+e.n<8) return {cls:"b",label:"Incomplete",head:"Keep going — "+(8-v.n-e.n)+" question(s) left",body:"Answer all eight for a verdict. Unknowns score 0 — that's a finding, not a failure."};
+  const hv=v.s>=5, he=e.s>=5;
+  if(hv&&he) return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",body:"Take it forward: size the £ properly with the Value Assessment, shape the path with the Mini Op Model. Strong prototype candidate."};
+  if(hv&&!he) return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",body:"Don't build yet. The lowest-scoring readiness answer (data, tech or skills) is the thing to fix — or narrow the task to a slice that avoids it, then re-score."};
+  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-sink isn't one step over in the process."};
+  return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Decline politely, record why, and point at the better candidate if you saw one."};
+}
+const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
+
+function renderRows(){
+  document.getElementById("candRows").innerHTML = S.cands.length? rankOrder().map(({c,i,v,e,vd})=>`
+    <tr class="${i===S.cur?"active":""}" onclick="selCand(${i})" style="cursor:pointer">
+      <td>${rankOf(i)}</td>
+      <td><b>${esc(c.name)||"<span style='color:#aaa'>unnamed</span>"}</b>${c.area?`<br><span style="font-size:11.5px;color:var(--grey)">${esc(c.area)}</span>`:""}</td>
+      <td>${v.n?v.s:"–"}</td>
+      <td>${e.n?e.s:"–"}</td>
+      <td>${fmtK(moneyOf(c))}</td>
+      <td>${c.bvb? BVB_SHORT[c.bvb]:"–"}</td>
+      <td><span class="pill ${vd.cls}">${vd.label}</span></td>
+      <td><button style="padding:2px 8px" onclick="delCand(${i},event)">✕</button></td>
+    </tr>`).join("") : `<tr><td colspan="8" style="color:#aaa;text-align:center">No candidates yet — add one.</td></tr>`;
+}
+function rankOrder(){
+  return S.cands.map((c,i)=>({c,i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
+    .sort((a,b)=>((b.v.s+b.e.s)-(a.v.s+a.e.s)) || (moneyOf(b.c)-moneyOf(a.c)));
+}
+function rankOf(i){ return rankOrder().findIndex(x=>x.i===i)+1; }
+
+function qHTML(q){
+  const v = cur()? cur().scores[q.k] : undefined;
+  return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
+    ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}
+  </div></div>`;
+}
+function renderSizer(){
+  const m=cur()? moneyOf(cur()):0;
+  const c=cur()||{};
+  const p=parseFloat(c.people)||0,h=parseFloat(c.hours)||0;
+  document.getElementById("sizeOut").textContent = m? `${fmtK(m)} / yr (${Math.round(p*h*52).toLocaleString()} hrs)` : "—";
+  document.getElementById("sMoney").textContent = m? fmtK(m):"–";
+}
+function renderForm(){
+  const card=document.getElementById("formCard");
+  if(S.cur<0||!cur()){ card.style.display="none"; return; }
+  card.style.display="block";
+  const c=cur();
+  document.getElementById("formTitle").textContent=c.name||"Candidate";
+  ["name","area","desc","notes","people","hours","pcost"].forEach(k=>{ document.getElementById("f_"+k).value=c[k]||""; });
+  document.getElementById("valQs").innerHTML=VAL_QS.map(qHTML).join("");
+  document.getElementById("easeQs").innerHTML=EASE_QS.map(qHTML).join("");
+  document.getElementById("bvb").innerHTML=BVB.map(b=>`<div class="opt ${b.cls} ${c.bvb===b.v?"sel":""}" onclick="setBvb('${b.v}')">${b.label}</div>`).join("");
+  const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
+  document.getElementById("sVal").textContent=v.n?v.s+" / 8":"–";
+  document.getElementById("sEase").textContent=e.n?e.s+" / 8":"–";
+  document.getElementById("sDone").textContent=(v.n+e.n)+"/8";
+  renderSizer();
+  const vd=verdictOf(c);
+  const box=document.getElementById("candVerdict");
+  box.className="verdict "+(vd.cls==="g"?"good":vd.cls==="a"?"mid":vd.cls==="r"?"bad":"blue");
+  box.innerHTML=`<h4>${vd.head}</h4>${vd.body}`;
+}
+function renderMatrix(){
+  const m=document.getElementById("matrix");
+  m.querySelectorAll(".dot").forEach(d=>d.remove());
+  S.cands.forEach((c,i)=>{
+    const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
+    if(v.n+e.n<8) return;
+    const x=e.s/8*100, y=v.s/8*100;
+    const d=document.createElement("div");
+    d.className="dot"; d.style.left=Math.max(4,Math.min(96,x))+"%"; d.style.bottom=Math.max(4,Math.min(96,y))+"%";
+    d.textContent=(c.name||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+    d.title=c.name+" — Value "+v.s+", Readiness "+e.s;
+    d.onclick=()=>selCand(i);
+    m.appendChild(d);
+  });
+}
+function renderAll(){ renderRows(); renderForm(); renderMatrix(); }
+
+function copyBacklog(){
+  const lines=["Use Case Discovery Screen — ranked backlog",""];
+  rankOrder().forEach(({c,v,e,vd},idx)=>{
+    const readiness = EASE_QS.map(q=>{const s=c.scores[q.k];return q.short+" "+(s===undefined?"not scored":s+"/2");}).join(" · ");
+    lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${v.s}/8 · Readiness ${e.s}/8 (${readiness}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
+    if(c.desc)lines.push(`   ${c.desc}`);
+    if(c.notes)lines.push(`   Notes: ${c.notes}`);
+  });
+  lines.push("","Next: Do-first candidates → Value Assessment Tool (£ case) + Mini Op Model (path to run).");
+  copyText(lines.join("\n"),"Ranked backlog copied.");
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="discovery-screen.json"; a.click();
+}
+function importJSON(inp){
+  const f=inp.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.cands=S.cands||[]; save(); renderAll(); }catch(e){ alert("Could not read that file."); } };
+  r.readAsText(f);
+}
+// migrate v1 data if present
+(function(){ const old=localStorage.getItem("discovery-screen-v1");
+  if(old && !S.cands.length){ try{ const o=JSON.parse(old); (o.cands||[]).forEach(c=>{ c.people=c.people||""; c.hours=c.hours||""; c.pcost=c.pcost||""; c.bvb=c.bvb||""; S.cands.push(c); }); save(); }catch(e){} } })();
+renderAll();
+</script>
+</body>
+</html>

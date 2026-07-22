@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enablis Discovery Tools</title>
+<style>
+  :root{--red:#e8112d;--ink:#1a1a1a;--grey:#5f6368;--line:#e3e3e3;--bg:#f7f7f8;--blue:#0b5c8a;--blue-bg:#e8f2f8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.5;min-height:100vh}
+  header{background:#fff;border-bottom:3px solid var(--red);padding:18px 28px}
+  header .tag{font-size:11px;letter-spacing:.12em;color:var(--red);font-weight:700;text-transform:uppercase;display:block}
+  header h1{font-size:20px}
+  main{max-width:880px;margin:0 auto;padding:40px 28px}
+  .gate{max-width:400px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:30px;text-align:center}
+  .gate h2{font-size:17px;margin-bottom:6px}
+  .gate p{color:var(--grey);font-size:13px;margin-bottom:16px}
+  .gate input{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;text-align:center;font-size:15px}
+  .gate input:focus{outline:2px solid #f5b6c0;border-color:var(--red)}
+  .gate button{margin-top:12px;width:100%;font:inherit;font-weight:700;padding:10px;border:none;border-radius:8px;background:var(--red);color:#fff;cursor:pointer}
+  .gate button:hover{background:#c60e26}
+  .gate .err{color:var(--red);font-size:13px;margin-top:10px;display:none}
+  #launcher{display:none}
+  .flow{background:var(--blue-bg);border:1px solid var(--blue);border-radius:10px;padding:14px 18px;font-size:13.5px;margin-bottom:24px}
+  .cards{display:grid;grid-template-columns:1fr;gap:16px}
+  a.tool{display:block;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 24px;text-decoration:none;color:var(--ink)}
+  a.tool:hover{border-color:var(--red)}
+  a.tool .step{font-size:11px;letter-spacing:.1em;color:var(--red);font-weight:700;text-transform:uppercase}
+  a.tool h3{font-size:17px;margin:2px 0 4px}
+  a.tool p{color:var(--grey);font-size:13.5px}
+  a.tool .go{color:var(--red);font-weight:700;font-size:13px;margin-top:8px;display:inline-block}
+  .note{color:var(--grey);font-size:12.5px;margin-top:22px}
+  footer{text-align:center;color:var(--grey);font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="tag">Internal · review build</span>
+  <h1>Enablis Discovery Tools</h1>
+</header>
+
+<main>
+  <div class="gate" id="gate">
+    <h2>Team review access</h2>
+    <p>Enter the review password. Data you enter in the tools stays in your own browser.</p>
+    <input type="password" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')check()">
+    <button onclick="check()">Enter</button>
+    <div class="err" id="err">That's not it — check the Slack thread for the password.</div>
+  </div>
+
+  <div id="launcher">
+    <div class="flow"><b>How they chain (Assess phase):</b> screen many workflows → pick the winners → size the £ → prove the path. Discovery Screen (Prioritise · light) → Value Assessment (Validate / Build) → Mini Op Model (one workflow). Each tool works standalone too. Feedback → #discovery-tools or Matt.</div>
+    <div class="cards">
+      <a class="tool" href="tools/discovery-screen.html">
+        <span class="step">1 · Prioritise — many workflows</span>
+        <h3>Use Case Discovery Screen</h3>
+        <p>~15 min per candidate with the person who knows it. Eight questions → Value and AI-readiness (data · tech · skills) scores, indicative £ at stake, build-vs-buy call, ranked backlog.</p>
+        <span class="go">Open →</span>
+      </a>
+      <a class="tool" href="tools/value-assessment.html">
+        <span class="step">2 · Validate / Build — the £ case</span>
+        <h3>Value Assessment Tool</h3>
+        <p>Baseline → potential value (PEV) → realisable value (REV, discounted for adoption, effectiveness, integration) → costs → go / adjust / stop. Produces a value case a CFO can interrogate.</p>
+        <span class="go">Open →</span>
+      </a>
+      <a class="tool" href="tools/mini-op-model.html">
+        <span class="step">3 · Assess + Build — one workflow</span>
+        <h3>Mini Op Model</h3>
+        <p>Process · people · tech for the chosen workflow: who approves it, who runs it, what it connects to. Nine signals → readiness score, blocker list, one-page op model.</p>
+        <span class="go">Open →</span>
+      </a>
+    </div>
+    <p class="note">Review notes: everything autosaves to your browser only (localStorage) — use "New client" to clear, Export JSON to keep. This gate is a courtesy lock for review sharing, not security — don't put real client data on a public deployment.</p>
+  </div>
+</main>
+
+<footer>Enablis · discovery tools · v0.2</footer>
+
+<script>
+"use strict";
+const HASH="752ba63df56a9bd86e8cf7890bcfd9356e8d1c15989815a51b772ea71aeff327";
+/* compact sha-256 (public-domain style implementation) — works on file:// where crypto.subtle isn't available */
+function sha256(ascii){
+  function rightRotate(v,a){return (v>>>a)|(v<<(32-a));}
+  var mathPow=Math.pow,maxWord=mathPow(2,32),result="",words=[],asciiBitLength=ascii.length*8;
+  var hash=sha256.h=sha256.h||[],k=sha256.k=sha256.k||[],primeCounter=k.length,isComposite={};
+  for(var candidate=2;primeCounter<64;candidate++){
+    if(!isComposite[candidate]){
+      for(var i=0;i<313;i+=candidate)isComposite[i]=candidate;
+      hash[primeCounter]=(mathPow(candidate,.5)*maxWord)|0;
+      k[primeCounter++]=(mathPow(candidate,1/3)*maxWord)|0;
+    }
+  }
+  ascii+="\x80";
+  while(ascii.length%64-56)ascii+="\x00";
+  for(i=0;i<ascii.length;i++){
+    var j=ascii.charCodeAt(i);
+    if(j>>8)return;
+    words[i>>2]|=j<<((3-i)%4)*8;
+  }
+  words[words.length]=(asciiBitLength/maxWord)|0;
+  words[words.length]=asciiBitLength;
+  for(j=0;j<words.length;){
+    var w=words.slice(j,j+=16),oldHash=hash;
+    hash=hash.slice(0,8);
+    for(i=0;i<64;i++){
+      var w15=w[i-15],w2=w[i-2];
+      var a=hash[0],e=hash[4];
+      var temp1=hash[7]+(rightRotate(e,6)^rightRotate(e,11)^rightRotate(e,25))+((e&hash[5])^((~e)&hash[6]))+k[i]+(w[i]=(i<16)?w[i]:(w[i-16]+(rightRotate(w15,7)^rightRotate(w15,18)^(w15>>>3))+w[i-7]+(rightRotate(w2,17)^rightRotate(w2,19)^(w2>>>10)))|0);
+      var temp2=(rightRotate(a,2)^rightRotate(a,13)^rightRotate(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+      hash=[(temp1+temp2)|0].concat(hash);
+      hash[4]=(hash[4]+temp1)|0;
+    }
+    for(i=0;i<8;i++)hash[i]=(hash[i]+oldHash[i])|0;
+  }
+  for(i=0;i<8;i++){
+    for(j=3;j+1;j--){
+      var b=(hash[i]>>(j*8))&255;
+      result+=((b<16)?0:"")+b.toString(16);
+    }
+  }
+  return result;
+}
+function unlock(){ document.getElementById("gate").style.display="none"; document.getElementById("launcher").style.display="block"; }
+function check(){
+  const v=document.getElementById("pw").value.trim().toLowerCase();
+  if(sha256(v)===HASH){ sessionStorage.setItem("edt_auth","1"); unlock(); }
+  else document.getElementById("err").style.display="block";
+}
+if(sessionStorage.getItem("edt_auth")==="1") unlock();
+</script>
+</body>
+</html>
