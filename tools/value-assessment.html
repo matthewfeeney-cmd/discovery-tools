@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Value Assessment Tool — PEV → REV</title>
+<style>
+  :root{
+    --red:#e8112d; --ink:#1a1a1a; --grey:#5f6368; --line:#e3e3e3; --bg:#f7f7f8;
+    --green:#1e7e44; --green-bg:#e8f5ee; --amber:#a07400; --amber-bg:#fdf4dd; --red-bg:#fdeaed;
+    --blue:#0b5c8a; --blue-bg:#e8f2f8; --purple:#7b2d8b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.5}
+  header{background:#fff;border-bottom:3px solid var(--red);padding:18px 28px;position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:20px;font-weight:700}
+  header .tag{font-size:11px;letter-spacing:.12em;color:var(--red);font-weight:700;text-transform:uppercase;display:block}
+  .hdr-actions{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:6px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink)}
+  button:hover{border-color:var(--red);color:var(--red)}
+  button.primary{background:var(--red);border-color:var(--red);color:#fff}
+  button.primary:hover{background:#c60e26;color:#fff}
+  main{max-width:1060px;margin:0 auto;padding:28px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:18px}
+  .card h2{font-size:17px;margin-bottom:4px}
+  .card h2 .step{color:var(--red);margin-right:6px}
+  .card h3{font-size:13.5px;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.06em;color:var(--red)}
+  .hint{color:var(--grey);font-size:13px;margin-bottom:10px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:760px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+  label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px;color:#333}
+  input,select,textarea{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  textarea{min-height:56px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:2px solid #f5b6c0;border-color:var(--red)}
+  input[type=range]{padding:0;accent-color:var(--red)}
+  .role-badges{display:inline-flex;gap:6px;margin-left:8px;vertical-align:middle}
+  .rb{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:2px 6px}
+  .rb.dl{background:var(--blue-bg);color:var(--blue)}
+  .rb.ba{background:#f3e8f8;color:var(--purple)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+  .chip{border:1px solid var(--line);border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer;background:#fff;color:var(--grey)}
+  .chip.sel{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+  .chip.g.sel{background:var(--green);border-color:var(--green)}
+  .chip.a.sel{background:var(--amber);border-color:var(--amber)}
+  .chip.r.sel{background:var(--red);border-color:var(--red)}
+  .ragdot{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+  .ragdot span{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);cursor:pointer;display:inline-block}
+  .ragdot span.g{background:#cfe9da}.ragdot span.a{background:#f7e7b0}.ragdot span.r{background:#f6c6ce}
+  .ragdot span.sel{outline:2.5px solid var(--ink)}
+  .slider-row{display:grid;grid-template-columns:1fr 90px;gap:12px;align-items:center;margin:4px 0 10px}
+  .slider-row output{font-weight:700;font-size:15px;text-align:right}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+  .kpi{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+  .kpi .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
+  .kpi .v{font-size:22px;font-weight:800;margin-top:2px}
+  .kpi.pev{border-color:var(--blue);background:var(--blue-bg)}
+  .kpi.rev{border-color:var(--green);background:var(--green-bg)}
+  .kpi.cash{border-color:var(--purple);background:#f3e8f8}
+  .kpi.cost{border-color:var(--amber);background:var(--amber-bg)}
+  .kpi .sub{font-size:11.5px;color:var(--grey);margin-top:2px}
+  .bars{margin:10px 0}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 110px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+  .bar-track{background:#efefef;border-radius:5px;height:20px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:5px;transition:width .3s}
+  .warn{background:var(--amber-bg);border-left:4px solid var(--amber);padding:10px 14px;border-radius:0 8px 8px 0;font-size:13px;margin:12px 0}
+  .warn.red{background:var(--red-bg);border-left-color:var(--red)}
+  .info{background:var(--blue-bg);border-left:4px solid var(--blue);padding:10px 14px;border-radius:0 8px 8px 0;font-size:13px;margin:12px 0}
+  .verdict{border-radius:10px;padding:16px 20px;font-size:14px;margin-top:12px;border:1px solid var(--line);background:#fff}
+  .verdict.good{background:var(--green-bg);border-color:var(--green)}
+  .verdict.mid{background:var(--amber-bg);border-color:var(--amber)}
+  .verdict.bad{background:var(--red-bg);border-color:var(--red)}
+  .verdict h4{margin-bottom:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+  th{text-align:left;background:#222;color:#fff;padding:7px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+  .tree{display:flex;gap:0;overflow-x:auto;padding:10px 0;font-size:12px}
+  .tree .col{min-width:150px;flex:1;padding:0 6px;border-right:1px dashed var(--line)}
+  .tree .col:last-child{border-right:none}
+  .tree .col h5{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin-bottom:6px;text-align:center}
+  .tree .node{border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin:4px 0;background:#fff;text-align:center;color:var(--grey)}
+  .tree .node.on{border-color:var(--red);background:var(--red-bg);color:var(--ink);font-weight:600}
+  .save-note{font-size:12px;color:var(--grey)}
+  #summaryOut{background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px 30px;display:none}
+  #summaryOut h2{border-bottom:3px solid var(--red);padding-bottom:6px;margin-bottom:14px}
+  #summaryOut h3{color:var(--red);margin:16px 0 6px;font-size:15px}
+  footer{text-align:center;color:var(--grey);font-size:12px;padding:20px}
+  @media print{
+    header .hdr-actions,nav,button,.no-print{display:none!important}
+    body{background:#fff} main{max-width:none;padding:0}
+    #summaryOut{display:block!important}
+    .card{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<script>if(sessionStorage.getItem("edt_auth")!=="1")location.replace("../index.html");</script>
+
+<header>
+  <div>
+    <span class="tag">Assess &amp; Build · Value Case</span>
+    <h1>Value Assessment Tool <span style="font-weight:400;color:var(--grey);font-size:15px">PEV → REV, single use case</span></h1>
+  </div>
+  <div class="hdr-actions">
+    <span class="save-note" id="saveNote">Autosaves in this browser</span>
+    <button onclick="exportJSON()">Export JSON</button>
+    <button onclick="document.getElementById('importFile').click()">Import</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    <button onclick="resetAll()">New client</button>
+    <button onclick="buildSummary();window.print()">Print / PDF</button>
+    <button class="primary" onclick="buildSummary()">Generate value case</button>
+  </div>
+</header>
+
+<main>
+
+<!-- 1 · USE CASE -->
+<div class="card">
+  <h2><span class="step">1</span>Use case &amp; success definition <span class="role-badges"><span class="rb dl">DL</span><span class="rb ba">BA</span></span></h2>
+  <p class="hint">Every build must tie to cost, profitability or an organisational OKR — and produce a number the client’s CFO can defend.</p>
+  <div class="grid3">
+    <div><label>Client</label><input data-k="client"></div>
+    <div><label>Use case / workflow</label><input data-k="usecase"></div>
+    <div><label>Sponsor</label><input data-k="sponsor"></div>
+    <div><label>Offering stage</label>
+      <select data-k="stage">
+        <option value="">Select…</option>
+        <option>Assess · Validate</option>
+        <option>Assess · Prioritise</option>
+        <option>Assess · Mobilise</option>
+        <option>Build · Prove (POC)</option>
+        <option>Build · Make (MVP)</option>
+        <option>Build · Pilot</option>
+      </select></div>
+    <div><label>Prepared by</label><input data-k="author"></div>
+    <div><label>Date</label><input type="date" data-k="date"></div>
+  </div>
+  <label>Client OKR / board-level metric this connects to</label>
+  <input data-k="okr" placeholder="e.g. reduce cost-to-serve 15% · grow international revenue · cut quote turnaround to 24h">
+  <label>Success threshold — which number changing, by how much, would make leadership call this a success?</label>
+  <input data-k="threshold" placeholder="An agreed number, not a direction — agree it before the readout">
+  <label>Value type(s) at stake</label>
+  <div class="chips" id="valTypes"></div>
+</div>
+
+<!-- 2 · BASELINE -->
+<div class="card">
+  <h2><span class="step">2</span>Baseline — how the work happens today <span class="role-badges"><span class="rb ba">BA</span></span></h2>
+  <p class="hint">Measured, not remembered. The starting point every value claim is measured against — no baseline, no provable improvement.</p>
+  <div class="grid4">
+    <div><label>FTE doing this task <span class="ragdot" data-rag="r_fte"></span></label><input type="number" min="0" step="0.5" data-k="fte" data-num></div>
+    <div><label>% of their time on it <span class="ragdot" data-rag="r_pct"></span></label><input type="number" min="0" max="100" data-k="pctTime" data-num placeholder="e.g. 68"></div>
+    <div><label>Fully-loaded cost / FTE / yr (£) <span class="ragdot" data-rag="r_cost"></span></label><input type="number" min="0" data-k="ftecost" data-num placeholder="salary band, loaded"></div>
+    <div><label>Working hours / FTE / yr</label><input type="number" min="0" data-k="hoursYr" data-num placeholder="1820 = 35h × 52w"></div>
+    <div><label>Volume (cases / yr) <span class="ragdot" data-rag="r_vol"></span></label><input type="number" min="0" data-k="volume" data-num></div>
+    <div><label>Time per case (hrs)</label><input type="number" min="0" step="0.1" data-k="timeCase" data-num></div>
+    <div><label>Error / rework rate (%) <small>error £ needs Volume too</small></label><input type="number" min="0" max="100" data-k="errRate" data-num></div>
+    <div><label>Cost per error (£)</label><input type="number" min="0" data-k="errCost" data-num></div>
+  </div>
+  <label>Baseline quality</label>
+  <div class="chips" id="baseQuality"></div>
+  <label>How the baseline was captured (source, who vouches for it)</label>
+  <textarea data-k="baseSource" placeholder="Timesheets? Shadowed the task and measured it yourself? Finance data? Named source and date."></textarea>
+  <div class="warn" id="baseWarn" style="display:none"></div>
+</div>
+
+<!-- 3 · POTENTIAL VALUE -->
+<div class="card">
+  <h2><span class="step">3</span>Potential Economic Value (PEV) <span class="role-badges"><span class="rb ba">BA</span></span></h2>
+  <p class="hint">The theoretical maximum if the system ran at perfect efficiency with 100% adoption. PEV = (cost reduction + revenue growth) across the addressable work.</p>
+  <label>Calculation basis</label>
+  <div class="chips" id="calcBasis"></div>
+  <div class="grid3">
+    <div><label>AI efficiency factor (%) <span class="ragdot" data-rag="r_eff"></span></label><input type="number" min="0" max="100" data-k="effFactor" data-num placeholder="e.g. 40 — validate in the POC"></div>
+    <div><label>Economic value multiplier <span class="ragdot" data-rag="r_mult"></span></label><input type="number" min="0" step="0.1" data-k="econMult" data-num placeholder="1 = cost only; >1 if hours redeploy into revenue"></div>
+    <div><label>Error reduction from AI (%)</label><input type="number" min="0" max="100" data-k="errRed" data-num></div>
+  </div>
+  <label>Direct revenue uplift, if any (£/yr) <span class="ragdot" data-rag="r_revUp"></span></label>
+  <input type="number" min="0" data-k="revUplift" data-num placeholder="e.g. yield improvement, conversion uplift, member growth — state the formula in assumptions">
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">Addressable hours / yr</div><div class="v" id="kHours">—</div><div class="sub" id="kHoursSub"></div></div>
+    <div class="kpi"><div class="lbl">Productivity value</div><div class="v" id="kProd">—</div><div class="sub">hours × rate × multiplier</div></div>
+    <div class="kpi"><div class="lbl">Error value</div><div class="v" id="kErr">—</div><div class="sub">errors avoided × cost</div></div>
+    <div class="kpi pev"><div class="lbl">PEV — potential / yr</div><div class="v" id="kPEV">—</div><div class="sub">theoretical maximum</div></div>
+  </div>
+</div>
+
+<!-- 4 · REALISABLE VALUE -->
+<div class="card">
+  <h2><span class="step">4</span>Realisable Economic Value (REV) <span class="role-badges"><span class="rb ba">BA</span><span class="rb dl">DL</span></span></h2>
+  <p class="hint">REV = PEV × (Adoption × System Effectiveness × Integration). PEV typically overstates value by 2–10× once data quality, integration, process change and adoption are priced in.</p>
+  <label>Adoption rate — % of target users who will actually use it, regularly</label>
+  <div class="slider-row"><input type="range" min="0" max="100" value="60" data-k="adoption" data-num><output id="oAdoption">60%</output></div>
+  <label>System effectiveness — % of the theoretical gain the system actually delivers (accuracy, escalations, rework)</label>
+  <div class="slider-row"><input type="range" min="0" max="100" value="70" data-k="effectiveness" data-num><output id="oEffectiveness">70%</output></div>
+  <label>Integration factor — % surviving real-world integration, process change and data quality</label>
+  <div class="slider-row"><input type="range" min="0" max="100" value="80" data-k="integration" data-num><output id="oIntegration">80%</output></div>
+
+  <div class="kpis">
+    <div class="kpi rev"><div class="lbl">REV — realisable / yr</div><div class="v" id="kREV">—</div><div class="sub" id="kRatio"></div></div>
+    <div class="kpi cash"><div class="lbl">Cashable equivalent</div><div class="v" id="kCash">—</div><div class="sub" id="kCashSub">only if cost actually comes out</div></div>
+    <div class="kpi"><div class="lbl">Mitigated FTE</div><div class="v" id="kFTE">—</div><div class="sub">realised hours ÷ 1 FTE-year</div></div>
+  </div>
+  <div class="bars">
+    <div class="bar-row"><div>PEV (potential)</div><div class="bar-track"><div class="bar-fill" id="barPEV" style="background:var(--blue)"></div></div><div id="barPEVv"></div></div>
+    <div class="bar-row"><div>REV (realistic)</div><div class="bar-track"><div class="bar-fill" id="barREV" style="background:var(--green)"></div></div><div id="barREVv"></div></div>
+    <div class="bar-row"><div>Cashable</div><div class="bar-track"><div class="bar-fill" id="barCash" style="background:var(--purple)"></div></div><div id="barCashv"></div></div>
+  </div>
+  <div class="warn" id="ratioWarn" style="display:none"></div>
+  <div class="info"><b>Cashable vs non-cashable.</b> Productivity value is <i>non-cashable</i> — real only if freed hours redeploy into revenue-driving work. It becomes <i>cashable</i> only when headcount or third-party cost actually comes out. Value counted as headcount that will never be removed is the classic CFO catch — say which this is.</div>
+  <label>Which is this value case built on?</label>
+  <div class="chips" id="cashBasis"></div>
+</div>
+
+<!-- 5 · COSTS -->
+<div class="card">
+  <h2><span class="step">5</span>Cost to deliver <span class="role-badges"><span class="rb ba">BA</span></span></h2>
+  <p class="hint">Price AI like AI, not software: include tuning, retraining, data maintenance — and the risk of vendor price rises after 12 months invalidating the case.</p>
+  <div class="grid4">
+    <div><label>Build: discovery + development (£)</label><input type="number" min="0" data-k="cBuild" data-num></div>
+    <div><label>Roll-out &amp; education (£)</label><input type="number" min="0" data-k="cRollout" data-num></div>
+    <div><label>Licences / platform (£/yr)</label><input type="number" min="0" data-k="cLicence" data-num></div>
+    <div><label>Run: maintenance, evals, security (£/yr)</label><input type="number" min="0" data-k="cRun" data-num></div>
+  </div>
+  <label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" data-k="aggr" data-chk style="width:auto"> Apply 25% contingency to all costs (costs at 125%)</label>
+  <div class="info" style="margin-top:10px"><b>Change budget check:</b> 30–40% of AI budgets should go to adoption and change — value is created in the people-and-process 30%, but most investment goes the other way. Roll-out + education here = <b id="chgPct">—</b> of total cost.</div>
+</div>
+
+<!-- 6 · RESULTS -->
+<div class="card">
+  <h2><span class="step">6</span>Results &amp; sensitivity</h2>
+  <div class="kpis">
+    <div class="kpi cost"><div class="lbl">Total cost (yr 1)</div><div class="v" id="kCost">—</div><div class="sub" id="kCostSub"></div></div>
+    <div class="kpi"><div class="lbl">Net benefit (yr 1)</div><div class="v" id="kNet">—</div><div class="sub">REV − yr-1 cost</div></div>
+    <div class="kpi"><div class="lbl">Benefit : cost (yr 1)</div><div class="v" id="kROI">—</div><div class="sub">REV ÷ yr-1 cost</div></div>
+    <div class="kpi"><div class="lbl">Payback</div><div class="v" id="kPayback">—</div><div class="sub">one-off cost ÷ monthly net</div></div>
+    <div class="kpi"><div class="lbl">Steady-state net (yr 2+)</div><div class="v" id="kNet2">—</div><div class="sub">REV − annual run cost</div></div>
+  </div>
+  <div class="bars">
+    <div class="bar-row"><div>REV −20% (worst)</div><div class="bar-track"><div class="bar-fill" id="barLo" style="background:#9bbfae"></div></div><div id="barLov"></div></div>
+    <div class="bar-row"><div>REV (realistic)</div><div class="bar-track"><div class="bar-fill" id="barMid" style="background:var(--green)"></div></div><div id="barMidv"></div></div>
+    <div class="bar-row"><div>REV +20% (best)</div><div class="bar-track"><div class="bar-fill" id="barHi" style="background:#145c31"></div></div><div id="barHiv"></div></div>
+    <div class="bar-row"><div>Yr-1 cost</div><div class="bar-track"><div class="bar-fill" id="barCost" style="background:var(--amber)"></div></div><div id="barCostv"></div></div>
+  </div>
+  <div class="warn red" id="netWarn" style="display:none"></div>
+</div>
+
+<!-- 7 · VALUE TREE -->
+<div class="card">
+  <h2><span class="step">7</span>Value Tree — where this lands</h2>
+  <p class="hint">Anchor the use case to a named value driver and trace it through to the financial metric the board watches. Every metric maps to a pillar — no orphan benefits.</p>
+  <label>Primary value driver</label>
+  <div class="chips" id="driverChips"></div>
+  <div class="tree" id="treeViz"></div>
+  <label>Which financial metric does it ultimately move?</label>
+  <div class="chips" id="finChips"></div>
+</div>
+
+<!-- 8 · ASSUMPTIONS -->
+<div class="card">
+  <h2><span class="step">8</span>Assumption register <span class="role-badges"><span class="rb ba">BA</span></span></h2>
+  <p class="hint">Every input above carries a RAG dot: <b style="color:var(--green)">green</b> = data received · <b style="color:var(--amber)">amber</b> = assumption built for testing · <b style="color:var(--red)">red</b> = needs data/validation. Validate key assumptions bottom-up during discovery; the POC should be instrumented to prove the amber ones.</p>
+  <div id="assumSummary"></div>
+  <label>Assumption notes — state each assumption, its source and confidence bounds</label>
+  <textarea data-k="assumNotes" style="min-height:90px" placeholder="e.g. 40% efficiency factor from industry benchmark, unvalidated for this team — POC eval will measure actual; salary band = Band 2 midpoint per HR…"></textarea>
+</div>
+
+<!-- 9 · MEASUREMENT & VERDICT -->
+<div class="card">
+  <h2><span class="step">9</span>Measurement design &amp; verdict <span class="role-badges"><span class="rb dl">DL</span><span class="rb ba">BA</span></span></h2>
+  <p class="hint">Design measurement into the build — the system logs its own evidence (cases, time, accuracy, escalations) so “does it pay?” is answered with data, not archaeology.</p>
+  <div class="grid3">
+    <div><label>What is logged, where</label><textarea data-k="mLog"></textarea></div>
+    <div><label>Reviewed by whom, on what rhythm</label><textarea data-k="mReview"></textarea></div>
+    <div><label>What result would make the client turn it off?</label><textarea data-k="mKill"></textarea></div>
+  </div>
+  <label>Verdict</label>
+  <div class="chips" id="verdictChips"></div>
+  <div class="verdict" id="verdictBox"></div>
+  <label>Rationale — including the honest case to stop, if that’s the call</label>
+  <textarea data-k="verdictWhy"></textarea>
+</div>
+
+<!-- SUMMARY -->
+<div class="no-print" style="margin-bottom:14px;display:flex;gap:8px">
+  <button class="primary" onclick="buildSummary()">Generate value case</button>
+  <button onclick="copySummary()">Copy as text</button>
+</div>
+<div id="summaryOut"></div>
+
+</main>
+<footer>Enablis · Value Assessment Tool (interactive prototype) · pairs with the Discovery Screen and Mini Op Model · data stays in this browser</footer>
+
+<script>
+"use strict";
+const KEY="value-tool-v1";
+let S = JSON.parse(localStorage.getItem(KEY)||"{}");
+S.text=S.text||{}; S.num=S.num||{}; S.chk=S.chk||{}; S.pick=S.pick||{}; S.rag=S.rag||{};
+function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
+function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+const fmt = n => (!isFinite(n)||n===0)? "—" : "£"+Math.round(n).toLocaleString("en-GB");
+function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
+function resetAll(){ if(!confirm("Clear everything and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
+const num = k => parseFloat(S.num[k])||0;
+
+/* ---------- chip groups ---------- */
+const CHIPS = {
+  valTypes:{el:"valTypes",multi:true,opts:["Time saved / productivity","Cost reduction / headcount","Revenue growth","Error & risk reduction","Customer experience / NPS","Working-capital / yield"]},
+  baseQuality:{el:"baseQuality",multi:false,cls:{ "Measured":"g","Estimated":"a","None — nobody tracks it":"r"},opts:["Measured","Estimated","None — nobody tracks it"]},
+  calcBasis:{el:"calcBasis",multi:false,opts:["FTE-based (FTE × % time)","Case-based (volume × time per case)"]},
+  cashBasis:{el:"cashBasis",multi:false,opts:["Non-cashable — freed time redeployed","Cashable — headcount/cost comes out","Revenue — new money in","Mixed (state split in assumptions)"]},
+  driverChips:{el:"driverChips",multi:false,opts:["Increased productivity → cost saving","Competitive advantage → increased revenue","Enhanced quality → customer NPS → revenue","New revenue streams","Reduced risk of fines / reputational damage","Investor confidence → valuation"]},
+  finChips:{el:"finChips",multi:false,opts:["EBITDA","ARR / revenue","Cost-to-serve","NPS","Market share","Valuation multiple"]},
+  verdictChips:{el:"verdictChips",multi:false,cls:{"GO — build / proceed":"g","ADJUST — reshape scope or assumptions":"a","STOP — honest case to stop":"r"},opts:["GO — build / proceed","ADJUST — reshape scope or assumptions","STOP — honest case to stop"]}
+};
+function renderChips(){
+  Object.entries(CHIPS).forEach(([key,c])=>{
+    const cur = S.pick[key] || (c.multi?[]:"");
+    document.getElementById(c.el).innerHTML = c.opts.map(o=>{
+      const sel = c.multi? cur.includes(o) : cur===o;
+      const cls = c.cls? (c.cls[o]||"") : "";
+      return `<div class="chip ${cls} ${sel?"sel":""}" onclick="pick('${key}','${o.replace(/'/g,"\\'")}')">${o}</div>`;
+    }).join("");
+  });
+}
+function pick(key,o){
+  const c=CHIPS[key];
+  if(c.multi){ const arr=S.pick[key]||[]; S.pick[key]= arr.includes(o)? arr.filter(x=>x!==o):[...arr,o]; }
+  else S.pick[key]= (S.pick[key]===o? "":o);
+  save(); renderChips(); calc(); renderTree(); renderVerdict();
+}
+
+/* ---------- RAG dots on inputs ---------- */
+const RAGS = {r_fte:"FTE count",r_pct:"% time on task",r_cost:"Fully-loaded cost",r_vol:"Volume",r_eff:"Efficiency factor",r_mult:"Economic multiplier",r_revUp:"Revenue uplift"};
+function renderRags(){
+  document.querySelectorAll(".ragdot").forEach(el=>{
+    const k=el.dataset.rag, cur=S.rag[k]||"";
+    el.innerHTML = ["g","a","r"].map(c=>`<span class="${c} ${cur===c?"sel":""}" title="${c==="g"?"data received":c==="a"?"assumption for testing":"needs validation"}" onclick="S.rag['${k}']=(S.rag['${k}']==='${c}'?'':'${c}');save();renderRags();renderAssum()"></span>`).join("");
+  });
+}
+function renderAssum(){
+  const rows = Object.entries(RAGS).map(([k,n])=>{
+    const v=S.rag[k];
+    const word = v==="g"?"🟢 Data received":v==="a"?"🟡 Assumption — test in POC":v==="r"?"🔴 Needs data / validation":"— untagged";
+    return `<tr><td>${n}</td><td>${word}</td></tr>`;
+  }).join("");
+  const reds = Object.keys(RAGS).filter(k=>S.rag[k]==="r").length;
+  const untagged = Object.keys(RAGS).filter(k=>!S.rag[k]).length;
+  document.getElementById("assumSummary").innerHTML =
+    `<table><thead><tr><th>Input</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+     ${reds? `<div class="warn">⚠ ${reds} input(s) need data or validation — the headline number inherits their uncertainty. State it as ±20% at best.</div>`:""}
+     ${untagged? `<div class="hint">${untagged} input(s) untagged — tag every number before the readout.</div>`:""}`;
+}
+
+/* ---------- core calculation ---------- */
+function calc(){
+  const hoursYr = num("hoursYr")||1820;
+  const basis = S.pick.calcBasis||"";
+  let addrHours=0, sub="";
+  if(basis.startsWith("Case")){ addrHours = num("volume")*num("timeCase"); sub="volume × time per case"; }
+  else { addrHours = num("fte")*(num("pctTime")/100)*hoursYr; sub="FTE × %time × hrs/yr"; }
+  const eff = num("effFactor")/100;
+  const hoursSaved = addrHours*eff;
+  const rate = hoursYr? num("ftecost")/hoursYr : 0;
+  const mult = num("econMult")||1;
+  const prodVal = hoursSaved*rate*mult;
+  const errVal = num("volume")*(num("errRate")/100)*(num("errRed")/100)*num("errCost");
+  const PEV = prodVal + errVal + num("revUplift");
+  const a=num("adoption")/100, e=num("effectiveness")/100, i=num("integration")/100;
+  const REV = PEV*a*e*i;
+  const realHours = hoursSaved*a*e*i;
+  const mitFTE = hoursYr? realHours/hoursYr : 0;
+  const cash = mitFTE*num("ftecost");
+  const mul = S.chk.aggr?1.25:1;
+  const oneOff = (num("cBuild")+num("cRollout"))*mul;
+  const annual = (num("cLicence")+num("cRun"))*mul;
+  const costY1 = oneOff+annual;
+  const net = REV-costY1;
+  const roi = costY1? REV/costY1 : NaN;
+  const monthlyNet = (REV-annual)/12;
+  const payback = monthlyNet>0? oneOff/monthlyNet : NaN;
+
+  set("kHours", isFinite(addrHours)&&addrHours? Math.round(addrHours).toLocaleString():"—");
+  set("kHoursSub", sub);
+  set("kProd", fmt(prodVal)); set("kErr", fmt(errVal)); set("kPEV", fmt(PEV));
+  set("kREV", fmt(REV));
+  set("kRatio", PEV? "REV/PEV ratio: "+(REV/PEV*100).toFixed(0)+"%" : "");
+  set("kCash", fmt(cash)); set("kFTE", mitFTE? mitFTE.toFixed(1):"—");
+  set("kCost", fmt(costY1)); set("kCostSub", S.chk.aggr?"costs at 125% (25% contingency)":"no contingency applied");
+  set("kNet", fmt(net)); set("kROI", isFinite(roi)? roi.toFixed(1)+"×":"—");
+  set("kPayback", isFinite(payback)? Math.ceil(payback)+" months":"—");
+  set("kNet2", fmt(REV-annual));
+
+  // bars
+  const maxV = Math.max(PEV,REV*1.2,costY1,1);
+  bar("barPEV","barPEVv",PEV,maxV); bar("barREV","barREVv",REV,maxV); bar("barCash","barCashv",cash,maxV);
+  bar("barLo","barLov",REV*0.8,maxV); bar("barMid","barMidv",REV,maxV); bar("barHi","barHiv",REV*1.2,maxV); bar("barCost","barCostv",costY1,maxV);
+
+  // sliders output
+  ["adoption","effectiveness","integration"].forEach(k=>{ const o=document.getElementById("o"+k[0].toUpperCase()+k.slice(1)); if(o) o.textContent=(num(k))+"%"; });
+
+  // warnings
+  const rw=document.getElementById("ratioWarn");
+  if(PEV&&REV){ const ratio=PEV/REV;
+    if(ratio<2){ rw.style.display="block"; rw.className="warn"; rw.innerHTML="⚠ PEV is only "+ratio.toFixed(1)+"× REV. Evidence says potential typically overstates realisable by <b>2–10×</b> — check the adoption, effectiveness and integration factors aren’t optimistic."; }
+    else { rw.style.display="block"; rw.className="info"; rw.innerHTML="PEV is "+ratio.toFixed(1)+"× REV — within the 2–10× overstatement range the evidence predicts. Track the REV/PEV ratio as implementation efficiency; review quarterly."; }
+  } else rw.style.display="none";
+  const bq=S.pick.baseQuality, bw=document.getElementById("baseWarn");
+  if(bq==="None — nobody tracks it"){ bw.style.display="block"; bw.className="warn red"; bw.innerHTML="⚠ <b>No baseline — improvement becomes unprovable.</b> Shadow the real task this week and measure it yourself before claiming any number."; }
+  else if(bq==="Estimated"){ bw.style.display="block"; bw.className="warn"; bw.innerHTML="⚠ Baseline is estimated. Fine to start; plan to replace with measured data during the engagement — and widen your confidence bounds until then."; }
+  else bw.style.display="none";
+  const nw=document.getElementById("netWarn");
+  if(costY1>0 && REV>0 && net<0){ nw.style.display="block"; nw.innerHTML="⚠ <b>Negative net benefit in year 1 at realistic assumptions.</b> Steady-state net (yr 2+, one-off costs behind you) is <b>"+fmt(REV-annual)+"</b> — if that's healthy, the case is a payback story; if it isn't, this may be the honest case to stop."; }
+  else nw.style.display="none";
+  const chg = costY1? ((num("cRollout")*mul)/costY1*100).toFixed(0)+"%":"—";
+  set("chgPct", chg);
+  return {PEV,REV,cash,mitFTE,costY1,net,net2:REV-annual,roi,payback,addrHours,hoursSaved,prodVal,errVal};
+}
+function set(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
+function bar(idF,idV,v,max){ const f=document.getElementById(idF); f.style.width=(max? Math.min(v/max*100,100):0)+"%"; document.getElementById(idV).textContent = v? fmt(v):"—"; }
+
+/* ---------- value tree ---------- */
+const TREE = {
+ "Increased productivity → cost saving":["Investment in AI","Successful implementation","Improved operational efficiency","Increased productivity","Cost saving"],
+ "Competitive advantage → increased revenue":["Investment in AI","Successful implementation","Market share expansion","Competitive advantage","Increased revenue"],
+ "Enhanced quality → customer NPS → revenue":["Investment in AI","Increased customer engagement","Enhanced product/service quality","Customer NPS","Increased revenue"],
+ "New revenue streams":["Investment in AI","Successful implementation","New revenue streams","New market access","Increased revenue"],
+ "Reduced risk of fines / reputational damage":["Regulatory & ethical considerations","Compliance with data privacy","Change in risk of fines","Risk cost avoided","Cost impact"],
+ "Investor confidence → valuation":["Market response to AI","Public perception","Investor confidence","Share price / multiple","Valuation"]
+};
+const COLS = ["Input","Output","Outcome","Intermediate impact","Financial impact"];
+function renderTree(){
+  const drv = S.pick.driverChips||"";
+  const path = TREE[drv];
+  const fin = S.pick.finChips||"";
+  const allByCol = [
+    ["Investment in AI","Market response to AI","Regulatory & ethical considerations"],
+    ["Successful implementation","Increased customer engagement","Public perception","Compliance with data privacy"],
+    ["Improved operational efficiency","Enhanced product/service quality","New revenue streams","Market share expansion","Change in risk of fines"],
+    ["Increased productivity","Competitive advantage","Customer NPS","Investor confidence","New market access","Risk cost avoided","Share price / multiple"],
+    ["Cost saving","Increased revenue","Cost impact","Valuation"]
+  ];
+  document.getElementById("treeViz").innerHTML = COLS.map((c,ci)=>`
+    <div class="col"><h5>${c}</h5>${allByCol[ci].map(n=>`<div class="node ${path&&path[ci]===n?"on":""}">${n}</div>`).join("")}</div>`).join("")
+    + (fin? `<div class="col"><h5>Board metric</h5><div class="node on">${fin}</div></div>`:"");
+}
+
+/* ---------- verdict ---------- */
+function renderVerdict(){
+  const v=S.pick.verdictChips||"";
+  const box=document.getElementById("verdictBox");
+  if(!v){ box.className="verdict"; box.innerHTML="Select GO / ADJUST / STOP. An honest “stop” is a good outcome — cheaply learned."; return; }
+  if(v.startsWith("GO")){ box.className="verdict good"; box.innerHTML="<h4>GO</h4>Proceed to the next gate. Carry the assumption register with you — the POC/pilot must convert ambers to greens, and benefits get tracked against the baseline captured here."; }
+  else if(v.startsWith("ADJUST")){ box.className="verdict mid"; box.innerHTML="<h4>ADJUST</h4>Reshape before committing: narrow the scope to where value concentrates, fix the red assumptions, or re-set the success threshold with the sponsor."; }
+  else { box.className="verdict bad"; box.innerHTML="<h4>STOP</h4>The honest case to stop — made with evidence, not enthusiasm. Record what was learned (assumptions, baseline, feasibility) so the next candidate starts ahead."; }
+}
+
+/* ---------- summary ---------- */
+function T(k){ return (S.text[k]||"").trim(); }
+function V(k,fb){ const v=T(k); return v? esc(v).replace(/\n/g,"<br>"):`<span style="color:#aaa;font-style:italic">${fb||"— not captured —"}</span>`; }
+function buildSummary(){
+  const r = calc();
+  const out=document.getElementById("summaryOut");
+  const reds = Object.keys(RAGS).filter(k=>S.rag[k]==="r").map(k=>RAGS[k]);
+  const ambers = Object.keys(RAGS).filter(k=>S.rag[k]==="a").map(k=>RAGS[k]);
+  out.style.display="block";
+  out.innerHTML = `
+    <h2>Value Case — ${esc(T("usecase")||"Use case")}</h2>
+    <p><b>${esc(T("client")||"Client")}</b> · ${esc(T("stage")||"")} · ${esc(T("date")||"")} · prepared by ${esc(T("author")||"—")} · sponsor ${esc(T("sponsor")||"—")}</p>
+    <p><b>Connects to:</b> ${V("okr")}<br><b>Success threshold:</b> ${V("threshold","— agree the number before the readout —")}</p>
+    <h3>Headline (per year, ±20%)</h3>
+    <table><thead><tr><th></th><th>Value</th><th>Note</th></tr></thead><tbody>
+      <tr><td><b>PEV — potential</b></td><td>${fmt(r.PEV)}</td><td>theoretical max: 100% adoption, perfect efficiency</td></tr>
+      <tr><td><b>REV — realisable</b></td><td><b>${fmt(r.REV)}</b></td><td>adoption ${num("adoption")}% × effectiveness ${num("effectiveness")}% × integration ${num("integration")}% (REV/PEV ${r.PEV?(r.REV/r.PEV*100).toFixed(0)+"%":"—"})</td></tr>
+      <tr><td>Cashable equivalent</td><td>${fmt(r.cash)}</td><td>${esc(S.pick.cashBasis||"basis not stated")} · ${r.mitFTE?r.mitFTE.toFixed(1):"—"} mitigated FTE</td></tr>
+      <tr><td>Cost (yr 1)</td><td>${fmt(r.costY1)}</td><td>${S.chk.aggr?"costs at 125% (25% contingency)":"no contingency"}</td></tr>
+      <tr><td>Net benefit (yr 1)</td><td>${fmt(r.net)}</td><td>benefit:cost ${isFinite(r.roi)?r.roi.toFixed(1)+"×":"—"} · payback ${isFinite(r.payback)?Math.ceil(r.payback)+" months":"—"}</td></tr>
+      <tr><td>Steady-state net (yr 2+)</td><td>${fmt(r.net2)}</td><td>REV − annual run cost, one-off costs behind you</td></tr>
+    </tbody></table>
+    <h3>Baseline</h3>
+    <p>${num("fte")||"—"} FTE · ${num("pctTime")||"—"}% time on task · ${num("volume")? num("volume").toLocaleString():"—"} cases/yr · ${num("timeCase")||"—"} hrs/case · fully-loaded ${fmt(num("ftecost"))}/FTE · quality: <b>${esc(S.pick.baseQuality||"unrated")}</b></p>
+    <p>${V("baseSource","— source not recorded —")}</p>
+    <h3>Value tree</h3>
+    <p>${esc(S.pick.driverChips||"— driver not selected —")} → <b>${esc(S.pick.finChips||"board metric not selected")}</b> · value types: ${(S.pick.valTypes||[]).join(", ")||"—"}</p>
+    <h3>Assumptions</h3>
+    ${reds.length? `<p>🔴 Need data/validation: ${reds.join(" · ")}</p>`:""}
+    ${ambers.length? `<p>🟡 Built for testing in the POC: ${ambers.join(" · ")}</p>`:""}
+    <p>${V("assumNotes")}</p>
+    <h3>Measurement design</h3>
+    <p><b>Logged:</b> ${V("mLog")}<br><b>Reviewed:</b> ${V("mReview")}<br><b>Kill condition:</b> ${V("mKill")}</p>
+    <h3>Verdict</h3>
+    <p><b>${esc(S.pick.verdictChips||"—")}</b></p>
+    <p>${V("verdictWhy")}</p>`;
+  out.scrollIntoView({behavior:"smooth"});
+}
+function copySummary(){ buildSummary(); copyText(document.getElementById("summaryOut").innerText,"Value case copied."); }
+
+/* ---------- wiring ---------- */
+function bind(){
+  document.querySelectorAll("[data-k]").forEach(el=>{
+    const k=el.dataset.k;
+    if(el.dataset.chk!==undefined){ el.checked=!!S.chk[k]; el.onchange=()=>{S.chk[k]=el.checked;save();calc();}; }
+    else if(el.dataset.num!==undefined){ if(S.num[k]!==undefined) el.value=S.num[k]; else if(el.value!=="") S.num[k]=el.value; el.oninput=()=>{S.num[k]=el.value;save();calc();}; }
+    else { el.value=S.text[k]||""; el.oninput=()=>{S.text[k]=el.value;save();}; }
+  });
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=(T("usecase")||"use-case").replace(/\s+/g,"-").toLowerCase()+"-value-case.json"; a.click();
+}
+function importJSON(inp){
+  const f=inp.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.text=S.text||{};S.num=S.num||{};S.chk=S.chk||{};S.pick=S.pick||{};S.rag=S.rag||{}; save(); bind(); renderChips(); renderRags(); renderAssum(); renderTree(); renderVerdict(); calc(); alert("Imported."); }catch(e){ alert("Could not read that file."); } };
+  r.readAsText(f);
+}
+renderChips(); renderRags(); renderAssum(); renderTree(); renderVerdict(); bind(); calc();
+</script>
+</body>
+</html>

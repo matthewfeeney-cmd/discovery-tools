@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Op Model — one workflow</title>
+<style>
+  :root{
+    --red:#e8112d; --ink:#1a1a1a; --grey:#5f6368; --line:#e3e3e3; --bg:#f7f7f8;
+    --green:#1e7e44; --green-bg:#e8f5ee; --amber:#a07400; --amber-bg:#fdf4dd; --red-bg:#fdeaed;
+    --blue:#0b5c8a; --blue-bg:#e8f2f8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.5}
+  header{background:#fff;border-bottom:3px solid var(--red);padding:16px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:19px}
+  header .tag{font-size:11px;letter-spacing:.12em;color:var(--red);font-weight:700;text-transform:uppercase;display:block}
+  .hdr-actions{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:6px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink)}
+  button:hover{border-color:var(--red);color:var(--red)}
+  button.primary{background:var(--red);border-color:var(--red);color:#fff}
+  button.primary:hover{background:#c60e26;color:#fff}
+  main{max-width:960px;margin:0 auto;padding:24px 28px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+  .card h2{font-size:16px;margin-bottom:4px}
+  .card h2 .n{color:var(--red);margin-right:6px}
+  .hint{color:var(--grey);font-size:13px;margin-bottom:10px}
+  label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px;color:#333}
+  label small{font-weight:400;color:var(--grey)}
+  input,select,textarea{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  textarea{min-height:52px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:2px solid #f5b6c0;border-color:var(--red)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+  .sig{margin:12px 0;padding-bottom:10px;border-bottom:1px dashed var(--line)}
+  .sig:last-child{border-bottom:none}
+  .sig .st{font-weight:600;font-size:13.5px;margin-bottom:6px}
+  .opts{display:flex;gap:6px;flex-wrap:wrap}
+  .opt{flex:1;min-width:140px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;cursor:pointer;background:#fff;color:var(--grey);text-align:center}
+  .opt.g.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
+  .opt.a.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
+  .opt.r.sel{background:var(--red-bg);border-color:var(--red);color:var(--red);font-weight:700}
+  .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
+  .scorebox{flex:1;min-width:130px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center;background:#fff}
+  .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
+  .scorebox .v{font-size:20px;font-weight:800}
+  .scorebox.G{background:var(--green-bg);border-color:var(--green)}
+  .scorebox.A{background:var(--amber-bg);border-color:var(--amber)}
+  .scorebox.R{background:var(--red-bg);border-color:var(--red)}
+  .gauge{height:10px;border-radius:5px;background:#eee;overflow:hidden;margin:8px 0}
+  .gauge i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));width:0%;transition:width .3s}
+  .verdict{border-radius:10px;padding:14px 18px;font-size:14px;margin-top:8px;border:1px solid var(--line);background:#fff}
+  .verdict.good{background:var(--green-bg);border-color:var(--green)}
+  .verdict.mid{background:var(--amber-bg);border-color:var(--amber)}
+  .verdict.bad{background:var(--red-bg);border-color:var(--red)}
+  #outCard{display:none}
+  #outCard h3{color:var(--red);margin:14px 0 4px;font-size:14.5px}
+  #outCard .empty{color:#aaa;font-style:italic}
+  #outCard ul{margin:4px 0 4px 20px}
+  .save-note{font-size:12px;color:var(--grey)}
+  footer{text-align:center;color:var(--grey);font-size:12px;padding:18px}
+  @media print{header .hdr-actions,button,.no-print{display:none!important}body{background:#fff}main{padding:0;max-width:none}.card{page-break-inside:avoid}#outCard{display:block!important}}
+</style>
+</head>
+<body>
+<script>if(sessionStorage.getItem("edt_auth")!=="1")location.replace("../index.html");</script>
+
+<header>
+  <div>
+    <span class="tag">Assess + Build · one workflow</span>
+    <h1>Mini Op Model</h1>
+  </div>
+  <div class="hdr-actions">
+    <span class="save-note" id="saveNote">Autosaves in this browser</span>
+    <button onclick="resetAll()">New client</button>
+    <button onclick="exportJSON()">Export JSON</button>
+    <button onclick="document.getElementById('importFile').click()">Import</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    <button onclick="buildOut();window.print()">Print / PDF</button>
+    <button class="primary" onclick="buildOut()">Generate op model</button>
+  </div>
+</header>
+
+<main>
+
+<div class="card">
+  <h2>How this works</h2>
+  <p class="hint" style="margin-bottom:0">The build proves the workflow works; this form captures what it would take to <b>run it for real</b> — process, people, tech — for one workflow. Fill it from short conversations with the people named in each section (~1 day total, spread across the engagement). Rate each signal as you learn it; if you can't answer, pick red — unknowns are blockers until someone answers them. Value is handled separately in the Value Assessment Tool.</p>
+</div>
+
+<div class="card">
+  <h2>The workflow</h2>
+  <div class="grid3">
+    <div><label>Client</label><input data-k="client"></div>
+    <div><label>Workflow</label><input data-k="workflow"></div>
+    <div><label>Filled in by / date</label><input data-k="author"></div>
+  </div>
+  <label>What does the AI do in this workflow, and where does a person stay in control?</label>
+  <textarea data-k="scope" placeholder="e.g. Drafts responses to member queries; a person reviews and sends. Escalates anything about payments."></textarea>
+</div>
+
+<!-- PROCESS -->
+<div class="card">
+  <h2><span class="n">1</span>Process — how it gets approved and governed</h2>
+  <p class="hint">Ask: whoever owns change/release, risk or compliance, and anyone who has taken a system live here before.</p>
+  <label>If this proved itself tomorrow, what has to happen for it to run for real? <small>List the approvals in order — security review, data protection, risk board…</small></label>
+  <textarea data-k="p_route"></textarea>
+  <label>Who says yes at each step, and what do they need to see?</label>
+  <textarea data-k="p_gates" placeholder="e.g. IT security (pen test + data flows) → DPO (DPIA) → Ops board (accuracy evidence, monthly)"></textarea>
+  <label>Who could veto this late in the day — and have they been spoken to?</label>
+  <input data-k="p_veto">
+  <div class="sig"><div class="st">Route to approval</div><div class="opts" id="rag_p1"></div></div>
+  <div class="sig"><div class="st">Evidence each approver needs</div><div class="opts" id="rag_p2"></div></div>
+  <div class="sig"><div class="st">Who decides</div><div class="opts" id="rag_p3"></div></div>
+</div>
+
+<!-- PEOPLE -->
+<div class="card">
+  <h2><span class="n">2</span>People — who it needs around it</h2>
+  <p class="hint">Ask: the team doing the task, their manager, and whoever would own the system after handover.</p>
+  <div class="grid2">
+    <div><label>Who owns the running system? <small>Not the project — the system, day to day</small></label><input data-k="pe_owner"></div>
+    <div><label>Who handles what the AI escalates?</label><input data-k="pe_escal"></div>
+    <div><label>Which experts must it learn from — and how much of their time can we get?</label><input data-k="pe_experts" placeholder="e.g. 2 senior handlers, ~3 hrs/week committed"></div>
+    <div><label>Who maintains it when rules or knowledge change?</label><input data-k="pe_maintain"></div>
+  </div>
+  <label>What would the team need to see before they trusted it?</label>
+  <textarea data-k="pe_adopt"></textarea>
+  <div class="sig"><div class="st">System owner</div><div class="opts" id="rag_pe1"></div></div>
+  <div class="sig"><div class="st">Expert time</div><div class="opts" id="rag_pe2"></div></div>
+  <div class="sig"><div class="st">Skills to run &amp; maintain</div><div class="opts" id="rag_pe3"></div></div>
+</div>
+
+<!-- TECH -->
+<div class="card">
+  <h2><span class="n">3</span>Tech — what it runs on and connects to</h2>
+  <p class="hint">Ask: the platform or architecture lead, the data owner, and security.</p>
+  <div class="grid2">
+    <div><label>Where would it run in production? <small>Mandated cloud/platform, approved AI tools</small></label><input data-k="t_platform"></div>
+    <div><label>Which systems must it connect to?</label><input data-k="t_systems" placeholder="e.g. CRM (standard API), billing (custom), shared drive"></div>
+  </div>
+  <label>What data does it need — can we get it, and is it good enough?</label>
+  <textarea data-k="t_data"></textarea>
+  <label>Where does the POC differ from production? <small>Sample data, relaxed security, different tooling — the honest list</small></label>
+  <textarea data-k="t_diverge"></textarea>
+  <div class="sig"><div class="st">Production platform</div><div class="opts" id="rag_t1"></div></div>
+  <div class="sig"><div class="st">Connections to other systems</div><div class="opts" id="rag_t2"></div></div>
+  <div class="sig"><div class="st">Data access &amp; quality</div><div class="opts" id="rag_t3"></div></div>
+</div>
+
+<!-- SCORE -->
+<div class="card">
+  <h2>Readiness to run for real</h2>
+  <div class="scorebar" id="lensBoxes"></div>
+  <div class="gauge"><i id="gauge"></i></div>
+  <div class="verdict" id="verdict"></div>
+</div>
+
+<!-- OUTPUT -->
+<div class="no-print" style="margin-bottom:14px;display:flex;gap:8px">
+  <button class="primary" onclick="buildOut()">Generate op model</button>
+  <button onclick="copyOut()">Copy as text</button>
+</div>
+<div class="card" id="outCard"></div>
+
+</main>
+<footer>Enablis · Mini Op Model · pairs with the Discovery Screen and Value Assessment Tool · data stays in this browser</footer>
+
+<script>
+"use strict";
+const SIGNALS = [
+ {id:"p1",lens:"Process",name:"Route to approval",g:"Clear, used before",a:"Exists, never for AI",r:"None / unknown"},
+ {id:"p2",lens:"Process",name:"Evidence needed",g:"Known and listed",a:"Partly known",r:"Nobody can say"},
+ {id:"p3",lens:"Process",name:"Who decides",g:"Named at every step",a:"Fuzzy in places",r:"Contested / unknown"},
+ {id:"pe1",lens:"People",name:"System owner",g:"Named and willing",a:"Candidate, unconfirmed",r:"Nobody identified"},
+ {id:"pe2",lens:"People",name:"Expert time",g:"Committed & scheduled",a:"Promised, not scheduled",r:"Scarce / one person"},
+ {id:"pe3",lens:"People",name:"Run & maintain skills",g:"Exist in-house",a:"Trainable gap",r:"Absent, no plan"},
+ {id:"t1",lens:"Tech",name:"Production platform",g:"Known and reachable",a:"Known, access slow",r:"Undecided / contested"},
+ {id:"t2",lens:"Tech",name:"Connections",g:"Standard ones exist",a:"Some custom needed",r:"Key ones missing"},
+ {id:"t3",lens:"Tech",name:"Data access & quality",g:"Accessible, good enough",a:"Reachable with work",r:"Locked away / poor"}
+];
+const LENSES=["Process","People","Tech"];
+const KEY="mini-op-model-v1";
+let S=JSON.parse(localStorage.getItem(KEY)||"{}");
+S.text=S.text||{}; S.rag=S.rag||{};
+function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
+function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+function renderRags(){
+  SIGNALS.forEach(sig=>{
+    const cur=S.rag[sig.id]||"";
+    document.getElementById("rag_"+sig.id).innerHTML=[["G","g",sig.g],["A","a",sig.a],["R","r",sig.r]].map(([v,c,txt])=>
+      `<div class="opt ${c} ${cur===v?"sel":""}" onclick="setRag('${sig.id}','${v}')">${txt}</div>`).join("");
+  });
+}
+function setRag(id,v){ S.rag[id]=(S.rag[id]===v?"":v); save(); renderRags(); renderScore(); }
+
+function lensStats(lens){
+  const sigs=SIGNALS.filter(s=>s.lens===lens);
+  let g=0,a=0,r=0,u=0;
+  sigs.forEach(s=>{const v=S.rag[s.id]; v==="G"?g++:v==="A"?a++:v==="R"?r++:u++;});
+  return {g,a,r,u,n:sigs.length};
+}
+function renderScore(){
+  let pts=0,max=0,anyR=false,rated=0;
+  document.getElementById("lensBoxes").innerHTML=LENSES.map(L=>{
+    const st=lensStats(L);
+    pts+=st.g*2+st.a; max+=st.n*2; rated+=st.n-st.u; if(st.r)anyR=true;
+    const cls=st.u===st.n?"":(st.r?"R":st.a?"A":"G");
+    const word=st.u===st.n?"Not rated":(st.r? st.r+" blocker"+(st.r>1?"s":""):st.a?"Work to do":"Ready");
+    return `<div class="scorebox ${cls}"><div class="lbl">${L}</div><div class="v">${word}</div></div>`;
+  }).join("");
+  const pct=max?Math.round(pts/max*100):0;
+  document.getElementById("gauge").style.width=(rated? pct:0)+"%";
+  const v=document.getElementById("verdict");
+  if(!rated){ v.className="verdict"; v.innerHTML="Rate the nine signals to build the readiness picture."; }
+  else if(anyR){ v.className="verdict bad"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — blockers flagged.</b> Every red is a conversation to start now, during the build — not at MVP. Late-stage vetoes and missing owners are the classic killers of good POCs.`; }
+  else if(pct<75){ v.className="verdict mid"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — work to do before MVP.</b> The ambers are your to-do list; none are fatal, all take longer than people expect.${rated<9?" Unrated signals count as zero — the score rises as you ask.":""}`; }
+  else { v.className="verdict good"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — a credible path to run for real.</b> Keep the divergence list honest and get the gate evidence in writing.`; }
+  return {pct,anyR,rated};
+}
+
+function T(k){ return (S.text[k]||"").trim(); }
+function V(k,fb){ const v=T(k); return v? esc(v).replace(/\n/g,"<br>"):`<span class="empty">${fb||"— not captured —"}</span>`; }
+function ragWord(id){ const v=S.rag[id]; return v==="G"?"🟢":v==="A"?"🟡":v==="R"?"🔴":"⚪"; }
+function buildOut(){
+  const sc=renderScore();
+  const gaps=SIGNALS.filter(s=>S.rag[s.id]==="R").map(s=>s.lens+": "+s.name+" — "+s.r);
+  const work=SIGNALS.filter(s=>S.rag[s.id]==="A").map(s=>s.lens+": "+s.name+" — "+s.a);
+  const out=document.getElementById("outCard");
+  out.style.display="block";
+  out.innerHTML=`
+    <h2>Mini Op Model — ${esc(T("workflow")||"workflow")}</h2>
+    <p class="hint">${esc(T("client")||"Client")} · ${esc(T("author")||"")} · readiness ${sc.rated?sc.pct+"% ("+sc.rated+"/9 signals rated)":"unrated"}</p>
+    <p><b>Scope:</b> ${V("scope")}</p>
+    <h3>Process ${ragWord("p1")}${ragWord("p2")}${ragWord("p3")}</h3>
+    <p><b>Route to run for real:</b> ${V("p_route")}</p>
+    <p><b>Approvers &amp; evidence:</b> ${V("p_gates")}</p>
+    <p><b>Late-veto risk:</b> ${V("p_veto")}</p>
+    <h3>People ${ragWord("pe1")}${ragWord("pe2")}${ragWord("pe3")}</h3>
+    <p><b>Owner:</b> ${V("pe_owner")} · <b>Escalations:</b> ${V("pe_escal")}</p>
+    <p><b>Experts &amp; time:</b> ${V("pe_experts")} · <b>Maintainer:</b> ${V("pe_maintain")}</p>
+    <p><b>Trust / adoption:</b> ${V("pe_adopt")}</p>
+    <h3>Tech ${ragWord("t1")}${ragWord("t2")}${ragWord("t3")}</h3>
+    <p><b>Platform:</b> ${V("t_platform")} · <b>Connects to:</b> ${V("t_systems")}</p>
+    <p><b>Data:</b> ${V("t_data")}</p>
+    <p><b>POC vs production divergence:</b> ${V("t_diverge")}</p>
+    ${gaps.length?`<h3>Blockers — start these conversations now</h3><ul>${gaps.map(g=>`<li>🔴 ${g}</li>`).join("")}</ul>`:""}
+    ${work.length?`<h3>Work before MVP</h3><ul>${work.map(g=>`<li>🟡 ${g}</li>`).join("")}</ul>`:""}
+    <p class="hint" style="margin-top:12px">Present alongside the POC readout and the value case: the POC proves the workflow; this proves the path.</p>`;
+  out.scrollIntoView({behavior:"smooth"});
+}
+function copyOut(){ buildOut(); copyText(document.getElementById("outCard").innerText,"Op model copied."); }
+function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
+function resetAll(){ if(!confirm("Clear everything and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
+
+function bind(){
+  document.querySelectorAll("[data-k]").forEach(el=>{
+    const k=el.dataset.k; el.value=S.text[k]||""; el.oninput=()=>{S.text[k]=el.value;save();};
+  });
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=(T("workflow")||"workflow").replace(/\s+/g,"-").toLowerCase()+"-op-model.json"; a.click();
+}
+function importJSON(inp){
+  const f=inp.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.text=S.text||{};S.rag=S.rag||{}; save(); bind(); renderRags(); renderScore(); }catch(e){ alert("Could not read that file."); } };
+  r.readAsText(f);
+}
+bind(); renderRags(); renderScore();
+</script>
+</body>
+</html>
