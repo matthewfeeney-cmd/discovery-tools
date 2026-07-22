@@ -6,7 +6,7 @@ Three lightweight, single-file tools that support the **Assess** phase of the En
 
 | # | Tool | Offering stage | Fill-in time | Output |
 |---|------|----------------|--------------|--------|
-| 1 | **Use Case Discovery Screen** (`tools/discovery-screen.html`) | Assess · Prioritise (light) | ~15 min per candidate workflow | Value /8 + AI-readiness /8 (data · tech · skills), indicative £ at stake, build-vs-buy call, verdict per candidate, **ranked backlog** (copy/paste text) |
+| 1 | **Use Case Discovery Screen** (`tools/discovery-screen.html`) | Assess · Prioritise (light) | ~20 min per candidate workflow | Value /8 + AI-readiness /24 across four scored dimensions (fit · data · tech · skills, 3 checks each), indicative £ at stake, build-vs-buy call, verdict per candidate naming the weakest dimension, **ranked backlog** (copy/paste text) |
 | 2 | **Value Assessment Tool** (`tools/value-assessment.html`) | Assess · Validate + Build | ~30–45 min with the workflow owner + finance | £ value case: baseline → PEV → REV (adoption × effectiveness × integration) → costs → benefit:cost, payback, steady-state net → **go / adjust / stop** |
 | 3 | **Mini Op Model** (`tools/mini-op-model.html`) | Assess + Build (one workflow) | ~30 min across 2–3 short conversations | Process · people · tech readiness %, blocker list, **one-page op model** |
 
@@ -61,6 +61,7 @@ Each tool is fully self-contained (HTML + CSS + JS in one file, no external requ
 
 ## Status / changelog
 
+- **v0.3** — AI-readiness made robust: four dimensions (fit · data · tech · skills) × three checks each, scored /24 with per-dimension sub-scores; verdicts now name the weakest dimension to fix; ranking weights value and readiness evenly; v0.2 sessions migrate automatically.
 - **v0.2** — Discovery Screen restructured to the service offering (value × AI-readiness with data/tech/skills, £ sizing, build-vs-buy). Stress-test fixes: slider defaults now register (REV no longer £0 untouched), contingency label matches maths, benefit:cost labelling, steady-state net (yr 2+), print auto-generates outputs, partial-score caveats, New client reset, safer delete/copy.
 - **v0.1** — initial three tools, decoupled from an earlier combined workbook prototype.
 
