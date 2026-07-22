@@ -42,6 +42,14 @@
   .opt.s1.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
   .opt.s2.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
   .opt.n.sel{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);font-weight:700}
+  .dim{border:1px solid var(--line);border-radius:10px;padding:4px 16px 8px;margin:12px 0}
+  .dim-head{display:flex;align-items:center;gap:10px;padding:10px 0 2px}
+  .dim-head h3{font-size:13.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--red)}
+  .dim-head .sub{font-size:12px;color:var(--grey);font-weight:400}
+  .dim-head .dscore{margin-left:auto;font-size:12px;font-weight:800;border-radius:12px;padding:2px 10px;background:#f0f0f0;color:var(--grey)}
+  .dim-head .dscore.g{background:var(--green-bg);color:var(--green)}
+  .dim-head .dscore.a{background:var(--amber-bg);color:var(--amber)}
+  .dim-head .dscore.r{background:var(--red-bg);color:var(--red)}
   .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
   .scorebox{flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center}
   .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
@@ -99,13 +107,13 @@
 
 <div class="card">
   <h2>How this works</h2>
-  <p class="hint" style="margin-bottom:0">Screen each candidate workflow in ~15 minutes with the person who knows it. Eight questions, three answers each — pick the closest; if you can't answer, pick the left option (an unknown is a finding). You get a <b>Value</b> score, an <b>AI-readiness</b> score (data · tech · skills), an indicative £ at stake, a build-vs-buy call and a ranked backlog — the shortlist that feeds Build. This is the light screen, not a full assessment: deep-dive the winners with the Value Assessment and Mini Op Model.</p>
+  <p class="hint" style="margin-bottom:0">Screen each candidate workflow in ~20 minutes with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b> — three answers each, pick the closest. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog — the shortlist that feeds Build. This is the light screen, not a full assessment: deep-dive the winners with the Value Assessment and Mini Op Model.</p>
 </div>
 
 <div class="card">
   <h2>Candidates <span class="hint" style="display:inline">— click a row to edit, scores update live</span></h2>
   <table>
-    <thead><tr><th>#</th><th>Workflow</th><th>Value /8</th><th>Readiness /8</th><th>£ at stake /yr</th><th>Buy / build</th><th>Verdict</th><th style="width:30px"></th></tr></thead>
+    <thead><tr><th>#</th><th>Workflow</th><th>Value /8</th><th>Readiness /24</th><th>£ at stake /yr</th><th>Buy / build</th><th>Verdict</th><th style="width:30px"></th></tr></thead>
     <tbody id="candRows"></tbody>
   </table>
   <button onclick="addCand()">+ Add candidate</button>
@@ -132,7 +140,7 @@
     <div style="margin-top:8px">Indicative time at stake: <span class="out" id="sizeOut">—</span></div>
   </div>
 
-  <h2 style="margin-top:18px;color:var(--red);font-size:14px">AI-READINESS — data · tech · skills</h2>
+  <h2 style="margin-top:18px;color:var(--red);font-size:14px">AI-READINESS — fit · data · tech · skills</h2>
   <div id="easeQs"></div>
 
   <label style="margin-top:14px">Build vs buy — first instinct <small>(is this a solved problem or something unique to this client?)</small></label>
@@ -142,7 +150,7 @@
     <div class="scorebox"><div class="lbl">Value</div><div class="v" id="sVal">–</div></div>
     <div class="scorebox"><div class="lbl">AI-readiness</div><div class="v" id="sEase">–</div></div>
     <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v" id="sMoney">–</div></div>
-    <div class="scorebox"><div class="lbl">Answered</div><div class="v" id="sDone">0/8</div></div>
+    <div class="scorebox"><div class="lbl">Answered</div><div class="v" id="sDone">0/16</div></div>
   </div>
   <div class="verdict" id="candVerdict"></div>
   <label>Notes — blockers, a keen sponsor, a better neighbouring task, why you'd override the verdict</label>
@@ -151,7 +159,7 @@
 
 <div class="card">
   <h2>Value × AI-readiness matrix</h2>
-  <p class="hint">Candidates appear once all eight questions are answered.</p>
+  <p class="hint">Candidates appear once all sixteen questions are answered.</p>
   <div class="matrix" id="matrix">
     <div class="grid"></div>
     <div class="axis" style="bottom:-26px;left:50%;transform:translateX(-50%)">AI-readiness →</div>
@@ -168,7 +176,7 @@
 
 <script>
 "use strict";
-/* 8 questions, each scored 0/1/2. Left option = 0 (weakest). */
+/* Each question scored 0/1/2. Left option = 0 (weakest). */
 const VAL_QS = [
  {k:"time", t:"How much time does this task eat?",
   h:"Roughly — people × hours. The sinks are where the value is.",
@@ -183,19 +191,50 @@ const VAL_QS = [
   h:"Volume, time per case, cost — measured, not remembered.",
   o:["No — nobody tracks it","Rough numbers exist","Measured and vouched for"]}
 ];
+
+const DIMS = [
+ {id:"fit", name:"Fit", sub:"is this the kind of work AI does well?"},
+ {id:"data", name:"Data", sub:"will the data feed it?"},
+ {id:"tech", name:"Tech", sub:"can it run in their world?"},
+ {id:"skills", name:"Skills", sub:"will the people make it work?"}
+];
 const EASE_QS = [
- {k:"nature", short:"fit", t:"Use case fit — what kind of work is it?",
+ {k:"fit_nature", dim:"fit", t:"What kind of work is it?",
   h:"Repetitive judgement on digital information suits AI; physical or relationship work doesn't.",
   o:["Mostly physical / relationship","Mixed","Mostly repetitive judgement"]},
- {k:"data", short:"data", t:"Data — can we reach what it needs, and is it good enough?",
-  h:"Ask the person who'd grant access, not the enthusiast. Where does it live, who owns it, is it usable?",
-  o:["Locked away or poor quality","Reachable with some work","Accessible and good enough"]},
- {k:"tech", short:"tech", t:"Tech — can we plug into the systems it touches?",
+ {k:"fit_error", dim:"fit", t:"What happens if the AI gets one wrong?",
+  h:"AI is never 100% — someone must be able to catch a mistake before it costs.",
+  o:["Serious harm, hard to catch","Caught eventually, some cost","A person checks before anything counts"]},
+ {k:"fit_precedent", dim:"fit", t:"Has this kind of task been done with AI before?",
+  h:"Triage, drafting, extraction, summarising are proven patterns; genuinely novel = riskier.",
+  o:["Novel — never seen it done","Similar things exist","Proven pattern — tools and case studies exist"]},
+ {k:"data_access", dim:"data", t:"Can we actually get the data it needs?",
+  h:"Ask the person who'd grant access, not the enthusiast. Where does it live, who owns it?",
+  o:["Locked away / ownership unclear","Reachable with some work","Accessible — the owner would say yes"]},
+ {k:"data_quality", dim:"data", t:"Is the data good and complete enough?",
+  h:"Messy, missing or contradictory data is the number-one POC killer.",
+  o:["Poor / big gaps","Usable with cleanup","Good — people trust it today"]},
+ {k:"data_examples", dim:"data", t:"Are there past examples to learn and test from?",
+  h:"Real handled cases become the test set that proves the AI works — no examples, no proof.",
+  o:["Few or none kept","Some, scattered","Plenty — history is kept"]},
+ {k:"tech_integration", dim:"tech", t:"Can we plug into the systems it touches?",
   h:"Modern systems with APIs, or locked-down legacy nobody can integrate with?",
   o:["Legacy / no way in","Partly — some systems open","Modern, connectable systems"]},
- {k:"skills", short:"skills", t:"Skills — is there appetite and ability in the team?",
-  h:"Someone who'd use it daily, champion it, and could learn to check it — not just enthusiasm from above.",
-  o:["Resistant or no capacity","Willing, would need support","Keen, capable, a likely champion"]}
+ {k:"tech_platform", dim:"tech", t:"Is there somewhere approved for AI to run?",
+  h:"An approved cloud or AI service — or would this be the first AI thing they've ever hosted?",
+  o:["No — this would be the first","Cloud exists, AI not yet approved","Yes — an approved route exists"]},
+ {k:"tech_security", dim:"tech", t:"Do security or regulation get in the way?",
+  h:"Personal or sensitive data, regulated decisions, data that can't leave the building.",
+  o:["Hard blockers likely","Constraints, but manageable","No obvious barriers"]},
+ {k:"skills_champion", dim:"skills", t:"Is there appetite in the team doing the work?",
+  h:"Someone who'd use it daily and champion it — not just enthusiasm from above.",
+  o:["Resistant or no capacity","Willing, would need support","Keen — a likely champion"]},
+ {k:"skills_expert", dim:"skills", t:"Can someone judge whether the AI's output is right?",
+  h:"An expert who can check and correct it — with actual time to do so. The AI learns from them.",
+  o:["No one, or no time","Experts exist, stretched","Expert time available"]},
+ {k:"skills_owner", dim:"skills", t:"Would anyone own it after go-live?",
+  h:"Not the project — the running system: watching it, maintaining it, answering for it.",
+  o:["Nobody identified","A candidate, unconfirmed","A named, willing owner"]}
 ];
 const BVB = [
  {v:"buy", label:"Buy — off-the-shelf tools do this", cls:"n"},
@@ -203,19 +242,32 @@ const BVB = [
  {v:"build", label:"Build — unique to this business", cls:"n"},
  {v:"unknown", label:"Don't know yet", cls:"n"}
 ];
+const TOTAL_QS = VAL_QS.length + EASE_QS.length;
 
-const KEY="discovery-screen-v2";
+const KEY="discovery-screen-v3";
 let S = JSON.parse(localStorage.getItem(KEY)||"{}");
 S.cands = S.cands||[]; S.cur = (typeof S.cur==="number")? S.cur : -1;
+/* migrate v2 (single-question readiness) if present */
+(function(){ if(S.cands.length) return;
+  const old=localStorage.getItem("discovery-screen-v2");
+  if(!old) return;
+  try{ const o=JSON.parse(old);
+    (o.cands||[]).forEach(c=>{ const sc=c.scores||{};
+      const m={nature:"fit_nature",data:"data_access",tech:"tech_integration",skills:"skills_champion"};
+      Object.entries(m).forEach(([ok,nk])=>{ if(sc[ok]!==undefined){ sc[nk]=sc[ok]; delete sc[ok]; } });
+      c.scores=sc; S.cands.push(c); });
+    if(S.cands.length) save();
+  }catch(e){} })();
+
 function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
 function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
 const fmtK = n => !isFinite(n)||n<=0? "—" : n<1000? "<£1k" : n>=1e6? "£"+(n/1e6).toFixed(1)+"m" : "£"+Math.round(n/1000)+"k";
+function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); localStorage.removeItem("discovery-screen-v2"); location.reload(); }
+function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
 
 function blank(){ return {name:"",area:"",desc:"",notes:"",people:"",hours:"",pcost:"",bvb:"",scores:{}}; }
 function addCand(){ S.cands.push(blank()); S.cur=S.cands.length-1; save(); renderAll(); document.getElementById("f_name").focus(); }
 function delCand(i,ev){ ev.stopPropagation(); if(!confirm("Remove this candidate?"))return; S.cands.splice(i,1); if(i<S.cur)S.cur--; else if(i===S.cur)S.cur=-1; if(S.cur>=S.cands.length)S.cur=S.cands.length-1; save(); renderAll(); }
-function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
-function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
 function selCand(i){ S.cur=i; save(); renderAll(); }
 function cur(){ return S.cands[S.cur]; }
 function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderRows(); renderMatrix(); renderSizer();
@@ -229,12 +281,26 @@ function moneyOf(c){
   return p*h*52*(cost/1820);
 }
 function scoreOf(c, qs){ let s=0,n=0; qs.forEach(q=>{ const v=c.scores[q.k]; if(v!==undefined&&v!==null){s+=v;n++;} }); return {s,n}; }
+function dimScore(c, dimId){ return scoreOf(c, EASE_QS.filter(q=>q.dim===dimId)); }
+function weakestDim(c){
+  let worst=null;
+  DIMS.forEach(d=>{ const ds=dimScore(c,d.id); if(!worst || ds.s<worst.s) worst={...d, s:ds.s}; });
+  return worst;
+}
 function verdictOf(c){
   const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
-  if(v.n+e.n<8) return {cls:"b",label:"Incomplete",head:"Keep going — "+(8-v.n-e.n)+" question(s) left",body:"Answer all eight for a verdict. Unknowns score 0 — that's a finding, not a failure."};
-  const hv=v.s>=5, he=e.s>=5;
-  if(hv&&he) return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",body:"Take it forward: size the £ properly with the Value Assessment, shape the path with the Mini Op Model. Strong prototype candidate."};
-  if(hv&&!he) return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",body:"Don't build yet. The lowest-scoring readiness answer (data, tech or skills) is the thing to fix — or narrow the task to a slice that avoids it, then re-score."};
+  if(v.n+e.n<TOTAL_QS) return {cls:"b",label:"Incomplete",head:"Keep going — "+(TOTAL_QS-v.n-e.n)+" question(s) left",body:"Answer all sixteen for a verdict. Unknowns score 0 — that's a finding, not a failure."};
+  const hv=v.s>=5, he=e.s>=15;
+  if(hv&&he){
+    const w=weakestDim(c);
+    return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",
+      body:"Take it forward: size the £ properly with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${w.s}/6) — it's the soft spot to design around.`:" Strong prototype candidate.")};
+  }
+  if(hv&&!he){
+    const w=weakestDim(c);
+    return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",
+      body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${w.s}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`};
+  }
   if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-sink isn't one step over in the process."};
   return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Decline politely, record why, and point at the better candidate if you saw one."};
 }
@@ -255,7 +321,7 @@ function renderRows(){
 }
 function rankOrder(){
   return S.cands.map((c,i)=>({c,i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
-    .sort((a,b)=>((b.v.s+b.e.s)-(a.v.s+a.e.s)) || (moneyOf(b.c)-moneyOf(a.c)));
+    .sort((a,b)=>((b.v.s*3+b.e.s)-(a.v.s*3+a.e.s)) || (moneyOf(b.c)-moneyOf(a.c)));
 }
 function rankOf(i){ return rankOrder().findIndex(x=>x.i===i)+1; }
 
@@ -265,6 +331,7 @@ function qHTML(q){
     ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}
   </div></div>`;
 }
+function dimCls(s,n){ return n===0? "" : s>=5? "g" : s>=3? "a" : "r"; }
 function renderSizer(){
   const m=cur()? moneyOf(cur()):0;
   const c=cur()||{};
@@ -280,12 +347,18 @@ function renderForm(){
   document.getElementById("formTitle").textContent=c.name||"Candidate";
   ["name","area","desc","notes","people","hours","pcost"].forEach(k=>{ document.getElementById("f_"+k).value=c[k]||""; });
   document.getElementById("valQs").innerHTML=VAL_QS.map(qHTML).join("");
-  document.getElementById("easeQs").innerHTML=EASE_QS.map(qHTML).join("");
+  document.getElementById("easeQs").innerHTML=DIMS.map(d=>{
+    const ds=dimScore(c,d.id);
+    return `<div class="dim">
+      <div class="dim-head"><h3>${d.name}</h3><span class="sub">${d.sub}</span><span class="dscore ${dimCls(ds.s,ds.n)}">${ds.n? ds.s+" / 6":"– / 6"}</span></div>
+      ${EASE_QS.filter(q=>q.dim===d.id).map(qHTML).join("")}
+    </div>`;
+  }).join("");
   document.getElementById("bvb").innerHTML=BVB.map(b=>`<div class="opt ${b.cls} ${c.bvb===b.v?"sel":""}" onclick="setBvb('${b.v}')">${b.label}</div>`).join("");
   const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
   document.getElementById("sVal").textContent=v.n?v.s+" / 8":"–";
-  document.getElementById("sEase").textContent=e.n?e.s+" / 8":"–";
-  document.getElementById("sDone").textContent=(v.n+e.n)+"/8";
+  document.getElementById("sEase").textContent=e.n?e.s+" / 24":"–";
+  document.getElementById("sDone").textContent=(v.n+e.n)+"/"+TOTAL_QS;
   renderSizer();
   const vd=verdictOf(c);
   const box=document.getElementById("candVerdict");
@@ -297,12 +370,12 @@ function renderMatrix(){
   m.querySelectorAll(".dot").forEach(d=>d.remove());
   S.cands.forEach((c,i)=>{
     const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
-    if(v.n+e.n<8) return;
-    const x=e.s/8*100, y=v.s/8*100;
+    if(v.n+e.n<TOTAL_QS) return;
+    const x=e.s/24*100, y=v.s/8*100;
     const d=document.createElement("div");
     d.className="dot"; d.style.left=Math.max(4,Math.min(96,x))+"%"; d.style.bottom=Math.max(4,Math.min(96,y))+"%";
     d.textContent=(c.name||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
-    d.title=c.name+" — Value "+v.s+", Readiness "+e.s;
+    d.title=c.name+" — Value "+v.s+"/8, Readiness "+e.s+"/24";
     d.onclick=()=>selCand(i);
     m.appendChild(d);
   });
@@ -312,8 +385,8 @@ function renderAll(){ renderRows(); renderForm(); renderMatrix(); }
 function copyBacklog(){
   const lines=["Use Case Discovery Screen — ranked backlog",""];
   rankOrder().forEach(({c,v,e,vd},idx)=>{
-    const readiness = EASE_QS.map(q=>{const s=c.scores[q.k];return q.short+" "+(s===undefined?"not scored":s+"/2");}).join(" · ");
-    lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${v.s}/8 · Readiness ${e.s}/8 (${readiness}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
+    const dims = DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n? ds.s+"/6":"not scored");}).join(" · ");
+    lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${v.s}/8 · Readiness ${e.s}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
     if(c.desc)lines.push(`   ${c.desc}`);
     if(c.notes)lines.push(`   Notes: ${c.notes}`);
   });
@@ -329,9 +402,6 @@ function importJSON(inp){
   r.onload=()=>{ try{ S=JSON.parse(r.result); S.cands=S.cands||[]; save(); renderAll(); }catch(e){ alert("Could not read that file."); } };
   r.readAsText(f);
 }
-// migrate v1 data if present
-(function(){ const old=localStorage.getItem("discovery-screen-v1");
-  if(old && !S.cands.length){ try{ const o=JSON.parse(old); (o.cands||[]).forEach(c=>{ c.people=c.people||""; c.hours=c.hours||""; c.pcost=c.pcost||""; c.bvb=c.bvb||""; S.cands.push(c); }); save(); }catch(e){} } })();
 renderAll();
 </script>
 </body>
