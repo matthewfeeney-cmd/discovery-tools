@@ -35,6 +35,7 @@
   .q{margin:14px 0;padding-bottom:12px;border-bottom:1px dashed var(--line)}
   .q:last-child{border-bottom:none}
   .q .qt{font-weight:600;font-size:13.5px;margin-bottom:2px}
+  .q .qhead{display:flex;align-items:center;gap:8px}
   .q .qh{font-size:12px;color:var(--grey);margin-bottom:6px}
   .opts{display:flex;gap:6px;flex-wrap:wrap}
   .opt{flex:1;min-width:130px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;cursor:pointer;background:#fff;color:var(--grey);text-align:center}
@@ -42,6 +43,9 @@
   .opt.s1.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
   .opt.s2.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
   .opt.n.sel{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);font-weight:700}
+  .sub{margin:10px 0 10px 8px;padding:8px 0 8px 12px;border-left:3px solid #dbe9f2}
+  .sub .st{font-size:12.5px;font-weight:600;margin-bottom:5px}
+  .sub .opt{min-width:105px;font-size:12px;padding:6px 8px}
   .evrow{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}
   .evrow input{flex:1;min-width:220px;font-size:12.5px;padding:5px 8px}
   .evc{border:1px solid var(--line);border-radius:12px;padding:3px 10px;font-size:11px;cursor:pointer;color:var(--grey);background:#fff}
@@ -55,11 +59,12 @@
   .dim{border:1px solid var(--line);border-radius:10px;padding:4px 16px 8px;margin:12px 0}
   .dim-head{display:flex;align-items:center;gap:10px;padding:10px 0 2px}
   .dim-head h3{font-size:13.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--red)}
-  .dim-head .sub{font-size:12px;color:var(--grey);font-weight:400}
-  .dim-head .dscore{margin-left:auto;font-size:12px;font-weight:800;border-radius:12px;padding:2px 10px;background:#f0f0f0;color:var(--grey)}
-  .dim-head .dscore.g{background:var(--green-bg);color:var(--green)}
-  .dim-head .dscore.a{background:var(--amber-bg);color:var(--amber)}
-  .dim-head .dscore.r{background:var(--red-bg);color:var(--red)}
+  .dim-head .sub2{font-size:12px;color:var(--grey);font-weight:400}
+  .dscore{font-size:12px;font-weight:800;border-radius:12px;padding:2px 10px;background:#f0f0f0;color:var(--grey)}
+  .dscore.g{background:var(--green-bg);color:var(--green)}
+  .dscore.a{background:var(--amber-bg);color:var(--amber)}
+  .dscore.r{background:var(--red-bg);color:var(--red)}
+  .dim-head .dscore{margin-left:auto}
   .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
   .scorebox{flex:1;min-width:130px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center}
   .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
@@ -124,7 +129,7 @@
   <p class="hint">Screen each candidate workflow with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b>. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog. Deep-dive the winners with the Value Assessment and Mini Op Model, and bring the top ones to life with quick prototypes on example cases.</p>
   <div class="modechips">
     <div class="modechip" id="mode_light" onclick="setMode('light')">Light screen — ~20 min per candidate</div>
-    <div class="modechip" id="mode_deep" onclick="setMode('deep')">Deep dive — a week's Prioritise, evidence-backed</div>
+    <div class="modechip" id="mode_deep" onclick="setMode('deep')">Deep dive — a week's Prioritise, measured not guessed</div>
   </div>
   <p class="hint" id="modeHint" style="margin:8px 0 0"></p>
 </div>
@@ -164,10 +169,10 @@
   <textarea id="f_desc" oninput="upd('desc',this.value)" placeholder="e.g. Customer service (8 people) triage ~200 emails/day by hand; AI would draft the triage and response for a person to approve"></textarea>
 
   <div class="deep-only" id="stepsBlock">
-    <h2 style="margin-top:18px;color:var(--red);font-size:14px">STEP MAP — where does the time actually go? <span class="deepbadge">DEEP</span></h2>
-    <p class="hint">Sketch the workflow's 4–8 steps with the person who does it. Mark how much time each eats and which steps the AI would take on. If a heavy step isn't covered, the better use case may be hiding there.</p>
+    <h2 style="margin-top:18px;color:var(--red);font-size:14px">STEP MAP — what share of the work would the AI actually touch? <span class="deepbadge">DEEP</span></h2>
+    <p class="hint">Break the workflow into its 4–8 steps with the person who does it. Give each a rough % of the task's total time and tick the steps the AI would take on. <b>The covered share feeds the £ opportunity below</b> — AI only earns value on the time it touches.</p>
     <table>
-      <thead><tr><th>#</th><th>Step</th><th style="width:22%">Time it eats</th><th style="width:16%">AI covers it?</th><th style="width:30px"></th></tr></thead>
+      <thead><tr><th>#</th><th>Step</th><th style="width:18%">% of task time</th><th style="width:16%">AI covers it?</th><th style="width:30px"></th></tr></thead>
       <tbody id="stepBody"></tbody>
     </table>
     <button class="addrow" onclick="addStep()">+ Add step</button>
@@ -175,6 +180,7 @@
   </div>
 
   <h2 style="margin-top:18px;color:var(--red);font-size:14px">VALUE — is there a business case?</h2>
+  <p class="hint deep-only">Deep mode: each question splits into three narrower checks — facts, not impressions. The question's score is computed from the checks, so one gut-feel tap can't carry it.</p>
   <div id="valQs"></div>
   <div class="sizer">
     <label style="margin-top:0">Rough sizing — best guess <small>(sizing only; the Value Assessment builds the defensible number)</small></label>
@@ -192,12 +198,11 @@
   </div>
 
   <h2 style="margin-top:18px;color:var(--red);font-size:14px">AI-READINESS — fit · data · tech · skills</h2>
-  <p class="hint deep-only">Deep mode: back every answer with evidence — who said it or what you saw — and tag how sure you are. <b>Confirmed</b> = seen or verified · <b>told</b> = someone credible said so · <b>guessed</b> = your read. The backlog reports evidence strength alongside the score.</p>
   <div id="easeQs"></div>
 
   <div class="deep-only" id="probeBlock">
-    <h2 style="margin-top:18px;color:var(--red);font-size:14px">FEASIBILITY PROBE — test it before anyone commits <span class="deepbadge">DEEP</span></h2>
-    <p class="hint">Two hours, no code: name the one thing you're unsure AI can do, collect ~10 real cases (a few typical, a few harder, a couple awkward), paste them into a model playground with a rough brief, and score what comes back. <b>Credible</b> = a knowledgeable person would trust it as a starting point.</p>
+    <h2 style="margin-top:18px;color:var(--red);font-size:14px">FEASIBILITY PROBE — test it, don't assume it <span class="deepbadge">DEEP</span></h2>
+    <p class="hint">Two hours, no code: name the one thing you're unsure AI can do, collect ~10 real cases (a few typical, a few harder, a couple awkward), paste them into a model playground with a rough brief, and score what comes back. <b>Once 5+ cases are scored, the tested result replaces the "has this been done before?" answer in the readiness score</b> — measured beats assumed. <b>Credible</b> = a knowledgeable person would trust it as a starting point.</p>
     <label>The core uncertainty — the one thing that decides feasibility</label>
     <input id="f_probeUnc" onchange="updProbe('unc',this.value)" placeholder="e.g. can it reliably pull the right details out of messy, inconsistent emails?">
     <table>
@@ -260,7 +265,8 @@
 
 <script>
 "use strict";
-/* Each question scored 0/1/2. Left option = 0 (weakest). */
+/* Light: each question scored 0/1/2 with one tap. Deep: each question is computed
+   from three narrower checks (below), scored 0/1/2 each — facts over impressions. */
 const VAL_QS = [
  {k:"time", t:"How much time does this task eat?",
   h:"Roughly people × hours. The big time-eaters are where the value is.",
@@ -319,6 +325,76 @@ const EASE_QS = [
   h:"Not the project — the running system: watching it, maintaining it, answering for it.",
   o:["Nobody identified","A candidate, unconfirmed","A named, willing owner"]}
 ];
+
+/* DEEP: three narrower checks per question. The question's score = average of
+   answered checks — replacing the single-tap guess with computed granularity. */
+const SUBQS = {
+ time:[
+  {k:"time_share", t:"Share of the team's week spent on it", o:["Under 10%","10–30%","Over 30%"]},
+  {k:"time_trend", t:"Is the workload growing?", o:["Shrinking","Flat","Growing — backlog or volume rising"]},
+  {k:"time_peaks", t:"Does it spike and steal time from other work?", o:["Rarely","Sometimes","Constantly firefighting"]}],
+ impact:[
+  {k:"impact_metric", t:"Can the sponsor name the number it moves?", o:["Can't name one","Vaguely — 'efficiency'","Named it: a cost, revenue, CX or risk figure"]},
+  {k:"impact_cfo", t:"Would finance recognise this task as a cost line or lever?", o:["No — invisible to them","Partly","Yes — it's on their radar"]},
+  {k:"impact_external", t:"Who feels it when this is slow or wrong?", o:["Nobody outside the team","Other internal teams","Customers or regulators"]}],
+ volume:[
+  {k:"volume_rate", t:"Cases per week, roughly", o:["Under 10","10–100","Over 100"]},
+  {k:"volume_steady", t:"Is the volume steady enough to plan around?", o:["Wildly variable","Seasonal but predictable","Steady"]},
+  {k:"volume_growth", t:"Where is volume heading?", o:["Falling","Flat","Rising"]}],
+ baseline:[
+  {k:"baseline_vol", t:"Do volume numbers exist?", o:["Nobody counts","Rough counts","System-reported"]},
+  {k:"baseline_time", t:"Is time per case known?", o:["Guesswork","Sampled / estimated","Measured — timesheets or system"]},
+  {k:"baseline_vouch", t:"Would someone in finance or ops vouch for the numbers?", o:["No","Informally","Yes — a named person"]}],
+ fit_nature:[
+  {k:"fn_digital", t:"Are the inputs digital?", o:["Mostly paper / phone / physical","Mixed","Fully digital"]},
+  {k:"fn_explain", t:"Could an experienced person explain how they decide?", o:["Pure gut feel — can't articulate it","Partly","Mostly explainable rules + judgement"]},
+  {k:"fn_relation", t:"How much is negotiation, empathy or relationships?", o:["That's the core of it","Some","Minimal — it's processing work"]}],
+ fit_error:[
+  {k:"fe_cost", t:"Cost of one wrong output", o:["Serious — money, regulatory or customer harm","Moderate, recoverable","Minor"]},
+  {k:"fe_catch", t:"Would an error be spotted before it counts?", o:["Often unnoticed","Eventually","A person reviews before it counts"]},
+  {k:"fe_definable", t:"Could the team write down what a good output looks like?", o:["No — it's taste","Roughly","Yes — clear criteria"]}],
+ fit_precedent:[
+  {k:"fp_named", t:"Named products or case studies doing this task", o:["None found","Adjacent examples","Direct examples, named"]},
+  {k:"fp_pattern", t:"What type of task is it?", o:["Genuinely novel","A variant of a known pattern","Classic pattern — triage, draft, extract, summarise"]},
+  {k:"fp_inhouse", t:"Has anyone inside the company tried AI on anything similar?", o:["No, and nothing near it","Experiments, unclear results","Yes — something adjacent works"]}],
+ data_access:[
+  {k:"da_where", t:"Where does the data live?", o:["Scattered — inboxes, spreadsheets, heads","A few systems","One or two systems"]},
+  {k:"da_asked", t:"Has the actual data owner been asked?", o:["Asked — refused or stalled","Not asked yet","Asked — and agreed"]},
+  {k:"da_thirdparty", t:"Any of it owned by a third party?", o:["The core data is external","Some is","No — all theirs"]}],
+ data_quality:[
+  {k:"dq_complete", t:"Completeness", o:["Big gaps","Patchy in places","Complete enough"]},
+  {k:"dq_consistent", t:"Is the same thing recorded the same way?", o:["Free-text chaos","Semi-structured","Consistent fields"]},
+  {k:"dq_trusted", t:"Would the team trust reports built on this data today?", o:["No","With caveats","Yes"]}],
+ data_examples:[
+  {k:"de_kept", t:"Are past cases kept with their outcomes?", o:["Not kept","Partially","Systematically"]},
+  {k:"de_twenty", t:"Could you assemble 20 real worked examples this week?", o:["No","With effort","Easily"]},
+  {k:"de_reasoning", t:"Do examples show the reasoning, not just the answer?", o:["Outcome only","Sometimes","Usually"]}],
+ tech_integration:[
+  {k:"ti_age", t:"The main system it touches is…", o:["Closed legacy","Mixed estate","Modern, with APIs"]},
+  {k:"ti_before", t:"Has anything been integrated with it before?", o:["Never","Once — painfully","Routinely"]},
+  {k:"ti_control", t:"Who controls integration work?", o:["External vendor — slow or costly","Mixed","In-house team"]}],
+ tech_platform:[
+  {k:"tp_approved", t:"Approved cloud or AI services today", o:["None — this would be the first","Cloud yes, AI not yet","AI route already approved"]},
+  {k:"tp_process", t:"Who approves new tools, and how fast was the last one?", o:["Unknown, or many months","Known, but slow","Known — weeks, not months"]},
+  {k:"tp_sandbox", t:"Is there somewhere safe to run a prototype?", o:["Nowhere","With negotiation","Yes — a sandbox exists"]}],
+ tech_security:[
+  {k:"ts_personal", t:"Does the data include personal or sensitive information?", o:["Regulated / special category","Personal data","None"]},
+  {k:"ts_leave", t:"Can data leave their environment (e.g. to an AI service)?", o:["Prohibited","Restricted — options exist","Yes, or private hosting available"]},
+  {k:"ts_regulated", t:"Is the decision itself regulated — audit or explanation required?", o:["Heavily","Somewhat","No"]}],
+ skills_champion:[
+  {k:"sc_reaction", t:"The team's reaction when AI comes up", o:["Resistance or fear","Curious but wary","Actively asking for it"]},
+  {k:"sc_named", t:"A named person keen to use it daily?", o:["Nobody","Maybe — someone likely","Yes — named and keen"]},
+  {k:"sc_manager", t:"Is the manager making time for it?", o:["No time available","Verbal support only","Time actually committed"]}],
+ skills_expert:[
+  {k:"se_judge", t:"Who can say an output is right or wrong?", o:["Nobody really","One expert — stretched","Several people could"]},
+  {k:"se_hours", t:"Hours per week they could realistically give", o:["None","An hour or two, maybe","Scheduled time agreed"]},
+  {k:"se_written", t:"Is the expertise written down anywhere?", o:["All in people's heads","Partly — some rules exist","Documented — playbooks or rules"]}],
+ skills_owner:[
+  {k:"so_named", t:"Who would own the running system?", o:["Nobody identified","A candidate, unconfirmed","Named and willing"]},
+  {k:"so_ran", t:"Have they run a system like this before?", o:["Never","Adjacent experience","Yes"]},
+  {k:"so_budget", t:"Is there a budget line for running it — licences, upkeep?", o:["None imagined","Would need finding","Exists or plausible"]}]
+};
+const ALL_SUBS = Object.values(SUBQS).flat();
 const BVB = [
  {v:"buy", label:"Buy — off-the-shelf tools do this"},
  {v:"configure", label:"Configure — buy + adapt to us"},
@@ -333,21 +409,10 @@ let S = JSON.parse(localStorage.getItem(KEY)||"{}");
 S.cands = S.cands||[]; S.meta = S.meta||{}; S.interviews = S.interviews||[]; S.mode = S.mode||"light";
 S.cur = (typeof S.cur==="number")? S.cur : -1;
 function updMeta(k,v){ S.meta[k]=v; save(); }
-/* migrate v2 (single-question readiness) if present */
-(function(){ if(S.cands.length) return;
-  const old=localStorage.getItem("discovery-screen-v2");
-  if(!old) return;
-  try{ const o=JSON.parse(old);
-    (o.cands||[]).forEach(c=>{ const sc=c.scores||{};
-      const m={nature:"fit_nature",data:"data_access",tech:"tech_integration",skills:"skills_champion"};
-      Object.entries(m).forEach(([ok,nk])=>{ if(sc[ok]!==undefined){ sc[nk]=sc[ok]; delete sc[ok]; } });
-      c.scores=sc; S.cands.push(c); });
-    if(S.cands.length) save();
-  }catch(e){} })();
-
 function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
 function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
 const fmtK = n => !isFinite(n)||n<=0? "—" : n<1000? "<£1k" : n>=1e6? "£"+(n/1e6).toFixed(1)+"m" : "£"+Math.round(n/1000)+"k";
+const fmtS = v => v===null? "–" : (Math.round(v*10)/10)%1===0? String(Math.round(v)) : (Math.round(v*10)/10).toFixed(1);
 function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); localStorage.removeItem("discovery-screen-v2"); location.reload(); }
 function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
 
@@ -358,17 +423,19 @@ function renderMode(){
   document.getElementById("mode_light").classList.toggle("sel",!deep());
   document.getElementById("mode_deep").classList.toggle("sel",deep());
   document.getElementById("modeHint").textContent = deep()
-    ? "Deep dive adds: evidence + confidence behind every score, a workflow step map, a tested feasibility probe, cross-checked sizing, a build-vs-buy rationale, an interview log and a portfolio view. Light answers carry over — nothing is lost switching."
-    : "Light mode: the ~20-minute screen. Switch to Deep dive when the engagement warrants evidence behind every score.";
+    ? "Deep dive changes how the scores are made: every question is computed from three narrower, factual checks (48 in all); the feasibility probe's tested result replaces the precedent guess; the step map decides how much of the £ the AI can actually touch. Light answers remain as fallback until the checks are answered."
+    : "Light mode: the ~20-minute screen, one tap per question. Switch to Deep dive when the ranking has to survive scrutiny.";
   document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display = deep()? "":"none"; });
   document.getElementById("interviewCard").style.display = deep()? "":"none";
   document.getElementById("portfolioCard").style.display = deep()? "":"none";
 }
 
 /* ---------- candidates ---------- */
-function blank(){ return {name:"",area:"",desc:"",contact:"",notes:"",people:"",hours:"",pcost:"",volume:"",timecase:"",bvb:"",bvbTools:"",bvbEdge:"",bvbInteg:"",bvbSens:"",depends:"",scores:{},ev:{},steps:[],probe:{unc:"",cases:Array.from({length:10},()=>({d:"",r:"",w:""}))}}; }
-function fix(c){ c.ev=c.ev||{}; c.steps=c.steps||[]; c.probe=c.probe||{unc:"",cases:[]};
-  c.probe.cases=c.probe.cases||[]; while(c.probe.cases.length<10)c.probe.cases.push({d:"",r:"",w:""}); return c; }
+function blank(){ return {name:"",area:"",desc:"",contact:"",notes:"",people:"",hours:"",pcost:"",volume:"",timecase:"",bvb:"",bvbTools:"",bvbEdge:"",bvbInteg:"",bvbSens:"",depends:"",scores:{},subs:{},ev:{},steps:[],probe:{unc:"",cases:Array.from({length:10},()=>({d:"",r:"",w:""}))}}; }
+function fix(c){ c.ev=c.ev||{}; c.subs=c.subs||{}; c.steps=c.steps||[]; c.probe=c.probe||{unc:"",cases:[]};
+  c.probe.cases=c.probe.cases||[]; while(c.probe.cases.length<10)c.probe.cases.push({d:"",r:"",w:""});
+  c.steps.forEach(s=>{ if(s.pct===undefined&&s.share) s.pct = s.share==="Heavy"?30:s.share==="Moderate"?15:5; });
+  return c; }
 function addCand(){ S.cands.push(blank()); S.cur=S.cands.length-1; save(); renderAll(); document.getElementById("f_name").focus(); }
 function delCand(i,ev){ ev.stopPropagation(); if(!confirm("Remove this candidate?"))return; S.cands.splice(i,1); if(i<S.cur)S.cur--; else if(i===S.cur)S.cur=-1; if(S.cur>=S.cands.length)S.cur=S.cands.length-1; save(); renderAll(); }
 function selCand(i){ S.cur=i; save(); renderAll(); }
@@ -376,6 +443,7 @@ function cur(){ return S.cur>=0&&S.cands[S.cur]? fix(S.cands[S.cur]) : null; }
 function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderRows(); renderMatrix(); renderSizer(); renderBvbSuggest(); renderPortfolio();
   if(k==="name")document.getElementById("formTitle").textContent=v||"Candidate"; } }
 function setScore(k,v){ if(!cur())return; cur().scores[k] = (cur().scores[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); renderPortfolio(); }
+function setSub(k,v){ const c=cur(); if(!c)return; c.subs[k]=(c.subs[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); renderPortfolio(); }
 function setBvb(v){ if(!cur())return; cur().bvb = (cur().bvb===v? "":v); save(); renderForm(); renderRows(); }
 function setBvbOpt(field,v){ if(!cur())return; cur()[field]=(cur()[field]===v?"":v); save(); renderForm(); }
 function setEv(k,f,v){ const c=cur(); if(!c)return; c.ev[k]=c.ev[k]||{t:"",c:""};
@@ -388,17 +456,35 @@ function moneyOf(c){
   if(!p||!h||!cost) return 0;
   return p*h*52*(cost/1820);
 }
-function scoreOf(c, qs){ let s=0,n=0; qs.forEach(q=>{ const v=c.scores[q.k]; if(v!==undefined&&v!==null){s+=v;n++;} }); return {s,n}; }
+function probeScore(c){ /* tested feasibility, 0/1/2, or null if under-probed */
+  const p=probeOf(c);
+  if(p.scored<5) return null;
+  const r=p.cr/p.scored;
+  return r>=0.7?2 : r>=0.4?1 : 0;
+}
+function parentEff(c,q){ /* effective 0–2 score for a question */
+  fix(c);
+  if(deep()){
+    if(q.k==="fit_precedent"){ const ps=probeScore(c); if(ps!==null) return ps; }
+    const subs=SUBQS[q.k]||[];
+    const vals=subs.map(s=>c.subs[s.k]).filter(v=>v!==undefined&&v!==null);
+    if(vals.length) return vals.reduce((a,b)=>a+b,0)/vals.length;
+  }
+  const v=c.scores[q.k];
+  return (v===undefined||v===null)? null : v;
+}
+function scoreOf(c, qs){ let s=0,n=0; qs.forEach(q=>{ const v=parentEff(c,q); if(v!==null){s+=v;n++;} }); return {s:Math.round(s*10)/10, n}; }
+function subCount(c){ fix(c); return ALL_SUBS.filter(s=>c.subs[s.k]!==undefined&&c.subs[s.k]!==null).length; }
 function dimScore(c, dimId){ return scoreOf(c, EASE_QS.filter(q=>q.dim===dimId)); }
 function weakestDim(c){
   let worst=null;
   DIMS.forEach(d=>{ const ds=dimScore(c,d.id); if(!worst || ds.s<worst.s) worst={...d, s:ds.s}; });
   return worst;
 }
-function evidenceOf(c){ /* % of answered questions backed by confirmed(2)/told(1) */
+function evidenceOf(c){
   fix(c); let pts=0,n=0;
   [...VAL_QS,...EASE_QS].forEach(q=>{
-    if(c.scores[q.k]===undefined||c.scores[q.k]===null) return;
+    if(parentEff(c,q)===null) return;
     n++; const e=c.ev[q.k]||{};
     pts += e.c==="confirmed"?2 : e.c==="told"?1 : 0;
   });
@@ -409,22 +495,36 @@ function probeOf(c){ fix(c);
   const cr=cs.filter(x=>x.r==="credible").length, pa=cs.filter(x=>x.r==="partial").length, wr=cs.filter(x=>x.r==="wrong").length;
   return {cr,pa,wr,scored:cr+pa+wr};
 }
+function coverageOf(c){ /* share of task time the AI touches, from the step map */
+  fix(c);
+  const steps=c.steps.filter(s=>s.name&&parseFloat(s.pct)>0);
+  const tot=steps.reduce((a,s)=>a+parseFloat(s.pct),0);
+  if(!tot) return null;
+  const cov=steps.filter(s=>s.ai).reduce((a,s)=>a+parseFloat(s.pct),0);
+  return cov/tot;
+}
+function opportunityOf(c){ /* {lo,hi,basis} indicative £ range */
+  const m=moneyOf(c); if(!m) return null;
+  const cov=deep()? coverageOf(c):null;
+  if(cov!==null) return {lo:m*cov*0.3, hi:m*cov*0.6, basis:`AI touches ${Math.round(cov*100)}% of task time (step map) × 30–60% efficiency on covered steps`};
+  return {lo:m*0.25, hi:m*0.5, basis:"25–50% capture assumption — map the steps to sharpen this"};
+}
 function demandOf(c,i){ return S.interviews.filter(iv=>iv.cand!==""&&parseInt(iv.cand)===i).length; }
 function verdictOf(c){
   const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
   if(v.n+e.n<TOTAL_QS) return {cls:"b",label:"Incomplete",head:"Keep going — "+(TOTAL_QS-v.n-e.n)+" question(s) left",body:"Answer all sixteen for a verdict. Unknowns score 0 — that's a finding, not a failure."};
   const hv=v.s>=5, he=e.s>=15;
   const p=probeOf(c);
-  const probeNote = deep()? (p.scored>=5? (p.cr>=7?" The probe backs it — "+p.cr+"/"+p.scored+" credible.": p.cr<=3?" ⚠ But the probe struggled ("+p.cr+"/"+p.scored+" credible) — reshape before committing.":" Probe was borderline ("+p.cr+"/"+p.scored+" credible) — read why the failures happened."):" Run the feasibility probe before this goes in front of the client.") : "";
+  const probeNote = deep()? (p.scored>=5? (p.cr>=7?" The probe backs it — "+p.cr+"/"+p.scored+" credible, and that tested result is in the score.": p.cr<=3?" ⚠ The probe struggled ("+p.cr+"/"+p.scored+" credible) — that's already pulling the score down; reshape before committing.":" Probe was borderline ("+p.cr+"/"+p.scored+" credible) — read why the failures happened.") : " Run the feasibility probe before this goes in front of the client — tested beats assumed.") : "";
   if(hv&&he){
     const w=weakestDim(c);
     return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",
-      body:"Take it forward: prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${w.s}/6) — it's the soft spot to design around.`:"")+probeNote};
+      body:"Take it forward: prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${fmtS(w.s)}/6) — it's the soft spot to design around.`:"")+probeNote};
   }
   if(hv&&!he){
     const w=weakestDim(c);
     return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",
-      body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${w.s}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`+probeNote};
+      body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${fmtS(w.s)}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`+probeNote};
   }
   if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-eater isn't one step earlier or later in the process."+probeNote};
   return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Decline politely, record why, and point at the better candidate if you saw one."};
@@ -437,8 +537,8 @@ function renderRows(){
     <tr class="${i===S.cur?"active":""}" onclick="selCand(${i})" style="cursor:pointer">
       <td>${rankOf(i)}</td>
       <td><b>${esc(c.name)||"<span style='color:#aaa'>unnamed</span>"}</b>${c.area?`<br><span style="font-size:11.5px;color:var(--grey)">${esc(c.area)}</span>`:""}</td>
-      <td>${v.n?v.s:"–"}</td>
-      <td>${e.n?e.s:"–"}${deep()&&evidenceOf(c)!==null?`<br><span style="font-size:11px;color:var(--grey)">${evidenceOf(c)}% evidenced</span>`:""}</td>
+      <td>${v.n?fmtS(v.s):"–"}</td>
+      <td>${e.n?fmtS(e.s):"–"}${deep()?`<br><span style="font-size:11px;color:var(--grey)">${subCount(c)}/48 checks${evidenceOf(c)!==null?" · "+evidenceOf(c)+"% evidenced":""}</span>`:""}</td>
       <td>${fmtK(moneyOf(c))}</td>
       <td>${c.bvb? BVB_SHORT[c.bvb]:"–"}</td>
       <td><span class="pill ${vd.cls}">${vd.label}</span></td>
@@ -455,15 +555,40 @@ function rankOf(i){ return rankOrder().findIndex(x=>x.i===i)+1; }
 function evHTML(k){
   const c=cur(); const e=(c.ev||{})[k]||{};
   return `<div class="evrow">
-    <input placeholder="Evidence — who said it / what you saw" value="${esc(e.t||"")}" onchange="setEv('${k}','t',this.value)">
+    <input placeholder="Source — who said it / what you saw" value="${esc(e.t||"")}" onchange="setEv('${k}','t',this.value)">
     ${["confirmed","told","guessed"].map(x=>`<div class="evc ${x} ${e.c===x?"sel":""}" onclick="setEv('${k}','c','${x}')">${x}</div>`).join("")}
   </div>`;
 }
+function effChip(v){ if(v===null) return `<span class="dscore">– / 2</span>`;
+  const cls=v>=1.5?"g":v>=0.75?"a":"r"; return `<span class="dscore ${cls}">${fmtS(v)} / 2</span>`; }
 function qHTML(q){
-  const v = cur()? cur().scores[q.k] : undefined;
-  return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
-    ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}
-  </div>${deep()? evHTML(q.k):""}</div>`;
+  const c=cur();
+  if(!deep()){
+    const v = c? c.scores[q.k] : undefined;
+    return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
+      ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}
+    </div></div>`;
+  }
+  /* deep: the question is computed from its checks */
+  const eff=parentEff(c,q);
+  const subs=SUBQS[q.k]||[];
+  const answered=subs.filter(s=>c.subs[s.k]!==undefined&&c.subs[s.k]!==null).length;
+  const probed = q.k==="fit_precedent" && probeScore(c)!==null;
+  let srcNote="";
+  if(probed) srcNote=`<div class="infoline" style="margin:6px 0">Score set by the feasibility probe: <b>${probeOf(c).cr}/${probeOf(c).scored} credible → ${fmtS(parentEff(c,q))}/2</b>. Tested beats assumed — the checks below are for the record.</div>`;
+  else if(!answered && c.scores[q.k]!==undefined && c.scores[q.k]!==null) srcNote=`<div class="qh" style="margin:4px 0">Using your light answer (${c.scores[q.k]}/2) until the checks below are answered.</div>`;
+  return `<div class="q">
+    <div class="qhead"><div class="qt">${q.t}</div>${effChip(eff)}</div>
+    <div class="qh">${q.h}</div>
+    ${srcNote}
+    ${subs.map(s=>{
+      const v=c.subs[s.k];
+      return `<div class="sub"><div class="st">${s.t}</div><div class="opts">
+        ${s.o.map((o,i)=>`<div class="opt s${i} ${v===i?"sel":""}" onclick="setSub('${s.k}',${i})">${o}</div>`).join("")}
+      </div></div>`;
+    }).join("")}
+    ${evHTML(q.k)}
+  </div>`;
 }
 function dimCls(s,n){ return n===0? "" : s>=5? "g" : s>=3? "a" : "r"; }
 function renderSizer(){
@@ -481,29 +606,36 @@ function renderSizer(){
     if(ratio>2||ratio<0.5) html+=`<div class="flagline">⚠ Your two estimates disagree — ${Math.round(fteHrs).toLocaleString()} hrs/yr (people × time) vs ${Math.round(caseHrs).toLocaleString()} hrs/yr (cases × time per case). Reconcile with the team before this number is quoted.</div>`;
     else html+=`<div class="infoline">Cross-check holds: ${Math.round(fteHrs).toLocaleString()} vs ${Math.round(caseHrs).toLocaleString()} hrs/yr — the two estimates agree within 2×. Quote with confidence.</div>`;
   }
-  if(m) html+=`<div class="infoline">Indicative opportunity: <b>${fmtK(m*0.25)}–${fmtK(m*0.5)}/yr</b> — assumes AI captures 25–50% of the time at stake after adoption. The Value Assessment replaces this with the defensible number.</div>`;
+  const opp=opportunityOf(c);
+  if(opp) html+=`<div class="infoline">Indicative opportunity: <b>${fmtK(opp.lo)}–${fmtK(opp.hi)}/yr</b> — ${opp.basis}. The Value Assessment replaces this with the defensible number.</div>`;
   x.innerHTML=html;
 }
 /* step map */
-function addStep(){ const c=cur(); if(!c)return; c.steps.push({name:"",share:"",ai:false}); save(); renderSteps(); }
-function delStep(i){ const c=cur(); c.steps.splice(i,1); save(); renderSteps(); }
+function addStep(){ const c=cur(); if(!c)return; c.steps.push({name:"",pct:"",ai:false}); save(); renderSteps(); }
+function delStep(i){ const c=cur(); c.steps.splice(i,1); save(); renderSteps(); renderSizer(); }
 function renderSteps(){
   const c=cur(); if(!c||!deep())return;
   document.getElementById("stepBody").innerHTML=c.steps.map((s,i)=>`<tr>
     <td>${i+1}</td>
-    <td><input value="${esc(s.name)}" onchange="cur().steps[${i}].name=this.value;save();renderSteps()" placeholder="e.g. read &amp; classify the request"></td>
-    <td><select onchange="cur().steps[${i}].share=this.value;save();renderSteps()"><option></option>${["Light","Moderate","Heavy"].map(o=>`<option ${s.share===o?"selected":""}>${o}</option>`).join("")}</select></td>
-    <td style="text-align:center"><input type="checkbox" style="width:auto" ${s.ai?"checked":""} onchange="cur().steps[${i}].ai=this.checked;save();renderSteps()"></td>
+    <td><input value="${esc(s.name)}" onchange="cur().steps[${i}].name=this.value;save();renderSteps();renderSizer()" placeholder="e.g. read &amp; classify the request"></td>
+    <td><input type="number" min="0" max="100" value="${esc(s.pct)}" onchange="cur().steps[${i}].pct=this.value;save();renderSteps();renderSizer()" placeholder="%"></td>
+    <td style="text-align:center"><input type="checkbox" style="width:auto" ${s.ai?"checked":""} onchange="cur().steps[${i}].ai=this.checked;save();renderSteps();renderSizer()"></td>
     <td><button style="padding:2px 8px" onclick="delStep(${i})">✕</button></td></tr>`).join("");
-  const missed=c.steps.filter(s=>s.share==="Heavy"&&!s.ai&&s.name);
-  document.getElementById("stepFlag").innerHTML = missed.length?
-    `<div class="flagline">⚠ Heavy step${missed.length>1?"s":""} not covered by the AI: <b>${missed.map(s=>esc(s.name)).join(", ")}</b> — the bigger opportunity may be there. Consider reshaping the use case or adding a candidate.</div>` : "";
+  const named=c.steps.filter(s=>s.name&&parseFloat(s.pct)>0);
+  const tot=named.reduce((a,s)=>a+parseFloat(s.pct),0);
+  const cov=coverageOf(c);
+  const missed=named.filter(s=>parseFloat(s.pct)>=25&&!s.ai);
+  let html="";
+  if(tot>0&&Math.abs(tot-100)>15) html+=`<div class="flagline">⚠ Step times add to ${Math.round(tot)}% — aim for roughly 100% so the covered share means something.</div>`;
+  if(cov!==null) html+=`<div class="infoline">The AI touches <b>${Math.round(cov*100)}%</b> of the task's time — this drives the £ opportunity in the sizing box.</div>`;
+  if(missed.length) html+=`<div class="flagline">⚠ Heavy step${missed.length>1?"s":""} not covered: <b>${missed.map(s=>esc(s.name)).join(", ")}</b> — the bigger opportunity may be there. Reshape the use case or add a candidate.</div>`;
+  document.getElementById("stepFlag").innerHTML=html;
 }
 /* probe */
 function updProbe(f,v){ const c=cur(); if(!c)return; c.probe[f]=v; save(); }
 function setProbeCase(i,f,v){ const c=cur(); if(!c)return;
   if(f==="r") c.probe.cases[i].r=(c.probe.cases[i].r===v?"":v); else c.probe.cases[i][f]=v;
-  save(); renderProbe(); renderForm(); }
+  save(); renderForm(); renderRows(); renderMatrix(); }
 function renderProbe(){
   const c=cur(); if(!c||!deep())return;
   document.getElementById("f_probeUnc").value=c.probe.unc||"";
@@ -514,12 +646,12 @@ function renderProbe(){
       return `<div class="opt ${cls} ${x.r===r?"sel":""}" style="min-width:70px" onclick="setProbeCase(${i},'r','${r}')">${r}</div>`;}).join("")}</div></td>
     <td><input value="${esc(x.w)}" onchange="setProbeCase(${i},'w',this.value)"></td></tr>`).join("");
   const p=probeOf(c), v=document.getElementById("probeVerdict");
-  if(!p.scored){ v.innerHTML=`<div class="infoline">Score at least 5 cases for a probe verdict.</div>`; return; }
+  if(!p.scored){ v.innerHTML=`<div class="infoline">Score at least 5 cases — the tested result then replaces the precedent guess in the readiness score.</div>`; return; }
   let cls,msg;
-  if(p.cr>=7){ cls="infoline"; msg=`<b>${p.cr}/${p.scored} credible — the hard part is tractable.</b> The gap to production closes with better context, guardrails and testing. Strong evidence for the ranking.`; }
-  else if(p.cr>=4){ cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — borderline.</b> Read the failures: missing company context is fixable (feed it more); if it can't reason the task, narrow the scope or keep a person on the hard step.`; }
-  else { cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — not worth building around today.</b> Break the task into a simpler piece and re-probe, or park it. Half a day well spent — that's the point.`; }
-  v.innerHTML=`<div class="${cls}">${msg}${p.scored<5?" <i>(fewer than 5 scored — treat as indicative)</i>":""}</div>`;
+  if(p.cr>=Math.max(7,p.scored*0.7)){ cls="infoline"; msg=`<b>${p.cr}/${p.scored} credible — the hard part is tractable.</b> This tested result now sets the precedent score (${fmtS(probeScore(c)??0)}/2).`; }
+  else if(p.cr/Math.max(p.scored,1)>=0.4){ cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — borderline.</b> Read the failures: missing company context is fixable (feed it more); if it can't reason the task, narrow the scope or keep a person on the hard step. Precedent score set to ${fmtS(probeScore(c)??0)}/2.`; }
+  else { cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — not worth building around today.</b> Break the task into a simpler piece and re-probe, or park it. Precedent score set to ${fmtS(probeScore(c)??0)}/2.`; }
+  v.innerHTML=`<div class="${cls}">${msg}${p.scored<5?" <i>(fewer than 5 scored — not yet counted in the score)</i>":""}</div>`;
 }
 /* build vs buy deep */
 function bvbSuggestion(c){
@@ -575,25 +707,27 @@ function renderPortfolio(){
   const probed=rows.filter(r=>probeOf(r.c).scored>=5).length;
   const evs=rows.map(r=>evidenceOf(r.c)).filter(x=>x!==null);
   const avgEv=evs.length? Math.round(evs.reduce((a,b)=>a+b,0)/evs.length):null;
+  const checks=rows.reduce((a,r)=>a+subCount(r.c),0);
   body.innerHTML=`
     <div class="scorebar">
       <div class="scorebox"><div class="lbl">Candidates</div><div class="v">${S.cands.length}</div></div>
       <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v">${fmtK(totalM)}</div></div>
       <div class="scorebox"><div class="lbl">Do first</div><div class="v">${counts["Do first"]||0}</div></div>
       <div class="scorebox"><div class="lbl">Probed</div><div class="v">${probed}/${scoredCount||0}</div></div>
+      <div class="scorebox"><div class="lbl">Deep checks</div><div class="v">${checks}</div></div>
       <div class="scorebox"><div class="lbl">Avg evidence</div><div class="v">${avgEv!==null?avgEv+"%":"–"}</div></div>
-      <div class="scorebox"><div class="lbl">Interviews</div><div class="v">${S.interviews.length}</div></div>
     </div>
     ${Object.entries(weak).filter(([,n])=>n>=2).map(([d,n])=>`<div class="flagline">⚠ <b>${d}</b> is weak (≤3/6) in ${n} of ${scoredCount} scored candidates — that's a programme-level fix, not a per-workflow one. Raise it once, at the top.</div>`).join("")}
+    ${probed<scoredCount?`<div class="flagline">⚠ ${scoredCount-probed} scored candidate${scoredCount-probed>1?"s":""} not yet probed — their fit scores are still opinion. Probe before the playback.</div>`:""}
     ${avgEv!==null&&avgEv<50?`<div class="flagline">⚠ Average evidence strength is ${avgEv}% — much of this ranking rests on guesses. Confirm the low-evidence answers before the playback.</div>`:""}`;
 }
 
 function renderScoreboxes(){
   const c=cur(); if(!c)return;
   const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
-  document.getElementById("sVal").textContent=v.n?v.s+" / 8":"–";
-  document.getElementById("sEase").textContent=e.n?e.s+" / 24":"–";
-  document.getElementById("sDone").textContent=(v.n+e.n)+"/"+TOTAL_QS;
+  document.getElementById("sVal").textContent=v.n?fmtS(v.s)+" / 8":"–";
+  document.getElementById("sEase").textContent=e.n?fmtS(e.s)+" / 24":"–";
+  document.getElementById("sDone").innerHTML=(v.n+e.n)+"/"+TOTAL_QS+(deep()?`<small> · ${subCount(c)}/48 checks</small>`:"");
   const ev=evidenceOf(c);
   document.getElementById("sEv").textContent = ev!==null? ev+"%":"–";
 }
@@ -608,7 +742,7 @@ function renderForm(){
   document.getElementById("easeQs").innerHTML=DIMS.map(d=>{
     const ds=dimScore(c,d.id);
     return `<div class="dim">
-      <div class="dim-head"><h3>${d.name}</h3><span class="sub">${d.sub}</span><span class="dscore ${dimCls(ds.s,ds.n)}">${ds.n? ds.s+" / 6":"– / 6"}</span></div>
+      <div class="dim-head"><h3>${d.name}</h3><span class="sub2">${d.sub}</span><span class="dscore ${dimCls(ds.s,ds.n)}">${ds.n? fmtS(ds.s)+" / 6":"– / 6"}</span></div>
       ${EASE_QS.filter(q=>q.dim===d.id).map(qHTML).join("")}
     </div>`;
   }).join("");
@@ -630,7 +764,7 @@ function renderMatrix(){
     const d=document.createElement("div");
     d.className="dot"; d.style.left=Math.max(4,Math.min(96,x))+"%"; d.style.bottom=Math.max(4,Math.min(96,y))+"%";
     d.textContent=(c.name||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
-    d.title=c.name+" — Value "+v.s+"/8, Readiness "+e.s+"/24";
+    d.title=c.name+" — Value "+fmtS(v.s)+"/8, Readiness "+fmtS(e.s)+"/24";
     d.onclick=()=>selCand(i);
     m.appendChild(d);
   });
@@ -645,17 +779,18 @@ function copyBacklog(){
   const lines=["Use Case Discovery Screen — ranked backlog"+(deep()?" (deep dive)":"")]; if(hdr)lines.push(hdr); lines.push("");
   const rows=rankOrder();
   rows.forEach(({c,i,v,e,vd},idx)=>{
-    const dims = DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n? ds.s+"/6":"not scored");}).join(" · ");
-    lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${v.s}/8 · Readiness ${e.s}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
+    const dims = DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n? fmtS(ds.s)+"/6":"not scored");}).join(" · ");
+    lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${fmtS(v.s)}/8 · Readiness ${fmtS(e.s)}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
     if(c.desc)lines.push(`   ${c.desc}`);
     if(deep()){
-      const ev=evidenceOf(c); const p=probeOf(c); const dm=demandOf(c,i);
-      const bits=[];
+      const ev=evidenceOf(c); const p=probeOf(c); const dm=demandOf(c,i); const cov=coverageOf(c); const opp=opportunityOf(c);
+      const bits=[`${subCount(c)}/48 deep checks`];
       if(ev!==null)bits.push(`evidence ${ev}% confirmed`);
-      bits.push(p.scored>=5? `probe ${p.cr}/${p.scored} credible` : "not probed");
+      bits.push(p.scored>=5? `probe ${p.cr}/${p.scored} credible (in the score)` : "not probed — fit is still opinion");
+      if(cov!==null)bits.push(`AI touches ${Math.round(cov*100)}% of task time`);
       if(dm)bits.push(`${dm} interview${dm>1?"s":""} raised it`);
-      if(moneyOf(c))bits.push(`indicative opportunity ${fmtK(moneyOf(c)*0.25)}–${fmtK(moneyOf(c)*0.5)}/yr (25–50% capture assumption)`);
-      lines.push(`   Evidence: ${bits.join(" · ")}`);
+      lines.push(`   Basis: ${bits.join(" · ")}`);
+      if(opp)lines.push(`   Indicative opportunity: ${fmtK(opp.lo)}–${fmtK(opp.hi)}/yr (${opp.basis})`);
       const s=bvbSuggestion(c);
       if(s)lines.push(`   Buy/build rationale: ${s.call} — ${s.why}`);
       if(c.depends)lines.push(`   Depends on: ${c.depends}`);

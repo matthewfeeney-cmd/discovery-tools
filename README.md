@@ -61,9 +61,16 @@ Each tool is fully self-contained (HTML + CSS + JS in one file, no external requ
 
 ## Deep modes — how depth is earned
 
-Both the Discovery Screen and the Mini Op Model have a **light/deep switch**. The principle: depth comes from **evidence, not more opinion questions**. Deep mode never changes the questions — it demands proof behind the answers: who said it, what was tested, what was cross-checked. Light answers carry over when you switch; nothing is lost. Use light on day one, switch to deep when the engagement warrants a defendable output.
+Both the Discovery Screen and the Mini Op Model have a **light/deep switch**. The principle: deep mode changes **how the scores are made**, not how much gets written down.
+
+- **Discovery Screen deep:** each of the 16 questions is computed from three narrower, factual checks (48 in all) — one gut-feel tap can never carry a score. The feasibility probe's tested result (10 real cases in a playground) **replaces** the "has this been done before?" guess in the readiness score. The step map decides what share of the task's time the AI actually touches — and that coverage drives the £ opportunity. Evidence tags per question report how much of the ranking is confirmed vs guessed.
+- **Mini Op Model deep:** the evidence tables (approvals, roles, systems, data sources) **rate the nine signals automatically** — every row you record recalculates readiness. Manual taps override; tapping again hands the rating back to the tables. Every gap compiles into an action list with owners.
+
+Light answers carry over as fallback when you switch; nothing is lost. Use light on day one, deep when the output has to survive scrutiny.
 
 ## Status / changelog
+
+- **v0.6** — deep modes rebuilt for accuracy, not documentation: computed scores from 48 granular checks (Discovery), probe result feeds the score, step-map coverage drives the £ range, and table-derived signal ratings with manual override (Op Model).
 
 - **v0.5** — deep modes. Discovery Screen: evidence + confidence tags on every score (backlog reports "% evidenced"), workflow step map with missed-heavy-step flag, 10-case feasibility probe with verdict, volume×time cross-check on sizing with 25–50% capture range, build-vs-buy rationale with suggested call, interview & pain-point log (demand signal), dependency field, wave plan (Now/Next/Later) and portfolio view with programme-level gap flags. Mini Op Model: approvals map with calendar/late-veto flags, named-roles table with expert-hours reality check, system & data source inventories (sensitivity flagged), POC-vs-production difference log, safeguards register (propose-review-apply default), measurement & trust plan, and an auto-compiled action list where every gap has an owner.
 - **v0.4** — plain-language pass across all three tools (no method acronyms in headings, "fully loaded" and "sinks" explained, FTE spelled out); Discovery Screen adds client/screened-by/date and a per-candidate contact ("who knows this workflow best"), and its backlog now ends with actionable next steps (prototype → value case → op model, early-POC note); Value Assessment adds team/users, relabels headcount equivalent, and the GO verdict states the value case becomes the Build scope; Mini Op Model intro tied to Build's "mini operating model" promise.

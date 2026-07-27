@@ -287,8 +287,8 @@ function renderMode(){
   document.getElementById("mode_light").classList.toggle("sel",!deep());
   document.getElementById("mode_deep").classList.toggle("sel",deep());
   document.getElementById("modeHint").textContent = deep()
-    ? "Deep mode swaps prose for structured tables — an approvals map, named roles, system and data inventories, a POC-vs-production log, a safeguards register and a measurement plan — and compiles every gap into an action list with owners. Light answers are kept."
-    : "Light mode: one pass in ~30 minutes. Switch to Deep when a build is running and the op model needs to survive scrutiny.";
+    ? "Deep mode changes how the readiness score is made: the tables don't sit beside the signals, they RATE them — every gate, role, connection and data source you record recalculates the score automatically. Tap a signal to override; tap again to hand it back to the tables. Every gap compiles into an action list with owners."
+    : "Light mode: one pass in ~30 minutes, signals rated by hand. Switch to Deep when a build is running and the op model needs to survive scrutiny.";
   document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display=deep()?"":"none"; });
   document.querySelectorAll(".light-only").forEach(el=>{ el.style.display=deep()?"none":""; });
 }
@@ -342,9 +342,9 @@ const TABLES={
    <td><input value="${esc(g.trigger)}" onchange="TW('guards',${i},'trigger',this.value)" placeholder="if this, stop and hand to a person"></td>
    <td><button style="padding:2px 8px" onclick="TD('guards',${i})">✕</button></td></tr>`}
 };
-function TW(t,i,f,v){ S[t][i][f]=v; save(); renderTables(); }
-function TD(t,i){ S[t].splice(i,1); save(); renderTables(); }
-function addRow(t){ S[t].push(TABLES[t].blank()); save(); renderTables(); }
+function TW(t,i,f,v){ S[t][i][f]=v; save(); renderTables(); renderRags(); renderScore(); }
+function TD(t,i){ S[t].splice(i,1); save(); renderTables(); renderRags(); renderScore(); }
+function addRow(t){ S[t].push(TABLES[t].blank()); save(); renderTables(); renderRags(); renderScore(); }
 function renderTables(){
   if(!deep())return;
   Object.entries(TABLES).forEach(([t,cfg])=>{
@@ -358,19 +358,66 @@ function renderTables(){
   document.getElementById("guardFlags").innerHTML=wflags.map(f=>`<div class="flagline">${f}</div>`).join("");
 }
 
-/* ---------- signals ---------- */
+/* ---------- signals ----------
+   Deep mode: ratings are DERIVED from the tables — the data you collect
+   recalculates the score. A manual tap overrides; tapping again returns
+   control to the tables. */
+function ratio(arr,pred){ const n=arr.length; if(!n)return null; return arr.filter(pred).length/n; }
+function deriveRag(id){
+  if(!deep()) return null;
+  const gates=S.gates.filter(g=>g.gate), roles=S.roles.filter(r=>r.role),
+        conns=S.conns.filter(c=>c.sys), datas=S.datas.filter(d=>d.src);
+  switch(id){
+    case "p1":{ if(!gates.length)return null; const r=ratio(gates,g=>g.who&&g.evid); return r===1?"G":r>=0.5?"A":"R"; }
+    case "p2":{ if(!gates.length)return null; const r=ratio(gates,g=>!!g.evid); return r===1?"G":r>0?"A":"R"; }
+    case "p3":{ if(!gates.length)return null; const r=ratio(gates,g=>!!g.who); return r===1?"G":r>0?"A":"R"; }
+    case "pe1":{ const o=roles.find(r=>/owner/i.test(r.role)); if(!o||!o.status)return null;
+      return o.status==="Named & willing"?"G":o.status==="Candidate, unconfirmed"?"A":"R"; }
+    case "pe2":{ const ex=roles.filter(r=>/expert/i.test(r.role)); if(!ex.length)return null;
+      if(ex.some(r=>r.person&&parseFloat(r.hrs)>0))return "G";
+      if(ex.some(r=>r.person))return "A"; return "R"; }
+    case "pe3":{ const ops=roles.filter(r=>/(monitor|maintain|escalation)/i.test(r.role)&&r.status);
+      if(!ops.length)return null;
+      const vac=ops.filter(r=>r.status==="Vacant").length;
+      if(vac===ops.length)return "R";
+      if(vac>0)return "A";
+      return ops.every(r=>r.status==="Named & willing")?"G":"A"; }
+    case "t2":{ if(!conns.length)return null;
+      if(conns.some(c=>c.conn==="Missing — no way in yet"))return "R";
+      if(conns.some(c=>c.conn==="Custom — needs building"||!c.conn))return "A";
+      return "G"; }
+    case "t3":{ if(!datas.length)return null;
+      if(datas.some(d=>d.access==="Blocked"||d.quality==="Poor"))return "R";
+      if(datas.some(d=>d.access!=="Granted"||d.quality!=="Good"))return "A";
+      return "G"; }
+  }
+  return null;
+}
+function effRag(id){ return S.rag[id] || deriveRag(id) || ""; }
 function renderRags(){
   SIGNALS.forEach(sig=>{
-    const cur=S.rag[sig.id]||"";
+    const manual=S.rag[sig.id]||"", derived=deriveRag(sig.id), eff=effRag(sig.id);
+    let note="";
+    if(deep()){
+      if(manual&&derived&&manual!==derived) note=`<div class="hint" style="margin:4px 0 0">Manual override — your tables say ${derived==="G"?"green":derived==="A"?"amber":"red"}. Tap the selected option to hand back to the tables.</div>`;
+      else if(!manual&&derived) note=`<div class="hint" style="margin:4px 0 0">Auto-rated from your tables. Tap to override.</div>`;
+      else if(!manual&&!derived&&["p1","p2","p3","pe1","pe2","pe3","t2","t3"].includes(sig.id)) note=`<div class="hint" style="margin:4px 0 0">Fill the table above and this rates itself.</div>`;
+    }
     document.getElementById("rag_"+sig.id).innerHTML=[["G","g",sig.g],["A","a",sig.a],["R","r",sig.r]].map(([v,c,txt])=>
-      `<div class="opt ${c} ${cur===v?"sel":""}" onclick="setRag('${sig.id}','${v}')">${txt}</div>`).join("");
+      `<div class="opt ${c} ${eff===v?"sel":""}" onclick="setRag('${sig.id}','${v}')">${txt}</div>`).join("")+note;
   });
 }
-function setRag(id,v){ S.rag[id]=(S.rag[id]===v?"":v); save(); renderRags(); renderScore(); }
+function setRag(id,v){
+  const derived=deriveRag(id);
+  if(S.rag[id]===v){ S.rag[id]=""; }            /* clear manual → back to auto */
+  else if(!S.rag[id] && derived===v){ /* tapped what auto already says → no-op */ }
+  else S.rag[id]=v;
+  save(); renderRags(); renderScore();
+}
 function lensStats(lens){
   const sigs=SIGNALS.filter(s=>s.lens===lens);
   let g=0,a=0,r=0,u=0;
-  sigs.forEach(s=>{const v=S.rag[s.id]; v==="G"?g++:v==="A"?a++:v==="R"?r++:u++;});
+  sigs.forEach(s=>{const v=effRag(s.id); v==="G"?g++:v==="A"?a++:v==="R"?r++:u++;});
   return {g,a,r,u,n:sigs.length};
 }
 function renderScore(){
@@ -407,14 +454,14 @@ function actionList(){
   S.datas.forEach(d=>{ if(d.src&&(d.sens==="Regulated"||d.sens==="Personal data")) acts.push({who:"security / DPO", what:`Confirm the compliance route for ${d.src} (${d.sens.toLowerCase()})`}); });
   S.divs.forEach(d=>{ if(d.diff&&d.res!=="Resolved") acts.push({who:"build team", what:`Close the POC-vs-production gap: ${d.diff}${d.why?" — matters because "+d.why:""}`}); });
   S.guards.forEach(g=>{ if(g.act&&!g.control) acts.push({who:"build team", what:`Decide who stays in control of "${g.act}" — default is propose-review-apply`}); });
-  SIGNALS.forEach(s=>{ if(S.rag[s.id]==="R") acts.push({who:"engagement lead", what:`Resolve red signal — ${s.lens}: ${s.name} (${s.r})`}); });
+  SIGNALS.forEach(s=>{ if(effRag(s.id)==="R") acts.push({who:"engagement lead", what:`Resolve red signal — ${s.lens}: ${s.name} (${s.r})`}); });
   return acts;
 }
 
 /* ---------- output ---------- */
 function T(k){ return (S.text[k]||"").trim(); }
 function V(k,fb){ const v=T(k); return v? esc(v).replace(/\n/g,"<br>"):`<span class="empty">${fb||"— not captured —"}</span>`; }
-function ragWord(id){ const v=S.rag[id]; return v==="G"?"🟢":v==="A"?"🟡":v==="R"?"🔴":"⚪"; }
+function ragWord(id){ const v=effRag(id); return v==="G"?"🟢":v==="A"?"🟡":v==="R"?"🔴":"⚪"; }
 function tbl(headers,rows){
   if(!rows.length) return `<p class="empty">— none captured —</p>`;
   return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c||"—")}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
@@ -464,9 +511,10 @@ function buildOut(){
     if(gaps.length)deepHtml+=`<h3>Blockers — start these conversations now</h3><ul>${gaps.map(g=>`<li>🔴 ${g}</li>`).join("")}</ul>`;
     if(work.length)deepHtml+=`<h3>Work before MVP</h3><ul>${work.map(g=>`<li>🟡 ${g}</li>`).join("")}</ul>`;
   }
+  const autoN = deep()? SIGNALS.filter(s=>!S.rag[s.id]&&deriveRag(s.id)).length : 0;
   out.innerHTML=`
     <h2>${deep()?"Beyond-POC Blueprint":"Mini Op Model"} — ${esc(T("workflow")||"workflow")}</h2>
-    <p class="hint">${esc(T("client")||"Client")} · ${esc(T("author")||"")} · readiness ${sc.rated?sc.pct+"% ("+sc.rated+"/9 signals rated)":"unrated"}</p>
+    <p class="hint">${esc(T("client")||"Client")} · ${esc(T("author")||"")} · readiness ${sc.rated?sc.pct+"% ("+sc.rated+"/9 signals rated"+(autoN?", "+autoN+" computed from the evidence tables":"")+")":"unrated"}</p>
     <p><b>Scope:</b> ${V("scope")}</p>
     ${deepHtml}
     <p class="hint" style="margin-top:12px">Present alongside the POC readout and the value case: the POC proves the workflow; this proves the path.</p>`;
