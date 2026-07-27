@@ -42,6 +42,16 @@
   .opt.s1.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
   .opt.s2.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
   .opt.n.sel{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);font-weight:700}
+  .evrow{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}
+  .evrow input{flex:1;min-width:220px;font-size:12.5px;padding:5px 8px}
+  .evc{border:1px solid var(--line);border-radius:12px;padding:3px 10px;font-size:11px;cursor:pointer;color:var(--grey);background:#fff}
+  .evc.confirmed.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
+  .evc.told.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
+  .evc.guessed.sel{background:var(--red-bg);border-color:var(--red);color:var(--red);font-weight:700}
+  .modechips{display:flex;gap:8px;margin:10px 0 2px}
+  .modechip{border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-size:13px;cursor:pointer;background:#fff;color:var(--grey);font-weight:600}
+  .modechip.sel{background:var(--red);border-color:var(--red);color:#fff}
+  .deepbadge{font-size:10px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 7px;background:var(--blue-bg);color:var(--blue);vertical-align:middle;margin-left:8px}
   .dim{border:1px solid var(--line);border-radius:10px;padding:4px 16px 8px;margin:12px 0}
   .dim-head{display:flex;align-items:center;gap:10px;padding:10px 0 2px}
   .dim-head h3{font-size:13.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--red)}
@@ -51,7 +61,7 @@
   .dim-head .dscore.a{background:var(--amber-bg);color:var(--amber)}
   .dim-head .dscore.r{background:var(--red-bg);color:var(--red)}
   .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
-  .scorebox{flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center}
+  .scorebox{flex:1;min-width:130px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center}
   .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
   .scorebox .v{font-size:22px;font-weight:800}
   .scorebox .v small{font-size:12px;font-weight:600;color:var(--grey)}
@@ -63,13 +73,16 @@
   .verdict h4{margin-bottom:2px}
   table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
   th{text-align:left;background:#222;color:#fff;padding:7px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
-  td{border:1px solid var(--line);padding:7px 9px;vertical-align:middle}
+  td{border:1px solid var(--line);padding:6px 8px;vertical-align:middle}
+  td input,td select{border:none;padding:4px;background:transparent;font-size:13px}
   tr.active td{background:var(--blue-bg)}
   .pill{display:inline-block;border-radius:12px;padding:2px 10px;font-size:11.5px;font-weight:700}
   .pill.g{background:var(--green-bg);color:var(--green)}
   .pill.a{background:var(--amber-bg);color:var(--amber)}
   .pill.r{background:var(--red-bg);color:var(--red)}
   .pill.b{background:var(--blue-bg);color:var(--blue)}
+  .flagline{background:var(--amber-bg);border-left:4px solid var(--amber);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
+  .infoline{background:var(--blue-bg);border-left:4px solid var(--blue);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
   .matrix{position:relative;width:100%;max-width:440px;aspect-ratio:1;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);margin:26px 10px 34px 44px}
   .matrix .half{position:absolute;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#bbb;font-weight:700}
   .matrix .dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,50%);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer}
@@ -79,6 +92,7 @@
   .matrix .grid:after{content:"";position:absolute;top:50%;left:0;right:0;border-top:1px dashed var(--line)}
   .sizer{background:var(--blue-bg);border:1px solid var(--blue);border-radius:10px;padding:12px 16px;margin:12px 0}
   .sizer .out{font-size:18px;font-weight:800;color:var(--blue)}
+  .addrow{font-size:12.5px;padding:5px 12px;margin-top:4px}
   .save-note{font-size:12px;color:var(--grey)}
   footer{text-align:center;color:var(--grey);font-size:12px;padding:18px}
   @media print{header .hdr-actions,button,.no-print{display:none!important}body{background:#fff}main{padding:0;max-width:none}.card{page-break-inside:avoid}}
@@ -107,7 +121,12 @@
 
 <div class="card">
   <h2>How this works</h2>
-  <p class="hint" style="margin-bottom:0">Screen each candidate workflow in ~20 minutes with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b> — three answers each, pick the closest. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog — the shortlist that feeds Build. This is the light screen, not a full assessment: deep-dive the winners with the Value Assessment and Mini Op Model, and bring the top ones to life with quick prototypes on example cases.</p>
+  <p class="hint">Screen each candidate workflow with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b>. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog. Deep-dive the winners with the Value Assessment and Mini Op Model, and bring the top ones to life with quick prototypes on example cases.</p>
+  <div class="modechips">
+    <div class="modechip" id="mode_light" onclick="setMode('light')">Light screen — ~20 min per candidate</div>
+    <div class="modechip" id="mode_deep" onclick="setMode('deep')">Deep dive — a week's Prioritise, evidence-backed</div>
+  </div>
+  <p class="hint" id="modeHint" style="margin:8px 0 0"></p>
 </div>
 
 <div class="card">
@@ -124,6 +143,16 @@
   <button onclick="addCand()">+ Add candidate</button>
 </div>
 
+<div class="card deep-only" id="interviewCard" style="display:none">
+  <h2>Interview &amp; pain-point log <span class="deepbadge">DEEP</span></h2>
+  <p class="hint">Every conversation is evidence. Log who you spoke to and the pains they raised — tagged pains become the demand signal behind the ranking.</p>
+  <table>
+    <thead><tr><th style="width:16%">Name</th><th style="width:16%">Role</th><th style="width:13%">Date</th><th>Pain points raised (their words)</th><th style="width:18%">Relates to candidate</th><th style="width:30px"></th></tr></thead>
+    <tbody id="intBody"></tbody>
+  </table>
+  <button class="addrow" onclick="addInt()">+ Add interview</button>
+</div>
+
 <div class="card" id="formCard" style="display:none">
   <h2 id="formTitle">Candidate</h2>
   <div class="grid3">
@@ -134,33 +163,82 @@
   <label>The use case in one sentence — who does what today, and what would the AI do?</label>
   <textarea id="f_desc" oninput="upd('desc',this.value)" placeholder="e.g. Customer service (8 people) triage ~200 emails/day by hand; AI would draft the triage and response for a person to approve"></textarea>
 
+  <div class="deep-only" id="stepsBlock">
+    <h2 style="margin-top:18px;color:var(--red);font-size:14px">STEP MAP — where does the time actually go? <span class="deepbadge">DEEP</span></h2>
+    <p class="hint">Sketch the workflow's 4–8 steps with the person who does it. Mark how much time each eats and which steps the AI would take on. If a heavy step isn't covered, the better use case may be hiding there.</p>
+    <table>
+      <thead><tr><th>#</th><th>Step</th><th style="width:22%">Time it eats</th><th style="width:16%">AI covers it?</th><th style="width:30px"></th></tr></thead>
+      <tbody id="stepBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addStep()">+ Add step</button>
+    <div id="stepFlag"></div>
+  </div>
+
   <h2 style="margin-top:18px;color:var(--red);font-size:14px">VALUE — is there a business case?</h2>
   <div id="valQs"></div>
   <div class="sizer">
-    <label style="margin-top:0">Rough sizing — three numbers, best guess <small>(sizing only; the Value Assessment builds the defensible number)</small></label>
+    <label style="margin-top:0">Rough sizing — best guess <small>(sizing only; the Value Assessment builds the defensible number)</small></label>
     <div class="grid3">
       <div><label>People doing the task</label><input type="number" min="0" step="0.5" id="f_people" oninput="upd('people',this.value)"></div>
       <div><label>Hours per person per week</label><input type="number" min="0" step="0.5" id="f_hours" oninput="upd('hours',this.value)"></div>
       <div><label>Cost per person per year (£) <small>salary + overheads — roughly salary × 1.3</small></label><input type="number" min="0" id="f_pcost" oninput="upd('pcost',this.value)"></div>
     </div>
+    <div class="deep-only grid2" style="margin-top:8px">
+      <div><label>Cross-check: cases per year <span class="deepbadge">DEEP</span></label><input type="number" min="0" id="f_volume" oninput="upd('volume',this.value)"></div>
+      <div><label>Time per case (hours)</label><input type="number" min="0" step="0.1" id="f_timecase" oninput="upd('timecase',this.value)"></div>
+    </div>
     <div style="margin-top:8px">Indicative time at stake: <span class="out" id="sizeOut">—</span></div>
+    <div id="sizeXcheck"></div>
   </div>
 
   <h2 style="margin-top:18px;color:var(--red);font-size:14px">AI-READINESS — fit · data · tech · skills</h2>
+  <p class="hint deep-only">Deep mode: back every answer with evidence — who said it or what you saw — and tag how sure you are. <b>Confirmed</b> = seen or verified · <b>told</b> = someone credible said so · <b>guessed</b> = your read. The backlog reports evidence strength alongside the score.</p>
   <div id="easeQs"></div>
+
+  <div class="deep-only" id="probeBlock">
+    <h2 style="margin-top:18px;color:var(--red);font-size:14px">FEASIBILITY PROBE — test it before anyone commits <span class="deepbadge">DEEP</span></h2>
+    <p class="hint">Two hours, no code: name the one thing you're unsure AI can do, collect ~10 real cases (a few typical, a few harder, a couple awkward), paste them into a model playground with a rough brief, and score what comes back. <b>Credible</b> = a knowledgeable person would trust it as a starting point.</p>
+    <label>The core uncertainty — the one thing that decides feasibility</label>
+    <input id="f_probeUnc" onchange="updProbe('unc',this.value)" placeholder="e.g. can it reliably pull the right details out of messy, inconsistent emails?">
+    <table>
+      <thead><tr><th style="width:24px">#</th><th>Case (short description)</th><th style="width:32%">Result</th><th>Why it failed — missing context vs can't reason it</th></tr></thead>
+      <tbody id="probeBody"></tbody>
+    </table>
+    <div id="probeVerdict"></div>
+  </div>
 
   <label style="margin-top:14px">Build vs buy — first instinct <small>(is this a solved problem or something unique to this client?)</small></label>
   <div class="opts" id="bvb"></div>
+  <div class="deep-only" id="bvbBlock">
+    <div class="grid2" style="margin-top:10px">
+      <div><label>Tools that already do this — names <span class="deepbadge">DEEP</span></label><input id="f_bvbTools" onchange="upd('bvbTools',this.value)" placeholder="e.g. Zendesk AI, Intercom Fin — or 'none found'"></div>
+      <div><label>Is this workflow a competitive edge for them?</label><div class="opts" id="bvbEdge"></div></div>
+      <div><label>How deep would it sit in their systems?</label><div class="opts" id="bvbInteg"></div></div>
+      <div><label>Data sensitivity</label><div class="opts" id="bvbSens"></div></div>
+    </div>
+    <div id="bvbSuggest"></div>
+  </div>
+
+  <div class="deep-only">
+    <label style="margin-top:12px">Depends on / shares systems or data with <span class="deepbadge">DEEP</span> <small>other candidates or projects — used for wave planning</small></label>
+    <input id="f_depends" onchange="upd('depends',this.value)" placeholder="e.g. same CRM data as 'Broker queries' — build together">
+  </div>
 
   <div class="scorebar">
     <div class="scorebox"><div class="lbl">Value</div><div class="v" id="sVal">–</div></div>
     <div class="scorebox"><div class="lbl">AI-readiness</div><div class="v" id="sEase">–</div></div>
     <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v" id="sMoney">–</div></div>
+    <div class="scorebox deep-only"><div class="lbl">Evidence strength</div><div class="v" id="sEv">–</div></div>
     <div class="scorebox"><div class="lbl">Answered</div><div class="v" id="sDone">0/16</div></div>
   </div>
   <div class="verdict" id="candVerdict"></div>
   <label>Notes — blockers, a keen sponsor, a better neighbouring task, why you'd override the verdict</label>
   <textarea id="f_notes" oninput="upd('notes',this.value)"></textarea>
+</div>
+
+<div class="card deep-only" id="portfolioCard" style="display:none">
+  <h2>Portfolio view <span class="deepbadge">DEEP</span></h2>
+  <div id="portfolioBody"></div>
 </div>
 
 <div class="card">
@@ -197,7 +275,6 @@ const VAL_QS = [
   h:"Volume, time per case, cost — measured, not remembered.",
   o:["No — nobody tracks it","Rough numbers exist","Measured and vouched for"]}
 ];
-
 const DIMS = [
  {id:"fit", name:"Fit", sub:"is this the kind of work AI does well?"},
  {id:"data", name:"Data", sub:"will the data feed it?"},
@@ -243,16 +320,18 @@ const EASE_QS = [
   o:["Nobody identified","A candidate, unconfirmed","A named, willing owner"]}
 ];
 const BVB = [
- {v:"buy", label:"Buy — off-the-shelf tools do this", cls:"n"},
- {v:"configure", label:"Configure — buy + adapt to us", cls:"n"},
- {v:"build", label:"Build — unique to this business", cls:"n"},
- {v:"unknown", label:"Don't know yet", cls:"n"}
+ {v:"buy", label:"Buy — off-the-shelf tools do this"},
+ {v:"configure", label:"Configure — buy + adapt to us"},
+ {v:"build", label:"Build — unique to this business"},
+ {v:"unknown", label:"Don't know yet"}
 ];
 const TOTAL_QS = VAL_QS.length + EASE_QS.length;
+const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
 
 const KEY="discovery-screen-v3";
 let S = JSON.parse(localStorage.getItem(KEY)||"{}");
-S.cands = S.cands||[]; S.meta = S.meta||{}; S.cur = (typeof S.cur==="number")? S.cur : -1;
+S.cands = S.cands||[]; S.meta = S.meta||{}; S.interviews = S.interviews||[]; S.mode = S.mode||"light";
+S.cur = (typeof S.cur==="number")? S.cur : -1;
 function updMeta(k,v){ S.meta[k]=v; save(); }
 /* migrate v2 (single-question readiness) if present */
 (function(){ if(S.cands.length) return;
@@ -272,16 +351,38 @@ const fmtK = n => !isFinite(n)||n<=0? "—" : n<1000? "<£1k" : n>=1e6? "£"+(n/
 function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); localStorage.removeItem("discovery-screen-v2"); location.reload(); }
 function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
 
-function blank(){ return {name:"",area:"",desc:"",contact:"",notes:"",people:"",hours:"",pcost:"",bvb:"",scores:{}}; }
+/* ---------- mode ---------- */
+function deep(){ return S.mode==="deep"; }
+function setMode(m){ S.mode=m; save(); renderAll(); }
+function renderMode(){
+  document.getElementById("mode_light").classList.toggle("sel",!deep());
+  document.getElementById("mode_deep").classList.toggle("sel",deep());
+  document.getElementById("modeHint").textContent = deep()
+    ? "Deep dive adds: evidence + confidence behind every score, a workflow step map, a tested feasibility probe, cross-checked sizing, a build-vs-buy rationale, an interview log and a portfolio view. Light answers carry over — nothing is lost switching."
+    : "Light mode: the ~20-minute screen. Switch to Deep dive when the engagement warrants evidence behind every score.";
+  document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display = deep()? "":"none"; });
+  document.getElementById("interviewCard").style.display = deep()? "":"none";
+  document.getElementById("portfolioCard").style.display = deep()? "":"none";
+}
+
+/* ---------- candidates ---------- */
+function blank(){ return {name:"",area:"",desc:"",contact:"",notes:"",people:"",hours:"",pcost:"",volume:"",timecase:"",bvb:"",bvbTools:"",bvbEdge:"",bvbInteg:"",bvbSens:"",depends:"",scores:{},ev:{},steps:[],probe:{unc:"",cases:Array.from({length:10},()=>({d:"",r:"",w:""}))}}; }
+function fix(c){ c.ev=c.ev||{}; c.steps=c.steps||[]; c.probe=c.probe||{unc:"",cases:[]};
+  c.probe.cases=c.probe.cases||[]; while(c.probe.cases.length<10)c.probe.cases.push({d:"",r:"",w:""}); return c; }
 function addCand(){ S.cands.push(blank()); S.cur=S.cands.length-1; save(); renderAll(); document.getElementById("f_name").focus(); }
 function delCand(i,ev){ ev.stopPropagation(); if(!confirm("Remove this candidate?"))return; S.cands.splice(i,1); if(i<S.cur)S.cur--; else if(i===S.cur)S.cur=-1; if(S.cur>=S.cands.length)S.cur=S.cands.length-1; save(); renderAll(); }
 function selCand(i){ S.cur=i; save(); renderAll(); }
-function cur(){ return S.cands[S.cur]; }
-function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderRows(); renderMatrix(); renderSizer();
+function cur(){ return S.cur>=0&&S.cands[S.cur]? fix(S.cands[S.cur]) : null; }
+function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderRows(); renderMatrix(); renderSizer(); renderBvbSuggest(); renderPortfolio();
   if(k==="name")document.getElementById("formTitle").textContent=v||"Candidate"; } }
-function setScore(k,v){ if(!cur())return; cur().scores[k] = (cur().scores[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); }
+function setScore(k,v){ if(!cur())return; cur().scores[k] = (cur().scores[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); renderPortfolio(); }
 function setBvb(v){ if(!cur())return; cur().bvb = (cur().bvb===v? "":v); save(); renderForm(); renderRows(); }
+function setBvbOpt(field,v){ if(!cur())return; cur()[field]=(cur()[field]===v?"":v); save(); renderForm(); }
+function setEv(k,f,v){ const c=cur(); if(!c)return; c.ev[k]=c.ev[k]||{t:"",c:""};
+  if(f==="c") c.ev[k].c=(c.ev[k].c===v?"":v); else c.ev[k].t=v;
+  save(); if(f==="c")renderForm(); else {renderScoreboxes(); renderRows();} }
 
+/* ---------- scoring ---------- */
 function moneyOf(c){
   const p=parseFloat(c.people)||0, h=parseFloat(c.hours)||0, cost=parseFloat(c.pcost)||0;
   if(!p||!h||!cost) return 0;
@@ -294,32 +395,50 @@ function weakestDim(c){
   DIMS.forEach(d=>{ const ds=dimScore(c,d.id); if(!worst || ds.s<worst.s) worst={...d, s:ds.s}; });
   return worst;
 }
+function evidenceOf(c){ /* % of answered questions backed by confirmed(2)/told(1) */
+  fix(c); let pts=0,n=0;
+  [...VAL_QS,...EASE_QS].forEach(q=>{
+    if(c.scores[q.k]===undefined||c.scores[q.k]===null) return;
+    n++; const e=c.ev[q.k]||{};
+    pts += e.c==="confirmed"?2 : e.c==="told"?1 : 0;
+  });
+  return n? Math.round(pts/(2*n)*100) : null;
+}
+function probeOf(c){ fix(c);
+  const cs=c.probe.cases||[];
+  const cr=cs.filter(x=>x.r==="credible").length, pa=cs.filter(x=>x.r==="partial").length, wr=cs.filter(x=>x.r==="wrong").length;
+  return {cr,pa,wr,scored:cr+pa+wr};
+}
+function demandOf(c,i){ return S.interviews.filter(iv=>iv.cand!==""&&parseInt(iv.cand)===i).length; }
 function verdictOf(c){
   const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
   if(v.n+e.n<TOTAL_QS) return {cls:"b",label:"Incomplete",head:"Keep going — "+(TOTAL_QS-v.n-e.n)+" question(s) left",body:"Answer all sixteen for a verdict. Unknowns score 0 — that's a finding, not a failure."};
   const hv=v.s>=5, he=e.s>=15;
+  const p=probeOf(c);
+  const probeNote = deep()? (p.scored>=5? (p.cr>=7?" The probe backs it — "+p.cr+"/"+p.scored+" credible.": p.cr<=3?" ⚠ But the probe struggled ("+p.cr+"/"+p.scored+" credible) — reshape before committing.":" Probe was borderline ("+p.cr+"/"+p.scored+" credible) — read why the failures happened."):" Run the feasibility probe before this goes in front of the client.") : "";
   if(hv&&he){
     const w=weakestDim(c);
     return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",
-      body:"Take it forward: prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${w.s}/6) — it's the soft spot to design around.`:"")};
+      body:"Take it forward: prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${w.s}/6) — it's the soft spot to design around.`:"")+probeNote};
   }
   if(hv&&!he){
     const w=weakestDim(c);
     return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",
-      body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${w.s}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`};
+      body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${w.s}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`+probeNote};
   }
-  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-eater isn't one step earlier or later in the process."};
+  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-eater isn't one step earlier or later in the process."+probeNote};
   return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Decline politely, record why, and point at the better candidate if you saw one."};
 }
-const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
+function waveOf(vd){ return vd.label==="Do first"?"NOW":vd.label==="Big bet"||vd.label==="Fill-in"?"NEXT":vd.label==="Park"?"LATER":"UNSCORED"; }
 
+/* ---------- rows / rank ---------- */
 function renderRows(){
   document.getElementById("candRows").innerHTML = S.cands.length? rankOrder().map(({c,i,v,e,vd})=>`
     <tr class="${i===S.cur?"active":""}" onclick="selCand(${i})" style="cursor:pointer">
       <td>${rankOf(i)}</td>
       <td><b>${esc(c.name)||"<span style='color:#aaa'>unnamed</span>"}</b>${c.area?`<br><span style="font-size:11.5px;color:var(--grey)">${esc(c.area)}</span>`:""}</td>
       <td>${v.n?v.s:"–"}</td>
-      <td>${e.n?e.s:"–"}</td>
+      <td>${e.n?e.s:"–"}${deep()&&evidenceOf(c)!==null?`<br><span style="font-size:11px;color:var(--grey)">${evidenceOf(c)}% evidenced</span>`:""}</td>
       <td>${fmtK(moneyOf(c))}</td>
       <td>${c.bvb? BVB_SHORT[c.bvb]:"–"}</td>
       <td><span class="pill ${vd.cls}">${vd.label}</span></td>
@@ -327,32 +446,164 @@ function renderRows(){
     </tr>`).join("") : `<tr><td colspan="8" style="color:#aaa;text-align:center">No candidates yet — add one.</td></tr>`;
 }
 function rankOrder(){
-  return S.cands.map((c,i)=>({c,i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
+  return S.cands.map((c,i)=>({c:fix(c),i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
     .sort((a,b)=>((b.v.s*3+b.e.s)-(a.v.s*3+a.e.s)) || (moneyOf(b.c)-moneyOf(a.c)));
 }
 function rankOf(i){ return rankOrder().findIndex(x=>x.i===i)+1; }
 
+/* ---------- form ---------- */
+function evHTML(k){
+  const c=cur(); const e=(c.ev||{})[k]||{};
+  return `<div class="evrow">
+    <input placeholder="Evidence — who said it / what you saw" value="${esc(e.t||"")}" onchange="setEv('${k}','t',this.value)">
+    ${["confirmed","told","guessed"].map(x=>`<div class="evc ${x} ${e.c===x?"sel":""}" onclick="setEv('${k}','c','${x}')">${x}</div>`).join("")}
+  </div>`;
+}
 function qHTML(q){
   const v = cur()? cur().scores[q.k] : undefined;
   return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
     ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}
-  </div></div>`;
+  </div>${deep()? evHTML(q.k):""}</div>`;
 }
 function dimCls(s,n){ return n===0? "" : s>=5? "g" : s>=3? "a" : "r"; }
 function renderSizer(){
-  const m=cur()? moneyOf(cur()):0;
-  const c=cur()||{};
+  const c=cur(); if(!c)return;
+  const m=moneyOf(c);
   const p=parseFloat(c.people)||0,h=parseFloat(c.hours)||0;
   document.getElementById("sizeOut").textContent = m? `${fmtK(m)} / yr (${Math.round(p*h*52).toLocaleString()} hrs)` : "—";
   document.getElementById("sMoney").textContent = m? fmtK(m):"–";
+  const x=document.getElementById("sizeXcheck");
+  if(!deep()){ x.innerHTML=""; return; }
+  const fteHrs=p*h*52, caseHrs=(parseFloat(c.volume)||0)*(parseFloat(c.timecase)||0);
+  let html="";
+  if(fteHrs>0&&caseHrs>0){
+    const ratio=fteHrs/caseHrs;
+    if(ratio>2||ratio<0.5) html+=`<div class="flagline">⚠ Your two estimates disagree — ${Math.round(fteHrs).toLocaleString()} hrs/yr (people × time) vs ${Math.round(caseHrs).toLocaleString()} hrs/yr (cases × time per case). Reconcile with the team before this number is quoted.</div>`;
+    else html+=`<div class="infoline">Cross-check holds: ${Math.round(fteHrs).toLocaleString()} vs ${Math.round(caseHrs).toLocaleString()} hrs/yr — the two estimates agree within 2×. Quote with confidence.</div>`;
+  }
+  if(m) html+=`<div class="infoline">Indicative opportunity: <b>${fmtK(m*0.25)}–${fmtK(m*0.5)}/yr</b> — assumes AI captures 25–50% of the time at stake after adoption. The Value Assessment replaces this with the defensible number.</div>`;
+  x.innerHTML=html;
+}
+/* step map */
+function addStep(){ const c=cur(); if(!c)return; c.steps.push({name:"",share:"",ai:false}); save(); renderSteps(); }
+function delStep(i){ const c=cur(); c.steps.splice(i,1); save(); renderSteps(); }
+function renderSteps(){
+  const c=cur(); if(!c||!deep())return;
+  document.getElementById("stepBody").innerHTML=c.steps.map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><input value="${esc(s.name)}" onchange="cur().steps[${i}].name=this.value;save();renderSteps()" placeholder="e.g. read &amp; classify the request"></td>
+    <td><select onchange="cur().steps[${i}].share=this.value;save();renderSteps()"><option></option>${["Light","Moderate","Heavy"].map(o=>`<option ${s.share===o?"selected":""}>${o}</option>`).join("")}</select></td>
+    <td style="text-align:center"><input type="checkbox" style="width:auto" ${s.ai?"checked":""} onchange="cur().steps[${i}].ai=this.checked;save();renderSteps()"></td>
+    <td><button style="padding:2px 8px" onclick="delStep(${i})">✕</button></td></tr>`).join("");
+  const missed=c.steps.filter(s=>s.share==="Heavy"&&!s.ai&&s.name);
+  document.getElementById("stepFlag").innerHTML = missed.length?
+    `<div class="flagline">⚠ Heavy step${missed.length>1?"s":""} not covered by the AI: <b>${missed.map(s=>esc(s.name)).join(", ")}</b> — the bigger opportunity may be there. Consider reshaping the use case or adding a candidate.</div>` : "";
+}
+/* probe */
+function updProbe(f,v){ const c=cur(); if(!c)return; c.probe[f]=v; save(); }
+function setProbeCase(i,f,v){ const c=cur(); if(!c)return;
+  if(f==="r") c.probe.cases[i].r=(c.probe.cases[i].r===v?"":v); else c.probe.cases[i][f]=v;
+  save(); renderProbe(); renderForm(); }
+function renderProbe(){
+  const c=cur(); if(!c||!deep())return;
+  document.getElementById("f_probeUnc").value=c.probe.unc||"";
+  document.getElementById("probeBody").innerHTML=c.probe.cases.map((x,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><input value="${esc(x.d)}" onchange="setProbeCase(${i},'d',this.value)" placeholder="${i<4?"typical":i<8?"harder":"awkward"} case"></td>
+    <td><div class="opts">${["credible","partial","wrong"].map(r=>{const cls=r==="credible"?"s2":r==="partial"?"s1":"s0";
+      return `<div class="opt ${cls} ${x.r===r?"sel":""}" style="min-width:70px" onclick="setProbeCase(${i},'r','${r}')">${r}</div>`;}).join("")}</div></td>
+    <td><input value="${esc(x.w)}" onchange="setProbeCase(${i},'w',this.value)"></td></tr>`).join("");
+  const p=probeOf(c), v=document.getElementById("probeVerdict");
+  if(!p.scored){ v.innerHTML=`<div class="infoline">Score at least 5 cases for a probe verdict.</div>`; return; }
+  let cls,msg;
+  if(p.cr>=7){ cls="infoline"; msg=`<b>${p.cr}/${p.scored} credible — the hard part is tractable.</b> The gap to production closes with better context, guardrails and testing. Strong evidence for the ranking.`; }
+  else if(p.cr>=4){ cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — borderline.</b> Read the failures: missing company context is fixable (feed it more); if it can't reason the task, narrow the scope or keep a person on the hard step.`; }
+  else { cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — not worth building around today.</b> Break the task into a simpler piece and re-probe, or park it. Half a day well spent — that's the point.`; }
+  v.innerHTML=`<div class="${cls}">${msg}${p.scored<5?" <i>(fewer than 5 scored — treat as indicative)</i>":""}</div>`;
+}
+/* build vs buy deep */
+function bvbSuggestion(c){
+  if(!c.bvbEdge&&!c.bvbInteg&&!c.bvbSens&&!c.bvbTools) return null;
+  const tools=(c.bvbTools||"").trim().toLowerCase();
+  const hasTools = tools && tools!=="none found" && tools!=="none";
+  let call,why=[];
+  if(c.bvbEdge==="Yes"){ call="Build"; why.push("the workflow is a competitive edge — don't outsource the advantage"); }
+  else if(c.bvbInteg==="Deep"){ call="Build or configure heavily"; why.push("it sits deep in their systems — off-the-shelf rarely fits"); }
+  else if(hasTools){ call = c.bvbSens==="Regulated"? "Configure" : "Buy"; why.push("proven tools exist ("+c.bvbTools+")"); if(c.bvbSens==="Regulated") why.push("regulated data — check the vendor's compliance route"); }
+  else if(c.bvbTools){ call="Build"; why.push("no credible off-the-shelf tool found"); }
+  else { call="Configure"; why.push("buy what exists, adapt the last mile"); }
+  if(c.bvbInteg==="Light"&&call==="Buy") why.push("light integration keeps switching costs low");
+  return {call, why:why.join("; ")};
+}
+function renderBvbSuggest(){
+  const c=cur(); if(!c||!deep())return;
+  const s=bvbSuggestion(c);
+  document.getElementById("bvbSuggest").innerHTML = s?
+    `<div class="infoline">Suggested call: <b>${s.call}</b> — ${s.why}. Your instinct above stays the final answer; if they differ, say why in the notes.</div>`:"";
+}
+const BVB_OPTS={ bvbEdge:["Yes","No","Unsure"], bvbInteg:["Light","Moderate","Deep"], bvbSens:["Low","Personal data","Regulated"] };
+function renderBvbOpts(){
+  const c=cur(); if(!c)return;
+  Object.entries(BVB_OPTS).forEach(([field,opts])=>{
+    const el=document.getElementById(field); if(!el)return;
+    el.innerHTML=opts.map(o=>`<div class="opt n ${c[field]===o?"sel":""}" style="min-width:90px" onclick="setBvbOpt('${field}','${o}')">${o}</div>`).join("");
+  });
+}
+/* interviews */
+function addInt(){ S.interviews.push({name:"",role:"",date:"",pains:"",cand:""}); save(); renderInts(); }
+function delInt(i){ S.interviews.splice(i,1); save(); renderInts(); renderPortfolio(); }
+function renderInts(){
+  if(!deep())return;
+  document.getElementById("intBody").innerHTML=S.interviews.map((iv,i)=>`<tr>
+    <td><input value="${esc(iv.name)}" onchange="S.interviews[${i}].name=this.value;save()"></td>
+    <td><input value="${esc(iv.role)}" onchange="S.interviews[${i}].role=this.value;save()"></td>
+    <td><input type="date" value="${esc(iv.date)}" onchange="S.interviews[${i}].date=this.value;save()"></td>
+    <td><input value="${esc(iv.pains)}" onchange="S.interviews[${i}].pains=this.value;save()" placeholder="what they complained about, in their words"></td>
+    <td><select onchange="S.interviews[${i}].cand=this.value;save();renderPortfolio();renderForm()"><option value="">—</option>${S.cands.map((c,ci)=>`<option value="${ci}" ${String(iv.cand)===String(ci)?"selected":""}>${esc(c.name)||"unnamed"}</option>`).join("")}</select></td>
+    <td><button style="padding:2px 8px" onclick="delInt(${i})">✕</button></td></tr>`).join("");
+}
+/* portfolio */
+function renderPortfolio(){
+  if(!deep())return;
+  const body=document.getElementById("portfolioBody");
+  if(!S.cands.length){ body.innerHTML=`<p class="hint">Add candidates to see the portfolio picture.</p>`; return; }
+  const rows=rankOrder();
+  const totalM=S.cands.reduce((a,c)=>a+moneyOf(c),0);
+  const counts={}; rows.forEach(r=>{ counts[r.vd.label]=(counts[r.vd.label]||0)+1; });
+  const weak={}; rows.forEach(r=>{ if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{ const ds=dimScore(r.c,d.id); if(ds.s<=3) weak[d.name]=(weak[d.name]||0)+1; }); });
+  const scoredCount=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
+  const probed=rows.filter(r=>probeOf(r.c).scored>=5).length;
+  const evs=rows.map(r=>evidenceOf(r.c)).filter(x=>x!==null);
+  const avgEv=evs.length? Math.round(evs.reduce((a,b)=>a+b,0)/evs.length):null;
+  body.innerHTML=`
+    <div class="scorebar">
+      <div class="scorebox"><div class="lbl">Candidates</div><div class="v">${S.cands.length}</div></div>
+      <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v">${fmtK(totalM)}</div></div>
+      <div class="scorebox"><div class="lbl">Do first</div><div class="v">${counts["Do first"]||0}</div></div>
+      <div class="scorebox"><div class="lbl">Probed</div><div class="v">${probed}/${scoredCount||0}</div></div>
+      <div class="scorebox"><div class="lbl">Avg evidence</div><div class="v">${avgEv!==null?avgEv+"%":"–"}</div></div>
+      <div class="scorebox"><div class="lbl">Interviews</div><div class="v">${S.interviews.length}</div></div>
+    </div>
+    ${Object.entries(weak).filter(([,n])=>n>=2).map(([d,n])=>`<div class="flagline">⚠ <b>${d}</b> is weak (≤3/6) in ${n} of ${scoredCount} scored candidates — that's a programme-level fix, not a per-workflow one. Raise it once, at the top.</div>`).join("")}
+    ${avgEv!==null&&avgEv<50?`<div class="flagline">⚠ Average evidence strength is ${avgEv}% — much of this ranking rests on guesses. Confirm the low-evidence answers before the playback.</div>`:""}`;
+}
+
+function renderScoreboxes(){
+  const c=cur(); if(!c)return;
+  const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
+  document.getElementById("sVal").textContent=v.n?v.s+" / 8":"–";
+  document.getElementById("sEase").textContent=e.n?e.s+" / 24":"–";
+  document.getElementById("sDone").textContent=(v.n+e.n)+"/"+TOTAL_QS;
+  const ev=evidenceOf(c);
+  document.getElementById("sEv").textContent = ev!==null? ev+"%":"–";
 }
 function renderForm(){
   const card=document.getElementById("formCard");
-  if(S.cur<0||!cur()){ card.style.display="none"; return; }
+  if(!cur()){ card.style.display="none"; return; }
   card.style.display="block";
   const c=cur();
   document.getElementById("formTitle").textContent=c.name||"Candidate";
-  ["name","area","contact","desc","notes","people","hours","pcost"].forEach(k=>{ document.getElementById("f_"+k).value=c[k]||""; });
+  ["name","area","contact","desc","notes","people","hours","pcost","volume","timecase","bvbTools","depends"].forEach(k=>{ const el=document.getElementById("f_"+k); if(el) el.value=c[k]||""; });
   document.getElementById("valQs").innerHTML=VAL_QS.map(qHTML).join("");
   document.getElementById("easeQs").innerHTML=DIMS.map(d=>{
     const ds=dimScore(c,d.id);
@@ -361,16 +612,13 @@ function renderForm(){
       ${EASE_QS.filter(q=>q.dim===d.id).map(qHTML).join("")}
     </div>`;
   }).join("");
-  document.getElementById("bvb").innerHTML=BVB.map(b=>`<div class="opt ${b.cls} ${c.bvb===b.v?"sel":""}" onclick="setBvb('${b.v}')">${b.label}</div>`).join("");
-  const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
-  document.getElementById("sVal").textContent=v.n?v.s+" / 8":"–";
-  document.getElementById("sEase").textContent=e.n?e.s+" / 24":"–";
-  document.getElementById("sDone").textContent=(v.n+e.n)+"/"+TOTAL_QS;
-  renderSizer();
+  document.getElementById("bvb").innerHTML=BVB.map(b=>`<div class="opt n ${c.bvb===b.v?"sel":""}" onclick="setBvb('${b.v}')">${b.label}</div>`).join("");
+  renderBvbOpts(); renderBvbSuggest(); renderScoreboxes(); renderSizer(); renderSteps(); renderProbe();
   const vd=verdictOf(c);
   const box=document.getElementById("candVerdict");
   box.className="verdict "+(vd.cls==="g"?"good":vd.cls==="a"?"mid":vd.cls==="r"?"bad":"blue");
   box.innerHTML=`<h4>${vd.head}</h4>${vd.body}`;
+  document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display = deep()? "":"none"; });
 }
 function renderMatrix(){
   const m=document.getElementById("matrix");
@@ -387,19 +635,48 @@ function renderMatrix(){
     m.appendChild(d);
   });
 }
-function renderAll(){ renderRows(); renderForm(); renderMatrix(); ["client","by","date"].forEach(k=>{ const el=document.getElementById("m_"+k); if(el) el.value=(S.meta&&S.meta[k])||""; }); }
+function renderAll(){ renderMode(); renderRows(); renderForm(); renderMatrix(); renderInts(); renderPortfolio();
+  ["client","by","date"].forEach(k=>{ const el=document.getElementById("m_"+k); if(el) el.value=(S.meta&&S.meta[k])||""; }); }
 
+/* ---------- output ---------- */
 function copyBacklog(){
   const m=S.meta||{};
   const hdr=[m.client?"Client: "+m.client:"",m.by?"screened by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
-  const lines=["Use Case Discovery Screen — ranked backlog"]; if(hdr)lines.push(hdr); lines.push("");
-  rankOrder().forEach(({c,v,e,vd},idx)=>{
+  const lines=["Use Case Discovery Screen — ranked backlog"+(deep()?" (deep dive)":"")]; if(hdr)lines.push(hdr); lines.push("");
+  const rows=rankOrder();
+  rows.forEach(({c,i,v,e,vd},idx)=>{
     const dims = DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n? ds.s+"/6":"not scored");}).join(" · ");
     lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${v.s}/8 · Readiness ${e.s}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
     if(c.desc)lines.push(`   ${c.desc}`);
+    if(deep()){
+      const ev=evidenceOf(c); const p=probeOf(c); const dm=demandOf(c,i);
+      const bits=[];
+      if(ev!==null)bits.push(`evidence ${ev}% confirmed`);
+      bits.push(p.scored>=5? `probe ${p.cr}/${p.scored} credible` : "not probed");
+      if(dm)bits.push(`${dm} interview${dm>1?"s":""} raised it`);
+      if(moneyOf(c))bits.push(`indicative opportunity ${fmtK(moneyOf(c)*0.25)}–${fmtK(moneyOf(c)*0.5)}/yr (25–50% capture assumption)`);
+      lines.push(`   Evidence: ${bits.join(" · ")}`);
+      const s=bvbSuggestion(c);
+      if(s)lines.push(`   Buy/build rationale: ${s.call} — ${s.why}`);
+      if(c.depends)lines.push(`   Depends on: ${c.depends}`);
+    }
     if(c.contact)lines.push(`   Ask: ${c.contact}`);
     if(c.notes)lines.push(`   Notes: ${c.notes}`);
   });
+  if(deep()){
+    lines.push("","WAVE PLAN");
+    ["NOW","NEXT","LATER"].forEach(w=>{
+      const names=rows.filter(r=>waveOf(r.vd)===w).map(r=>r.c.name||"unnamed");
+      if(names.length)lines.push(`${w}: ${names.join(" · ")}`);
+    });
+    const scored=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
+    const weak={}; rows.forEach(r=>{ if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{ if(dimScore(r.c,d.id).s<=3) weak[d.name]=(weak[d.name]||0)+1; }); });
+    const prog=Object.entries(weak).filter(([,n])=>n>=2);
+    if(prog.length){ lines.push("","PROGRAMME-LEVEL FINDINGS");
+      prog.forEach(([d,n])=>lines.push(`- ${d} is weak in ${n} of ${scored} candidates — fix once, centrally.`)); }
+    if(S.interviews.length){ lines.push("","SOURCES: "+S.interviews.length+" interviews");
+      S.interviews.forEach(iv=>{ if(iv.name)lines.push(`- ${iv.name}${iv.role?" ("+iv.role+")":""}${iv.date?", "+iv.date:""}${iv.pains?": "+iv.pains:""}`); }); }
+  }
   lines.push("","Next: Do-first candidates → quick prototype on example cases + Value Assessment (the £ case) + Mini Op Model (the path to run).","Where readiness is high, the Build POC (real, integrated data) can start early.");
   copyText(lines.join("\n"),"Ranked backlog copied.");
 }
@@ -409,7 +686,7 @@ function exportJSON(){
 }
 function importJSON(inp){
   const f=inp.files[0]; if(!f)return; const r=new FileReader();
-  r.onload=()=>{ try{ S=JSON.parse(r.result); S.cands=S.cands||[]; save(); renderAll(); }catch(e){ alert("Could not read that file."); } };
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.cands=S.cands||[]; S.meta=S.meta||{}; S.interviews=S.interviews||[]; S.mode=S.mode||"light"; save(); renderAll(); }catch(e){ alert("Could not read that file."); } };
   r.readAsText(f);
 }
 renderAll();

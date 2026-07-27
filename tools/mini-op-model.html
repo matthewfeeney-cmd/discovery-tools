@@ -41,6 +41,10 @@
   .opt.g.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
   .opt.a.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
   .opt.r.sel{background:var(--red-bg);border-color:var(--red);color:var(--red);font-weight:700}
+  .modechips{display:flex;gap:8px;margin:10px 0 2px}
+  .modechip{border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-size:13px;cursor:pointer;background:#fff;color:var(--grey);font-weight:600}
+  .modechip.sel{background:var(--red);border-color:var(--red);color:#fff}
+  .deepbadge{font-size:10px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 7px;background:var(--blue-bg);color:var(--blue);vertical-align:middle;margin-left:8px}
   .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
   .scorebox{flex:1;min-width:130px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center;background:#fff}
   .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
@@ -54,6 +58,13 @@
   .verdict.good{background:var(--green-bg);border-color:var(--green)}
   .verdict.mid{background:var(--amber-bg);border-color:var(--amber)}
   .verdict.bad{background:var(--red-bg);border-color:var(--red)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+  th{text-align:left;background:#222;color:#fff;padding:7px 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  td{border:1px solid var(--line);padding:6px 8px;vertical-align:middle}
+  td input,td select{border:none;padding:4px;background:transparent;font-size:13px}
+  .flagline{background:var(--amber-bg);border-left:4px solid var(--amber);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
+  .infoline{background:var(--blue-bg);border-left:4px solid var(--blue);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
+  .addrow{font-size:12.5px;padding:5px 12px;margin-top:4px}
   #outCard{display:none}
   #outCard h3{color:var(--red);margin:14px 0 4px;font-size:14.5px}
   #outCard .empty{color:#aaa;font-style:italic}
@@ -86,7 +97,12 @@
 
 <div class="card">
   <h2>How this works</h2>
-  <p class="hint" style="margin-bottom:0">The build proves the workflow works; this form captures what it would take to <b>run it for real</b> — the "mini operating model" Build promises: who approves it, who runs it, what it connects to, what skills it needs. Fill it from short conversations with the people named in each section (~1 day total, spread across the engagement). Rate each signal as you learn it; if you can't answer, pick red — unknowns are blockers until someone answers them. Value is handled separately in the Value Assessment Tool.</p>
+  <p class="hint">The build proves the workflow works; this form captures what it would take to <b>run it for real</b> — the "mini operating model" Build promises: who approves it, who runs it, what it connects to, what skills it needs. Fill it from short conversations with the people named in each section. Rate each signal as you learn it; if you can't answer, pick red — unknowns are blockers until someone answers them. Value is handled separately in the Value Assessment Tool.</p>
+  <div class="modechips">
+    <div class="modechip" id="mode_light" onclick="setMode('light')">Light — ~30 min, one pass</div>
+    <div class="modechip" id="mode_deep" onclick="setMode('deep')">Deep — 3–5 days, run alongside the build</div>
+  </div>
+  <p class="hint" id="modeHint" style="margin:8px 0 0"></p>
 </div>
 
 <div class="card">
@@ -104,10 +120,21 @@
 <div class="card">
   <h2><span class="n">1</span>Process — how it gets approved and governed</h2>
   <p class="hint">Ask: whoever approves new systems going live, risk or compliance, and anyone who has taken a system live here before.</p>
-  <label>If this proved itself tomorrow, what has to happen for it to run for real? <small>List the approvals in order — security review, data protection, risk board…</small></label>
-  <textarea data-k="p_route"></textarea>
-  <label>Who says yes at each step, and what do they need to see?</label>
-  <textarea data-k="p_gates" placeholder="e.g. IT security review → data-protection sign-off → Ops board (wants accuracy evidence, meets monthly)"></textarea>
+  <div class="light-only">
+    <label>If this proved itself tomorrow, what has to happen for it to run for real? <small>List the approvals in order — security review, data protection, risk board…</small></label>
+    <textarea data-k="p_route"></textarea>
+    <label>Who says yes at each step, and what do they need to see?</label>
+    <textarea data-k="p_gates" placeholder="e.g. IT security review → data-protection sign-off → Ops board (wants accuracy evidence, meets monthly)"></textarea>
+  </div>
+  <div class="deep-only">
+    <label style="margin-top:4px">Approvals map <span class="deepbadge">DEEP</span> <small>one row per approval, in order — captured as a table so every gate has an owner, evidence and a date risk</small></label>
+    <table>
+      <thead><tr><th>Approval / gate</th><th style="width:16%">Who decides</th><th style="width:22%">Evidence they need to see</th><th style="width:14%">When they meet</th><th style="width:12%">Spoken to?</th><th style="width:30px"></th></tr></thead>
+      <tbody id="gateBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addRow('gates')">+ Add approval</button>
+    <div id="gateFlags"></div>
+  </div>
   <label>Who could veto this late in the day — and have they been spoken to?</label>
   <input data-k="p_veto">
   <div class="sig"><div class="st">Route to approval</div><div class="opts" id="rag_p1"></div></div>
@@ -119,11 +146,24 @@
 <div class="card">
   <h2><span class="n">2</span>People — who it needs around it</h2>
   <p class="hint">Ask: the team doing the task, their manager, and whoever would own the system after handover.</p>
-  <div class="grid2">
-    <div><label>Who owns the running system? <small>Not the project — the system, day to day</small></label><input data-k="pe_owner"></div>
-    <div><label>Who handles what the AI escalates?</label><input data-k="pe_escal"></div>
-    <div><label>Which experts must it learn from — and how much of their time can we get?</label><input data-k="pe_experts" placeholder="e.g. 2 senior handlers, ~3 hrs/week committed"></div>
-    <div><label>Who maintains it when rules or knowledge change?</label><input data-k="pe_maintain"></div>
+  <div class="light-only">
+    <div class="grid2">
+      <div><label>Who owns the running system? <small>Not the project — the system, day to day</small></label><input data-k="pe_owner"></div>
+      <div><label>Who handles what the AI escalates?</label><input data-k="pe_escal"></div>
+      <div><label>Which experts must it learn from — and how much of their time can we get?</label><input data-k="pe_experts" placeholder="e.g. 2 senior handlers, ~3 hrs/week committed"></div>
+      <div><label>Who maintains it when rules or knowledge change?</label><input data-k="pe_maintain"></div>
+    </div>
+  </div>
+  <div class="deep-only">
+    <label style="margin-top:4px">Named roles <span class="deepbadge">DEEP</span> <small>a role with no name against it is a gap, not a plan</small></label>
+    <table>
+      <thead><tr><th style="width:22%">Role</th><th style="width:20%">Named person</th><th style="width:20%">Status</th><th style="width:14%">Hrs / week</th><th>Notes / skills gap</th><th style="width:30px"></th></tr></thead>
+      <tbody id="roleBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addRow('roles')">+ Add role</button>
+    <div class="infoline">Expert-time reality check: log the hours experts actually spend answering questions and checking outputs during the build — that's the honest estimate of the standing commitment production needs, not what was promised.</div>
+    <label>Hours of expert time the build consumed last week</label>
+    <input type="number" min="0" data-k="pe_hrsused" placeholder="e.g. 5">
   </div>
   <label>What would the team need to see before they trusted it?</label>
   <textarea data-k="pe_adopt"></textarea>
@@ -138,15 +178,62 @@
   <p class="hint">Ask: the platform or architecture lead, the data owner, and security.</p>
   <div class="grid2">
     <div><label>Where would it run in production? <small>Mandated cloud/platform, approved AI tools</small></label><input data-k="t_platform"></div>
-    <div><label>Which systems must it connect to?</label><input data-k="t_systems" placeholder="e.g. CRM (standard API), billing (custom), shared drive"></div>
+    <div class="light-only"><label>Which systems must it connect to?</label><input data-k="t_systems" placeholder="e.g. CRM (standard API), billing (custom), shared drive"></div>
   </div>
-  <label>What data does it need — can we get it, and is it good enough?</label>
-  <textarea data-k="t_data"></textarea>
-  <label>Where does the POC differ from production? <small>Sample data, relaxed security, different tooling — the honest list</small></label>
-  <textarea data-k="t_diverge"></textarea>
+  <div class="light-only">
+    <label>What data does it need — can we get it, and is it good enough?</label>
+    <textarea data-k="t_data"></textarea>
+    <label>Where does the POC differ from production? <small>Sample data, relaxed security, different tooling — the honest list</small></label>
+    <textarea data-k="t_diverge"></textarea>
+  </div>
+  <div class="deep-only">
+    <label style="margin-top:4px">Systems &amp; connections <span class="deepbadge">DEEP</span></label>
+    <table>
+      <thead><tr><th style="width:20%">System</th><th style="width:22%">What the AI needs it for</th><th style="width:18%">Connection</th><th style="width:16%">Who owns access</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody id="connBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addRow('conns')">+ Add system</button>
+
+    <label style="margin-top:14px">Data sources <span class="deepbadge">DEEP</span> <small>the substance behind "secure in your estate" — flag anything personal or regulated early</small></label>
+    <table>
+      <thead><tr><th style="width:20%">Data source</th><th style="width:16%">Owner</th><th style="width:16%">Access</th><th style="width:14%">Quality</th><th style="width:16%">Sensitivity</th><th>Notes</th><th style="width:30px"></th></tr></thead>
+      <tbody id="dataBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addRow('datas')">+ Add data source</button>
+
+    <label style="margin-top:14px">POC vs production — running log of differences <span class="deepbadge">DEEP</span> <small>log each one the day you notice it; this list is the honest record that stops a demo being mistaken for the design</small></label>
+    <table>
+      <thead><tr><th>Difference (POC vs production)</th><th style="width:30%">Why it matters</th><th style="width:14%">Resolved?</th><th style="width:30px"></th></tr></thead>
+      <tbody id="divBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addRow('divs')">+ Add difference</button>
+  </div>
   <div class="sig"><div class="st">Production platform</div><div class="opts" id="rag_t1"></div></div>
   <div class="sig"><div class="st">Connections to other systems</div><div class="opts" id="rag_t2"></div></div>
   <div class="sig"><div class="st">Data access &amp; quality</div><div class="opts" id="rag_t3"></div></div>
+</div>
+
+<!-- GUARDRAILS (deep) -->
+<div class="card deep-only">
+  <h2><span class="n">4</span>Safeguards — what it must never do <span class="deepbadge">DEEP</span></h2>
+  <p class="hint">For every action the AI takes, name the worst case and who stays in control. The safe default is <b>propose → a person reviews → apply</b>; an action only earns direct execution once its track record justifies it. Ask the team: "what must never happen, whatever the case looks like?"</p>
+  <table>
+    <thead><tr><th style="width:26%">Action the AI takes</th><th style="width:30%">Worst case if it gets it wrong</th><th style="width:24%">Who stays in control</th><th>Escalation trigger</th><th style="width:30px"></th></tr></thead>
+    <tbody id="guardBody"></tbody>
+  </table>
+  <button class="addrow" onclick="addRow('guards')">+ Add action</button>
+  <div id="guardFlags"></div>
+</div>
+
+<!-- MEASUREMENT (deep) -->
+<div class="card deep-only">
+  <h2><span class="n">5</span>Measurement &amp; trust <span class="deepbadge">DEEP</span></h2>
+  <p class="hint">Design measurement into the build so "is it working?" is answered by the system's own logs, not by memory. Pull the success threshold from the Value Assessment.</p>
+  <div class="grid3">
+    <div><label>What the system logs about itself</label><textarea data-k="m_log" placeholder="cases handled, time taken, escalations, accuracy checks"></textarea></div>
+    <div><label>Who reviews the numbers, how often</label><textarea data-k="m_review"></textarea></div>
+    <div><label>Success threshold <small>from the Value Assessment</small></label><textarea data-k="m_threshold" placeholder="the number that makes leadership call it a success"></textarea></div>
+  </div>
 </div>
 
 <!-- SCORE -->
@@ -181,12 +268,97 @@ const SIGNALS = [
  {id:"t3",lens:"Tech",name:"Data access & quality",g:"Accessible, good enough",a:"Reachable with work",r:"Locked away / poor"}
 ];
 const LENSES=["Process","People","Tech"];
+const ROLE_PRESETS=["System owner","Day-to-day monitor","Escalation handler","Maintainer (rules & knowledge)","Domain expert"];
 const KEY="mini-op-model-v1";
 let S=JSON.parse(localStorage.getItem(KEY)||"{}");
-S.text=S.text||{}; S.rag=S.rag||{};
+S.text=S.text||{}; S.rag=S.rag||{}; S.mode=S.mode||"light";
+S.gates=S.gates||[]; S.roles=S.roles||[]; S.conns=S.conns||[]; S.datas=S.datas||[]; S.divs=S.divs||[]; S.guards=S.guards||[];
 function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
-function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
+function resetAll(){ if(!confirm("Clear everything and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
 
+/* ---------- mode ---------- */
+function deep(){ return S.mode==="deep"; }
+function setMode(m){ S.mode=m;
+  if(m==="deep"&&S.roles.length===0) ROLE_PRESETS.forEach(r=>S.roles.push({role:r,person:"",status:"",hrs:"",notes:""}));
+  save(); renderAll(); }
+function renderMode(){
+  document.getElementById("mode_light").classList.toggle("sel",!deep());
+  document.getElementById("mode_deep").classList.toggle("sel",deep());
+  document.getElementById("modeHint").textContent = deep()
+    ? "Deep mode swaps prose for structured tables — an approvals map, named roles, system and data inventories, a POC-vs-production log, a safeguards register and a measurement plan — and compiles every gap into an action list with owners. Light answers are kept."
+    : "Light mode: one pass in ~30 minutes. Switch to Deep when a build is running and the op model needs to survive scrutiny.";
+  document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display=deep()?"":"none"; });
+  document.querySelectorAll(".light-only").forEach(el=>{ el.style.display=deep()?"none":""; });
+}
+
+/* ---------- generic table rows ---------- */
+const TABLES={
+ gates:{body:"gateBody", blank:()=>({gate:"",who:"",evid:"",rhythm:"",spoken:""}),
+  row:(g,i)=>`<tr>
+   <td><input value="${esc(g.gate)}" onchange="TW('gates',${i},'gate',this.value)" placeholder="e.g. IT security review"></td>
+   <td><input value="${esc(g.who)}" onchange="TW('gates',${i},'who',this.value)"></td>
+   <td><input value="${esc(g.evid)}" onchange="TW('gates',${i},'evid',this.value)" placeholder="what convinces them"></td>
+   <td><select onchange="TW('gates',${i},'rhythm',this.value)"><option></option>${["On demand","Scheduled (e.g. monthly)"].map(o=>`<option ${g.rhythm===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><select onchange="TW('gates',${i},'spoken',this.value)"><option></option>${["Yes","Not yet"].map(o=>`<option ${g.spoken===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><button style="padding:2px 8px" onclick="TD('gates',${i})">✕</button></td></tr>`},
+ roles:{body:"roleBody", blank:()=>({role:"",person:"",status:"",hrs:"",notes:""}),
+  row:(r,i)=>`<tr>
+   <td><input value="${esc(r.role)}" onchange="TW('roles',${i},'role',this.value)"></td>
+   <td><input value="${esc(r.person)}" onchange="TW('roles',${i},'person',this.value)"></td>
+   <td><select onchange="TW('roles',${i},'status',this.value)"><option></option>${["Named & willing","Candidate, unconfirmed","Vacant"].map(o=>`<option ${r.status===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><input value="${esc(r.hrs)}" onchange="TW('roles',${i},'hrs',this.value)"></td>
+   <td><input value="${esc(r.notes)}" onchange="TW('roles',${i},'notes',this.value)"></td>
+   <td><button style="padding:2px 8px" onclick="TD('roles',${i})">✕</button></td></tr>`},
+ conns:{body:"connBody", blank:()=>({sys:"",need:"",conn:"",owner:"",notes:""}),
+  row:(c,i)=>`<tr>
+   <td><input value="${esc(c.sys)}" onchange="TW('conns',${i},'sys',this.value)"></td>
+   <td><input value="${esc(c.need)}" onchange="TW('conns',${i},'need',this.value)"></td>
+   <td><select onchange="TW('conns',${i},'conn',this.value)"><option></option>${["Standard — exists","Custom — needs building","Missing — no way in yet"].map(o=>`<option ${c.conn===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><input value="${esc(c.owner)}" onchange="TW('conns',${i},'owner',this.value)"></td>
+   <td><input value="${esc(c.notes)}" onchange="TW('conns',${i},'notes',this.value)"></td>
+   <td><button style="padding:2px 8px" onclick="TD('conns',${i})">✕</button></td></tr>`},
+ datas:{body:"dataBody", blank:()=>({src:"",owner:"",access:"",quality:"",sens:"",notes:""}),
+  row:(d,i)=>`<tr>
+   <td><input value="${esc(d.src)}" onchange="TW('datas',${i},'src',this.value)"></td>
+   <td><input value="${esc(d.owner)}" onchange="TW('datas',${i},'owner',this.value)"></td>
+   <td><select onchange="TW('datas',${i},'access',this.value)"><option></option>${["Granted","Requested","Blocked"].map(o=>`<option ${d.access===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><select onchange="TW('datas',${i},'quality',this.value)"><option></option>${["Good","OK","Poor"].map(o=>`<option ${d.quality===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><select onchange="TW('datas',${i},'sens',this.value)"><option></option>${["None","Personal data","Regulated"].map(o=>`<option ${d.sens===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><input value="${esc(d.notes)}" onchange="TW('datas',${i},'notes',this.value)"></td>
+   <td><button style="padding:2px 8px" onclick="TD('datas',${i})">✕</button></td></tr>`},
+ divs:{body:"divBody", blank:()=>({diff:"",why:"",res:""}),
+  row:(d,i)=>`<tr>
+   <td><input value="${esc(d.diff)}" onchange="TW('divs',${i},'diff',this.value)" placeholder="e.g. POC uses a 3-month data extract; production is live data"></td>
+   <td><input value="${esc(d.why)}" onchange="TW('divs',${i},'why',this.value)"></td>
+   <td><select onchange="TW('divs',${i},'res',this.value)"><option></option>${["Open","Resolved"].map(o=>`<option ${d.res===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><button style="padding:2px 8px" onclick="TD('divs',${i})">✕</button></td></tr>`},
+ guards:{body:"guardBody", blank:()=>({act:"",worst:"",control:"",trigger:""}),
+  row:(g,i)=>`<tr>
+   <td><input value="${esc(g.act)}" onchange="TW('guards',${i},'act',this.value)" placeholder="e.g. sends the reply to the customer"></td>
+   <td><input value="${esc(g.worst)}" onchange="TW('guards',${i},'worst',this.value)"></td>
+   <td><select onchange="TW('guards',${i},'control',this.value)"><option></option>${["Person approves each one (propose-review-apply)","Person spot-checks samples","Runs directly — earned it"].map(o=>`<option ${g.control===o?"selected":""}>${o}</option>`).join("")}</select></td>
+   <td><input value="${esc(g.trigger)}" onchange="TW('guards',${i},'trigger',this.value)" placeholder="if this, stop and hand to a person"></td>
+   <td><button style="padding:2px 8px" onclick="TD('guards',${i})">✕</button></td></tr>`}
+};
+function TW(t,i,f,v){ S[t][i][f]=v; save(); renderTables(); }
+function TD(t,i){ S[t].splice(i,1); save(); renderTables(); }
+function addRow(t){ S[t].push(TABLES[t].blank()); save(); renderTables(); }
+function renderTables(){
+  if(!deep())return;
+  Object.entries(TABLES).forEach(([t,cfg])=>{
+    const el=document.getElementById(cfg.body); if(el) el.innerHTML=S[t].map((r,i)=>cfg.row(r,i)).join("");
+  });
+  const gflags=[];
+  S.gates.forEach(g=>{ if(g.gate&&g.spoken==="Not yet") gflags.push(`⚠ <b>${esc(g.gate)}</b> — ${esc(g.who)||"the decider"} hasn't been spoken to yet${g.rhythm&&g.rhythm.startsWith("Scheduled")?", and they meet on a schedule — the calendar becomes your critical path":""}. Start that conversation during the build, not at MVP.`); });
+  document.getElementById("gateFlags").innerHTML=gflags.map(f=>`<div class="flagline">${f}</div>`).join("");
+  const wflags=[];
+  S.guards.forEach(g=>{ if(g.act&&g.control==="Runs directly — earned it"&&g.worst) wflags.push(`⚠ <b>${esc(g.act)}</b> runs directly with a real worst case ("${esc(g.worst)}"). Has it genuinely earned that — or should it start propose-review-apply?`); });
+  document.getElementById("guardFlags").innerHTML=wflags.map(f=>`<div class="flagline">${f}</div>`).join("");
+}
+
+/* ---------- signals ---------- */
 function renderRags(){
   SIGNALS.forEach(sig=>{
     const cur=S.rag[sig.id]||"";
@@ -195,7 +367,6 @@ function renderRags(){
   });
 }
 function setRag(id,v){ S.rag[id]=(S.rag[id]===v?"":v); save(); renderRags(); renderScore(); }
-
 function lensStats(lens){
   const sigs=SIGNALS.filter(s=>s.lens===lens);
   let g=0,a=0,r=0,u=0;
@@ -214,26 +385,68 @@ function renderScore(){
   const pct=max?Math.round(pts/max*100):0;
   document.getElementById("gauge").style.width=(rated? pct:0)+"%";
   const v=document.getElementById("verdict");
+  const acts=deep()? actionList().length:0;
+  const actNote=deep()&&acts? ` ${acts} action${acts>1?"s":""} on the to-do list below.`:"";
   if(!rated){ v.className="verdict"; v.innerHTML="Rate the nine signals to build the readiness picture."; }
-  else if(anyR){ v.className="verdict bad"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — blockers flagged.</b> Every red is a conversation to start now, during the build — not at MVP. Late-stage vetoes and missing owners are the classic killers of good POCs.`; }
-  else if(pct<75){ v.className="verdict mid"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — work to do before MVP.</b> The ambers are your to-do list; none are fatal, all take longer than people expect.${rated<9?" Unrated signals count as zero — the score rises as you ask.":""}`; }
-  else { v.className="verdict good"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — a credible path to run for real.</b> Keep the divergence list honest and get the gate evidence in writing.`; }
+  else if(anyR){ v.className="verdict bad"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — blockers flagged.</b> Every red is a conversation to start now, during the build — not at MVP. Late-stage vetoes and missing owners are the classic killers of good POCs.${actNote}`; }
+  else if(pct<75){ v.className="verdict mid"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — work to do before MVP.</b> The ambers are your to-do list; none are fatal, all take longer than people expect.${rated<9?" Unrated signals count as zero — the score rises as you ask.":""}${actNote}`; }
+  else { v.className="verdict good"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — a credible path to run for real.</b> Keep the differences log honest and get the gate evidence in writing.${actNote}`; }
   return {pct,anyR,rated};
 }
 
+/* ---------- action list (deep) ---------- */
+function actionList(){
+  const acts=[];
+  S.gates.forEach(g=>{ if(g.gate&&g.spoken==="Not yet") acts.push({who:g.who||"engagement lead", what:`Engage ${g.who||"the decider"} on "${g.gate}"${g.evid?" — bring: "+g.evid:""}${g.rhythm&&g.rhythm.startsWith("Scheduled")?" (meets on a schedule — book the slot now)":""}`}); });
+  S.roles.forEach(r=>{ if(r.role&&r.status==="Vacant") acts.push({who:"client sponsor", what:`Name a ${r.role.toLowerCase()}${r.notes?" — "+r.notes:""}`}); });
+  S.roles.forEach(r=>{ if(r.role&&r.status==="Candidate, unconfirmed"&&r.person) acts.push({who:r.person, what:`Confirm ${r.person} as ${r.role.toLowerCase()} — currently unconfirmed`}); });
+  S.conns.forEach(c=>{ if(c.sys&&c.conn==="Custom — needs building") acts.push({who:c.owner||"platform lead", what:`Scope the custom connection to ${c.sys} — custom connectors are weeks, not days`}); });
+  S.conns.forEach(c=>{ if(c.sys&&c.conn==="Missing — no way in yet") acts.push({who:c.owner||"platform lead", what:`Find a route into ${c.sys} — currently no way in`}); });
+  S.datas.forEach(d=>{ if(d.src&&d.access==="Blocked") acts.push({who:d.owner||"data owner", what:`Unblock access to ${d.src}`}); });
+  S.datas.forEach(d=>{ if(d.src&&d.access==="Requested") acts.push({who:d.owner||"data owner", what:`Chase the pending access request for ${d.src}`}); });
+  S.datas.forEach(d=>{ if(d.src&&(d.sens==="Regulated"||d.sens==="Personal data")) acts.push({who:"security / DPO", what:`Confirm the compliance route for ${d.src} (${d.sens.toLowerCase()})`}); });
+  S.divs.forEach(d=>{ if(d.diff&&d.res!=="Resolved") acts.push({who:"build team", what:`Close the POC-vs-production gap: ${d.diff}${d.why?" — matters because "+d.why:""}`}); });
+  S.guards.forEach(g=>{ if(g.act&&!g.control) acts.push({who:"build team", what:`Decide who stays in control of "${g.act}" — default is propose-review-apply`}); });
+  SIGNALS.forEach(s=>{ if(S.rag[s.id]==="R") acts.push({who:"engagement lead", what:`Resolve red signal — ${s.lens}: ${s.name} (${s.r})`}); });
+  return acts;
+}
+
+/* ---------- output ---------- */
 function T(k){ return (S.text[k]||"").trim(); }
 function V(k,fb){ const v=T(k); return v? esc(v).replace(/\n/g,"<br>"):`<span class="empty">${fb||"— not captured —"}</span>`; }
 function ragWord(id){ const v=S.rag[id]; return v==="G"?"🟢":v==="A"?"🟡":v==="R"?"🔴":"⚪"; }
+function tbl(headers,rows){
+  if(!rows.length) return `<p class="empty">— none captured —</p>`;
+  return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c||"—")}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
 function buildOut(){
   const sc=renderScore();
-  const gaps=SIGNALS.filter(s=>S.rag[s.id]==="R").map(s=>s.lens+": "+s.name+" — "+s.r);
-  const work=SIGNALS.filter(s=>S.rag[s.id]==="A").map(s=>s.lens+": "+s.name+" — "+s.a);
   const out=document.getElementById("outCard");
   out.style.display="block";
-  out.innerHTML=`
-    <h2>Mini Op Model — ${esc(T("workflow")||"workflow")}</h2>
-    <p class="hint">${esc(T("client")||"Client")} · ${esc(T("author")||"")} · readiness ${sc.rated?sc.pct+"% ("+sc.rated+"/9 signals rated)":"unrated"}</p>
-    <p><b>Scope:</b> ${V("scope")}</p>
+  let deepHtml="";
+  if(deep()){
+    const acts=actionList();
+    deepHtml=`
+    <h3>Route to run for real — approvals map ${ragWord("p1")}${ragWord("p2")}${ragWord("p3")}</h3>
+    ${tbl(["Approval","Who decides","Evidence needed","When they meet","Spoken to?"],S.gates.filter(g=>g.gate).map(g=>[g.gate,g.who,g.evid,g.rhythm,g.spoken]))}
+    <p><b>Late-veto risk:</b> ${V("p_veto")}</p>
+    <h3>People — named roles ${ragWord("pe1")}${ragWord("pe2")}${ragWord("pe3")}</h3>
+    ${tbl(["Role","Person","Status","Hrs/wk","Notes"],S.roles.filter(r=>r.role).map(r=>[r.role,r.person,r.status,r.hrs,r.notes]))}
+    <p><b>Expert hours the build consumed last week:</b> ${V("pe_hrsused","— not logged —")} · <b>Trust:</b> ${V("pe_adopt")}</p>
+    <h3>Platform ${ragWord("t1")}${ragWord("t2")}${ragWord("t3")}</h3>
+    <p><b>Runs on:</b> ${V("t_platform")}</p>
+    ${tbl(["System","Needed for","Connection","Access owner","Notes"],S.conns.filter(c=>c.sys).map(c=>[c.sys,c.need,c.conn,c.owner,c.notes]))}
+    ${tbl(["Data source","Owner","Access","Quality","Sensitivity","Notes"],S.datas.filter(d=>d.src).map(d=>[d.src,d.owner,d.access,d.quality,d.sens,d.notes]))}
+    <h3>POC vs production — open differences</h3>
+    ${tbl(["Difference","Why it matters","Status"],S.divs.filter(d=>d.diff).map(d=>[d.diff,d.why,d.res||"Open"]))}
+    <h3>Safeguards</h3>
+    ${tbl(["Action","Worst case","Who stays in control","Escalation trigger"],S.guards.filter(g=>g.act).map(g=>[g.act,g.worst,g.control,g.trigger]))}
+    <h3>Measurement &amp; trust</h3>
+    <p><b>The system logs:</b> ${V("m_log")}<br><b>Reviewed by:</b> ${V("m_review")}<br><b>Success threshold:</b> ${V("m_threshold","— pull from the Value Assessment —")}</p>
+    <h3>Action list — ${acts.length} item${acts.length===1?"":"s"}, each with an owner</h3>
+    ${acts.length? `<ul>${acts.map(a=>`<li><b>${esc(a.who)}:</b> ${esc(a.what)}</li>`).join("")}</ul>` : `<p class="empty">Nothing outstanding — either it's genuinely ready, or the tables above are empty. Check which.</p>`}`;
+  } else {
+    deepHtml=`
     <h3>Process ${ragWord("p1")}${ragWord("p2")}${ragWord("p3")}</h3>
     <p><b>Route to run for real:</b> ${V("p_route")}</p>
     <p><b>Approvers &amp; evidence:</b> ${V("p_gates")}</p>
@@ -245,21 +458,29 @@ function buildOut(){
     <h3>Tech ${ragWord("t1")}${ragWord("t2")}${ragWord("t3")}</h3>
     <p><b>Platform:</b> ${V("t_platform")} · <b>Connects to:</b> ${V("t_systems")}</p>
     <p><b>Data:</b> ${V("t_data")}</p>
-    <p><b>POC vs production divergence:</b> ${V("t_diverge")}</p>
-    ${gaps.length?`<h3>Blockers — start these conversations now</h3><ul>${gaps.map(g=>`<li>🔴 ${g}</li>`).join("")}</ul>`:""}
-    ${work.length?`<h3>Work before MVP</h3><ul>${work.map(g=>`<li>🟡 ${g}</li>`).join("")}</ul>`:""}
+    <p><b>POC vs production differences:</b> ${V("t_diverge")}</p>`;
+    const gaps=SIGNALS.filter(s=>S.rag[s.id]==="R").map(s=>s.lens+": "+s.name+" — "+s.r);
+    const work=SIGNALS.filter(s=>S.rag[s.id]==="A").map(s=>s.lens+": "+s.name+" — "+s.a);
+    if(gaps.length)deepHtml+=`<h3>Blockers — start these conversations now</h3><ul>${gaps.map(g=>`<li>🔴 ${g}</li>`).join("")}</ul>`;
+    if(work.length)deepHtml+=`<h3>Work before MVP</h3><ul>${work.map(g=>`<li>🟡 ${g}</li>`).join("")}</ul>`;
+  }
+  out.innerHTML=`
+    <h2>${deep()?"Beyond-POC Blueprint":"Mini Op Model"} — ${esc(T("workflow")||"workflow")}</h2>
+    <p class="hint">${esc(T("client")||"Client")} · ${esc(T("author")||"")} · readiness ${sc.rated?sc.pct+"% ("+sc.rated+"/9 signals rated)":"unrated"}</p>
+    <p><b>Scope:</b> ${V("scope")}</p>
+    ${deepHtml}
     <p class="hint" style="margin-top:12px">Present alongside the POC readout and the value case: the POC proves the workflow; this proves the path.</p>`;
   out.scrollIntoView({behavior:"smooth"});
 }
 function copyOut(){ buildOut(); copyText(document.getElementById("outCard").innerText,"Op model copied."); }
-function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
-function resetAll(){ if(!confirm("Clear everything and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
 
+/* ---------- wiring ---------- */
 function bind(){
   document.querySelectorAll("[data-k]").forEach(el=>{
     const k=el.dataset.k; el.value=S.text[k]||""; el.oninput=()=>{S.text[k]=el.value;save();};
   });
 }
+function renderAll(){ renderMode(); renderRags(); renderScore(); renderTables(); }
 function exportJSON(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
@@ -267,10 +488,10 @@ function exportJSON(){
 }
 function importJSON(inp){
   const f=inp.files[0]; if(!f)return; const r=new FileReader();
-  r.onload=()=>{ try{ S=JSON.parse(r.result); S.text=S.text||{};S.rag=S.rag||{}; save(); bind(); renderRags(); renderScore(); }catch(e){ alert("Could not read that file."); } };
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.text=S.text||{};S.rag=S.rag||{};S.mode=S.mode||"light";["gates","roles","conns","datas","divs","guards"].forEach(t=>S[t]=S[t]||[]); save(); bind(); renderAll(); }catch(e){ alert("Could not read that file."); } };
   r.readAsText(f);
 }
-bind(); renderRags(); renderScore();
+bind(); renderAll();
 </script>
 </body>
 </html>
