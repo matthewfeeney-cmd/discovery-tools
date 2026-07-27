@@ -6,9 +6,9 @@ Three lightweight, single-file tools that support the **Assess** phase of the En
 
 | # | Tool | Offering stage | Fill-in time | Output |
 |---|------|----------------|--------------|--------|
-| 1 | **Use Case Discovery Screen** (`tools/discovery-screen.html`) | Assess · Prioritise (light) | ~20 min per candidate workflow | Value /8 + AI-readiness /24 across four scored dimensions (fit · data · tech · skills, 3 checks each), indicative £ at stake, build-vs-buy call, verdict per candidate naming the weakest dimension, **ranked backlog** (copy/paste text) |
+| 1 | **Use Case Discovery Screen** (`tools/discovery-screen.html`) | Assess · Prioritise | Light: ~20 min per candidate · Deep: ~1 week per department | Light: Value /8 + AI-readiness /24 (fit · data · tech · skills), £ at stake, build-vs-buy, **ranked backlog**. Deep adds: evidence + confidence per score, workflow step map, 10-case feasibility probe, cross-checked sizing, build-vs-buy rationale, interview/pain log, wave plan, portfolio view with programme-level gaps |
 | 2 | **Value Assessment Tool** (`tools/value-assessment.html`) | Assess · Validate + Build | ~30–45 min with the workflow owner + finance | £ value case: baseline → PEV → REV (adoption × effectiveness × integration) → costs → benefit:cost, payback, steady-state net → **go / adjust / stop** |
-| 3 | **Mini Op Model** (`tools/mini-op-model.html`) | Assess + Build (one workflow) | ~30 min across 2–3 short conversations | Process · people · tech readiness %, blocker list, **one-page op model** |
+| 3 | **Mini Op Model** (`tools/mini-op-model.html`) | Assess + Build (one workflow) | Light: ~30 min · Deep: 3–5 days alongside the build | Light: process · people · tech readiness %, blocker list, **one-page op model**. Deep adds: approvals map, named-roles table, system & data inventories, POC-vs-production log, safeguards register, measurement plan — compiled into a **beyond-POC blueprint with an owned action list** |
 
 They chain: screen many workflows (1) → size the winner's £ (2) → prove the path to run it for real (3). Each also works standalone.
 
@@ -59,8 +59,13 @@ Each tool is fully self-contained (HTML + CSS + JS in one file, no external requ
 - **Output over ceremony** — every tool ends in something you can paste into an email or hand to a client: a ranked backlog, a value case, a one-page op model.
 - Deep-dive material (full question batteries, knowledge capture, action inventories) belongs in engagement playbooks, not here.
 
+## Deep modes — how depth is earned
+
+Both the Discovery Screen and the Mini Op Model have a **light/deep switch**. The principle: depth comes from **evidence, not more opinion questions**. Deep mode never changes the questions — it demands proof behind the answers: who said it, what was tested, what was cross-checked. Light answers carry over when you switch; nothing is lost. Use light on day one, switch to deep when the engagement warrants a defendable output.
+
 ## Status / changelog
 
+- **v0.5** — deep modes. Discovery Screen: evidence + confidence tags on every score (backlog reports "% evidenced"), workflow step map with missed-heavy-step flag, 10-case feasibility probe with verdict, volume×time cross-check on sizing with 25–50% capture range, build-vs-buy rationale with suggested call, interview & pain-point log (demand signal), dependency field, wave plan (Now/Next/Later) and portfolio view with programme-level gap flags. Mini Op Model: approvals map with calendar/late-veto flags, named-roles table with expert-hours reality check, system & data source inventories (sensitivity flagged), POC-vs-production difference log, safeguards register (propose-review-apply default), measurement & trust plan, and an auto-compiled action list where every gap has an owner.
 - **v0.4** — plain-language pass across all three tools (no method acronyms in headings, "fully loaded" and "sinks" explained, FTE spelled out); Discovery Screen adds client/screened-by/date and a per-candidate contact ("who knows this workflow best"), and its backlog now ends with actionable next steps (prototype → value case → op model, early-POC note); Value Assessment adds team/users, relabels headcount equivalent, and the GO verdict states the value case becomes the Build scope; Mini Op Model intro tied to Build's "mini operating model" promise.
 - **v0.3** — AI-readiness made robust: four dimensions (fit · data · tech · skills) × three checks each, scored /24 with per-dimension sub-scores; verdicts now name the weakest dimension to fix; ranking weights value and readiness evenly; v0.2 sessions migrate automatically.
 - **v0.2** — Discovery Screen restructured to the service offering (value × AI-readiness with data/tech/skills, £ sizing, build-vs-buy). Stress-test fixes: slider defaults now register (REV no longer £0 untouched), contingency label matches maths, benefit:cost labelling, steady-state net (yr 2+), print auto-generates outputs, partial-score caveats, New client reset, safer delete/copy.
