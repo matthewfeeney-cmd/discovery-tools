@@ -86,7 +86,7 @@
 
 <div class="card">
   <h2>How this works</h2>
-  <p class="hint" style="margin-bottom:0">The build proves the workflow works; this form captures what it would take to <b>run it for real</b> — process, people, tech — for one workflow. Fill it from short conversations with the people named in each section (~1 day total, spread across the engagement). Rate each signal as you learn it; if you can't answer, pick red — unknowns are blockers until someone answers them. Value is handled separately in the Value Assessment Tool.</p>
+  <p class="hint" style="margin-bottom:0">The build proves the workflow works; this form captures what it would take to <b>run it for real</b> — the "mini operating model" Build promises: who approves it, who runs it, what it connects to, what skills it needs. Fill it from short conversations with the people named in each section (~1 day total, spread across the engagement). Rate each signal as you learn it; if you can't answer, pick red — unknowns are blockers until someone answers them. Value is handled separately in the Value Assessment Tool.</p>
 </div>
 
 <div class="card">
@@ -103,11 +103,11 @@
 <!-- PROCESS -->
 <div class="card">
   <h2><span class="n">1</span>Process — how it gets approved and governed</h2>
-  <p class="hint">Ask: whoever owns change/release, risk or compliance, and anyone who has taken a system live here before.</p>
+  <p class="hint">Ask: whoever approves new systems going live, risk or compliance, and anyone who has taken a system live here before.</p>
   <label>If this proved itself tomorrow, what has to happen for it to run for real? <small>List the approvals in order — security review, data protection, risk board…</small></label>
   <textarea data-k="p_route"></textarea>
   <label>Who says yes at each step, and what do they need to see?</label>
-  <textarea data-k="p_gates" placeholder="e.g. IT security (pen test + data flows) → DPO (DPIA) → Ops board (accuracy evidence, monthly)"></textarea>
+  <textarea data-k="p_gates" placeholder="e.g. IT security review → data-protection sign-off → Ops board (wants accuracy evidence, meets monthly)"></textarea>
   <label>Who could veto this late in the day — and have they been spoken to?</label>
   <input data-k="p_veto">
   <div class="sig"><div class="st">Route to approval</div><div class="opts" id="rag_p1"></div></div>

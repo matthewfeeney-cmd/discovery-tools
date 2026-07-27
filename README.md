@@ -61,6 +61,7 @@ Each tool is fully self-contained (HTML + CSS + JS in one file, no external requ
 
 ## Status / changelog
 
+- **v0.4** — plain-language pass across all three tools (no method acronyms in headings, "fully loaded" and "sinks" explained, FTE spelled out); Discovery Screen adds client/screened-by/date and a per-candidate contact ("who knows this workflow best"), and its backlog now ends with actionable next steps (prototype → value case → op model, early-POC note); Value Assessment adds team/users, relabels headcount equivalent, and the GO verdict states the value case becomes the Build scope; Mini Op Model intro tied to Build's "mini operating model" promise.
 - **v0.3** — AI-readiness made robust: four dimensions (fit · data · tech · skills) × three checks each, scored /24 with per-dimension sub-scores; verdicts now name the weakest dimension to fix; ranking weights value and readiness evenly; v0.2 sessions migrate automatically.
 - **v0.2** — Discovery Screen restructured to the service offering (value × AI-readiness with data/tech/skills, £ sizing, build-vs-buy). Stress-test fixes: slider defaults now register (REV no longer £0 untouched), contingency label matches maths, benefit:cost labelling, steady-state net (yr 2+), print auto-generates outputs, partial-score caveats, New client reset, safer delete/copy.
 - **v0.1** — initial three tools, decoupled from an earlier combined workbook prototype.

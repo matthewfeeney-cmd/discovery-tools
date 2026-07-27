@@ -107,11 +107,16 @@
 
 <div class="card">
   <h2>How this works</h2>
-  <p class="hint" style="margin-bottom:0">Screen each candidate workflow in ~20 minutes with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b> — three answers each, pick the closest. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog — the shortlist that feeds Build. This is the light screen, not a full assessment: deep-dive the winners with the Value Assessment and Mini Op Model.</p>
+  <p class="hint" style="margin-bottom:0">Screen each candidate workflow in ~20 minutes with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b> — three answers each, pick the closest. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog — the shortlist that feeds Build. This is the light screen, not a full assessment: deep-dive the winners with the Value Assessment and Mini Op Model, and bring the top ones to life with quick prototypes on example cases.</p>
 </div>
 
 <div class="card">
   <h2>Candidates <span class="hint" style="display:inline">— click a row to edit, scores update live</span></h2>
+  <div class="grid3" style="margin-bottom:10px">
+    <div><label>Client</label><input id="m_client" oninput="updMeta('client',this.value)"></div>
+    <div><label>Screened by</label><input id="m_by" oninput="updMeta('by',this.value)"></div>
+    <div><label>Date</label><input type="date" id="m_date" onchange="updMeta('date',this.value)"></div>
+  </div>
   <table>
     <thead><tr><th>#</th><th>Workflow</th><th>Value /8</th><th>Readiness /24</th><th>£ at stake /yr</th><th>Buy / build</th><th>Verdict</th><th style="width:30px"></th></tr></thead>
     <tbody id="candRows"></tbody>
@@ -121,9 +126,10 @@
 
 <div class="card" id="formCard" style="display:none">
   <h2 id="formTitle">Candidate</h2>
-  <div class="grid2">
+  <div class="grid3">
     <div><label>Workflow name</label><input id="f_name" oninput="upd('name',this.value)"></div>
     <div><label>Area / team</label><input id="f_area" oninput="upd('area',this.value)"></div>
+    <div><label>Who knows this workflow best? <small>name / role — your follow-up contact</small></label><input id="f_contact" oninput="upd('contact',this.value)"></div>
   </div>
   <label>The use case in one sentence — who does what today, and what would the AI do?</label>
   <textarea id="f_desc" oninput="upd('desc',this.value)" placeholder="e.g. Customer service (8 people) triage ~200 emails/day by hand; AI would draft the triage and response for a person to approve"></textarea>
@@ -135,7 +141,7 @@
     <div class="grid3">
       <div><label>People doing the task</label><input type="number" min="0" step="0.5" id="f_people" oninput="upd('people',this.value)"></div>
       <div><label>Hours per person per week</label><input type="number" min="0" step="0.5" id="f_hours" oninput="upd('hours',this.value)"></div>
-      <div><label>Cost per person per year (£) <small>fully loaded</small></label><input type="number" min="0" id="f_pcost" oninput="upd('pcost',this.value)"></div>
+      <div><label>Cost per person per year (£) <small>salary + overheads — roughly salary × 1.3</small></label><input type="number" min="0" id="f_pcost" oninput="upd('pcost',this.value)"></div>
     </div>
     <div style="margin-top:8px">Indicative time at stake: <span class="out" id="sizeOut">—</span></div>
   </div>
@@ -179,7 +185,7 @@
 /* Each question scored 0/1/2. Left option = 0 (weakest). */
 const VAL_QS = [
  {k:"time", t:"How much time does this task eat?",
-  h:"Roughly — people × hours. The sinks are where the value is.",
+  h:"Roughly people × hours. The big time-eaters are where the value is.",
   o:["Small — odd hours here and there","Meaningful — a chunk of someone's week","Major — a team's core workload"]},
  {k:"impact", t:"Does improving it move a number leadership cares about?",
   h:"Cost, margin, revenue, customer experience — a metric with a name.",
@@ -246,7 +252,8 @@ const TOTAL_QS = VAL_QS.length + EASE_QS.length;
 
 const KEY="discovery-screen-v3";
 let S = JSON.parse(localStorage.getItem(KEY)||"{}");
-S.cands = S.cands||[]; S.cur = (typeof S.cur==="number")? S.cur : -1;
+S.cands = S.cands||[]; S.meta = S.meta||{}; S.cur = (typeof S.cur==="number")? S.cur : -1;
+function updMeta(k,v){ S.meta[k]=v; save(); }
 /* migrate v2 (single-question readiness) if present */
 (function(){ if(S.cands.length) return;
   const old=localStorage.getItem("discovery-screen-v2");
@@ -265,7 +272,7 @@ const fmtK = n => !isFinite(n)||n<=0? "—" : n<1000? "<£1k" : n>=1e6? "£"+(n/
 function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); localStorage.removeItem("discovery-screen-v2"); location.reload(); }
 function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
 
-function blank(){ return {name:"",area:"",desc:"",notes:"",people:"",hours:"",pcost:"",bvb:"",scores:{}}; }
+function blank(){ return {name:"",area:"",desc:"",contact:"",notes:"",people:"",hours:"",pcost:"",bvb:"",scores:{}}; }
 function addCand(){ S.cands.push(blank()); S.cur=S.cands.length-1; save(); renderAll(); document.getElementById("f_name").focus(); }
 function delCand(i,ev){ ev.stopPropagation(); if(!confirm("Remove this candidate?"))return; S.cands.splice(i,1); if(i<S.cur)S.cur--; else if(i===S.cur)S.cur=-1; if(S.cur>=S.cands.length)S.cur=S.cands.length-1; save(); renderAll(); }
 function selCand(i){ S.cur=i; save(); renderAll(); }
@@ -294,14 +301,14 @@ function verdictOf(c){
   if(hv&&he){
     const w=weakestDim(c);
     return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",
-      body:"Take it forward: size the £ properly with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${w.s}/6) — it's the soft spot to design around.`:" Strong prototype candidate.")};
+      body:"Take it forward: prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${w.s}/6) — it's the soft spot to design around.`:"")};
   }
   if(hv&&!he){
     const w=weakestDim(c);
     return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",
       body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${w.s}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`};
   }
-  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-sink isn't one step over in the process."};
+  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-eater isn't one step earlier or later in the process."};
   return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Decline politely, record why, and point at the better candidate if you saw one."};
 }
 const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
@@ -345,7 +352,7 @@ function renderForm(){
   card.style.display="block";
   const c=cur();
   document.getElementById("formTitle").textContent=c.name||"Candidate";
-  ["name","area","desc","notes","people","hours","pcost"].forEach(k=>{ document.getElementById("f_"+k).value=c[k]||""; });
+  ["name","area","contact","desc","notes","people","hours","pcost"].forEach(k=>{ document.getElementById("f_"+k).value=c[k]||""; });
   document.getElementById("valQs").innerHTML=VAL_QS.map(qHTML).join("");
   document.getElementById("easeQs").innerHTML=DIMS.map(d=>{
     const ds=dimScore(c,d.id);
@@ -380,17 +387,20 @@ function renderMatrix(){
     m.appendChild(d);
   });
 }
-function renderAll(){ renderRows(); renderForm(); renderMatrix(); }
+function renderAll(){ renderRows(); renderForm(); renderMatrix(); ["client","by","date"].forEach(k=>{ const el=document.getElementById("m_"+k); if(el) el.value=(S.meta&&S.meta[k])||""; }); }
 
 function copyBacklog(){
-  const lines=["Use Case Discovery Screen — ranked backlog",""];
+  const m=S.meta||{};
+  const hdr=[m.client?"Client: "+m.client:"",m.by?"screened by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
+  const lines=["Use Case Discovery Screen — ranked backlog"]; if(hdr)lines.push(hdr); lines.push("");
   rankOrder().forEach(({c,v,e,vd},idx)=>{
     const dims = DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n? ds.s+"/6":"not scored");}).join(" · ");
     lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${v.s}/8 · Readiness ${e.s}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
     if(c.desc)lines.push(`   ${c.desc}`);
+    if(c.contact)lines.push(`   Ask: ${c.contact}`);
     if(c.notes)lines.push(`   Notes: ${c.notes}`);
   });
-  lines.push("","Next: Do-first candidates → Value Assessment Tool (£ case) + Mini Op Model (path to run).");
+  lines.push("","Next: Do-first candidates → quick prototype on example cases + Value Assessment (the £ case) + Mini Op Model (the path to run).","Where readiness is high, the Build POC (real, integrated data) can start early.");
   copyText(lines.join("\n"),"Ranked backlog copied.");
 }
 function exportJSON(){
