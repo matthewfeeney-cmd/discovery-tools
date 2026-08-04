@@ -246,6 +246,13 @@
   <div id="portfolioBody"></div>
 </div>
 
+<div class="card" id="roadmapCard">
+  <h2>Roadmap — what these scores tell you to do</h2>
+  <p class="hint">Every weak answer becomes an action: <b>NOW</b> = start the winners (prototype, £ case, op model) · <b>NEXT</b> = the specific fixes that promote a Big bet or Fill-in · <b>LATER</b> = parked, with the reason. Actions are tagged <b>ASK</b> (a conversation), <b>MEASURE</b> (get a number), <b>TEST</b> (prove it), <b>DECIDE</b> (a call to make). Copy it straight into your plan.</p>
+  <div id="roadmapBody"></div>
+  <button class="primary" style="margin-top:8px" onclick="copyRoadmap()">Copy roadmap actions</button>
+</div>
+
 <div class="card">
   <h2>Value × AI-readiness matrix</h2>
   <p class="hint">Candidates appear once all sixteen questions are answered.</p>
@@ -544,6 +551,7 @@ function renderRows(){
       <td><span class="pill ${vd.cls}">${vd.label}</span></td>
       <td><button style="padding:2px 8px" onclick="delCand(${i},event)">✕</button></td>
     </tr>`).join("") : `<tr><td colspan="8" style="color:#aaa;text-align:center">No candidates yet — add one.</td></tr>`;
+  renderRoadmap();
 }
 function rankOrder(){
   return S.cands.map((c,i)=>({c:fix(c),i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
@@ -769,8 +777,109 @@ function renderMatrix(){
     m.appendChild(d);
   });
 }
-function renderAll(){ renderMode(); renderRows(); renderForm(); renderMatrix(); renderInts(); renderPortfolio();
+function renderAll(){ renderMode(); renderRows(); renderForm(); renderMatrix(); renderInts(); renderPortfolio(); renderRoadmap();
   ["client","by","date"].forEach(k=>{ const el=document.getElementById("m_"+k); if(el) el.value=(S.meta&&S.meta[k])||""; }); }
+
+/* ---------- roadmap actions ----------
+   Weak answers become actions. Each gap action names what to do, who does it,
+   and which check triggered it — tangible inputs for a roadmap. */
+const GAP_ACTIONS = {
+ impact:{type:"ASK",what:"Pin it to a named board number with the sponsor — which metric moves, and by how much"},
+ baseline:{type:"MEASURE",what:"Measure the baseline — count volumes, time a sample of cases, get finance or ops to vouch for the numbers"},
+ fit_nature:{type:"DECIDE",what:"Re-scope toward the repetitive, digital part of the task — AI won't carry the physical or relationship parts"},
+ fit_error:{type:"DECIDE",what:"Design the human checkpoint — where a person reviews the AI's output before it counts"},
+ fit_precedent:{type:"TEST",what:"Run the 2-hour feasibility probe — 10 real cases in a model playground; tested beats assumed"},
+ data_access:{type:"ASK",what:"Sit down with the data owner and ask for access — get the yes or no early, it gates everything"},
+ data_quality:{type:"MEASURE",what:"Pull ~20 real records with the team and grade the quality honestly — messy data is the number-one POC killer"},
+ data_examples:{type:"MEASURE",what:"Collect 15–30 worked examples with outcomes and reasoning — they become the AI's test set"},
+ tech_integration:{type:"ASK",what:"Get the integration story from the platform lead — which systems open up, who builds connectors"},
+ tech_platform:{type:"ASK",what:"Start the 'where can AI run here' conversation with IT — approval routes take longer than builds"},
+ tech_security:{type:"ASK",what:"Book the early security / compliance conversation — sensitive data or regulated decisions are involved"},
+ skills_champion:{type:"ASK",what:"Find the champion — a named person in the team keen to use it daily, with time made available"},
+ skills_expert:{type:"ASK",what:"Secure expert checking time — scheduled hours per week from someone who can judge right from wrong"},
+ skills_owner:{type:"ASK",what:"Name the post-go-live owner — who watches it, maintains it and answers for it"}
+};
+function candActions(c,i){
+  fix(c);
+  const acts=[]; const vd=verdictOf(c); const who=c.contact||"Delivery Lead";
+  const wave=waveOf(vd);
+  if(wave==="NOW"){
+    const p=probeOf(c);
+    acts.push({type:"TEST",who,what:(p.scored>=5?"Grow the probe into a working prototype on real example cases":"Build a quick prototype on 5–10 example cases to make it concrete"),why:"Do-first candidate — prototypes sell the decision"});
+    acts.push({type:"MEASURE",who:"Commercial BA / "+who,what:"Run the Value Assessment — baseline, potential → realistic £, go / adjust / stop",why:"the £ case becomes the Build scope"});
+    acts.push({type:"ASK",who:"Delivery Lead",what:"Start the Mini Op Model — approvals, roles, systems for this workflow",why:"proves the path to run it for real"});
+  }
+  /* gap actions from weak answers */
+  const gaps=[];
+  [...VAL_QS,...EASE_QS].forEach(q=>{
+    const eff=parentEff(c,q);
+    if(eff===null||eff>=1.5) return;
+    const g=GAP_ACTIONS[q.k]; if(!g) return;
+    if(q.k==="fit_precedent"&&probeScore(c)!==null) return; /* already tested */
+    gaps.push({type:g.type,who,what:g.what,why:`${q.t.replace(/\?$/,"")} scored ${fmtS(eff)}/2`,eff});
+  });
+  gaps.sort((a,b)=>a.eff-b.eff);
+  const capped = wave==="NOW"? gaps.slice(0,4) : gaps.slice(0,6);
+  acts.push(...capped);
+  if(deep()){
+    const named=c.steps.filter(s=>s.name&&parseFloat(s.pct)>=25&&!s.ai);
+    if(named.length) acts.push({type:"DECIDE",who,what:`Re-scope to cover: ${named.map(s=>s.name).join(", ")} — the heavy time sits there`,why:"step map shows uncovered heavy steps"});
+    if(probeOf(c).scored<5 && wave!=="LATER" && !acts.some(a=>a.what.includes("feasibility probe")))
+      acts.push({type:"TEST",who,what:"Run the 2-hour feasibility probe — 10 real cases; the tested result feeds the score",why:"fit is still opinion until probed"});
+  }
+  return acts;
+}
+function roadmapData(){
+  const rows=rankOrder();
+  const waves={NOW:[],NEXT:[],LATER:[],UNSCORED:[]};
+  rows.forEach(r=>{ waves[waveOf(r.vd)].push(r); });
+  const scored=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
+  const weak={}; rows.forEach(r=>{ if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{ if(dimScore(r.c,d.id).s<=3) weak[d.name]=(weak[d.name]||0)+1; }); });
+  const prog=Object.entries(weak).filter(([,n])=>n>=2).map(([d,n])=>({d,n,scored}));
+  return {waves,prog,rows};
+}
+function renderRoadmap(){
+  const body=document.getElementById("roadmapBody"); if(!body)return;
+  const {waves,prog}=roadmapData();
+  if(!S.cands.length){ body.innerHTML=`<p class="hint">Score candidates and the roadmap builds itself.</p>`; return; }
+  const wv=(title,sub,arr,fn)=> arr.length? `<h3 style="color:var(--red);font-size:13.5px;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em">${title}</h3><p class="hint" style="margin-bottom:6px">${sub}</p>`+arr.map(fn).join("") : "";
+  body.innerHTML =
+    wv("Now — start these","Do-first candidates: begin the Validate arc.",waves.NOW,r=>actBlock(r))
+   +wv("Next — unblock these","Big bets and fill-ins: the actions below are what promote them.",waves.NEXT,r=>actBlock(r,true))
+   +wv("Later — parked","Recorded with the reason; revisit when something changes.",waves.LATER,r=>`<div style="margin:6px 0"><b>${esc(r.c.name)||"unnamed"}</b> — ${esc(r.c.notes)||"neither value nor readiness today"}</div>`)
+   +(prog.length? `<h3 style="color:var(--red);font-size:13.5px;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em">Programme-level — fix once, centrally</h3>`+prog.map(p=>`<div class="flagline">⚠ <b>${p.d}</b> is weak in ${p.n} of ${p.scored} candidates — one central fix beats ${p.n} local ones. Owner: client sponsor.</div>`).join(""):"")
+   +(waves.UNSCORED.length? `<p class="hint" style="margin-top:10px">${waves.UNSCORED.length} candidate(s) not fully scored yet — they join the roadmap once answered.</p>`:"");
+}
+function actBlock(r,showPromote){
+  const acts=candActions(r.c,r.i);
+  const e=scoreOf(r.c,EASE_QS);
+  return `<div style="border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:6px 0">
+    <b>${esc(r.c.name)||"unnamed"}</b> <span class="hint" style="display:inline">${r.c.contact?"· ask "+esc(r.c.contact):""}${showPromote?` · promotes to NOW at readiness 15/24 — currently ${fmtS(e.s)}`:""}</span>
+    <ul style="margin:6px 0 2px 18px">${acts.map(a=>`<li style="margin:3px 0"><b>${a.type}</b> (${esc(a.who)}): ${esc(a.what)} <span class="hint" style="display:inline">— ${esc(a.why)}</span></li>`).join("")}</ul>
+  </div>`;
+}
+function copyRoadmap(){
+  const m=S.meta||{};
+  const {waves,prog}=roadmapData();
+  const lines=["AI use case roadmap — actions from the Discovery Screen"];
+  const hdr=[m.client?"Client: "+m.client:"",m.by?"by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
+  if(hdr)lines.push(hdr);
+  const dump=(title,arr,promote)=>{ if(!arr.length)return;
+    lines.push("",title);
+    arr.forEach(r=>{
+      const e=scoreOf(r.c,EASE_QS);
+      lines.push(`[${r.c.name||"unnamed"}]${r.c.contact?" — ask "+r.c.contact:""}${promote?` — promotes to NOW at readiness 15/24 (currently ${fmtS(e.s)})`:""}`);
+      candActions(r.c,r.i).forEach(a=>lines.push(`- [ ] ${a.type} · ${a.who}: ${a.what}  (${a.why})`));
+    });
+  };
+  dump("NOW — start these",waves.NOW,false);
+  dump("NEXT — unblock these",waves.NEXT,true);
+  if(waves.LATER.length){ lines.push("","LATER — parked");
+    waves.LATER.forEach(r=>lines.push(`- ${r.c.name||"unnamed"}: ${r.c.notes||"neither value nor readiness today"}`)); }
+  if(prog.length){ lines.push("","PROGRAMME-LEVEL — fix once, centrally");
+    prog.forEach(p=>lines.push(`- [ ] client sponsor: fix ${p.d.toLowerCase()} centrally — weak in ${p.n} of ${p.scored} candidates`)); }
+  copyText(lines.join("\n"),"Roadmap actions copied.");
+}
 
 /* ---------- output ---------- */
 function copyBacklog(){
