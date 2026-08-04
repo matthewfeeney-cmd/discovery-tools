@@ -89,6 +89,7 @@
     <button onclick="document.getElementById('importFile').click()">Import</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
     <button onclick="buildOut();window.print()">Print / PDF</button>
+    <button onclick="copyActions()">Copy actions</button>
     <button class="primary" onclick="buildOut()">Generate op model</button>
   </div>
 </header>
@@ -432,8 +433,8 @@ function renderScore(){
   const pct=max?Math.round(pts/max*100):0;
   document.getElementById("gauge").style.width=(rated? pct:0)+"%";
   const v=document.getElementById("verdict");
-  const acts=deep()? actionList().length:0;
-  const actNote=deep()&&acts? ` ${acts} action${acts>1?"s":""} on the to-do list below.`:"";
+  const acts=actionList().length;
+  const actNote=acts? ` ${acts} owned action${acts>1?"s":""} on the roadmap list below.`:"";
   if(!rated){ v.className="verdict"; v.innerHTML="Rate the nine signals to build the readiness picture."; }
   else if(anyR){ v.className="verdict bad"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — blockers flagged.</b> Every red is a conversation to start now, during the build — not at MVP. Late-stage vetoes and missing owners are the classic killers of good POCs.${actNote}`; }
   else if(pct<75){ v.className="verdict mid"; v.innerHTML=`<b>Readiness ${pct}% (${rated}/9 signals rated) — work to do before MVP.</b> The ambers are your to-do list; none are fatal, all take longer than people expect.${rated<9?" Unrated signals count as zero — the score rises as you ask.":""}${actNote}`; }
@@ -441,21 +442,61 @@ function renderScore(){
   return {pct,anyR,rated};
 }
 
-/* ---------- action list (deep) ---------- */
+/* ---------- action list ----------
+   Every gap becomes an action with an owner and a phase, so the output feeds
+   a roadmap directly. Phases: NOW (during the POC) → BEFORE MVP → BEFORE GO-LIVE. */
+const P_NOW="Now — during the POC", P_MVP="Before MVP", P_LIVE="Before pilot / go-live";
+const SIGNAL_ACTIONS={
+ p1:{who:"Delivery Lead", what:"Map the approval route — sit with whoever took the last system live here and list every gate, in order"},
+ p2:{who:"Delivery Lead", what:"Get each approver's evidence list in writing — agree it now or the goalposts move later"},
+ p3:{who:"Delivery Lead", what:"Get a named decider against every approval — 'the board' is not a name"},
+ pe1:{who:"client sponsor", what:"Identify and confirm the system owner — the running system, not the project"},
+ pe2:{who:"team manager", what:"Get expert time committed and scheduled — promised hours that never land stall the build"},
+ pe3:{who:"client sponsor", what:"Plan the run & maintain skills — train, hire or assign; a system nobody can tend decays"},
+ t1:{who:"platform lead", what:"Decide where this runs in production — platform and approved AI tooling"},
+ t2:{who:"platform lead", what:"Scope every connection — which are standard, which are custom builds (weeks, not days)"},
+ t3:{who:"data owner", what:"Sort data access and quality — get the yes in writing and grade a real sample"}
+};
 function actionList(){
   const acts=[];
-  S.gates.forEach(g=>{ if(g.gate&&g.spoken==="Not yet") acts.push({who:g.who||"engagement lead", what:`Engage ${g.who||"the decider"} on "${g.gate}"${g.evid?" — bring: "+g.evid:""}${g.rhythm&&g.rhythm.startsWith("Scheduled")?" (meets on a schedule — book the slot now)":""}`}); });
-  S.roles.forEach(r=>{ if(r.role&&r.status==="Vacant") acts.push({who:"client sponsor", what:`Name a ${r.role.toLowerCase()}${r.notes?" — "+r.notes:""}`}); });
-  S.roles.forEach(r=>{ if(r.role&&r.status==="Candidate, unconfirmed"&&r.person) acts.push({who:r.person, what:`Confirm ${r.person} as ${r.role.toLowerCase()} — currently unconfirmed`}); });
-  S.conns.forEach(c=>{ if(c.sys&&c.conn==="Custom — needs building") acts.push({who:c.owner||"platform lead", what:`Scope the custom connection to ${c.sys} — custom connectors are weeks, not days`}); });
-  S.conns.forEach(c=>{ if(c.sys&&c.conn==="Missing — no way in yet") acts.push({who:c.owner||"platform lead", what:`Find a route into ${c.sys} — currently no way in`}); });
-  S.datas.forEach(d=>{ if(d.src&&d.access==="Blocked") acts.push({who:d.owner||"data owner", what:`Unblock access to ${d.src}`}); });
-  S.datas.forEach(d=>{ if(d.src&&d.access==="Requested") acts.push({who:d.owner||"data owner", what:`Chase the pending access request for ${d.src}`}); });
-  S.datas.forEach(d=>{ if(d.src&&(d.sens==="Regulated"||d.sens==="Personal data")) acts.push({who:"security / DPO", what:`Confirm the compliance route for ${d.src} (${d.sens.toLowerCase()})`}); });
-  S.divs.forEach(d=>{ if(d.diff&&d.res!=="Resolved") acts.push({who:"build team", what:`Close the POC-vs-production gap: ${d.diff}${d.why?" — matters because "+d.why:""}`}); });
-  S.guards.forEach(g=>{ if(g.act&&!g.control) acts.push({who:"build team", what:`Decide who stays in control of "${g.act}" — default is propose-review-apply`}); });
-  SIGNALS.forEach(s=>{ if(effRag(s.id)==="R") acts.push({who:"engagement lead", what:`Resolve red signal — ${s.lens}: ${s.name} (${s.r})`}); });
+  if(deep()){
+    S.gates.forEach(g=>{ if(g.gate&&g.spoken==="Not yet") acts.push({phase:P_NOW, who:g.who||"Delivery Lead", what:`Engage ${g.who||"the decider"} on "${g.gate}"${g.evid?" — bring: "+g.evid:""}${g.rhythm&&g.rhythm.startsWith("Scheduled")?" (meets on a schedule — book the slot now)":""}`}); });
+    S.gates.forEach(g=>{ if(g.gate&&!g.who) acts.push({phase:P_NOW, who:"Delivery Lead", what:`Get a decider named for "${g.gate}" — 'the board' is not a name`}); });
+    S.gates.forEach(g=>{ if(g.gate&&g.who&&!g.evid) acts.push({phase:P_NOW, who:"Delivery Lead", what:`Get ${g.who}'s evidence list for "${g.gate}" in writing — agree it now or the goalposts move later`}); });
+    S.datas.forEach(d=>{ if(d.src&&d.quality==="Poor") acts.push({phase:P_NOW, who:d.owner||"data owner", what:`Fix the quality of ${d.src} — currently poor; grade a real sample and scope the cleanup`}); });
+    S.datas.forEach(d=>{ if(d.src&&d.access==="Blocked") acts.push({phase:P_NOW, who:d.owner||"data owner", what:`Unblock access to ${d.src} — it gates the build`}); });
+    S.datas.forEach(d=>{ if(d.src&&d.access==="Requested") acts.push({phase:P_NOW, who:d.owner||"data owner", what:`Chase the pending access request for ${d.src}`}); });
+    S.guards.forEach(g=>{ if(g.act&&!g.control) acts.push({phase:P_NOW, who:"build team", what:`Decide who stays in control of "${g.act}" — default is propose-review-apply`}); });
+    S.roles.forEach(r=>{ if(r.role&&r.status==="Vacant") acts.push({phase:P_MVP, who:"client sponsor", what:`Name a ${r.role.toLowerCase()}${r.notes?" — "+r.notes:""}`}); });
+    S.roles.forEach(r=>{ if(r.role&&r.status==="Candidate, unconfirmed"&&r.person) acts.push({phase:P_MVP, who:r.person, what:`Confirm ${r.person} as ${r.role.toLowerCase()} — currently unconfirmed`}); });
+    S.conns.forEach(c=>{ if(c.sys&&c.conn==="Custom — needs building") acts.push({phase:P_MVP, who:c.owner||"platform lead", what:`Scope and build the custom connection to ${c.sys} — custom connectors are weeks, not days`}); });
+    S.conns.forEach(c=>{ if(c.sys&&c.conn==="Missing — no way in yet") acts.push({phase:P_MVP, who:c.owner||"platform lead", what:`Find a route into ${c.sys} — currently no way in`}); });
+    S.divs.forEach(d=>{ if(d.diff&&d.res!=="Resolved") acts.push({phase:P_MVP, who:"build team", what:`Close the POC-vs-production gap: ${d.diff}${d.why?" — matters because "+d.why:""}`}); });
+    S.datas.forEach(d=>{ if(d.src&&(d.sens==="Regulated"||d.sens==="Personal data")) acts.push({phase:P_LIVE, who:"security / DPO", what:`Confirm the compliance route for ${d.src} (${d.sens.toLowerCase()}) before anything goes live`}); });
+  }
+  /* signal-derived actions — reds are urgent, ambers queue before MVP.
+     In deep mode, table-rated signals are skipped: their rows already
+     generated the specific actions above. */
+  SIGNALS.forEach(s=>{
+    if(deep() && deriveRag(s.id)) return;
+    const v=effRag(s.id); if(v!=="R"&&v!=="A") return;
+    const t=SIGNAL_ACTIONS[s.id]; if(!t) return;
+    acts.push({phase: v==="R"? P_NOW : P_MVP, who:t.who, what:t.what+(v==="R"?" — currently: "+s.r.toLowerCase():"")});
+  });
   return acts;
+}
+function actionsByPhase(){
+  const acts=actionList();
+  return [P_NOW,P_MVP,P_LIVE].map(p=>({phase:p, items:acts.filter(a=>a.phase===p)})).filter(g=>g.items.length);
+}
+function copyActions(){
+  const groups=actionsByPhase();
+  if(!groups.length){ alert("No actions yet — rate the signals or fill the tables first."); return; }
+  const lines=[`Roadmap actions — ${T("workflow")||"workflow"} (${T("client")||"client"})`];
+  groups.forEach(g=>{ lines.push("",g.phase.toUpperCase());
+    g.items.forEach(a=>lines.push(`- [ ] ${a.who}: ${a.what}`)); });
+  lines.push("","From the Mini Op Model — the POC proves the workflow; these actions prove the path.");
+  copyText(lines.join("\n"),"Actions copied — paste into your plan or board.");
 }
 
 /* ---------- output ---------- */
@@ -490,8 +531,8 @@ function buildOut(){
     ${tbl(["Action","Worst case","Who stays in control","Escalation trigger"],S.guards.filter(g=>g.act).map(g=>[g.act,g.worst,g.control,g.trigger]))}
     <h3>Measurement &amp; trust</h3>
     <p><b>The system logs:</b> ${V("m_log")}<br><b>Reviewed by:</b> ${V("m_review")}<br><b>Success threshold:</b> ${V("m_threshold","— pull from the Value Assessment —")}</p>
-    <h3>Action list — ${acts.length} item${acts.length===1?"":"s"}, each with an owner</h3>
-    ${acts.length? `<ul>${acts.map(a=>`<li><b>${esc(a.who)}:</b> ${esc(a.what)}</li>`).join("")}</ul>` : `<p class="empty">Nothing outstanding — either it's genuinely ready, or the tables above are empty. Check which.</p>`}`;
+    <h3>Roadmap actions — ${acts.length} item${acts.length===1?"":"s"}, each owned and phased</h3>
+    ${acts.length? actionsByPhase().map(g=>`<p style="margin:8px 0 2px"><b>${g.phase}</b></p><ul>${g.items.map(a=>`<li><b>${esc(a.who)}:</b> ${esc(a.what)}</li>`).join("")}</ul>`).join("") : `<p class="empty">Nothing outstanding — either it's genuinely ready, or the tables above are empty. Check which.</p>`}`;
   } else {
     deepHtml=`
     <h3>Process ${ragWord("p1")}${ragWord("p2")}${ragWord("p3")}</h3>
@@ -506,10 +547,8 @@ function buildOut(){
     <p><b>Platform:</b> ${V("t_platform")} · <b>Connects to:</b> ${V("t_systems")}</p>
     <p><b>Data:</b> ${V("t_data")}</p>
     <p><b>POC vs production differences:</b> ${V("t_diverge")}</p>`;
-    const gaps=SIGNALS.filter(s=>S.rag[s.id]==="R").map(s=>s.lens+": "+s.name+" — "+s.r);
-    const work=SIGNALS.filter(s=>S.rag[s.id]==="A").map(s=>s.lens+": "+s.name+" — "+s.a);
-    if(gaps.length)deepHtml+=`<h3>Blockers — start these conversations now</h3><ul>${gaps.map(g=>`<li>🔴 ${g}</li>`).join("")}</ul>`;
-    if(work.length)deepHtml+=`<h3>Work before MVP</h3><ul>${work.map(g=>`<li>🟡 ${g}</li>`).join("")}</ul>`;
+    const lgroups=actionsByPhase();
+    if(lgroups.length) deepHtml+=`<h3>Roadmap actions — owned and phased</h3>`+lgroups.map(g=>`<p style="margin:8px 0 2px"><b>${g.phase}</b></p><ul>${g.items.map(a=>`<li><b>${esc(a.who)}:</b> ${esc(a.what)}</li>`).join("")}</ul>`).join("");
   }
   const autoN = deep()? SIGNALS.filter(s=>!S.rag[s.id]&&deriveRag(s.id)).length : 0;
   out.innerHTML=`
