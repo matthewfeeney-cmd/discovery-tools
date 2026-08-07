@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Use Case Discovery Screen</title>
+<title>AI Readiness Assessment</title>
 <style>
   :root{
     --red:#e8112d; --ink:#1a1a1a; --grey:#5f6368; --line:#e3e3e3; --bg:#f7f7f8;
@@ -20,7 +20,11 @@
   button:hover{border-color:var(--red);color:var(--red)}
   button.primary{background:var(--red);border-color:var(--red);color:#fff}
   button.primary:hover{background:#c60e26;color:#fff}
-  main{max-width:960px;margin:0 auto;padding:24px 28px}
+  nav{background:#fff;border-bottom:1px solid var(--line);padding:0 28px;display:flex;gap:4px;overflow-x:auto;position:sticky;top:0;z-index:40}
+  nav button{border:none;border-bottom:3px solid transparent;border-radius:0;padding:12px 18px;color:var(--grey);white-space:nowrap}
+  nav button.active{color:var(--red);border-bottom-color:var(--red)}
+  main{max-width:1000px;margin:0 auto;padding:24px 28px}
+  .panel{display:none}.panel.active{display:block}
   .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
   .card h2{font-size:16px;margin-bottom:4px}
   .hint{color:var(--grey);font-size:13px;margin-bottom:10px}
@@ -31,14 +35,23 @@
   input:focus,textarea:focus,select:focus{outline:2px solid #f5b6c0;border-color:var(--red)}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-  @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+  @media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
   .q{margin:14px 0;padding-bottom:12px;border-bottom:1px dashed var(--line)}
   .q:last-child{border-bottom:none}
   .q .qt{font-weight:600;font-size:13.5px;margin-bottom:2px}
   .q .qhead{display:flex;align-items:center;gap:8px}
   .q .qh{font-size:12px;color:var(--grey);margin-bottom:6px}
-  .opts{display:flex;gap:6px;flex-wrap:wrap}
-  .opt{flex:1;min-width:130px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;cursor:pointer;background:#fff;color:var(--grey);text-align:center}
+  .opts{display:flex;gap:5px;flex-wrap:wrap}
+  .opt{flex:1;min-width:120px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12px;cursor:pointer;background:#fff;color:var(--grey);text-align:center}
+  .opt b{display:block;font-size:10px;letter-spacing:.05em;color:#bbb;margin-bottom:1px}
+  .opt.sel{font-weight:700}
+  .opt.st1.sel{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+  .opt.st1.sel b,.opt.st2.sel b{color:inherit;opacity:.7}
+  .opt.st2.sel{background:#fdeee0;border-color:#c2650d;color:#c2650d}
+  .opt.st3.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+  .opt.st3.sel b,.opt.st4.sel b,.opt.st5.sel b{color:inherit;opacity:.7}
+  .opt.st4.sel{background:#e9f3ea;border-color:#3d7a44;color:#3d7a44}
+  .opt.st5.sel{background:var(--green-bg);border-color:var(--green);color:var(--green)}
   .opt.s0.sel{background:var(--red-bg);border-color:var(--red);color:var(--red);font-weight:700}
   .opt.s1.sel{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700}
   .opt.s2.sel{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
@@ -57,7 +70,7 @@
   .modechip.sel{background:var(--red);border-color:var(--red);color:#fff}
   .deepbadge{font-size:10px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 7px;background:var(--blue-bg);color:var(--blue);vertical-align:middle;margin-left:8px}
   .dim{border:1px solid var(--line);border-radius:10px;padding:4px 16px 8px;margin:12px 0}
-  .dim-head{display:flex;align-items:center;gap:10px;padding:10px 0 2px}
+  .dim-head{display:flex;align-items:center;gap:10px;padding:10px 0 2px;flex-wrap:wrap}
   .dim-head h3{font-size:13.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--red)}
   .dim-head .sub2{font-size:12px;color:var(--grey);font-weight:400}
   .dscore{font-size:12px;font-weight:800;border-radius:12px;padding:2px 10px;background:#f0f0f0;color:var(--grey)}
@@ -65,6 +78,24 @@
   .dscore.a{background:var(--amber-bg);color:var(--amber)}
   .dscore.r{background:var(--red-bg);color:var(--red)}
   .dim-head .dscore{margin-left:auto}
+  .wt{font-size:10.5px;color:var(--grey);border:1px solid var(--line);border-radius:10px;padding:1px 7px}
+  /* scorecard */
+  .sc-row{display:grid;grid-template-columns:150px 1fr 120px;gap:12px;align-items:center;margin:9px 0;font-size:13px}
+  @media(max-width:700px){.sc-row{grid-template-columns:110px 1fr;}.sc-row .sc-note{grid-column:1/-1}}
+  .sc-track{display:flex;gap:3px}
+  .sc-cell{flex:1;height:22px;border-radius:4px;background:#efefef;position:relative}
+  .sc-cell.on{background:var(--blue)}
+  .sc-cell.ceil{background:var(--red)}
+  .sc-cell.tgt:after{content:"";position:absolute;inset:0;border:2px dashed var(--ink);border-radius:4px}
+  .sc-note{font-size:11.5px;color:var(--grey)}
+  .stagebar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .stagebox{flex:1;min-width:150px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+  .stagebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
+  .stagebox .v{font-size:20px;font-weight:800;line-height:1.2}
+  .stagebox .v small{display:block;font-size:12px;font-weight:600;color:var(--grey)}
+  .stagebox.ceil{background:var(--red-bg);border-color:var(--red)}
+  .stagebox.pot{background:var(--blue-bg);border-color:var(--blue)}
+  .stagebox.tgt{background:var(--green-bg);border-color:var(--green)}
   .scorebar{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
   .scorebox{flex:1;min-width:130px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-align:center}
   .scorebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
@@ -88,6 +119,7 @@
   .pill.b{background:var(--blue-bg);color:var(--blue)}
   .flagline{background:var(--amber-bg);border-left:4px solid var(--amber);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
   .infoline{background:var(--blue-bg);border-left:4px solid var(--blue);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
+  .redline{background:var(--red-bg);border-left:4px solid var(--red);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
   .matrix{position:relative;width:100%;max-width:440px;aspect-ratio:1;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);margin:26px 10px 34px 44px}
   .matrix .half{position:absolute;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#bbb;font-weight:700}
   .matrix .dot{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,50%);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer}
@@ -99,8 +131,11 @@
   .sizer .out{font-size:18px;font-weight:800;color:var(--blue)}
   .addrow{font-size:12.5px;padding:5px 12px;margin-top:4px}
   .save-note{font-size:12px;color:var(--grey)}
+  .phase h3{color:var(--red);font-size:13.5px;margin:16px 0 4px;text-transform:uppercase;letter-spacing:.05em}
+  .actitem{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:6px 0}
+  .actitem .who{font-size:11.5px;color:var(--grey)}
   footer{text-align:center;color:var(--grey);font-size:12px;padding:18px}
-  @media print{header .hdr-actions,button,.no-print{display:none!important}body{background:#fff}main{padding:0;max-width:none}.card{page-break-inside:avoid}}
+  @media print{header .hdr-actions,nav,button,.no-print{display:none!important}body{background:#fff}main{padding:0;max-width:none}.panel{display:block!important;page-break-after:always}.card{page-break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -109,7 +144,7 @@
 <header>
   <div>
     <span class="tag">Assess · Prioritise</span>
-    <h1>Use Case Discovery Screen</h1>
+    <h1>AI Readiness Assessment</h1>
   </div>
   <div class="hdr-actions">
     <span class="save-note" id="saveNote">Autosaves in this browser</span>
@@ -118,821 +153,938 @@
     <button onclick="document.getElementById('importFile').click()">Import</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
     <button onclick="window.print()">Print / PDF</button>
-    <button class="primary" onclick="copyBacklog()">Copy ranked backlog</button>
   </div>
 </header>
 
+<nav>
+  <button data-tab="org" class="active" onclick="showTab('org')">1 · Organisation readiness</button>
+  <button data-tab="cases" onclick="showTab('cases')">2 · Use cases</button>
+  <button data-tab="out" onclick="showTab('out')">3 · Roadmap &amp; report</button>
+</nav>
+
 <main>
 
-<div class="card">
-  <h2>How this works</h2>
-  <p class="hint">Screen each candidate workflow with the person who knows it. Four <b>Value</b> questions, then twelve <b>AI-readiness</b> checks across four dimensions — <b>fit · data · tech · skills</b>. If you can't answer, pick the left option: an unknown is a finding, and the score rises as you learn. You get scores, an indicative £ at stake, a build-vs-buy call and a ranked backlog. Deep-dive the winners with the Value Assessment and Mini Op Model, and bring the top ones to life with quick prototypes on example cases.</p>
-  <div class="modechips">
-    <div class="modechip" id="mode_light" onclick="setMode('light')">Light screen — ~20 min per candidate</div>
-    <div class="modechip" id="mode_deep" onclick="setMode('deep')">Deep dive — a week's Prioritise, measured not guessed</div>
-  </div>
-  <p class="hint" id="modeHint" style="margin:8px 0 0"></p>
-</div>
-
-<div class="card">
-  <h2>Candidates <span class="hint" style="display:inline">— click a row to edit, scores update live</span></h2>
-  <div class="grid3" style="margin-bottom:10px">
-    <div><label>Client</label><input id="m_client" oninput="updMeta('client',this.value)"></div>
-    <div><label>Screened by</label><input id="m_by" oninput="updMeta('by',this.value)"></div>
-    <div><label>Date</label><input type="date" id="m_date" onchange="updMeta('date',this.value)"></div>
-  </div>
-  <table>
-    <thead><tr><th>#</th><th>Workflow</th><th>Value /8</th><th>Readiness /24</th><th>£ at stake /yr</th><th>Buy / build</th><th>Verdict</th><th style="width:30px"></th></tr></thead>
-    <tbody id="candRows"></tbody>
-  </table>
-  <button onclick="addCand()">+ Add candidate</button>
-</div>
-
-<div class="card deep-only" id="interviewCard" style="display:none">
-  <h2>Interview &amp; pain-point log <span class="deepbadge">DEEP</span></h2>
-  <p class="hint">Every conversation is evidence. Log who you spoke to and the pains they raised — tagged pains become the demand signal behind the ranking.</p>
-  <table>
-    <thead><tr><th style="width:16%">Name</th><th style="width:16%">Role</th><th style="width:13%">Date</th><th>Pain points raised (their words)</th><th style="width:18%">Relates to candidate</th><th style="width:30px"></th></tr></thead>
-    <tbody id="intBody"></tbody>
-  </table>
-  <button class="addrow" onclick="addInt()">+ Add interview</button>
-</div>
-
-<div class="card" id="formCard" style="display:none">
-  <h2 id="formTitle">Candidate</h2>
-  <div class="grid3">
-    <div><label>Workflow name</label><input id="f_name" oninput="upd('name',this.value)"></div>
-    <div><label>Area / team</label><input id="f_area" oninput="upd('area',this.value)"></div>
-    <div><label>Who knows this workflow best? <small>name / role — your follow-up contact</small></label><input id="f_contact" oninput="upd('contact',this.value)"></div>
-  </div>
-  <label>The use case in one sentence — who does what today, and what would the AI do?</label>
-  <textarea id="f_desc" oninput="upd('desc',this.value)" placeholder="e.g. Customer service (8 people) triage ~200 emails/day by hand; AI would draft the triage and response for a person to approve"></textarea>
-
-  <div class="deep-only" id="stepsBlock">
-    <h2 style="margin-top:18px;color:var(--red);font-size:14px">STEP MAP — what share of the work would the AI actually touch? <span class="deepbadge">DEEP</span></h2>
-    <p class="hint">Break the workflow into its 4–8 steps with the person who does it. Give each a rough % of the task's total time and tick the steps the AI would take on. <b>The covered share feeds the £ opportunity below</b> — AI only earns value on the time it touches.</p>
-    <table>
-      <thead><tr><th>#</th><th>Step</th><th style="width:18%">% of task time</th><th style="width:16%">AI covers it?</th><th style="width:30px"></th></tr></thead>
-      <tbody id="stepBody"></tbody>
-    </table>
-    <button class="addrow" onclick="addStep()">+ Add step</button>
-    <div id="stepFlag"></div>
+<!-- =========== ORG =========== -->
+<section class="panel active" id="panel-org">
+  <div class="card">
+    <h2>How this works</h2>
+    <p class="hint">Two layers. <b>Organisation readiness</b> (this tab, ~20 minutes, asked once with the sponsor and IT) sets the ceiling — how far this business can take <i>any</i> AI use case. <b>Use cases</b> (next tab) score the individual workflows within it. Readiness is a weakest-link system: your lowest dimension caps everything, so the score that matters is the ceiling, not the average.</p>
+    <div class="modechips">
+      <div class="modechip" id="mode_light" onclick="setMode('light')">Light — screen it</div>
+      <div class="modechip" id="mode_deep" onclick="setMode('deep')">Deep — evidence-backed</div>
+    </div>
+    <p class="hint" id="modeHint" style="margin:8px 0 0"></p>
   </div>
 
-  <h2 style="margin-top:18px;color:var(--red);font-size:14px">VALUE — is there a business case?</h2>
-  <p class="hint deep-only">Deep mode: each question splits into three narrower checks — facts, not impressions. The question's score is computed from the checks, so one gut-feel tap can't carry it.</p>
-  <div id="valQs"></div>
-  <div class="sizer">
-    <label style="margin-top:0">Rough sizing — best guess <small>(sizing only; the Value Assessment builds the defensible number)</small></label>
+  <div class="card">
+    <h2>Client &amp; ambition</h2>
     <div class="grid3">
-      <div><label>People doing the task</label><input type="number" min="0" step="0.5" id="f_people" oninput="upd('people',this.value)"></div>
-      <div><label>Hours per person per week</label><input type="number" min="0" step="0.5" id="f_hours" oninput="upd('hours',this.value)"></div>
-      <div><label>Cost per person per year (£) <small>salary + overheads — roughly salary × 1.3</small></label><input type="number" min="0" id="f_pcost" oninput="upd('pcost',this.value)"></div>
+      <div><label>Client</label><input id="m_client" oninput="updMeta('client',this.value)"></div>
+      <div><label>Assessed by</label><input id="m_by" oninput="updMeta('by',this.value)"></div>
+      <div><label>Date</label><input type="date" id="m_date" onchange="updMeta('date',this.value)"></div>
     </div>
-    <div class="deep-only grid2" style="margin-top:8px">
-      <div><label>Cross-check: cases per year <span class="deepbadge">DEEP</span></label><input type="number" min="0" id="f_volume" oninput="upd('volume',this.value)"></div>
-      <div><label>Time per case (hours)</label><input type="number" min="0" step="0.1" id="f_timecase" oninput="upd('timecase',this.value)"></div>
-    </div>
-    <div style="margin-top:8px">Indicative time at stake: <span class="out" id="sizeOut">—</span></div>
-    <div id="sizeXcheck"></div>
+    <label style="margin-top:14px">Where do they need to be in 12 months? <small>Their ambition sets the target — every gap below is measured against it. Ask the sponsor; don't assume level 5.</small></label>
+    <div class="opts" id="targetOpts"></div>
+    <label>What are they actually trying to achieve? <small>one line, in their words</small></label>
+    <input id="m_ambition" oninput="updMeta('ambition',this.value)" placeholder="e.g. cut cost-to-serve 15% without adding headcount">
   </div>
 
-  <h2 style="margin-top:18px;color:var(--red);font-size:14px">AI-READINESS — fit · data · tech · skills</h2>
-  <div id="easeQs"></div>
+  <div class="card">
+    <h2>Readiness scorecard</h2>
+    <p class="hint">Each dimension is scored 1–5 from three questions. Weighting follows the evidence that roughly 10% of AI effort is tooling, 20% data and technology, and 70% people, process and change — so strategy, skills, governance and adoption carry the most weight.</p>
+    <div class="stagebar" id="stageBar"></div>
+    <div id="scorecard"></div>
+    <div class="verdict" id="ceilVerdict"></div>
+  </div>
 
-  <div class="deep-only" id="probeBlock">
-    <h2 style="margin-top:18px;color:var(--red);font-size:14px">FEASIBILITY PROBE — test it, don't assume it <span class="deepbadge">DEEP</span></h2>
-    <p class="hint">Two hours, no code: name the one thing you're unsure AI can do, collect ~10 real cases (a few typical, a few harder, a couple awkward), paste them into a model playground with a rough brief, and score what comes back. <b>Once 5+ cases are scored, the tested result replaces the "has this been done before?" answer in the readiness score</b> — measured beats assumed. <b>Credible</b> = a knowledgeable person would trust it as a starting point.</p>
-    <label>The core uncertainty — the one thing that decides feasibility</label>
-    <input id="f_probeUnc" onchange="updProbe('unc',this.value)" placeholder="e.g. can it reliably pull the right details out of messy, inconsistent emails?">
+  <div id="orgDims"></div>
+</section>
+
+<!-- =========== CASES =========== -->
+<section class="panel" id="panel-cases">
+  <div class="card">
+    <h2>Use cases <span class="hint" style="display:inline">— click a row to edit, scores update live</span></h2>
+    <p class="hint">Only what varies by workflow is asked here — the organisation-level facts live in tab 1 and apply to every candidate.</p>
     <table>
-      <thead><tr><th style="width:24px">#</th><th>Case (short description)</th><th style="width:32%">Result</th><th>Why it failed — missing context vs can't reason it</th></tr></thead>
-      <tbody id="probeBody"></tbody>
+      <thead><tr><th>#</th><th>Workflow</th><th>Value /8</th><th>Readiness /24</th><th>£ at stake /yr</th><th>Buy / build</th><th>Verdict</th><th style="width:30px"></th></tr></thead>
+      <tbody id="candRows"></tbody>
     </table>
-    <div id="probeVerdict"></div>
+    <button onclick="addCand()">+ Add candidate</button>
   </div>
 
-  <label style="margin-top:14px">Build vs buy — first instinct <small>(is this a solved problem or something unique to this client?)</small></label>
-  <div class="opts" id="bvb"></div>
-  <div class="deep-only" id="bvbBlock">
-    <div class="grid2" style="margin-top:10px">
-      <div><label>Tools that already do this — names <span class="deepbadge">DEEP</span></label><input id="f_bvbTools" onchange="upd('bvbTools',this.value)" placeholder="e.g. Zendesk AI, Intercom Fin — or 'none found'"></div>
-      <div><label>Is this workflow a competitive edge for them?</label><div class="opts" id="bvbEdge"></div></div>
-      <div><label>How deep would it sit in their systems?</label><div class="opts" id="bvbInteg"></div></div>
-      <div><label>Data sensitivity</label><div class="opts" id="bvbSens"></div></div>
+  <div class="card deep-only" id="interviewCard" style="display:none">
+    <h2>Interview &amp; pain-point log <span class="deepbadge">DEEP</span></h2>
+    <p class="hint">Every conversation is evidence. Log who you spoke to and the pains they raised — tagged pains become the demand signal behind the ranking.</p>
+    <table>
+      <thead><tr><th style="width:16%">Name</th><th style="width:16%">Role</th><th style="width:13%">Date</th><th>Pain points raised (their words)</th><th style="width:18%">Relates to candidate</th><th style="width:30px"></th></tr></thead>
+      <tbody id="intBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addInt()">+ Add interview</button>
+  </div>
+
+  <div class="card" id="formCard" style="display:none">
+    <h2 id="formTitle">Candidate</h2>
+    <div class="grid3">
+      <div><label>Workflow name</label><input id="f_name" oninput="upd('name',this.value)"></div>
+      <div><label>Area / team</label><input id="f_area" oninput="upd('area',this.value)"></div>
+      <div><label>Who knows this workflow best? <small>name / role — your follow-up contact</small></label><input id="f_contact" oninput="upd('contact',this.value)"></div>
     </div>
-    <div id="bvbSuggest"></div>
+    <label>The use case in one sentence — who does what today, and what would the AI do?</label>
+    <textarea id="f_desc" oninput="upd('desc',this.value)" placeholder="e.g. Customer service (8 people) triage ~200 emails/day by hand; AI would draft the triage and response for a person to approve"></textarea>
+
+    <div class="deep-only" id="stepsBlock">
+      <h2 style="margin-top:18px;color:var(--red);font-size:14px">STEP MAP — what share of the work would the AI touch? <span class="deepbadge">DEEP</span></h2>
+      <p class="hint">Break the workflow into its 4–8 steps with the person who does it. Give each a rough % of total time and tick the steps the AI would take on. <b>The covered share feeds the £ opportunity below.</b></p>
+      <table>
+        <thead><tr><th>#</th><th>Step</th><th style="width:18%">% of task time</th><th style="width:16%">AI covers it?</th><th style="width:30px"></th></tr></thead>
+        <tbody id="stepBody"></tbody>
+      </table>
+      <button class="addrow" onclick="addStep()">+ Add step</button>
+      <div id="stepFlag"></div>
+    </div>
+
+    <h2 style="margin-top:18px;color:var(--red);font-size:14px">VALUE — is there a business case?</h2>
+    <p class="hint deep-only">Deep mode: each question splits into three narrower checks — facts, not impressions.</p>
+    <div id="valQs"></div>
+    <div class="sizer">
+      <label style="margin-top:0">Rough sizing — best guess <small>(sizing only; the Value Assessment builds the defensible number)</small></label>
+      <div class="grid3">
+        <div><label>People doing the task</label><input type="number" min="0" step="0.5" id="f_people" oninput="upd('people',this.value)"></div>
+        <div><label>Hours per person per week</label><input type="number" min="0" step="0.5" id="f_hours" oninput="upd('hours',this.value)"></div>
+        <div><label>Cost per person per year (£) <small>salary + overheads — roughly salary × 1.3</small></label><input type="number" min="0" id="f_pcost" oninput="upd('pcost',this.value)"></div>
+      </div>
+      <div class="deep-only grid2" style="margin-top:8px">
+        <div><label>Cross-check: cases per year <span class="deepbadge">DEEP</span></label><input type="number" min="0" id="f_volume" oninput="upd('volume',this.value)"></div>
+        <div><label>Time per case (hours)</label><input type="number" min="0" step="0.1" id="f_timecase" oninput="upd('timecase',this.value)"></div>
+      </div>
+      <div style="margin-top:8px">Indicative time at stake: <span class="out" id="sizeOut">—</span></div>
+      <div id="sizeXcheck"></div>
+    </div>
+
+    <h2 style="margin-top:18px;color:var(--red);font-size:14px">USE-CASE READINESS — fit · data · tech · skills for <i>this</i> workflow</h2>
+    <div id="easeQs"></div>
+
+    <div class="deep-only" id="probeBlock">
+      <h2 style="margin-top:18px;color:var(--red);font-size:14px">FEASIBILITY PROBE — test it, don't assume it <span class="deepbadge">DEEP</span></h2>
+      <p class="hint">Two hours, no code: name the one thing you're unsure AI can do, collect ~10 real cases, run them in a model playground and score what comes back. <b>Once 5+ are scored, the tested result replaces the "has this been done before?" answer.</b></p>
+      <label>The core uncertainty — the one thing that decides feasibility</label>
+      <input id="f_probeUnc" onchange="updProbe('unc',this.value)" placeholder="e.g. can it reliably pull the right details out of messy, inconsistent emails?">
+      <table>
+        <thead><tr><th style="width:24px">#</th><th>Case (short description)</th><th style="width:32%">Result</th><th>Why it failed — missing context vs can't reason it</th></tr></thead>
+        <tbody id="probeBody"></tbody>
+      </table>
+      <div id="probeVerdict"></div>
+    </div>
+
+    <label style="margin-top:14px">Build vs buy — first instinct</label>
+    <div class="opts" id="bvb"></div>
+    <div class="deep-only" id="bvbBlock">
+      <div class="grid2" style="margin-top:10px">
+        <div><label>Tools that already do this — names <span class="deepbadge">DEEP</span></label><input id="f_bvbTools" onchange="upd('bvbTools',this.value)" placeholder="e.g. Zendesk AI — or 'none found'"></div>
+        <div><label>Is this workflow a competitive edge for them?</label><div class="opts" id="bvbEdge"></div></div>
+        <div><label>How deep would it sit in their systems?</label><div class="opts" id="bvbInteg"></div></div>
+        <div><label>Data sensitivity</label><div class="opts" id="bvbSens"></div></div>
+      </div>
+      <div id="bvbSuggest"></div>
+    </div>
+
+    <div class="deep-only">
+      <label style="margin-top:12px">Depends on / shares systems or data with <span class="deepbadge">DEEP</span></label>
+      <input id="f_depends" onchange="upd('depends',this.value)" placeholder="e.g. same CRM data as 'Broker queries' — build together">
+    </div>
+
+    <div class="scorebar">
+      <div class="scorebox"><div class="lbl">Value</div><div class="v" id="sVal">–</div></div>
+      <div class="scorebox"><div class="lbl">Use-case readiness</div><div class="v" id="sEase">–</div></div>
+      <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v" id="sMoney">–</div></div>
+      <div class="scorebox deep-only"><div class="lbl">Evidence strength</div><div class="v" id="sEv">–</div></div>
+      <div class="scorebox"><div class="lbl">Answered</div><div class="v" id="sDone">0/16</div></div>
+    </div>
+    <div class="verdict" id="candVerdict"></div>
+    <div id="candGate"></div>
+    <label>Notes — blockers, a keen sponsor, why you'd override the verdict</label>
+    <textarea id="f_notes" oninput="upd('notes',this.value)"></textarea>
   </div>
 
-  <div class="deep-only">
-    <label style="margin-top:12px">Depends on / shares systems or data with <span class="deepbadge">DEEP</span> <small>other candidates or projects — used for wave planning</small></label>
-    <input id="f_depends" onchange="upd('depends',this.value)" placeholder="e.g. same CRM data as 'Broker queries' — build together">
+  <div class="card deep-only" id="portfolioCard" style="display:none">
+    <h2>Portfolio view <span class="deepbadge">DEEP</span></h2>
+    <div id="portfolioBody"></div>
   </div>
 
-  <div class="scorebar">
-    <div class="scorebox"><div class="lbl">Value</div><div class="v" id="sVal">–</div></div>
-    <div class="scorebox"><div class="lbl">AI-readiness</div><div class="v" id="sEase">–</div></div>
-    <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v" id="sMoney">–</div></div>
-    <div class="scorebox deep-only"><div class="lbl">Evidence strength</div><div class="v" id="sEv">–</div></div>
-    <div class="scorebox"><div class="lbl">Answered</div><div class="v" id="sDone">0/16</div></div>
+  <div class="card">
+    <h2>Value × use-case readiness matrix</h2>
+    <p class="hint">Candidates appear once all sixteen questions are answered.</p>
+    <div class="matrix" id="matrix">
+      <div class="grid"></div>
+      <div class="axis" style="bottom:-26px;left:50%;transform:translateX(-50%)">Use-case readiness →</div>
+      <div class="axis" style="left:-38px;top:50%;transform:rotate(-90deg) translateX(50%);transform-origin:left">Value →</div>
+      <div class="half" style="top:4px;right:6px">Do first</div>
+      <div class="half" style="top:4px;left:6px">Big bet — fix readiness</div>
+      <div class="half" style="bottom:4px;right:6px">Fill-in</div>
+      <div class="half" style="bottom:4px;left:6px">Park</div>
+    </div>
   </div>
-  <div class="verdict" id="candVerdict"></div>
-  <label>Notes — blockers, a keen sponsor, a better neighbouring task, why you'd override the verdict</label>
-  <textarea id="f_notes" oninput="upd('notes',this.value)"></textarea>
-</div>
+</section>
 
-<div class="card deep-only" id="portfolioCard" style="display:none">
-  <h2>Portfolio view <span class="deepbadge">DEEP</span></h2>
-  <div id="portfolioBody"></div>
-</div>
-
-<div class="card" id="roadmapCard">
-  <h2>Roadmap — what these scores tell you to do</h2>
-  <p class="hint">Every weak answer becomes an action: <b>NOW</b> = start the winners (prototype, £ case, op model) · <b>NEXT</b> = the specific fixes that promote a Big bet or Fill-in · <b>LATER</b> = parked, with the reason. Actions are tagged <b>ASK</b> (a conversation), <b>MEASURE</b> (get a number), <b>TEST</b> (prove it), <b>DECIDE</b> (a call to make). Copy it straight into your plan.</p>
-  <div id="roadmapBody"></div>
-  <button class="primary" style="margin-top:8px" onclick="copyRoadmap()">Copy roadmap actions</button>
-</div>
-
-<div class="card">
-  <h2>Value × AI-readiness matrix</h2>
-  <p class="hint">Candidates appear once all sixteen questions are answered.</p>
-  <div class="matrix" id="matrix">
-    <div class="grid"></div>
-    <div class="axis" style="bottom:-26px;left:50%;transform:translateX(-50%)">AI-readiness →</div>
-    <div class="axis" style="left:-38px;top:50%;transform:rotate(-90deg) translateX(50%);transform-origin:left">Value →</div>
-    <div class="half" style="top:4px;right:6px">Do first</div>
-    <div class="half" style="top:4px;left:6px">Big bet — fix readiness</div>
-    <div class="half" style="bottom:4px;right:6px">Fill-in</div>
-    <div class="half" style="bottom:4px;left:6px">Park</div>
+<!-- =========== OUTPUT =========== -->
+<section class="panel" id="panel-out">
+  <div class="card no-print">
+    <h2>Outputs</h2>
+    <p class="hint">Three things a client can act on: where they stand, what to fix and in what order, and which workflows to start.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="primary" onclick="copyReport()">Copy readiness report</button>
+      <button onclick="copyRoadmap()">Copy gap-closure roadmap</button>
+      <button onclick="copyBacklog()">Copy ranked backlog</button>
+    </div>
   </div>
-</div>
+
+  <div class="card">
+    <h2>Gap-closure roadmap</h2>
+    <p class="hint">Every dimension below its target becomes an action, phased by leverage: gaps that cap the ceiling or unblock the most use cases come first.</p>
+    <div id="gapRoadmap"></div>
+  </div>
+
+  <div class="card">
+    <h2>Use-case actions</h2>
+    <p class="hint">What to do with each candidate — and which organisation gap gates it.</p>
+    <div id="ucRoadmap"></div>
+  </div>
+</section>
 
 </main>
-<footer>Enablis · Use Case Discovery Screen · feeds the Value Assessment Tool and Mini Op Model · data stays in this browser</footer>
+<footer>Enablis · AI Readiness Assessment · pairs with the Value Assessment Tool and Mini Op Model · data stays in this browser</footer>
 
 <script>
 "use strict";
-/* Light: each question scored 0/1/2 with one tap. Deep: each question is computed
-   from three narrower checks (below), scored 0/1/2 each — facts over impressions. */
+/* ============================ STAGES ============================ */
+const STAGES=[
+ {n:1,name:"Exploring",d:"curious, nothing running"},
+ {n:2,name:"Experimenting",d:"pilots, no repeatable path"},
+ {n:3,name:"Operationalising",d:"first things running for real"},
+ {n:4,name:"Scaling",d:"repeatable, spreading, measured"},
+ {n:5,name:"AI-native",d:"how the business works"}
+];
+const stageName=n=>{const s=STAGES.find(x=>x.n===n);return s?s.name:"—";};
+
+/* ============================ ORG LAYER ============================ */
+/* 6 dimensions x 3 questions, each answered on the 1-5 stage scale.
+   Weighting reflects 10 / 20 / 70: tooling 10, data+tech foundations 20,
+   people-process-change 70 (split across strategy, skills, governance, adoption). */
+const ORG_DIMS=[
+ {id:"strategy",name:"Strategy & sponsorship",sub:"is someone accountable, with money?",w:17.5,group:"people"},
+ {id:"data",name:"Data",sub:"can it be found, trusted, reached?",w:20,group:"data"},
+ {id:"tech",name:"Technology",sub:"is there somewhere safe to build and run?",w:10,group:"tech"},
+ {id:"skills",name:"Skills",sub:"can their people build with it and use it?",w:17.5,group:"people"},
+ {id:"gov",name:"Governance & risk",sub:"is there a route to a yes?",w:17.5,group:"people"},
+ {id:"adopt",name:"Adoption & change",sub:"do changes actually stick here?",w:17.5,group:"people"}
+];
+const ORG_QS=[
+ {dim:"strategy",k:"s_sponsor",t:"Who owns AI here?",h:"Not who's interested — who is accountable and can unblock things.",
+  o:["Nobody owns it","Interest, no owner","A named sponsor","Sponsor with budget","Board priority with targets"]},
+ {dim:"strategy",k:"s_ambition",t:"Is there a stated ambition for AI?",h:"Written down and tied to the business, or just enthusiasm?",
+  o:["None","Vague enthusiasm","Goals written somewhere","Tied to business goals","In the plan, with numbers"]},
+ {dim:"strategy",k:"s_money",t:"Is there money set aside?",h:"Ask how the last AI spend got approved.",
+  o:["None","Would need finding","Project by project","Annual budget line","Multi-year funding"]},
+ {dim:"data",k:"d_known",t:"Do they know where the key data lives?",h:"Could someone point you at it this week?",
+  o:["Scattered, no map","Some of it known","Key systems documented","Catalogued with owners","Governed, self-serve"]},
+ {dim:"data",k:"d_quality",t:"Is the data trusted?",h:"Do people already build reports and decisions on it?",
+  o:["Not trusted","Patchy","Good in core systems","Measured & monitored","Managed to standards"]},
+ {dim:"data",k:"d_access",t:"How fast can someone new get access?",h:"The honest answer, not the policy.",
+  o:["Months, and political","Slow but possible","Routine with approval","Fast and governed","Self-serve within policy"]},
+ {dim:"tech",k:"t_platform",t:"Where can AI actually run?",h:"An approved service or platform — or nothing yet?",
+  o:["Nothing approved","Cloud yes, AI no","One approved AI service","Platform with guardrails","Standard reusable platform"]},
+ {dim:"tech",k:"t_integrate",t:"Can systems be connected to?",h:"Modern APIs or locked-down legacy?",
+  o:["Locked legacy","A few APIs","Most systems reachable","Integration is routine","API-first estate"]},
+ {dim:"tech",k:"t_engineering",t:"How do they build and release software?",h:"AI needs testing, versioning and monitoring like anything else.",
+  o:["No modern practice","Basic, manual","Automated in places","Standard across teams","AI-native engineering"]},
+ {dim:"skills",k:"k_literacy",t:"Can ordinary staff use AI well?",h:"Daily practical use, not one-off curiosity.",
+  o:["Almost nobody","Pockets of curiosity","Some trained users","Widespread daily use","Fluent — they teach others"]},
+ {dim:"skills",k:"k_technical",t:"Is there technical AI capability in-house?",h:"People who could build or maintain it.",
+  o:["None","Interested engineers","One or two capable","A working team","Deep in-house capability"]},
+ {dim:"skills",k:"k_time",t:"Do people have time to learn?",h:"Protected time, or their own evenings?",
+  o:["No capacity","Own time only","Ad hoc allowance","Protected time","Structured programme"]},
+ {dim:"gov",k:"g_policy",t:"Is there an AI policy people follow?",h:"Ask what staff are allowed to paste into a chatbot today.",
+  o:["None","Being discussed","Basic guidance","Policy with teeth","Policy plus monitoring"]},
+ {dim:"gov",k:"g_route",t:"Is there a route to approving an AI system?",h:"Has anything like it ever been through?",
+  o:["None — we'd invent it","IT route, untested for AI","Route exists, used once","Clear and repeatable","Fast-track with standards"]},
+ {dim:"gov",k:"g_risk",t:"How well understood is the risk and regulatory picture?",h:"Personal data, regulated decisions, audit needs.",
+  o:["Unknown","Concerns unresolved","Understood, manageable","Controls in place","Assured and audited"]},
+ {dim:"adopt",k:"a_track",t:"Do changes stick here?",h:"Think of the last new system — is it used as intended?",
+  o:["Change usually stalls","Mixed record","Some successes","Change lands reliably","Change is a strength"]},
+ {dim:"adopt",k:"a_champions",t:"Are there champions in the business?",h:"People outside IT who pull change through.",
+  o:["None","Enthusiasts, unsupported","Informal champions","Named, with time","Network with a mandate"]},
+ {dim:"adopt",k:"a_measure",t:"Do they measure benefits after go-live?",h:"Against a baseline, or by anecdote?",
+  o:["Never","Anecdotes only","Sometimes","Usually, vs baseline","Always — and they act on it"]}
+];
+/* what to do to move a dimension up one stage, keyed by current stage */
+const ORG_ACTIONS={
+ strategy:{1:"Get a named exec to own AI — one person accountable, not a committee",2:"Turn the interest into a written ambition tied to a business goal",3:"Secure a budget line so use cases stop competing for scraps",4:"Set measurable AI targets in the business plan",5:""},
+ data:{1:"Map the data behind the top workflows — where it lives, who owns it",2:"Fix quality on the two or three sources the first use cases need",3:"Agree a repeatable access route so projects don't renegotiate each time",4:"Add ownership and monitoring so quality holds without heroics",5:""},
+ tech:{1:"Get one AI service approved for use — an approved sandbox beats a policy debate",2:"Move from tolerated pilots to a platform the business can build on",3:"Add guardrails, logging and monitoring so systems can pass review",4:"Standardise the platform so each use case is cheaper than the last",5:""},
+ skills:{1:"Run practical AI training for the teams whose work will change",2:"Give a few people protected time to build real capability",3:"Build a small internal team that can maintain what gets built",4:"Formalise the programme so capability outlives individuals",5:""},
+ gov:{1:"Write a short, usable AI policy — what staff may and may not do today",2:"Walk one system through an approval route and document what it took",3:"Publish the route and the evidence each approver needs",4:"Fast-track low-risk cases against a published standard",5:""},
+ adopt:{1:"Pick one change and see it through with real user support",2:"Name champions in the business and give them time",3:"Measure adoption against a baseline on the next go-live",4:"Make benefit tracking standard on every rollout",5:""}
+};
+
+/* ============================ USE-CASE LAYER ============================ */
 const VAL_QS = [
- {k:"time", t:"How much time does this task eat?",
-  h:"Roughly people × hours. The big time-eaters are where the value is.",
+ {k:"time", t:"How much time does this task eat?",h:"Roughly people × hours. The big time-eaters are where the value is.",
   o:["Small — odd hours here and there","Meaningful — a chunk of someone's week","Major — a team's core workload"]},
- {k:"impact", t:"Does improving it move a number leadership cares about?",
-  h:"Cost, margin, revenue, customer experience — a metric with a name.",
+ {k:"impact", t:"Does improving it move a number leadership cares about?",h:"Cost, margin, revenue, customer experience — a metric with a name.",
   o:["Unclear which number it moves","Indirectly — via freed time","Directly — a named metric"]},
- {k:"volume", t:"How often does the task happen?",
-  h:"AI value compounds with repetition.",
+ {k:"volume", t:"How often does the task happen?",h:"AI value compounds with repetition.",
   o:["Occasionally / ad hoc","Regularly — weekly rhythm","High volume — daily or constant"]},
- {k:"baseline", t:"Do we know what it costs today?",
-  h:"Volume, time per case, cost — measured, not remembered.",
+ {k:"baseline", t:"Do we know what it costs today?",h:"Volume, time per case, cost — measured, not remembered.",
   o:["No — nobody tracks it","Rough numbers exist","Measured and vouched for"]}
 ];
 const DIMS = [
- {id:"fit", name:"Fit", sub:"is this the kind of work AI does well?"},
- {id:"data", name:"Data", sub:"will the data feed it?"},
- {id:"tech", name:"Tech", sub:"can it run in their world?"},
- {id:"skills", name:"Skills", sub:"will the people make it work?"}
+ {id:"fit", name:"Fit", sub:"is this the kind of work AI does well?", org:null},
+ {id:"data", name:"Data", sub:"will this workflow's data feed it?", org:"data"},
+ {id:"tech", name:"Tech", sub:"can it connect to what this workflow uses?", org:"tech"},
+ {id:"skills", name:"Skills", sub:"will this team make it work?", org:"skills"}
 ];
 const EASE_QS = [
- {k:"fit_nature", dim:"fit", t:"What kind of work is it?",
-  h:"Repetitive judgement on digital information suits AI; physical or relationship work doesn't.",
+ {k:"fit_nature", dim:"fit", t:"What kind of work is it?",h:"Repetitive judgement on digital information suits AI; physical or relationship work doesn't.",
   o:["Mostly physical / relationship","Mixed","Mostly repetitive judgement"]},
- {k:"fit_error", dim:"fit", t:"What happens if the AI gets one wrong?",
-  h:"AI is never 100% — someone must be able to catch a mistake before it costs.",
+ {k:"fit_error", dim:"fit", t:"What happens if the AI gets one wrong?",h:"AI is never 100% — someone must be able to catch a mistake before it costs.",
   o:["Serious harm, hard to catch","Caught eventually, some cost","A person checks before anything counts"]},
- {k:"fit_precedent", dim:"fit", t:"Has this kind of task been done with AI before?",
-  h:"Triage, drafting, extraction, summarising are proven patterns; genuinely novel = riskier.",
+ {k:"fit_precedent", dim:"fit", t:"Has this kind of task been done with AI before?",h:"Triage, drafting, extraction, summarising are proven patterns; genuinely novel = riskier.",
   o:["Novel — never seen it done","Similar things exist","Proven pattern — tools and case studies exist"]},
- {k:"data_access", dim:"data", t:"Can we actually get the data it needs?",
-  h:"Ask the person who'd grant access, not the enthusiast. Where does it live, who owns it?",
+ {k:"data_access", dim:"data", t:"Can we get this workflow's data?",h:"Ask the person who'd grant access, not the enthusiast.",
   o:["Locked away / ownership unclear","Reachable with some work","Accessible — the owner would say yes"]},
- {k:"data_quality", dim:"data", t:"Is the data good and complete enough?",
-  h:"Messy, missing or contradictory data is the number-one POC killer.",
+ {k:"data_quality", dim:"data", t:"Is that data good and complete enough?",h:"Messy, missing or contradictory data is the number-one POC killer.",
   o:["Poor / big gaps","Usable with cleanup","Good — people trust it today"]},
- {k:"data_examples", dim:"data", t:"Are there past examples to learn and test from?",
-  h:"Real handled cases become the test set that proves the AI works — no examples, no proof.",
+ {k:"data_examples", dim:"data", t:"Are there past examples to learn and test from?",h:"Real handled cases become the test set that proves the AI works.",
   o:["Few or none kept","Some, scattered","Plenty — history is kept"]},
- {k:"tech_integration", dim:"tech", t:"Can we plug into the systems it touches?",
-  h:"Modern systems with APIs, or locked-down legacy nobody can integrate with?",
+ {k:"tech_integration", dim:"tech", t:"Can we plug into the systems this workflow touches?",h:"Which specific systems does this task use?",
   o:["Legacy / no way in","Partly — some systems open","Modern, connectable systems"]},
- {k:"tech_platform", dim:"tech", t:"Is there somewhere approved for AI to run?",
-  h:"An approved cloud or AI service — or would this be the first AI thing they've ever hosted?",
-  o:["No — this would be the first","Cloud exists, AI not yet approved","Yes — an approved route exists"]},
- {k:"tech_security", dim:"tech", t:"Do security or regulation get in the way?",
-  h:"Personal or sensitive data, regulated decisions, data that can't leave the building.",
+ {k:"tech_effort", dim:"tech", t:"How much integration would it actually need?",h:"A read-only extract is days; writing back into core systems is months.",
+  o:["Deep two-way into core systems","Some read/write","Light — read a source, output a draft"]},
+ {k:"tech_security", dim:"tech", t:"Does this workflow's data raise security or regulatory issues?",h:"Personal or sensitive data, regulated decisions.",
   o:["Hard blockers likely","Constraints, but manageable","No obvious barriers"]},
- {k:"skills_champion", dim:"skills", t:"Is there appetite in the team doing the work?",
-  h:"Someone who'd use it daily and champion it — not just enthusiasm from above.",
+ {k:"skills_champion", dim:"skills", t:"Is there appetite in this team?",h:"Someone who'd use it daily and champion it — not just enthusiasm from above.",
   o:["Resistant or no capacity","Willing, would need support","Keen — a likely champion"]},
- {k:"skills_expert", dim:"skills", t:"Can someone judge whether the AI's output is right?",
-  h:"An expert who can check and correct it — with actual time to do so. The AI learns from them.",
+ {k:"skills_expert", dim:"skills", t:"Can someone judge whether the AI's output is right?",h:"An expert who can check and correct it — with time to do so.",
   o:["No one, or no time","Experts exist, stretched","Expert time available"]},
- {k:"skills_owner", dim:"skills", t:"Would anyone own it after go-live?",
-  h:"Not the project — the running system: watching it, maintaining it, answering for it.",
+ {k:"skills_owner", dim:"skills", t:"Would anyone own it after go-live?",h:"Not the project — the running system.",
   o:["Nobody identified","A candidate, unconfirmed","A named, willing owner"]}
 ];
-
-/* DEEP: three narrower checks per question. The question's score = average of
-   answered checks — replacing the single-tap guess with computed granularity. */
 const SUBQS = {
- time:[
-  {k:"time_share", t:"Share of the team's week spent on it", o:["Under 10%","10–30%","Over 30%"]},
-  {k:"time_trend", t:"Is the workload growing?", o:["Shrinking","Flat","Growing — backlog or volume rising"]},
-  {k:"time_peaks", t:"Does it spike and steal time from other work?", o:["Rarely","Sometimes","Constantly firefighting"]}],
- impact:[
-  {k:"impact_metric", t:"Can the sponsor name the number it moves?", o:["Can't name one","Vaguely — 'efficiency'","Named it: a cost, revenue, CX or risk figure"]},
-  {k:"impact_cfo", t:"Would finance recognise this task as a cost line or lever?", o:["No — invisible to them","Partly","Yes — it's on their radar"]},
-  {k:"impact_external", t:"Who feels it when this is slow or wrong?", o:["Nobody outside the team","Other internal teams","Customers or regulators"]}],
- volume:[
-  {k:"volume_rate", t:"Cases per week, roughly", o:["Under 10","10–100","Over 100"]},
-  {k:"volume_steady", t:"Is the volume steady enough to plan around?", o:["Wildly variable","Seasonal but predictable","Steady"]},
-  {k:"volume_growth", t:"Where is volume heading?", o:["Falling","Flat","Rising"]}],
- baseline:[
-  {k:"baseline_vol", t:"Do volume numbers exist?", o:["Nobody counts","Rough counts","System-reported"]},
-  {k:"baseline_time", t:"Is time per case known?", o:["Guesswork","Sampled / estimated","Measured — timesheets or system"]},
-  {k:"baseline_vouch", t:"Would someone in finance or ops vouch for the numbers?", o:["No","Informally","Yes — a named person"]}],
- fit_nature:[
-  {k:"fn_digital", t:"Are the inputs digital?", o:["Mostly paper / phone / physical","Mixed","Fully digital"]},
-  {k:"fn_explain", t:"Could an experienced person explain how they decide?", o:["Pure gut feel — can't articulate it","Partly","Mostly explainable rules + judgement"]},
-  {k:"fn_relation", t:"How much is negotiation, empathy or relationships?", o:["That's the core of it","Some","Minimal — it's processing work"]}],
- fit_error:[
-  {k:"fe_cost", t:"Cost of one wrong output", o:["Serious — money, regulatory or customer harm","Moderate, recoverable","Minor"]},
-  {k:"fe_catch", t:"Would an error be spotted before it counts?", o:["Often unnoticed","Eventually","A person reviews before it counts"]},
-  {k:"fe_definable", t:"Could the team write down what a good output looks like?", o:["No — it's taste","Roughly","Yes — clear criteria"]}],
- fit_precedent:[
-  {k:"fp_named", t:"Named products or case studies doing this task", o:["None found","Adjacent examples","Direct examples, named"]},
-  {k:"fp_pattern", t:"What type of task is it?", o:["Genuinely novel","A variant of a known pattern","Classic pattern — triage, draft, extract, summarise"]},
-  {k:"fp_inhouse", t:"Has anyone inside the company tried AI on anything similar?", o:["No, and nothing near it","Experiments, unclear results","Yes — something adjacent works"]}],
- data_access:[
-  {k:"da_where", t:"Where does the data live?", o:["Scattered — inboxes, spreadsheets, heads","A few systems","One or two systems"]},
-  {k:"da_asked", t:"Has the actual data owner been asked?", o:["Asked — refused or stalled","Not asked yet","Asked — and agreed"]},
-  {k:"da_thirdparty", t:"Any of it owned by a third party?", o:["The core data is external","Some is","No — all theirs"]}],
- data_quality:[
-  {k:"dq_complete", t:"Completeness", o:["Big gaps","Patchy in places","Complete enough"]},
-  {k:"dq_consistent", t:"Is the same thing recorded the same way?", o:["Free-text chaos","Semi-structured","Consistent fields"]},
-  {k:"dq_trusted", t:"Would the team trust reports built on this data today?", o:["No","With caveats","Yes"]}],
- data_examples:[
-  {k:"de_kept", t:"Are past cases kept with their outcomes?", o:["Not kept","Partially","Systematically"]},
-  {k:"de_twenty", t:"Could you assemble 20 real worked examples this week?", o:["No","With effort","Easily"]},
-  {k:"de_reasoning", t:"Do examples show the reasoning, not just the answer?", o:["Outcome only","Sometimes","Usually"]}],
- tech_integration:[
-  {k:"ti_age", t:"The main system it touches is…", o:["Closed legacy","Mixed estate","Modern, with APIs"]},
-  {k:"ti_before", t:"Has anything been integrated with it before?", o:["Never","Once — painfully","Routinely"]},
-  {k:"ti_control", t:"Who controls integration work?", o:["External vendor — slow or costly","Mixed","In-house team"]}],
- tech_platform:[
-  {k:"tp_approved", t:"Approved cloud or AI services today", o:["None — this would be the first","Cloud yes, AI not yet","AI route already approved"]},
-  {k:"tp_process", t:"Who approves new tools, and how fast was the last one?", o:["Unknown, or many months","Known, but slow","Known — weeks, not months"]},
-  {k:"tp_sandbox", t:"Is there somewhere safe to run a prototype?", o:["Nowhere","With negotiation","Yes — a sandbox exists"]}],
- tech_security:[
-  {k:"ts_personal", t:"Does the data include personal or sensitive information?", o:["Regulated / special category","Personal data","None"]},
-  {k:"ts_leave", t:"Can data leave their environment (e.g. to an AI service)?", o:["Prohibited","Restricted — options exist","Yes, or private hosting available"]},
-  {k:"ts_regulated", t:"Is the decision itself regulated — audit or explanation required?", o:["Heavily","Somewhat","No"]}],
- skills_champion:[
-  {k:"sc_reaction", t:"The team's reaction when AI comes up", o:["Resistance or fear","Curious but wary","Actively asking for it"]},
-  {k:"sc_named", t:"A named person keen to use it daily?", o:["Nobody","Maybe — someone likely","Yes — named and keen"]},
-  {k:"sc_manager", t:"Is the manager making time for it?", o:["No time available","Verbal support only","Time actually committed"]}],
- skills_expert:[
-  {k:"se_judge", t:"Who can say an output is right or wrong?", o:["Nobody really","One expert — stretched","Several people could"]},
-  {k:"se_hours", t:"Hours per week they could realistically give", o:["None","An hour or two, maybe","Scheduled time agreed"]},
-  {k:"se_written", t:"Is the expertise written down anywhere?", o:["All in people's heads","Partly — some rules exist","Documented — playbooks or rules"]}],
- skills_owner:[
-  {k:"so_named", t:"Who would own the running system?", o:["Nobody identified","A candidate, unconfirmed","Named and willing"]},
-  {k:"so_ran", t:"Have they run a system like this before?", o:["Never","Adjacent experience","Yes"]},
-  {k:"so_budget", t:"Is there a budget line for running it — licences, upkeep?", o:["None imagined","Would need finding","Exists or plausible"]}]
+ time:[{k:"time_share",t:"Share of the team's week spent on it",o:["Under 10%","10–30%","Over 30%"]},
+  {k:"time_trend",t:"Is the workload growing?",o:["Shrinking","Flat","Growing — backlog rising"]},
+  {k:"time_peaks",t:"Does it spike and steal time from other work?",o:["Rarely","Sometimes","Constantly firefighting"]}],
+ impact:[{k:"impact_metric",t:"Can the sponsor name the number it moves?",o:["Can't name one","Vaguely — 'efficiency'","Named it: cost, revenue, CX or risk"]},
+  {k:"impact_cfo",t:"Would finance recognise this as a cost line or lever?",o:["No — invisible to them","Partly","Yes — it's on their radar"]},
+  {k:"impact_external",t:"Who feels it when this is slow or wrong?",o:["Nobody outside the team","Other internal teams","Customers or regulators"]}],
+ volume:[{k:"volume_rate",t:"Cases per week, roughly",o:["Under 10","10–100","Over 100"]},
+  {k:"volume_steady",t:"Is volume steady enough to plan around?",o:["Wildly variable","Seasonal but predictable","Steady"]},
+  {k:"volume_growth",t:"Where is volume heading?",o:["Falling","Flat","Rising"]}],
+ baseline:[{k:"baseline_vol",t:"Do volume numbers exist?",o:["Nobody counts","Rough counts","System-reported"]},
+  {k:"baseline_time",t:"Is time per case known?",o:["Guesswork","Sampled / estimated","Measured"]},
+  {k:"baseline_vouch",t:"Would finance or ops vouch for the numbers?",o:["No","Informally","Yes — a named person"]}],
+ fit_nature:[{k:"fn_digital",t:"Are the inputs digital?",o:["Mostly paper / phone","Mixed","Fully digital"]},
+  {k:"fn_explain",t:"Could an experienced person explain how they decide?",o:["Pure gut feel","Partly","Mostly explainable"]},
+  {k:"fn_relation",t:"How much is negotiation, empathy or relationships?",o:["That's the core of it","Some","Minimal — processing work"]}],
+ fit_error:[{k:"fe_cost",t:"Cost of one wrong output",o:["Serious — money or harm","Moderate, recoverable","Minor"]},
+  {k:"fe_catch",t:"Would an error be spotted before it counts?",o:["Often unnoticed","Eventually","A person reviews first"]},
+  {k:"fe_definable",t:"Could the team write down what good looks like?",o:["No — it's taste","Roughly","Yes — clear criteria"]}],
+ fit_precedent:[{k:"fp_named",t:"Named products or case studies doing this task",o:["None found","Adjacent examples","Direct examples, named"]},
+  {k:"fp_pattern",t:"What type of task is it?",o:["Genuinely novel","Variant of a known pattern","Classic pattern"]},
+  {k:"fp_inhouse",t:"Has anyone inside tried AI on anything similar?",o:["No","Experiments, unclear results","Yes — something adjacent works"]}],
+ data_access:[{k:"da_where",t:"Where does this workflow's data live?",o:["Scattered — inboxes, spreadsheets","A few systems","One or two systems"]},
+  {k:"da_asked",t:"Has the actual data owner been asked?",o:["Asked — refused or stalled","Not asked yet","Asked — and agreed"]},
+  {k:"da_thirdparty",t:"Any of it owned by a third party?",o:["The core data is external","Some is","No — all theirs"]}],
+ data_quality:[{k:"dq_complete",t:"Completeness",o:["Big gaps","Patchy","Complete enough"]},
+  {k:"dq_consistent",t:"Is the same thing recorded the same way?",o:["Free-text chaos","Semi-structured","Consistent fields"]},
+  {k:"dq_trusted",t:"Would the team trust reports built on it?",o:["No","With caveats","Yes"]}],
+ data_examples:[{k:"de_kept",t:"Are past cases kept with outcomes?",o:["Not kept","Partially","Systematically"]},
+  {k:"de_twenty",t:"Could you assemble 20 real examples this week?",o:["No","With effort","Easily"]},
+  {k:"de_reasoning",t:"Do examples show the reasoning, not just the answer?",o:["Outcome only","Sometimes","Usually"]}],
+ tech_integration:[{k:"ti_age",t:"The main system it touches is…",o:["Closed legacy","Mixed","Modern, with APIs"]},
+  {k:"ti_before",t:"Has anything been integrated with it before?",o:["Never","Once — painfully","Routinely"]},
+  {k:"ti_control",t:"Who controls integration work?",o:["External vendor","Mixed","In-house team"]}],
+ tech_effort:[{k:"te_write",t:"Does it need to write back into systems?",o:["Yes — into core records","Some writing","No — read and draft only"]},
+  {k:"te_count",t:"How many systems must it touch?",o:["Four or more","Two or three","One"]},
+  {k:"te_realtime",t:"Does it need live data?",o:["Real-time required","Near real-time","A periodic extract is fine"]}],
+ tech_security:[{k:"ts_personal",t:"Does this data include personal or sensitive information?",o:["Regulated / special category","Personal data","None"]},
+  {k:"ts_leave",t:"Can this data leave their environment?",o:["Prohibited","Restricted — options exist","Yes, or private hosting"]},
+  {k:"ts_regulated",t:"Is the decision itself regulated?",o:["Heavily","Somewhat","No"]}],
+ skills_champion:[{k:"sc_reaction",t:"The team's reaction when AI comes up",o:["Resistance or fear","Curious but wary","Actively asking for it"]},
+  {k:"sc_named",t:"A named person keen to use it daily?",o:["Nobody","Maybe — someone likely","Yes — named and keen"]},
+  {k:"sc_manager",t:"Is the manager making time for it?",o:["No time","Verbal support only","Time committed"]}],
+ skills_expert:[{k:"se_judge",t:"Who can say an output is right or wrong?",o:["Nobody really","One expert — stretched","Several could"]},
+  {k:"se_hours",t:"Hours per week they could realistically give",o:["None","An hour or two","Scheduled time agreed"]},
+  {k:"se_written",t:"Is the expertise written down?",o:["All in heads","Partly","Documented"]}],
+ skills_owner:[{k:"so_named",t:"Who would own the running system?",o:["Nobody identified","A candidate, unconfirmed","Named and willing"]},
+  {k:"so_ran",t:"Have they run a system like this before?",o:["Never","Adjacent experience","Yes"]},
+  {k:"so_budget",t:"Is there a budget line for running it?",o:["None imagined","Would need finding","Exists or plausible"]}]
 };
 const ALL_SUBS = Object.values(SUBQS).flat();
-const BVB = [
- {v:"buy", label:"Buy — off-the-shelf tools do this"},
- {v:"configure", label:"Configure — buy + adapt to us"},
- {v:"build", label:"Build — unique to this business"},
- {v:"unknown", label:"Don't know yet"}
-];
-const TOTAL_QS = VAL_QS.length + EASE_QS.length;
+const BVB=[{v:"buy",label:"Buy — off-the-shelf tools do this"},{v:"configure",label:"Configure — buy + adapt"},{v:"build",label:"Build — unique to this business"},{v:"unknown",label:"Don't know yet"}];
 const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
+const TOTAL_QS=VAL_QS.length+EASE_QS.length;
+const GAP_ACTIONS = {
+ impact:{type:"ASK",what:"Pin it to a named board number with the sponsor"},
+ baseline:{type:"MEASURE",what:"Measure the baseline — count volumes, time a sample of cases, get finance to vouch"},
+ fit_nature:{type:"DECIDE",what:"Re-scope toward the repetitive, digital part of the task"},
+ fit_error:{type:"DECIDE",what:"Design the human checkpoint — where a person reviews before it counts"},
+ fit_precedent:{type:"TEST",what:"Run the 2-hour feasibility probe — 10 real cases in a model playground"},
+ data_access:{type:"ASK",what:"Sit down with the data owner and ask for access — it gates everything"},
+ data_quality:{type:"MEASURE",what:"Pull ~20 real records with the team and grade the quality honestly"},
+ data_examples:{type:"MEASURE",what:"Collect 15–30 worked examples with outcomes — they become the test set"},
+ tech_integration:{type:"ASK",what:"Get the integration story from the platform lead for these specific systems"},
+ tech_effort:{type:"DECIDE",what:"Cut the integration scope — start read-only and add write-back later"},
+ tech_security:{type:"ASK",what:"Book the early security / compliance conversation for this data"},
+ skills_champion:{type:"ASK",what:"Find the champion — someone in the team keen to use it daily"},
+ skills_expert:{type:"ASK",what:"Secure expert checking time — scheduled hours per week"},
+ skills_owner:{type:"ASK",what:"Name the post-go-live owner"}
+};
 
-const KEY="discovery-screen-v3";
-let S = JSON.parse(localStorage.getItem(KEY)||"{}");
-S.cands = S.cands||[]; S.meta = S.meta||{}; S.interviews = S.interviews||[]; S.mode = S.mode||"light";
-S.cur = (typeof S.cur==="number")? S.cur : -1;
-function updMeta(k,v){ S.meta[k]=v; save(); }
+/* ============================ STATE ============================ */
+const KEY="ai-readiness-v1";
+let S=JSON.parse(localStorage.getItem(KEY)||"{}");
+S.cands=S.cands||[]; S.meta=S.meta||{}; S.interviews=S.interviews||[]; S.mode=S.mode||"light";
+S.org=S.org||{}; S.orgEv=S.orgEv||{}; S.target=S.target||4;
+S.cur=(typeof S.cur==="number")?S.cur:-1;
+(function migrate(){ if(S.cands.length)return;
+  const old=localStorage.getItem("discovery-screen-v3")||localStorage.getItem("discovery-screen-v2");
+  if(!old)return;
+  try{ const o=JSON.parse(old);
+    (o.cands||[]).forEach(c=>{ const sc=c.scores||{};
+      if(sc.tech_platform!==undefined&&sc.tech_effort===undefined){ sc.tech_effort=sc.tech_platform; delete sc.tech_platform; }
+      c.scores=sc; S.cands.push(c); });
+    S.meta=o.meta||S.meta; S.interviews=o.interviews||[]; if(S.cands.length)save();
+  }catch(e){} })();
 function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
 function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
-const fmtK = n => !isFinite(n)||n<=0? "—" : n<1000? "<£1k" : n>=1e6? "£"+(n/1e6).toFixed(1)+"m" : "£"+Math.round(n/1000)+"k";
-const fmtS = v => v===null? "–" : (Math.round(v*10)/10)%1===0? String(Math.round(v)) : (Math.round(v*10)/10).toFixed(1);
-function resetAll(){ if(!confirm("Clear all candidates and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); localStorage.removeItem("discovery-screen-v2"); location.reload(); }
+const fmtK=n=>!isFinite(n)||n<=0?"—":n<1000?"<£1k":n>=1e6?"£"+(n/1e6).toFixed(1)+"m":"£"+Math.round(n/1000)+"k";
+const fmtS=v=>v===null?"–":(Math.round(v*10)/10)%1===0?String(Math.round(v)):(Math.round(v*10)/10).toFixed(1);
+function updMeta(k,v){ S.meta[k]=v; save(); }
+function resetAll(){ if(!confirm("Clear everything and start a new client? Export JSON first if you want to keep this one."))return; localStorage.removeItem(KEY); location.reload(); }
 function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
-
-/* ---------- mode ---------- */
 function deep(){ return S.mode==="deep"; }
 function setMode(m){ S.mode=m; save(); renderAll(); }
-function renderMode(){
-  document.getElementById("mode_light").classList.toggle("sel",!deep());
-  document.getElementById("mode_deep").classList.toggle("sel",deep());
-  document.getElementById("modeHint").textContent = deep()
-    ? "Deep dive changes how the scores are made: every question is computed from three narrower, factual checks (48 in all); the feasibility probe's tested result replaces the precedent guess; the step map decides how much of the £ the AI can actually touch. Light answers remain as fallback until the checks are answered."
-    : "Light mode: the ~20-minute screen, one tap per question. Switch to Deep dive when the ranking has to survive scrutiny.";
-  document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display = deep()? "":"none"; });
-  document.getElementById("interviewCard").style.display = deep()? "":"none";
-  document.getElementById("portfolioCard").style.display = deep()? "":"none";
+function showTab(id){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+id));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+  window.scrollTo(0,0); renderAll();
 }
 
-/* ---------- candidates ---------- */
+/* ============================ ORG SCORING ============================ */
+function setOrg(k,v){ S.org[k]=(S.org[k]===v?undefined:v); save(); renderOrg(); }
+function setOrgEv(k,f,v){ S.orgEv[k]=S.orgEv[k]||{t:"",c:""};
+  if(f==="c") S.orgEv[k].c=(S.orgEv[k].c===v?"":v); else S.orgEv[k].t=v;
+  save(); if(f==="c") renderOrg(); }
+function orgDim(dimId){
+  const qs=ORG_QS.filter(q=>q.dim===dimId);
+  const vals=qs.map(q=>S.org[q.k]).filter(v=>v!==undefined&&v!==null);
+  if(!vals.length) return {avg:null,stage:null,answered:0,total:qs.length};
+  const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+  return {avg,stage:Math.max(1,Math.floor(avg)),answered:vals.length,total:qs.length};
+}
+function orgComplete(){ return ORG_QS.every(q=>S.org[q.k]!==undefined&&S.org[q.k]!==null); }
+function orgAnswered(){ return ORG_QS.filter(q=>S.org[q.k]!==undefined&&S.org[q.k]!==null).length; }
+function ceiling(){
+  const scored=ORG_DIMS.map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.stage!==null);
+  if(!scored.length) return null;
+  const min=Math.min(...scored.map(x=>x.s.stage));
+  return {stage:min, dims:scored.filter(x=>x.s.stage===min).map(x=>x.d)};
+}
+function potential(){
+  const scored=ORG_DIMS.map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.avg!==null);
+  if(!scored.length) return null;
+  const wsum=scored.reduce((a,x)=>a+x.d.w,0);
+  return scored.reduce((a,x)=>a+x.s.avg*x.d.w,0)/wsum;
+}
+function orgEvidence(){
+  const ans=ORG_QS.filter(q=>S.org[q.k]!==undefined&&S.org[q.k]!==null);
+  if(!ans.length) return null;
+  const pts=ans.reduce((a,q)=>{const e=S.orgEv[q.k]||{};return a+(e.c==="confirmed"?2:e.c==="told"?1:0);},0);
+  return Math.round(pts/(2*ans.length)*100);
+}
+/* how many scored candidates a given org dimension is holding back */
+function unblocks(dimId){
+  const mapped=DIMS.filter(d=>d.org===dimId).map(d=>d.id);
+  const scored=S.cands.filter(c=>{const v=scoreOf(c,VAL_QS),e=scoreOf(c,EASE_QS);return v.n+e.n>=TOTAL_QS;});
+  if(!scored.length) return 0;
+  if(!mapped.length) return scored.length; /* strategy, governance, adoption gate everything */
+  return scored.filter(c=>mapped.some(m=>dimScore(c,m).s<=3)).length;
+}
+function gaps(){
+  const t=S.target||4; const ceil=ceiling();
+  return ORG_DIMS.map(d=>{
+    const s=orgDim(d.id); if(s.stage===null) return null;
+    const size=t-s.stage; if(size<=0) return null;
+    const isCeil=ceil&&ceil.dims.some(x=>x.id===d.id);
+    const ub=unblocks(d.id);
+    const leverage=(isCeil?100:0)+size*10+ub;
+    return {dim:d,current:s.stage,target:t,size,isCeil,unblocks:ub,leverage,
+      action:(ORG_ACTIONS[d.id]||{})[s.stage]||"Push to the next stage",
+      next:(ORG_ACTIONS[d.id]||{})[s.stage+1]||""};
+  }).filter(Boolean).sort((a,b)=>b.leverage-a.leverage);
+}
+function phasedGaps(){
+  const g=gaps();
+  const p1=g.filter(x=>x.isCeil).map(x=>({...x,step:x.action,note:"lifts the ceiling"}));
+  const p2=g.filter(x=>!x.isCeil).map(x=>({...x,step:x.action,note:""}));
+  /* phase 3 is the *next* step for anything more than one stage short — not a repeat */
+  const p3=g.filter(x=>x.size>=2&&x.next).map(x=>({...x,step:x.next,note:`follows on from Stage ${x.current+1}`}));
+  return [{phase:"First 90 days — lift the ceiling",items:p1},
+          {phase:"3–6 months — the next constraints",items:p2},
+          {phase:"6–12 months — reach the target",items:p3}].filter(x=>x.items.length);
+}
+
+/* ============================ USE-CASE SCORING ============================ */
 function blank(){ return {name:"",area:"",desc:"",contact:"",notes:"",people:"",hours:"",pcost:"",volume:"",timecase:"",bvb:"",bvbTools:"",bvbEdge:"",bvbInteg:"",bvbSens:"",depends:"",scores:{},subs:{},ev:{},steps:[],probe:{unc:"",cases:Array.from({length:10},()=>({d:"",r:"",w:""}))}}; }
-function fix(c){ c.ev=c.ev||{}; c.subs=c.subs||{}; c.steps=c.steps||[]; c.probe=c.probe||{unc:"",cases:[]};
-  c.probe.cases=c.probe.cases||[]; while(c.probe.cases.length<10)c.probe.cases.push({d:"",r:"",w:""});
-  c.steps.forEach(s=>{ if(s.pct===undefined&&s.share) s.pct = s.share==="Heavy"?30:s.share==="Moderate"?15:5; });
-  return c; }
+function fix(c){ c.ev=c.ev||{};c.subs=c.subs||{};c.steps=c.steps||[];c.probe=c.probe||{unc:"",cases:[]};
+  c.probe.cases=c.probe.cases||[]; while(c.probe.cases.length<10)c.probe.cases.push({d:"",r:"",w:""}); return c; }
 function addCand(){ S.cands.push(blank()); S.cur=S.cands.length-1; save(); renderAll(); document.getElementById("f_name").focus(); }
 function delCand(i,ev){ ev.stopPropagation(); if(!confirm("Remove this candidate?"))return; S.cands.splice(i,1); if(i<S.cur)S.cur--; else if(i===S.cur)S.cur=-1; if(S.cur>=S.cands.length)S.cur=S.cands.length-1; save(); renderAll(); }
 function selCand(i){ S.cur=i; save(); renderAll(); }
-function cur(){ return S.cur>=0&&S.cands[S.cur]? fix(S.cands[S.cur]) : null; }
-function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderRows(); renderMatrix(); renderSizer(); renderBvbSuggest(); renderPortfolio();
-  if(k==="name")document.getElementById("formTitle").textContent=v||"Candidate"; } }
-function setScore(k,v){ if(!cur())return; cur().scores[k] = (cur().scores[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); renderPortfolio(); }
-function setSub(k,v){ const c=cur(); if(!c)return; c.subs[k]=(c.subs[k]===v? undefined : v); save(); renderForm(); renderRows(); renderMatrix(); renderPortfolio(); }
-function setBvb(v){ if(!cur())return; cur().bvb = (cur().bvb===v? "":v); save(); renderForm(); renderRows(); }
-function setBvbOpt(field,v){ if(!cur())return; cur()[field]=(cur()[field]===v?"":v); save(); renderForm(); }
+function cur(){ return S.cur>=0&&S.cands[S.cur]?fix(S.cands[S.cur]):null; }
+function upd(k,v){ if(cur()){ cur()[k]=v; save(); renderCases(); if(k==="name")document.getElementById("formTitle").textContent=v||"Candidate"; } }
+function setScore(k,v){ if(!cur())return; cur().scores[k]=(cur().scores[k]===v?undefined:v); save(); renderCases(); }
+function setSub(k,v){ const c=cur(); if(!c)return; c.subs[k]=(c.subs[k]===v?undefined:v); save(); renderCases(); }
+function setBvb(v){ if(!cur())return; cur().bvb=(cur().bvb===v?"":v); save(); renderCases(); }
+function setBvbOpt(f,v){ if(!cur())return; cur()[f]=(cur()[f]===v?"":v); save(); renderCases(); }
 function setEv(k,f,v){ const c=cur(); if(!c)return; c.ev[k]=c.ev[k]||{t:"",c:""};
-  if(f==="c") c.ev[k].c=(c.ev[k].c===v?"":v); else c.ev[k].t=v;
-  save(); if(f==="c")renderForm(); else {renderScoreboxes(); renderRows();} }
-
-/* ---------- scoring ---------- */
-function moneyOf(c){
-  const p=parseFloat(c.people)||0, h=parseFloat(c.hours)||0, cost=parseFloat(c.pcost)||0;
-  if(!p||!h||!cost) return 0;
-  return p*h*52*(cost/1820);
-}
-function probeScore(c){ /* tested feasibility, 0/1/2, or null if under-probed */
-  const p=probeOf(c);
-  if(p.scored<5) return null;
-  const r=p.cr/p.scored;
-  return r>=0.7?2 : r>=0.4?1 : 0;
-}
-function parentEff(c,q){ /* effective 0–2 score for a question */
-  fix(c);
+  if(f==="c") c.ev[k].c=(c.ev[k].c===v?"":v); else c.ev[k].t=v; save(); renderCases(); }
+function moneyOf(c){ const p=parseFloat(c.people)||0,h=parseFloat(c.hours)||0,k=parseFloat(c.pcost)||0;
+  return (!p||!h||!k)?0:p*h*52*(k/1820); }
+function probeOf(c){ fix(c); const cs=c.probe.cases||[];
+  const cr=cs.filter(x=>x.r==="credible").length,pa=cs.filter(x=>x.r==="partial").length,wr=cs.filter(x=>x.r==="wrong").length;
+  return {cr,pa,wr,scored:cr+pa+wr}; }
+function probeScore(c){ const p=probeOf(c); if(p.scored<5)return null; const r=p.cr/p.scored; return r>=0.7?2:r>=0.4?1:0; }
+function parentEff(c,q){ fix(c);
   if(deep()){
     if(q.k==="fit_precedent"){ const ps=probeScore(c); if(ps!==null) return ps; }
-    const subs=SUBQS[q.k]||[];
-    const vals=subs.map(s=>c.subs[s.k]).filter(v=>v!==undefined&&v!==null);
+    const subs=SUBQS[q.k]||[]; const vals=subs.map(s=>c.subs[s.k]).filter(v=>v!==undefined&&v!==null);
     if(vals.length) return vals.reduce((a,b)=>a+b,0)/vals.length;
   }
-  const v=c.scores[q.k];
-  return (v===undefined||v===null)? null : v;
-}
-function scoreOf(c, qs){ let s=0,n=0; qs.forEach(q=>{ const v=parentEff(c,q); if(v!==null){s+=v;n++;} }); return {s:Math.round(s*10)/10, n}; }
+  const v=c.scores[q.k]; return (v===undefined||v===null)?null:v; }
+function scoreOf(c,qs){ let s=0,n=0; qs.forEach(q=>{const v=parentEff(c,q); if(v!==null){s+=v;n++;}}); return {s:Math.round(s*10)/10,n}; }
 function subCount(c){ fix(c); return ALL_SUBS.filter(s=>c.subs[s.k]!==undefined&&c.subs[s.k]!==null).length; }
-function dimScore(c, dimId){ return scoreOf(c, EASE_QS.filter(q=>q.dim===dimId)); }
-function weakestDim(c){
-  let worst=null;
-  DIMS.forEach(d=>{ const ds=dimScore(c,d.id); if(!worst || ds.s<worst.s) worst={...d, s:ds.s}; });
-  return worst;
-}
-function evidenceOf(c){
-  fix(c); let pts=0,n=0;
-  [...VAL_QS,...EASE_QS].forEach(q=>{
-    if(parentEff(c,q)===null) return;
-    n++; const e=c.ev[q.k]||{};
-    pts += e.c==="confirmed"?2 : e.c==="told"?1 : 0;
-  });
-  return n? Math.round(pts/(2*n)*100) : null;
-}
-function probeOf(c){ fix(c);
-  const cs=c.probe.cases||[];
-  const cr=cs.filter(x=>x.r==="credible").length, pa=cs.filter(x=>x.r==="partial").length, wr=cs.filter(x=>x.r==="wrong").length;
-  return {cr,pa,wr,scored:cr+pa+wr};
-}
-function coverageOf(c){ /* share of task time the AI touches, from the step map */
-  fix(c);
-  const steps=c.steps.filter(s=>s.name&&parseFloat(s.pct)>0);
-  const tot=steps.reduce((a,s)=>a+parseFloat(s.pct),0);
-  if(!tot) return null;
-  const cov=steps.filter(s=>s.ai).reduce((a,s)=>a+parseFloat(s.pct),0);
-  return cov/tot;
-}
-function opportunityOf(c){ /* {lo,hi,basis} indicative £ range */
-  const m=moneyOf(c); if(!m) return null;
-  const cov=deep()? coverageOf(c):null;
-  if(cov!==null) return {lo:m*cov*0.3, hi:m*cov*0.6, basis:`AI touches ${Math.round(cov*100)}% of task time (step map) × 30–60% efficiency on covered steps`};
-  return {lo:m*0.25, hi:m*0.5, basis:"25–50% capture assumption — map the steps to sharpen this"};
-}
+function dimScore(c,id){ return scoreOf(c,EASE_QS.filter(q=>q.dim===id)); }
+function weakestDim(c){ let w=null; DIMS.forEach(d=>{const ds=dimScore(c,d.id); if(!w||ds.s<w.s)w={...d,s:ds.s};}); return w; }
+function evidenceOf(c){ fix(c); let pts=0,n=0;
+  [...VAL_QS,...EASE_QS].forEach(q=>{ if(parentEff(c,q)===null)return; n++;
+    const e=c.ev[q.k]||{}; pts+=e.c==="confirmed"?2:e.c==="told"?1:0; });
+  return n?Math.round(pts/(2*n)*100):null; }
+function coverageOf(c){ fix(c); const st=c.steps.filter(s=>s.name&&parseFloat(s.pct)>0);
+  const tot=st.reduce((a,s)=>a+parseFloat(s.pct),0); if(!tot)return null;
+  return st.filter(s=>s.ai).reduce((a,s)=>a+parseFloat(s.pct),0)/tot; }
+function opportunityOf(c){ const m=moneyOf(c); if(!m)return null;
+  const cov=deep()?coverageOf(c):null;
+  if(cov!==null) return {lo:m*cov*0.3,hi:m*cov*0.6,basis:`AI touches ${Math.round(cov*100)}% of task time × 30–60% efficiency`};
+  return {lo:m*0.25,hi:m*0.5,basis:"25–50% capture assumption — map the steps to sharpen this"}; }
 function demandOf(c,i){ return S.interviews.filter(iv=>iv.cand!==""&&parseInt(iv.cand)===i).length; }
+/* which org gaps gate this candidate */
+function gatesFor(c){
+  const out=[]; const t=S.target||4;
+  ORG_DIMS.forEach(d=>{ const s=orgDim(d.id); if(s.stage===null)return;
+    if(s.stage>=3) return;                       /* stage 3+ won't stop a first build */
+    const mapped=DIMS.filter(x=>x.org===d.id).map(x=>x.id);
+    if(!mapped.length){ out.push({dim:d,stage:s.stage,why:"applies to every use case"}); return; }
+    if(mapped.some(m=>dimScore(c,m).s<=3)) out.push({dim:d,stage:s.stage,why:"and this workflow scores low on the same dimension"});
+  });
+  return out;
+}
 function verdictOf(c){
-  const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
+  const v=scoreOf(c,VAL_QS),e=scoreOf(c,EASE_QS);
   if(v.n+e.n<TOTAL_QS) return {cls:"b",label:"Incomplete",head:"Keep going — "+(TOTAL_QS-v.n-e.n)+" question(s) left",body:"Answer all sixteen for a verdict. Unknowns score 0 — that's a finding, not a failure."};
-  const hv=v.s>=5, he=e.s>=15;
-  const p=probeOf(c);
-  const probeNote = deep()? (p.scored>=5? (p.cr>=7?" The probe backs it — "+p.cr+"/"+p.scored+" credible, and that tested result is in the score.": p.cr<=3?" ⚠ The probe struggled ("+p.cr+"/"+p.scored+" credible) — that's already pulling the score down; reshape before committing.":" Probe was borderline ("+p.cr+"/"+p.scored+" credible) — read why the failures happened.") : " Run the feasibility probe before this goes in front of the client — tested beats assumed.") : "";
-  if(hv&&he){
-    const w=weakestDim(c);
+  const hv=v.s>=5,he=e.s>=15,p=probeOf(c);
+  const probeNote=deep()?(p.scored>=5?(p.cr>=7?" The probe backs it — "+p.cr+"/"+p.scored+" credible, and that tested result is in the score.":p.cr<=3?" ⚠ The probe struggled ("+p.cr+"/"+p.scored+") — that's already pulling the score down.":" Probe was borderline ("+p.cr+"/"+p.scored+") — read why the failures happened."):" Run the feasibility probe — tested beats assumed."):"";
+  if(hv&&he){ const w=weakestDim(c);
     return {cls:"g",label:"Do first",head:"Do first — real value, ready enough",
-      body:"Take it forward: prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${fmtS(w.s)}/6) — it's the soft spot to design around.`:"")+probeNote};
-  }
-  if(hv&&!he){
-    const w=weakestDim(c);
+      body:"Prototype it on real example cases, size the £ with the Value Assessment, shape the path with the Mini Op Model."+(w&&w.s<=3?` Watch <b>${w.name.toLowerCase()}</b> (${fmtS(w.s)}/6).`:"")+probeNote}; }
+  if(hv&&!he){ const w=weakestDim(c);
     return {cls:"a",label:"Big bet",head:"Big bet — the value is there, the readiness isn't yet",
-      body:`Don't build yet. Weakest dimension: <b>${w.name.toLowerCase()} (${fmtS(w.s)}/6)</b> — ${w.sub} Fix that first, or narrow the task to a slice that avoids it, then re-score.`+probeNote};
-  }
-  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Only worth doing bundled with something bigger, or as a fast confidence-builder. Check the real time-eater isn't one step earlier or later in the process."+probeNote};
-  return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Decline politely, record why, and point at the better candidate if you saw one."};
+      body:`Weakest dimension: <b>${w.name.toLowerCase()} (${fmtS(w.s)}/6)</b> — ${w.sub} Fix that, or narrow the task to a slice that avoids it, then re-score.`+probeNote}; }
+  if(!hv&&he) return {cls:"a",label:"Fill-in",head:"Fill-in — easy but small",body:"Worth doing bundled with something bigger. Check the real time-eater isn't one step earlier or later."+probeNote};
+  return {cls:"r",label:"Park",head:"Park it",body:"Neither the value nor the readiness is there today. Record why, and point at the better candidate if you saw one."};
 }
 function waveOf(vd){ return vd.label==="Do first"?"NOW":vd.label==="Big bet"||vd.label==="Fill-in"?"NEXT":vd.label==="Park"?"LATER":"UNSCORED"; }
+function rankOrder(){ return S.cands.map((c,i)=>({c:fix(c),i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
+  .sort((a,b)=>((b.v.s*3+b.e.s)-(a.v.s*3+a.e.s))||(moneyOf(b.c)-moneyOf(a.c))); }
+function rankOf(i){ return rankOrder().findIndex(x=>x.i===i)+1; }
 
-/* ---------- rows / rank ---------- */
+/* ============================ RENDER: ORG ============================ */
+function renderMode(){
+  document.getElementById("mode_light").classList.toggle("sel",!deep());
+  document.getElementById("mode_deep").classList.toggle("sel",deep());
+  document.getElementById("modeHint").textContent=deep()
+    ? "Deep mode: evidence and confidence behind every answer, use-case questions computed from three narrower checks each, and the feasibility probe's tested result feeding the score."
+    : "Light mode: one tap per question. Switch to Deep when the assessment has to survive scrutiny.";
+  document.querySelectorAll(".deep-only").forEach(el=>{el.style.display=deep()?"":"none";});
+}
+function orgEvHTML(k){
+  const e=S.orgEv[k]||{};
+  return `<div class="evrow">
+    <input placeholder="Source — who said it / what you saw" value="${esc(e.t||"")}" onchange="setOrgEv('${k}','t',this.value)">
+    ${["confirmed","told","guessed"].map(x=>`<div class="evc ${x} ${e.c===x?"sel":""}" onclick="setOrgEv('${k}','c','${x}')">${x}</div>`).join("")}
+  </div>`;
+}
+function renderOrgDims(){
+  document.getElementById("orgDims").innerHTML=ORG_DIMS.map(d=>{
+    const s=orgDim(d.id);
+    const cls=s.stage===null?"":s.stage>=4?"g":s.stage>=3?"a":"r";
+    return `<div class="card"><div class="dim-head">
+      <h3>${d.name}</h3><span class="sub2">${d.sub}</span>
+      <span class="wt">${d.w}% of score</span>
+      <span class="dscore ${cls}">${s.stage!==null?"Stage "+s.stage+" · "+stageName(s.stage):"– not scored"}</span></div>
+      ${ORG_QS.filter(q=>q.dim===d.id).map(q=>{
+        const v=S.org[q.k];
+        return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
+          ${q.o.map((o,i)=>`<div class="opt st${i+1} ${v===i+1?"sel":""}" onclick="setOrg('${q.k}',${i+1})"><b>${i+1}</b>${o}</div>`).join("")}
+        </div>${deep()?orgEvHTML(q.k):""}</div>`;
+      }).join("")}</div>`;
+  }).join("");
+}
+function renderTarget(){
+  document.getElementById("targetOpts").innerHTML=STAGES.map(s=>
+    `<div class="opt st${s.n} ${S.target===s.n?"sel":""}" onclick="S.target=${s.n};save();renderAll()"><b>Stage ${s.n}</b>${s.name}<br><span style="font-size:11px">${s.d}</span></div>`).join("");
+  document.getElementById("m_ambition").value=S.meta.ambition||"";
+}
+function renderScorecard(){
+  const ceil=ceiling(),pot=potential(),t=S.target||4;
+  document.getElementById("stageBar").innerHTML=`
+    <div class="stagebox ceil"><div class="lbl">Readiness — the ceiling</div><div class="v">${ceil?"Stage "+ceil.stage:"–"}<small>${ceil?stageName(ceil.stage)+" · set by "+ceil.dims.map(d=>d.name.toLowerCase()).join(" & "):"score the dimensions below"}</small></div></div>
+    <div class="stagebox pot"><div class="lbl">Weighted potential</div><div class="v">${pot?pot.toFixed(1):"–"}<small>if the weakest dimensions were fixed</small></div></div>
+    <div class="stagebox tgt"><div class="lbl">Their 12-month target</div><div class="v">Stage ${t}<small>${stageName(t)}</small></div></div>
+    <div class="stagebox"><div class="lbl">Answered</div><div class="v">${orgAnswered()}/18<small>${deep()&&orgEvidence()!==null?orgEvidence()+"% evidenced":"18 questions, ~20 min"}</small></div></div>`;
+  document.getElementById("scorecard").innerHTML=ORG_DIMS.map(d=>{
+    const s=orgDim(d.id); const isCeil=ceil&&ceil.dims.some(x=>x.id===d.id);
+    const cells=[1,2,3,4,5].map(n=>{
+      const on=s.stage!==null&&n<=s.stage;
+      return `<div class="sc-cell ${on?(isCeil?"ceil":"on"):""} ${n===t?"tgt":""}"></div>`;
+    }).join("");
+    return `<div class="sc-row"><div><b>${d.name}</b><br><span class="sc-note">${d.w}% weight</span></div>
+      <div class="sc-track">${cells}</div>
+      <div class="sc-note">${s.stage!==null?"Stage "+s.stage+(isCeil?" · ceiling":""):"not scored"}${s.answered<s.total?" ("+s.answered+"/"+s.total+")":""}</div></div>`;
+  }).join("")+`<p class="sc-note" style="margin-top:8px">Dashed outline marks their 12-month target · red bars mark the dimension capping the score.</p>`;
+  const v=document.getElementById("ceilVerdict");
+  if(!ceil){ v.className="verdict blue"; v.innerHTML="Answer the questions below to see where they stand."; return; }
+  const names=ceil.dims.map(d=>d.name.toLowerCase()).join(" and ");
+  if(ceil.stage>=t){ v.className="verdict good";
+    v.innerHTML=`<h4>At or above their target — Stage ${ceil.stage}, ${stageName(ceil.stage)}</h4>Nothing organisational is holding them back from the Stage ${t} ambition. Spend the effort on use cases, not foundations.`; }
+  else { const g=t-ceil.stage;
+    v.className=ceil.stage<=2?"verdict bad":"verdict mid";
+    v.innerHTML=`<h4>Capped at Stage ${ceil.stage} (${stageName(ceil.stage)}) by ${names}</h4>
+      Everything else may be stronger, but <b>the weakest dimension sets the ceiling</b> — that's ${g} stage${g>1?"s":""} short of their Stage ${t} ambition.
+      ${pot&&pot>ceil.stage+0.7?`Weighted potential is ${pot.toFixed(1)}, so the rest of the organisation is ahead of what ${names} allows — this is the highest-leverage fix available.`:""}
+      See the roadmap tab for what closes it.`; }
+}
+function renderOrg(){ renderTarget(); renderScorecard(); renderOrgDims();
+  ["client","by","date"].forEach(k=>{const el=document.getElementById("m_"+k); if(el)el.value=(S.meta&&S.meta[k])||"";});
+  document.querySelectorAll(".deep-only").forEach(el=>{el.style.display=deep()?"":"none";}); }
+
+/* ============================ RENDER: CASES ============================ */
+function evHTML(k){ const c=cur(); const e=(c.ev||{})[k]||{};
+  return `<div class="evrow"><input placeholder="Source — who said it / what you saw" value="${esc(e.t||"")}" onchange="setEv('${k}','t',this.value)">
+    ${["confirmed","told","guessed"].map(x=>`<div class="evc ${x} ${e.c===x?"sel":""}" onclick="setEv('${k}','c','${x}')">${x}</div>`).join("")}</div>`; }
+function effChip(v){ if(v===null)return `<span class="dscore">– / 2</span>`;
+  const cls=v>=1.5?"g":v>=0.75?"a":"r"; return `<span class="dscore ${cls}">${fmtS(v)} / 2</span>`; }
+function qHTML(q){
+  const c=cur();
+  if(!deep()){ const v=c?c.scores[q.k]:undefined;
+    return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
+      ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}</div></div>`; }
+  const eff=parentEff(c,q),subs=SUBQS[q.k]||[];
+  const answered=subs.filter(s=>c.subs[s.k]!==undefined&&c.subs[s.k]!==null).length;
+  const probed=q.k==="fit_precedent"&&probeScore(c)!==null;
+  let note="";
+  if(probed) note=`<div class="infoline" style="margin:6px 0">Score set by the feasibility probe: <b>${probeOf(c).cr}/${probeOf(c).scored} credible → ${fmtS(eff)}/2</b>.</div>`;
+  else if(!answered&&c.scores[q.k]!==undefined&&c.scores[q.k]!==null) note=`<div class="qh" style="margin:4px 0">Using your light answer (${c.scores[q.k]}/2) until the checks below are answered.</div>`;
+  return `<div class="q"><div class="qhead"><div class="qt">${q.t}</div>${effChip(eff)}</div><div class="qh">${q.h}</div>${note}
+    ${subs.map(s=>{const v=c.subs[s.k];
+      return `<div class="sub"><div class="st">${s.t}</div><div class="opts">
+        ${s.o.map((o,i)=>`<div class="opt s${i} ${v===i?"sel":""}" onclick="setSub('${s.k}',${i})">${o}</div>`).join("")}</div></div>`;}).join("")}
+    ${evHTML(q.k)}</div>`;
+}
+function dimCls(s,n){ return n===0?"":s>=5?"g":s>=3?"a":"r"; }
 function renderRows(){
-  document.getElementById("candRows").innerHTML = S.cands.length? rankOrder().map(({c,i,v,e,vd})=>`
+  document.getElementById("candRows").innerHTML=S.cands.length?rankOrder().map(({c,i,v,e,vd})=>`
     <tr class="${i===S.cur?"active":""}" onclick="selCand(${i})" style="cursor:pointer">
       <td>${rankOf(i)}</td>
       <td><b>${esc(c.name)||"<span style='color:#aaa'>unnamed</span>"}</b>${c.area?`<br><span style="font-size:11.5px;color:var(--grey)">${esc(c.area)}</span>`:""}</td>
       <td>${v.n?fmtS(v.s):"–"}</td>
-      <td>${e.n?fmtS(e.s):"–"}${deep()?`<br><span style="font-size:11px;color:var(--grey)">${subCount(c)}/48 checks${evidenceOf(c)!==null?" · "+evidenceOf(c)+"% evidenced":""}</span>`:""}</td>
-      <td>${fmtK(moneyOf(c))}</td>
-      <td>${c.bvb? BVB_SHORT[c.bvb]:"–"}</td>
+      <td>${e.n?fmtS(e.s):"–"}${deep()?`<br><span style="font-size:11px;color:var(--grey)">${subCount(c)}/48 checks</span>`:""}</td>
+      <td>${fmtK(moneyOf(c))}</td><td>${c.bvb?BVB_SHORT[c.bvb]:"–"}</td>
       <td><span class="pill ${vd.cls}">${vd.label}</span></td>
-      <td><button style="padding:2px 8px" onclick="delCand(${i},event)">✕</button></td>
-    </tr>`).join("") : `<tr><td colspan="8" style="color:#aaa;text-align:center">No candidates yet — add one.</td></tr>`;
-  renderRoadmap();
+      <td><button style="padding:2px 8px" onclick="delCand(${i},event)">✕</button></td></tr>`).join("")
+    :`<tr><td colspan="8" style="color:#aaa;text-align:center">No candidates yet — add one.</td></tr>`;
 }
-function rankOrder(){
-  return S.cands.map((c,i)=>({c:fix(c),i,v:scoreOf(c,VAL_QS),e:scoreOf(c,EASE_QS),vd:verdictOf(c)}))
-    .sort((a,b)=>((b.v.s*3+b.e.s)-(a.v.s*3+a.e.s)) || (moneyOf(b.c)-moneyOf(a.c)));
-}
-function rankOf(i){ return rankOrder().findIndex(x=>x.i===i)+1; }
-
-/* ---------- form ---------- */
-function evHTML(k){
-  const c=cur(); const e=(c.ev||{})[k]||{};
-  return `<div class="evrow">
-    <input placeholder="Source — who said it / what you saw" value="${esc(e.t||"")}" onchange="setEv('${k}','t',this.value)">
-    ${["confirmed","told","guessed"].map(x=>`<div class="evc ${x} ${e.c===x?"sel":""}" onclick="setEv('${k}','c','${x}')">${x}</div>`).join("")}
-  </div>`;
-}
-function effChip(v){ if(v===null) return `<span class="dscore">– / 2</span>`;
-  const cls=v>=1.5?"g":v>=0.75?"a":"r"; return `<span class="dscore ${cls}">${fmtS(v)} / 2</span>`; }
-function qHTML(q){
-  const c=cur();
-  if(!deep()){
-    const v = c? c.scores[q.k] : undefined;
-    return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
-      ${q.o.map((o,s)=>`<div class="opt s${s} ${v===s?"sel":""}" onclick="setScore('${q.k}',${s})">${o}</div>`).join("")}
-    </div></div>`;
-  }
-  /* deep: the question is computed from its checks */
-  const eff=parentEff(c,q);
-  const subs=SUBQS[q.k]||[];
-  const answered=subs.filter(s=>c.subs[s.k]!==undefined&&c.subs[s.k]!==null).length;
-  const probed = q.k==="fit_precedent" && probeScore(c)!==null;
-  let srcNote="";
-  if(probed) srcNote=`<div class="infoline" style="margin:6px 0">Score set by the feasibility probe: <b>${probeOf(c).cr}/${probeOf(c).scored} credible → ${fmtS(parentEff(c,q))}/2</b>. Tested beats assumed — the checks below are for the record.</div>`;
-  else if(!answered && c.scores[q.k]!==undefined && c.scores[q.k]!==null) srcNote=`<div class="qh" style="margin:4px 0">Using your light answer (${c.scores[q.k]}/2) until the checks below are answered.</div>`;
-  return `<div class="q">
-    <div class="qhead"><div class="qt">${q.t}</div>${effChip(eff)}</div>
-    <div class="qh">${q.h}</div>
-    ${srcNote}
-    ${subs.map(s=>{
-      const v=c.subs[s.k];
-      return `<div class="sub"><div class="st">${s.t}</div><div class="opts">
-        ${s.o.map((o,i)=>`<div class="opt s${i} ${v===i?"sel":""}" onclick="setSub('${s.k}',${i})">${o}</div>`).join("")}
-      </div></div>`;
-    }).join("")}
-    ${evHTML(q.k)}
-  </div>`;
-}
-function dimCls(s,n){ return n===0? "" : s>=5? "g" : s>=3? "a" : "r"; }
 function renderSizer(){
   const c=cur(); if(!c)return;
-  const m=moneyOf(c);
-  const p=parseFloat(c.people)||0,h=parseFloat(c.hours)||0;
-  document.getElementById("sizeOut").textContent = m? `${fmtK(m)} / yr (${Math.round(p*h*52).toLocaleString()} hrs)` : "—";
-  document.getElementById("sMoney").textContent = m? fmtK(m):"–";
-  const x=document.getElementById("sizeXcheck");
-  if(!deep()){ x.innerHTML=""; return; }
-  const fteHrs=p*h*52, caseHrs=(parseFloat(c.volume)||0)*(parseFloat(c.timecase)||0);
+  const m=moneyOf(c),p=parseFloat(c.people)||0,h=parseFloat(c.hours)||0;
+  document.getElementById("sizeOut").textContent=m?`${fmtK(m)} / yr (${Math.round(p*h*52).toLocaleString()} hrs)`:"—";
+  document.getElementById("sMoney").textContent=m?fmtK(m):"–";
+  const x=document.getElementById("sizeXcheck"); if(!deep()){x.innerHTML="";return;}
+  const fteHrs=p*h*52,caseHrs=(parseFloat(c.volume)||0)*(parseFloat(c.timecase)||0);
   let html="";
-  if(fteHrs>0&&caseHrs>0){
-    const ratio=fteHrs/caseHrs;
-    if(ratio>2||ratio<0.5) html+=`<div class="flagline">⚠ Your two estimates disagree — ${Math.round(fteHrs).toLocaleString()} hrs/yr (people × time) vs ${Math.round(caseHrs).toLocaleString()} hrs/yr (cases × time per case). Reconcile with the team before this number is quoted.</div>`;
-    else html+=`<div class="infoline">Cross-check holds: ${Math.round(fteHrs).toLocaleString()} vs ${Math.round(caseHrs).toLocaleString()} hrs/yr — the two estimates agree within 2×. Quote with confidence.</div>`;
-  }
+  if(fteHrs>0&&caseHrs>0){ const r=fteHrs/caseHrs;
+    html+=(r>2||r<0.5)?`<div class="flagline">⚠ Your two estimates disagree — ${Math.round(fteHrs).toLocaleString()} vs ${Math.round(caseHrs).toLocaleString()} hrs/yr. Reconcile before quoting.</div>`
+      :`<div class="infoline">Cross-check holds: ${Math.round(fteHrs).toLocaleString()} vs ${Math.round(caseHrs).toLocaleString()} hrs/yr — agree within 2×.</div>`; }
   const opp=opportunityOf(c);
-  if(opp) html+=`<div class="infoline">Indicative opportunity: <b>${fmtK(opp.lo)}–${fmtK(opp.hi)}/yr</b> — ${opp.basis}. The Value Assessment replaces this with the defensible number.</div>`;
+  if(opp) html+=`<div class="infoline">Indicative opportunity: <b>${fmtK(opp.lo)}–${fmtK(opp.hi)}/yr</b> — ${opp.basis}.</div>`;
   x.innerHTML=html;
 }
-/* step map */
-function addStep(){ const c=cur(); if(!c)return; c.steps.push({name:"",pct:"",ai:false}); save(); renderSteps(); }
-function delStep(i){ const c=cur(); c.steps.splice(i,1); save(); renderSteps(); renderSizer(); }
+function addStep(){ const c=cur(); if(!c)return; c.steps.push({name:"",pct:"",ai:false}); save(); renderCases(); }
+function delStep(i){ cur().steps.splice(i,1); save(); renderCases(); }
 function renderSteps(){
   const c=cur(); if(!c||!deep())return;
-  document.getElementById("stepBody").innerHTML=c.steps.map((s,i)=>`<tr>
-    <td>${i+1}</td>
-    <td><input value="${esc(s.name)}" onchange="cur().steps[${i}].name=this.value;save();renderSteps();renderSizer()" placeholder="e.g. read &amp; classify the request"></td>
-    <td><input type="number" min="0" max="100" value="${esc(s.pct)}" onchange="cur().steps[${i}].pct=this.value;save();renderSteps();renderSizer()" placeholder="%"></td>
-    <td style="text-align:center"><input type="checkbox" style="width:auto" ${s.ai?"checked":""} onchange="cur().steps[${i}].ai=this.checked;save();renderSteps();renderSizer()"></td>
+  document.getElementById("stepBody").innerHTML=c.steps.map((s,i)=>`<tr><td>${i+1}</td>
+    <td><input value="${esc(s.name)}" onchange="cur().steps[${i}].name=this.value;save();renderCases()" placeholder="e.g. read &amp; classify"></td>
+    <td><input type="number" min="0" max="100" value="${esc(s.pct)}" onchange="cur().steps[${i}].pct=this.value;save();renderCases()" placeholder="%"></td>
+    <td style="text-align:center"><input type="checkbox" style="width:auto" ${s.ai?"checked":""} onchange="cur().steps[${i}].ai=this.checked;save();renderCases()"></td>
     <td><button style="padding:2px 8px" onclick="delStep(${i})">✕</button></td></tr>`).join("");
   const named=c.steps.filter(s=>s.name&&parseFloat(s.pct)>0);
-  const tot=named.reduce((a,s)=>a+parseFloat(s.pct),0);
-  const cov=coverageOf(c);
+  const tot=named.reduce((a,s)=>a+parseFloat(s.pct),0),cov=coverageOf(c);
   const missed=named.filter(s=>parseFloat(s.pct)>=25&&!s.ai);
   let html="";
-  if(tot>0&&Math.abs(tot-100)>15) html+=`<div class="flagline">⚠ Step times add to ${Math.round(tot)}% — aim for roughly 100% so the covered share means something.</div>`;
-  if(cov!==null) html+=`<div class="infoline">The AI touches <b>${Math.round(cov*100)}%</b> of the task's time — this drives the £ opportunity in the sizing box.</div>`;
-  if(missed.length) html+=`<div class="flagline">⚠ Heavy step${missed.length>1?"s":""} not covered: <b>${missed.map(s=>esc(s.name)).join(", ")}</b> — the bigger opportunity may be there. Reshape the use case or add a candidate.</div>`;
+  if(tot>0&&Math.abs(tot-100)>15) html+=`<div class="flagline">⚠ Step times add to ${Math.round(tot)}% — aim for roughly 100%.</div>`;
+  if(cov!==null) html+=`<div class="infoline">The AI touches <b>${Math.round(cov*100)}%</b> of the task's time — this drives the £ opportunity.</div>`;
+  if(missed.length) html+=`<div class="flagline">⚠ Heavy step${missed.length>1?"s":""} not covered: <b>${missed.map(s=>esc(s.name)).join(", ")}</b> — the bigger opportunity may be there.</div>`;
   document.getElementById("stepFlag").innerHTML=html;
 }
-/* probe */
 function updProbe(f,v){ const c=cur(); if(!c)return; c.probe[f]=v; save(); }
 function setProbeCase(i,f,v){ const c=cur(); if(!c)return;
-  if(f==="r") c.probe.cases[i].r=(c.probe.cases[i].r===v?"":v); else c.probe.cases[i][f]=v;
-  save(); renderForm(); renderRows(); renderMatrix(); }
+  if(f==="r") c.probe.cases[i].r=(c.probe.cases[i].r===v?"":v); else c.probe.cases[i][f]=v; save(); renderCases(); }
 function renderProbe(){
   const c=cur(); if(!c||!deep())return;
   document.getElementById("f_probeUnc").value=c.probe.unc||"";
-  document.getElementById("probeBody").innerHTML=c.probe.cases.map((x,i)=>`<tr>
-    <td>${i+1}</td>
+  document.getElementById("probeBody").innerHTML=c.probe.cases.map((x,i)=>`<tr><td>${i+1}</td>
     <td><input value="${esc(x.d)}" onchange="setProbeCase(${i},'d',this.value)" placeholder="${i<4?"typical":i<8?"harder":"awkward"} case"></td>
     <td><div class="opts">${["credible","partial","wrong"].map(r=>{const cls=r==="credible"?"s2":r==="partial"?"s1":"s0";
       return `<div class="opt ${cls} ${x.r===r?"sel":""}" style="min-width:70px" onclick="setProbeCase(${i},'r','${r}')">${r}</div>`;}).join("")}</div></td>
     <td><input value="${esc(x.w)}" onchange="setProbeCase(${i},'w',this.value)"></td></tr>`).join("");
-  const p=probeOf(c), v=document.getElementById("probeVerdict");
-  if(!p.scored){ v.innerHTML=`<div class="infoline">Score at least 5 cases — the tested result then replaces the precedent guess in the readiness score.</div>`; return; }
+  const p=probeOf(c),v=document.getElementById("probeVerdict");
+  if(!p.scored){ v.innerHTML=`<div class="infoline">Score at least 5 cases — the tested result then replaces the precedent guess.</div>`; return; }
   let cls,msg;
-  if(p.cr>=Math.max(7,p.scored*0.7)){ cls="infoline"; msg=`<b>${p.cr}/${p.scored} credible — the hard part is tractable.</b> This tested result now sets the precedent score (${fmtS(probeScore(c)??0)}/2).`; }
-  else if(p.cr/Math.max(p.scored,1)>=0.4){ cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — borderline.</b> Read the failures: missing company context is fixable (feed it more); if it can't reason the task, narrow the scope or keep a person on the hard step. Precedent score set to ${fmtS(probeScore(c)??0)}/2.`; }
-  else { cls="flagline"; msg=`<b>${p.cr}/${p.scored} credible — not worth building around today.</b> Break the task into a simpler piece and re-probe, or park it. Precedent score set to ${fmtS(probeScore(c)??0)}/2.`; }
-  v.innerHTML=`<div class="${cls}">${msg}${p.scored<5?" <i>(fewer than 5 scored — not yet counted in the score)</i>":""}</div>`;
+  if(p.cr>=Math.max(7,p.scored*0.7)){cls="infoline";msg=`<b>${p.cr}/${p.scored} credible — the hard part is tractable.</b> This sets the precedent score (${fmtS(probeScore(c)??0)}/2).`;}
+  else if(p.cr/Math.max(p.scored,1)>=0.4){cls="flagline";msg=`<b>${p.cr}/${p.scored} credible — borderline.</b> Missing context is fixable; a reasoning gap means narrowing the task. Precedent score ${fmtS(probeScore(c)??0)}/2.`;}
+  else{cls="flagline";msg=`<b>${p.cr}/${p.scored} credible — not worth building around today.</b> Break it into a simpler piece and re-probe. Precedent score ${fmtS(probeScore(c)??0)}/2.`;}
+  v.innerHTML=`<div class="${cls}">${msg}${p.scored<5?" <i>(fewer than 5 scored — not yet counted)</i>":""}</div>`;
 }
-/* build vs buy deep */
 function bvbSuggestion(c){
-  if(!c.bvbEdge&&!c.bvbInteg&&!c.bvbSens&&!c.bvbTools) return null;
+  if(!c.bvbEdge&&!c.bvbInteg&&!c.bvbSens&&!c.bvbTools)return null;
   const tools=(c.bvbTools||"").trim().toLowerCase();
-  const hasTools = tools && tools!=="none found" && tools!=="none";
+  const has=tools&&tools!=="none found"&&tools!=="none";
   let call,why=[];
-  if(c.bvbEdge==="Yes"){ call="Build"; why.push("the workflow is a competitive edge — don't outsource the advantage"); }
-  else if(c.bvbInteg==="Deep"){ call="Build or configure heavily"; why.push("it sits deep in their systems — off-the-shelf rarely fits"); }
-  else if(hasTools){ call = c.bvbSens==="Regulated"? "Configure" : "Buy"; why.push("proven tools exist ("+c.bvbTools+")"); if(c.bvbSens==="Regulated") why.push("regulated data — check the vendor's compliance route"); }
-  else if(c.bvbTools){ call="Build"; why.push("no credible off-the-shelf tool found"); }
-  else { call="Configure"; why.push("buy what exists, adapt the last mile"); }
-  if(c.bvbInteg==="Light"&&call==="Buy") why.push("light integration keeps switching costs low");
-  return {call, why:why.join("; ")};
+  if(c.bvbEdge==="Yes"){call="Build";why.push("the workflow is a competitive edge — don't outsource the advantage");}
+  else if(c.bvbInteg==="Deep"){call="Build or configure heavily";why.push("it sits deep in their systems");}
+  else if(has){call=c.bvbSens==="Regulated"?"Configure":"Buy";why.push("proven tools exist ("+c.bvbTools+")");if(c.bvbSens==="Regulated")why.push("regulated data — check the vendor's compliance route");}
+  else if(c.bvbTools){call="Build";why.push("no credible off-the-shelf tool found");}
+  else{call="Configure";why.push("buy what exists, adapt the last mile");}
+  if(c.bvbInteg==="Light"&&call==="Buy")why.push("light integration keeps switching costs low");
+  return {call,why:why.join("; ")};
 }
-function renderBvbSuggest(){
-  const c=cur(); if(!c||!deep())return;
+const BVB_OPTS={bvbEdge:["Yes","No","Unsure"],bvbInteg:["Light","Moderate","Deep"],bvbSens:["Low","Personal data","Regulated"]};
+function renderForm(){
+  const card=document.getElementById("formCard");
+  if(!cur()){card.style.display="none";return;}
+  card.style.display="block";
+  const c=cur();
+  document.getElementById("formTitle").textContent=c.name||"Candidate";
+  ["name","area","contact","desc","notes","people","hours","pcost","volume","timecase","bvbTools","depends"].forEach(k=>{const el=document.getElementById("f_"+k); if(el)el.value=c[k]||"";});
+  document.getElementById("valQs").innerHTML=VAL_QS.map(qHTML).join("");
+  document.getElementById("easeQs").innerHTML=DIMS.map(d=>{
+    const ds=dimScore(c,d.id);
+    return `<div class="dim"><div class="dim-head"><h3>${d.name}</h3><span class="sub2">${d.sub}</span>
+      <span class="dscore ${dimCls(ds.s,ds.n)}">${ds.n?fmtS(ds.s)+" / 6":"– / 6"}</span></div>
+      ${EASE_QS.filter(q=>q.dim===d.id).map(qHTML).join("")}</div>`;}).join("");
+  document.getElementById("bvb").innerHTML=BVB.map(b=>`<div class="opt n ${c.bvb===b.v?"sel":""}" onclick="setBvb('${b.v}')">${b.label}</div>`).join("");
+  Object.entries(BVB_OPTS).forEach(([f,opts])=>{const el=document.getElementById(f); if(el)
+    el.innerHTML=opts.map(o=>`<div class="opt n ${c[f]===o?"sel":""}" style="min-width:90px" onclick="setBvbOpt('${f}','${o}')">${o}</div>`).join("");});
   const s=bvbSuggestion(c);
-  document.getElementById("bvbSuggest").innerHTML = s?
-    `<div class="infoline">Suggested call: <b>${s.call}</b> — ${s.why}. Your instinct above stays the final answer; if they differ, say why in the notes.</div>`:"";
+  document.getElementById("bvbSuggest").innerHTML=s&&deep()?`<div class="infoline">Suggested call: <b>${s.call}</b> — ${s.why}.</div>`:"";
+  const v=scoreOf(c,VAL_QS),e=scoreOf(c,EASE_QS);
+  document.getElementById("sVal").textContent=v.n?fmtS(v.s)+" / 8":"–";
+  document.getElementById("sEase").textContent=e.n?fmtS(e.s)+" / 24":"–";
+  document.getElementById("sDone").innerHTML=(v.n+e.n)+"/"+TOTAL_QS+(deep()?`<small> · ${subCount(c)}/48</small>`:"");
+  const ev=evidenceOf(c); document.getElementById("sEv").textContent=ev!==null?ev+"%":"–";
+  renderSizer(); renderSteps(); renderProbe();
+  const vd=verdictOf(c),box=document.getElementById("candVerdict");
+  box.className="verdict "+(vd.cls==="g"?"good":vd.cls==="a"?"mid":vd.cls==="r"?"bad":"blue");
+  box.innerHTML=`<h4>${vd.head}</h4>${vd.body}`;
+  const gt=gatesFor(c);
+  document.getElementById("candGate").innerHTML=gt.length?
+    `<div class="redline">⛔ <b>Gated by organisation readiness:</b> ${gt.map(g=>`${g.dim.name.toLowerCase()} at Stage ${g.stage} — ${g.why}`).join("; ")}. Fix on the roadmap tab, or scope this candidate to avoid it.</div>`:"";
+  document.querySelectorAll(".deep-only").forEach(el=>{el.style.display=deep()?"":"none";});
 }
-const BVB_OPTS={ bvbEdge:["Yes","No","Unsure"], bvbInteg:["Light","Moderate","Deep"], bvbSens:["Low","Personal data","Regulated"] };
-function renderBvbOpts(){
-  const c=cur(); if(!c)return;
-  Object.entries(BVB_OPTS).forEach(([field,opts])=>{
-    const el=document.getElementById(field); if(!el)return;
-    el.innerHTML=opts.map(o=>`<div class="opt n ${c[field]===o?"sel":""}" style="min-width:90px" onclick="setBvbOpt('${field}','${o}')">${o}</div>`).join("");
+function renderMatrix(){
+  const m=document.getElementById("matrix");
+  m.querySelectorAll(".dot").forEach(d=>d.remove());
+  S.cands.forEach((c,i)=>{
+    const v=scoreOf(c,VAL_QS),e=scoreOf(c,EASE_QS);
+    if(v.n+e.n<TOTAL_QS)return;
+    const d=document.createElement("div");
+    d.className="dot"; d.style.left=Math.max(4,Math.min(96,e.s/24*100))+"%"; d.style.bottom=Math.max(4,Math.min(96,v.s/8*100))+"%";
+    d.textContent=(c.name||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+    d.title=c.name+" — Value "+fmtS(v.s)+"/8, Readiness "+fmtS(e.s)+"/24";
+    d.onclick=()=>selCand(i); m.appendChild(d);
   });
 }
-/* interviews */
-function addInt(){ S.interviews.push({name:"",role:"",date:"",pains:"",cand:""}); save(); renderInts(); }
-function delInt(i){ S.interviews.splice(i,1); save(); renderInts(); renderPortfolio(); }
+function addInt(){ S.interviews.push({name:"",role:"",date:"",pains:"",cand:""}); save(); renderCases(); }
+function delInt(i){ S.interviews.splice(i,1); save(); renderCases(); }
 function renderInts(){
   if(!deep())return;
   document.getElementById("intBody").innerHTML=S.interviews.map((iv,i)=>`<tr>
     <td><input value="${esc(iv.name)}" onchange="S.interviews[${i}].name=this.value;save()"></td>
     <td><input value="${esc(iv.role)}" onchange="S.interviews[${i}].role=this.value;save()"></td>
     <td><input type="date" value="${esc(iv.date)}" onchange="S.interviews[${i}].date=this.value;save()"></td>
-    <td><input value="${esc(iv.pains)}" onchange="S.interviews[${i}].pains=this.value;save()" placeholder="what they complained about, in their words"></td>
-    <td><select onchange="S.interviews[${i}].cand=this.value;save();renderPortfolio();renderForm()"><option value="">—</option>${S.cands.map((c,ci)=>`<option value="${ci}" ${String(iv.cand)===String(ci)?"selected":""}>${esc(c.name)||"unnamed"}</option>`).join("")}</select></td>
+    <td><input value="${esc(iv.pains)}" onchange="S.interviews[${i}].pains=this.value;save()" placeholder="in their words"></td>
+    <td><select onchange="S.interviews[${i}].cand=this.value;save();renderCases()"><option value="">—</option>${S.cands.map((c,ci)=>`<option value="${ci}" ${String(iv.cand)===String(ci)?"selected":""}>${esc(c.name)||"unnamed"}</option>`).join("")}</select></td>
     <td><button style="padding:2px 8px" onclick="delInt(${i})">✕</button></td></tr>`).join("");
 }
-/* portfolio */
 function renderPortfolio(){
   if(!deep())return;
   const body=document.getElementById("portfolioBody");
-  if(!S.cands.length){ body.innerHTML=`<p class="hint">Add candidates to see the portfolio picture.</p>`; return; }
-  const rows=rankOrder();
-  const totalM=S.cands.reduce((a,c)=>a+moneyOf(c),0);
-  const counts={}; rows.forEach(r=>{ counts[r.vd.label]=(counts[r.vd.label]||0)+1; });
-  const weak={}; rows.forEach(r=>{ if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{ const ds=dimScore(r.c,d.id); if(ds.s<=3) weak[d.name]=(weak[d.name]||0)+1; }); });
-  const scoredCount=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
+  if(!S.cands.length){body.innerHTML=`<p class="hint">Add candidates to see the portfolio picture.</p>`;return;}
+  const rows=rankOrder(),totalM=S.cands.reduce((a,c)=>a+moneyOf(c),0);
+  const counts={}; rows.forEach(r=>{counts[r.vd.label]=(counts[r.vd.label]||0)+1;});
+  const scored=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
   const probed=rows.filter(r=>probeOf(r.c).scored>=5).length;
   const evs=rows.map(r=>evidenceOf(r.c)).filter(x=>x!==null);
-  const avgEv=evs.length? Math.round(evs.reduce((a,b)=>a+b,0)/evs.length):null;
-  const checks=rows.reduce((a,r)=>a+subCount(r.c),0);
-  body.innerHTML=`
-    <div class="scorebar">
+  const avgEv=evs.length?Math.round(evs.reduce((a,b)=>a+b,0)/evs.length):null;
+  const weak={}; rows.forEach(r=>{if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{if(dimScore(r.c,d.id).s<=3)weak[d.name]=(weak[d.name]||0)+1;});});
+  body.innerHTML=`<div class="scorebar">
       <div class="scorebox"><div class="lbl">Candidates</div><div class="v">${S.cands.length}</div></div>
       <div class="scorebox"><div class="lbl">£ at stake / yr</div><div class="v">${fmtK(totalM)}</div></div>
       <div class="scorebox"><div class="lbl">Do first</div><div class="v">${counts["Do first"]||0}</div></div>
-      <div class="scorebox"><div class="lbl">Probed</div><div class="v">${probed}/${scoredCount||0}</div></div>
-      <div class="scorebox"><div class="lbl">Deep checks</div><div class="v">${checks}</div></div>
-      <div class="scorebox"><div class="lbl">Avg evidence</div><div class="v">${avgEv!==null?avgEv+"%":"–"}</div></div>
-    </div>
-    ${Object.entries(weak).filter(([,n])=>n>=2).map(([d,n])=>`<div class="flagline">⚠ <b>${d}</b> is weak (≤3/6) in ${n} of ${scoredCount} scored candidates — that's a programme-level fix, not a per-workflow one. Raise it once, at the top.</div>`).join("")}
-    ${probed<scoredCount?`<div class="flagline">⚠ ${scoredCount-probed} scored candidate${scoredCount-probed>1?"s":""} not yet probed — their fit scores are still opinion. Probe before the playback.</div>`:""}
-    ${avgEv!==null&&avgEv<50?`<div class="flagline">⚠ Average evidence strength is ${avgEv}% — much of this ranking rests on guesses. Confirm the low-evidence answers before the playback.</div>`:""}`;
+      <div class="scorebox"><div class="lbl">Probed</div><div class="v">${probed}/${scored||0}</div></div>
+      <div class="scorebox"><div class="lbl">Avg evidence</div><div class="v">${avgEv!==null?avgEv+"%":"–"}</div></div></div>
+    ${Object.entries(weak).filter(([,n])=>n>=2).map(([d,n])=>`<div class="flagline">⚠ <b>${d}</b> is weak in ${n} of ${scored} candidates — that's an organisation-level fix, not a per-workflow one.</div>`).join("")}
+    ${avgEv!==null&&avgEv<50?`<div class="flagline">⚠ Average evidence strength ${avgEv}% — much of this rests on guesses.</div>`:""}`;
 }
+function renderCases(){ renderRows(); renderForm(); renderMatrix(); renderInts(); renderPortfolio();
+  document.getElementById("interviewCard").style.display=deep()?"":"none";
+  document.getElementById("portfolioCard").style.display=deep()?"":"none"; }
 
-function renderScoreboxes(){
-  const c=cur(); if(!c)return;
-  const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
-  document.getElementById("sVal").textContent=v.n?fmtS(v.s)+" / 8":"–";
-  document.getElementById("sEase").textContent=e.n?fmtS(e.s)+" / 24":"–";
-  document.getElementById("sDone").innerHTML=(v.n+e.n)+"/"+TOTAL_QS+(deep()?`<small> · ${subCount(c)}/48 checks</small>`:"");
-  const ev=evidenceOf(c);
-  document.getElementById("sEv").textContent = ev!==null? ev+"%":"–";
-}
-function renderForm(){
-  const card=document.getElementById("formCard");
-  if(!cur()){ card.style.display="none"; return; }
-  card.style.display="block";
-  const c=cur();
-  document.getElementById("formTitle").textContent=c.name||"Candidate";
-  ["name","area","contact","desc","notes","people","hours","pcost","volume","timecase","bvbTools","depends"].forEach(k=>{ const el=document.getElementById("f_"+k); if(el) el.value=c[k]||""; });
-  document.getElementById("valQs").innerHTML=VAL_QS.map(qHTML).join("");
-  document.getElementById("easeQs").innerHTML=DIMS.map(d=>{
-    const ds=dimScore(c,d.id);
-    return `<div class="dim">
-      <div class="dim-head"><h3>${d.name}</h3><span class="sub2">${d.sub}</span><span class="dscore ${dimCls(ds.s,ds.n)}">${ds.n? fmtS(ds.s)+" / 6":"– / 6"}</span></div>
-      ${EASE_QS.filter(q=>q.dim===d.id).map(qHTML).join("")}
-    </div>`;
-  }).join("");
-  document.getElementById("bvb").innerHTML=BVB.map(b=>`<div class="opt n ${c.bvb===b.v?"sel":""}" onclick="setBvb('${b.v}')">${b.label}</div>`).join("");
-  renderBvbOpts(); renderBvbSuggest(); renderScoreboxes(); renderSizer(); renderSteps(); renderProbe();
-  const vd=verdictOf(c);
-  const box=document.getElementById("candVerdict");
-  box.className="verdict "+(vd.cls==="g"?"good":vd.cls==="a"?"mid":vd.cls==="r"?"bad":"blue");
-  box.innerHTML=`<h4>${vd.head}</h4>${vd.body}`;
-  document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display = deep()? "":"none"; });
-}
-function renderMatrix(){
-  const m=document.getElementById("matrix");
-  m.querySelectorAll(".dot").forEach(d=>d.remove());
-  S.cands.forEach((c,i)=>{
-    const v=scoreOf(c,VAL_QS), e=scoreOf(c,EASE_QS);
-    if(v.n+e.n<TOTAL_QS) return;
-    const x=e.s/24*100, y=v.s/8*100;
-    const d=document.createElement("div");
-    d.className="dot"; d.style.left=Math.max(4,Math.min(96,x))+"%"; d.style.bottom=Math.max(4,Math.min(96,y))+"%";
-    d.textContent=(c.name||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
-    d.title=c.name+" — Value "+fmtS(v.s)+"/8, Readiness "+fmtS(e.s)+"/24";
-    d.onclick=()=>selCand(i);
-    m.appendChild(d);
-  });
-}
-function renderAll(){ renderMode(); renderRows(); renderForm(); renderMatrix(); renderInts(); renderPortfolio(); renderRoadmap();
-  ["client","by","date"].forEach(k=>{ const el=document.getElementById("m_"+k); if(el) el.value=(S.meta&&S.meta[k])||""; }); }
-
-/* ---------- roadmap actions ----------
-   Weak answers become actions. Each gap action names what to do, who does it,
-   and which check triggered it — tangible inputs for a roadmap. */
-const GAP_ACTIONS = {
- impact:{type:"ASK",what:"Pin it to a named board number with the sponsor — which metric moves, and by how much"},
- baseline:{type:"MEASURE",what:"Measure the baseline — count volumes, time a sample of cases, get finance or ops to vouch for the numbers"},
- fit_nature:{type:"DECIDE",what:"Re-scope toward the repetitive, digital part of the task — AI won't carry the physical or relationship parts"},
- fit_error:{type:"DECIDE",what:"Design the human checkpoint — where a person reviews the AI's output before it counts"},
- fit_precedent:{type:"TEST",what:"Run the 2-hour feasibility probe — 10 real cases in a model playground; tested beats assumed"},
- data_access:{type:"ASK",what:"Sit down with the data owner and ask for access — get the yes or no early, it gates everything"},
- data_quality:{type:"MEASURE",what:"Pull ~20 real records with the team and grade the quality honestly — messy data is the number-one POC killer"},
- data_examples:{type:"MEASURE",what:"Collect 15–30 worked examples with outcomes and reasoning — they become the AI's test set"},
- tech_integration:{type:"ASK",what:"Get the integration story from the platform lead — which systems open up, who builds connectors"},
- tech_platform:{type:"ASK",what:"Start the 'where can AI run here' conversation with IT — approval routes take longer than builds"},
- tech_security:{type:"ASK",what:"Book the early security / compliance conversation — sensitive data or regulated decisions are involved"},
- skills_champion:{type:"ASK",what:"Find the champion — a named person in the team keen to use it daily, with time made available"},
- skills_expert:{type:"ASK",what:"Secure expert checking time — scheduled hours per week from someone who can judge right from wrong"},
- skills_owner:{type:"ASK",what:"Name the post-go-live owner — who watches it, maintains it and answers for it"}
-};
+/* ============================ RENDER: OUTPUT ============================ */
 function candActions(c,i){
-  fix(c);
-  const acts=[]; const vd=verdictOf(c); const who=c.contact||"Delivery Lead";
-  const wave=waveOf(vd);
-  if(wave==="NOW"){
-    const p=probeOf(c);
-    acts.push({type:"TEST",who,what:(p.scored>=5?"Grow the probe into a working prototype on real example cases":"Build a quick prototype on 5–10 example cases to make it concrete"),why:"Do-first candidate — prototypes sell the decision"});
+  fix(c); const acts=[],vd=verdictOf(c),who=c.contact||"Delivery Lead",wave=waveOf(vd);
+  if(wave==="NOW"){ const p=probeOf(c);
+    acts.push({type:"TEST",who,what:p.scored>=5?"Grow the probe into a working prototype on real example cases":"Build a quick prototype on 5–10 example cases",why:"Do-first candidate"});
     acts.push({type:"MEASURE",who:"Commercial BA / "+who,what:"Run the Value Assessment — baseline, potential → realistic £, go / adjust / stop",why:"the £ case becomes the Build scope"});
-    acts.push({type:"ASK",who:"Delivery Lead",what:"Start the Mini Op Model — approvals, roles, systems for this workflow",why:"proves the path to run it for real"});
-  }
-  /* gap actions from weak answers */
-  const gaps=[];
-  [...VAL_QS,...EASE_QS].forEach(q=>{
-    const eff=parentEff(c,q);
-    if(eff===null||eff>=1.5) return;
-    const g=GAP_ACTIONS[q.k]; if(!g) return;
-    if(q.k==="fit_precedent"&&probeScore(c)!==null) return; /* already tested */
-    gaps.push({type:g.type,who,what:g.what,why:`${q.t.replace(/\?$/,"")} scored ${fmtS(eff)}/2`,eff});
-  });
-  gaps.sort((a,b)=>a.eff-b.eff);
-  const capped = wave==="NOW"? gaps.slice(0,4) : gaps.slice(0,6);
-  acts.push(...capped);
+    acts.push({type:"ASK",who:"Delivery Lead",what:"Start the Mini Op Model — approvals, roles, systems",why:"proves the path to run it"}); }
+  const gapsL=[];
+  [...VAL_QS,...EASE_QS].forEach(q=>{ const eff=parentEff(c,q);
+    if(eff===null||eff>=1.5)return; const g=GAP_ACTIONS[q.k]; if(!g)return;
+    if(q.k==="fit_precedent"&&probeScore(c)!==null)return;
+    gapsL.push({type:g.type,who,what:g.what,why:`${q.t.replace(/\?$/,"")} scored ${fmtS(eff)}/2`,eff}); });
+  gapsL.sort((a,b)=>a.eff-b.eff);
+  acts.push(...(wave==="NOW"?gapsL.slice(0,4):gapsL.slice(0,6)));
   if(deep()){
-    const named=c.steps.filter(s=>s.name&&parseFloat(s.pct)>=25&&!s.ai);
-    if(named.length) acts.push({type:"DECIDE",who,what:`Re-scope to cover: ${named.map(s=>s.name).join(", ")} — the heavy time sits there`,why:"step map shows uncovered heavy steps"});
-    if(probeOf(c).scored<5 && wave!=="LATER" && !acts.some(a=>a.what.includes("feasibility probe")))
-      acts.push({type:"TEST",who,what:"Run the 2-hour feasibility probe — 10 real cases; the tested result feeds the score",why:"fit is still opinion until probed"});
-  }
+    const missed=c.steps.filter(s=>s.name&&parseFloat(s.pct)>=25&&!s.ai);
+    if(missed.length) acts.push({type:"DECIDE",who,what:`Re-scope to cover: ${missed.map(s=>s.name).join(", ")}`,why:"heavy steps uncovered"});
+    if(probeOf(c).scored<5&&wave!=="LATER"&&!acts.some(a=>a.what.includes("feasibility probe"))&&!acts.some(a=>a.what.includes("prototype")))
+      acts.push({type:"TEST",who,what:"Run the 2-hour feasibility probe — 10 real cases",why:"fit is still opinion until probed"}); }
   return acts;
 }
-function roadmapData(){
-  const rows=rankOrder();
-  const waves={NOW:[],NEXT:[],LATER:[],UNSCORED:[]};
-  rows.forEach(r=>{ waves[waveOf(r.vd)].push(r); });
-  const scored=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
-  const weak={}; rows.forEach(r=>{ if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{ if(dimScore(r.c,d.id).s<=3) weak[d.name]=(weak[d.name]||0)+1; }); });
-  const prog=Object.entries(weak).filter(([,n])=>n>=2).map(([d,n])=>({d,n,scored}));
-  return {waves,prog,rows};
+function renderGapRoadmap(){
+  const el=document.getElementById("gapRoadmap"),ph=phasedGaps(),ceil=ceiling();
+  if(!ceil){ el.innerHTML=`<p class="hint">Score the organisation dimensions in tab 1 and the roadmap builds itself.</p>`; return; }
+  if(!ph.length){ el.innerHTML=`<div class="verdict good"><h4>No gaps — they're at their target</h4>Nothing organisational to fix. Put the effort into use cases.</div>`; return; }
+  el.innerHTML=ph.map(p=>`<div class="phase"><h3>${p.phase}</h3>
+    ${p.items.map(g=>`<div class="actitem">
+      <b>${g.dim.name}</b> — Stage ${g.current} → ${g.target} <span class="who">${g.isCeil?"· sets the ceiling":""}${g.unblocks?` · unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}`:""}${g.note?" · "+g.note:""}</span>
+      <div style="margin-top:4px">${esc(g.step)}</div>
+    </div>`).join("")}</div>`).join("");
 }
-function renderRoadmap(){
-  const body=document.getElementById("roadmapBody"); if(!body)return;
-  const {waves,prog}=roadmapData();
-  if(!S.cands.length){ body.innerHTML=`<p class="hint">Score candidates and the roadmap builds itself.</p>`; return; }
-  const wv=(title,sub,arr,fn)=> arr.length? `<h3 style="color:var(--red);font-size:13.5px;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em">${title}</h3><p class="hint" style="margin-bottom:6px">${sub}</p>`+arr.map(fn).join("") : "";
-  body.innerHTML =
-    wv("Now — start these","Do-first candidates: begin the Validate arc.",waves.NOW,r=>actBlock(r))
-   +wv("Next — unblock these","Big bets and fill-ins: the actions below are what promote them.",waves.NEXT,r=>actBlock(r,true))
-   +wv("Later — parked","Recorded with the reason; revisit when something changes.",waves.LATER,r=>`<div style="margin:6px 0"><b>${esc(r.c.name)||"unnamed"}</b> — ${esc(r.c.notes)||"neither value nor readiness today"}</div>`)
-   +(prog.length? `<h3 style="color:var(--red);font-size:13.5px;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em">Programme-level — fix once, centrally</h3>`+prog.map(p=>`<div class="flagline">⚠ <b>${p.d}</b> is weak in ${p.n} of ${p.scored} candidates — one central fix beats ${p.n} local ones. Owner: client sponsor.</div>`).join(""):"")
-   +(waves.UNSCORED.length? `<p class="hint" style="margin-top:10px">${waves.UNSCORED.length} candidate(s) not fully scored yet — they join the roadmap once answered.</p>`:"");
-}
-function actBlock(r,showPromote){
-  const acts=candActions(r.c,r.i);
-  const e=scoreOf(r.c,EASE_QS);
-  return `<div style="border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:6px 0">
-    <b>${esc(r.c.name)||"unnamed"}</b> <span class="hint" style="display:inline">${r.c.contact?"· ask "+esc(r.c.contact):""}${showPromote?` · promotes to NOW at readiness 15/24 — currently ${fmtS(e.s)}`:""}</span>
-    <ul style="margin:6px 0 2px 18px">${acts.map(a=>`<li style="margin:3px 0"><b>${a.type}</b> (${esc(a.who)}): ${esc(a.what)} <span class="hint" style="display:inline">— ${esc(a.why)}</span></li>`).join("")}</ul>
-  </div>`;
-}
-function copyRoadmap(){
-  const m=S.meta||{};
-  const {waves,prog}=roadmapData();
-  const lines=["AI use case roadmap — actions from the Discovery Screen"];
-  const hdr=[m.client?"Client: "+m.client:"",m.by?"by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
-  if(hdr)lines.push(hdr);
-  const dump=(title,arr,promote)=>{ if(!arr.length)return;
-    lines.push("",title);
-    arr.forEach(r=>{
-      const e=scoreOf(r.c,EASE_QS);
-      lines.push(`[${r.c.name||"unnamed"}]${r.c.contact?" — ask "+r.c.contact:""}${promote?` — promotes to NOW at readiness 15/24 (currently ${fmtS(e.s)})`:""}`);
-      candActions(r.c,r.i).forEach(a=>lines.push(`- [ ] ${a.type} · ${a.who}: ${a.what}  (${a.why})`));
-    });
-  };
-  dump("NOW — start these",waves.NOW,false);
-  dump("NEXT — unblock these",waves.NEXT,true);
-  if(waves.LATER.length){ lines.push("","LATER — parked");
-    waves.LATER.forEach(r=>lines.push(`- ${r.c.name||"unnamed"}: ${r.c.notes||"neither value nor readiness today"}`)); }
-  if(prog.length){ lines.push("","PROGRAMME-LEVEL — fix once, centrally");
-    prog.forEach(p=>lines.push(`- [ ] client sponsor: fix ${p.d.toLowerCase()} centrally — weak in ${p.n} of ${p.scored} candidates`)); }
-  copyText(lines.join("\n"),"Roadmap actions copied.");
+function renderUcRoadmap(){
+  const el=document.getElementById("ucRoadmap");
+  if(!S.cands.length){ el.innerHTML=`<p class="hint">Add candidates in tab 2.</p>`; return; }
+  const rows=rankOrder(),waves={NOW:[],NEXT:[],LATER:[],UNSCORED:[]};
+  rows.forEach(r=>waves[waveOf(r.vd)].push(r));
+  const blk=(title,sub,arr)=>arr.length?`<div class="phase"><h3>${title}</h3><p class="hint">${sub}</p>${arr.map(r=>{
+    const gt=gatesFor(r.c),acts=candActions(r.c,r.i);
+    return `<div class="actitem"><b>${esc(r.c.name)||"unnamed"}</b> <span class="who">${r.c.contact?"· ask "+esc(r.c.contact):""}</span>
+      ${gt.length?`<div class="redline" style="margin:6px 0">⛔ Gated by ${gt.map(g=>g.dim.name.toLowerCase()+" (Stage "+g.stage+")").join(", ")} — fix above first.</div>`:""}
+      <ul style="margin:6px 0 2px 18px">${acts.map(a=>`<li style="margin:3px 0"><b>${a.type}</b> (${esc(a.who)}): ${esc(a.what)} <span class="who">— ${esc(a.why)}</span></li>`).join("")}</ul></div>`;}).join("")}</div>`:"";
+  el.innerHTML=blk("Now — start these","Do-first candidates.",waves.NOW)
+    +blk("Next — unblock these","The actions below are what promote them.",waves.NEXT)
+    +(waves.LATER.length?`<div class="phase"><h3>Later — parked</h3>${waves.LATER.map(r=>`<div class="actitem"><b>${esc(r.c.name)||"unnamed"}</b> — ${esc(r.c.notes)||"neither value nor readiness today"}</div>`).join("")}</div>`:"");
 }
 
-/* ---------- output ---------- */
+/* ============================ COPY OUTPUTS ============================ */
+function copyReport(){
+  const m=S.meta||{},ceil=ceiling(),pot=potential(),t=S.target||4;
+  const L=["AI READINESS ASSESSMENT"];
+  L.push([m.client?m.client:"Client",m.by?"assessed by "+m.by:"",m.date||""].filter(Boolean).join(" · "));
+  if(m.ambition)L.push("Ambition: "+m.ambition);
+  L.push("");
+  if(!ceil){ L.push("Not yet scored."); copyText(L.join("\n"),"Report copied."); return; }
+  L.push(`READINESS: Stage ${ceil.stage} — ${stageName(ceil.stage)}`);
+  L.push(`Capped by: ${ceil.dims.map(d=>d.name).join(" and ")} (the weakest dimension sets the ceiling)`);
+  L.push(`Weighted potential: ${pot.toFixed(1)} · 12-month target: Stage ${t} (${stageName(t)})`);
+  if(deep()&&orgEvidence()!==null)L.push(`Evidence: ${orgEvidence()}% of answers confirmed`);
+  L.push("","SCORECARD");
+  ORG_DIMS.forEach(d=>{ const s=orgDim(d.id);
+    L.push(`- ${d.name} (${d.w}% weight): ${s.stage!==null?"Stage "+s.stage+" — "+stageName(s.stage):"not scored"}${ceil.dims.some(x=>x.id===d.id)?"  ← ceiling":""}`); });
+  const ph=phasedGaps();
+  if(ph.length){ L.push("","GAP-CLOSURE ROADMAP");
+    ph.forEach(p=>{ L.push("",p.phase.toUpperCase());
+      p.items.forEach(g=>{ L.push(`- [ ] ${g.dim.name} (Stage ${g.current} → ${g.target}): ${g.step}${g.unblocks?`  [unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}]`:""}`); }); }); }
+  const rows=rankOrder().filter(r=>r.v.n+r.e.n>=TOTAL_QS);
+  if(rows.length){ L.push("","USE CASES — RANKED");
+    rows.forEach((r,i)=>{ const gt=gatesFor(r.c);
+      L.push(`${i+1}. ${r.c.name||"unnamed"} — value ${fmtS(r.v.s)}/8 · readiness ${fmtS(r.e.s)}/24 · ${fmtK(moneyOf(r.c))}/yr · ${r.vd.label}${gt.length?` — GATED by ${gt.map(g=>g.dim.name.toLowerCase()).join(", ")}`:""}`); }); }
+  L.push("","Method: six dimensions scored 1–5, weighted 10/20/70 (tooling / data & technology / people, process and change). Readiness is the lowest dimension — the weakest link sets the ceiling.");
+  copyText(L.join("\n"),"Readiness report copied.");
+}
+function copyRoadmap(){
+  const m=S.meta||{},L=["AI readiness — gap-closure roadmap"];
+  const hdr=[m.client?"Client: "+m.client:"",m.by?"by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
+  if(hdr)L.push(hdr);
+  const ceil=ceiling();
+  if(ceil)L.push(`Currently Stage ${ceil.stage} (${stageName(ceil.stage)}), capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" & ")}; target Stage ${S.target}.`);
+  phasedGaps().forEach(p=>{ L.push("",p.phase.toUpperCase());
+    p.items.forEach(g=>L.push(`- [ ] ${g.dim.name}: ${g.step}${g.unblocks?`  (unblocks ${g.unblocks} use case${g.unblocks>1?"s":""})`:""}`)); });
+  const rows=rankOrder(),waves={NOW:[],NEXT:[]};
+  rows.forEach(r=>{const w=waveOf(r.vd); if(waves[w])waves[w].push(r);});
+  ["NOW","NEXT"].forEach(w=>{ if(!waves[w].length)return;
+    L.push("",w==="NOW"?"USE CASES — START NOW":"USE CASES — NEXT");
+    waves[w].forEach(r=>{ const gt=gatesFor(r.c);
+      L.push(`[${r.c.name||"unnamed"}]${gt.length?` — gated by ${gt.map(g=>g.dim.name.toLowerCase()).join(", ")}`:""}`);
+      candActions(r.c,r.i).forEach(a=>L.push(`- [ ] ${a.type} · ${a.who}: ${a.what}  (${a.why})`)); }); });
+  copyText(L.join("\n"),"Roadmap copied.");
+}
 function copyBacklog(){
   const m=S.meta||{};
-  const hdr=[m.client?"Client: "+m.client:"",m.by?"screened by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
-  const lines=["Use Case Discovery Screen — ranked backlog"+(deep()?" (deep dive)":"")]; if(hdr)lines.push(hdr); lines.push("");
-  const rows=rankOrder();
-  rows.forEach(({c,i,v,e,vd},idx)=>{
-    const dims = DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n? fmtS(ds.s)+"/6":"not scored");}).join(" · ");
-    lines.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${fmtS(v.s)}/8 · Readiness ${fmtS(e.s)}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
-    if(c.desc)lines.push(`   ${c.desc}`);
-    if(deep()){
-      const ev=evidenceOf(c); const p=probeOf(c); const dm=demandOf(c,i); const cov=coverageOf(c); const opp=opportunityOf(c);
+  const hdr=[m.client?"Client: "+m.client:"",m.by?"assessed by "+m.by:"",m.date||""].filter(Boolean).join(" · ");
+  const L=["Use cases — ranked backlog"+(deep()?" (deep dive)":"")]; if(hdr)L.push(hdr);
+  const ceil=ceiling(); if(ceil)L.push(`Organisation readiness: Stage ${ceil.stage} (${stageName(ceil.stage)}) — capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" & ")}`);
+  L.push("");
+  rankOrder().forEach(({c,i,v,e,vd},idx)=>{
+    const dims=DIMS.map(d=>{const ds=dimScore(c,d.id);return d.name.toLowerCase()+" "+(ds.n?fmtS(ds.s)+"/6":"not scored");}).join(" · ");
+    L.push(`${idx+1}. ${c.name||"unnamed"} (${c.area||"—"}) — Value ${fmtS(v.s)}/8 · Readiness ${fmtS(e.s)}/24 (${dims}) · ${fmtK(moneyOf(c))}/yr gross time cost · ${c.bvb?BVB_SHORT[c.bvb]:"buy/build ?"} · ${vd.label}`);
+    if(c.desc)L.push(`   ${c.desc}`);
+    const gt=gatesFor(c); if(gt.length)L.push(`   GATED by organisation readiness: ${gt.map(g=>g.dim.name.toLowerCase()+" (Stage "+g.stage+")").join(", ")}`);
+    if(deep()){ const ev=evidenceOf(c),p=probeOf(c),dm=demandOf(c,i),cov=coverageOf(c),opp=opportunityOf(c);
       const bits=[`${subCount(c)}/48 deep checks`];
       if(ev!==null)bits.push(`evidence ${ev}% confirmed`);
-      bits.push(p.scored>=5? `probe ${p.cr}/${p.scored} credible (in the score)` : "not probed — fit is still opinion");
+      bits.push(p.scored>=5?`probe ${p.cr}/${p.scored} credible (in the score)`:"not probed");
       if(cov!==null)bits.push(`AI touches ${Math.round(cov*100)}% of task time`);
       if(dm)bits.push(`${dm} interview${dm>1?"s":""} raised it`);
-      lines.push(`   Basis: ${bits.join(" · ")}`);
-      if(opp)lines.push(`   Indicative opportunity: ${fmtK(opp.lo)}–${fmtK(opp.hi)}/yr (${opp.basis})`);
-      const s=bvbSuggestion(c);
-      if(s)lines.push(`   Buy/build rationale: ${s.call} — ${s.why}`);
-      if(c.depends)lines.push(`   Depends on: ${c.depends}`);
-    }
-    if(c.contact)lines.push(`   Ask: ${c.contact}`);
-    if(c.notes)lines.push(`   Notes: ${c.notes}`);
+      L.push(`   Basis: ${bits.join(" · ")}`);
+      if(opp)L.push(`   Indicative opportunity: ${fmtK(opp.lo)}–${fmtK(opp.hi)}/yr (${opp.basis})`);
+      const s=bvbSuggestion(c); if(s)L.push(`   Buy/build rationale: ${s.call} — ${s.why}`);
+      if(c.depends)L.push(`   Depends on: ${c.depends}`); }
+    if(c.contact)L.push(`   Ask: ${c.contact}`);
+    if(c.notes)L.push(`   Notes: ${c.notes}`);
   });
-  if(deep()){
-    lines.push("","WAVE PLAN");
-    ["NOW","NEXT","LATER"].forEach(w=>{
-      const names=rows.filter(r=>waveOf(r.vd)===w).map(r=>r.c.name||"unnamed");
-      if(names.length)lines.push(`${w}: ${names.join(" · ")}`);
-    });
-    const scored=rows.filter(r=>r.v.n+r.e.n>=TOTAL_QS).length;
-    const weak={}; rows.forEach(r=>{ if(r.v.n+r.e.n<TOTAL_QS)return; DIMS.forEach(d=>{ if(dimScore(r.c,d.id).s<=3) weak[d.name]=(weak[d.name]||0)+1; }); });
-    const prog=Object.entries(weak).filter(([,n])=>n>=2);
-    if(prog.length){ lines.push("","PROGRAMME-LEVEL FINDINGS");
-      prog.forEach(([d,n])=>lines.push(`- ${d} is weak in ${n} of ${scored} candidates — fix once, centrally.`)); }
-    if(S.interviews.length){ lines.push("","SOURCES: "+S.interviews.length+" interviews");
-      S.interviews.forEach(iv=>{ if(iv.name)lines.push(`- ${iv.name}${iv.role?" ("+iv.role+")":""}${iv.date?", "+iv.date:""}${iv.pains?": "+iv.pains:""}`); }); }
-  }
-  lines.push("","Next: Do-first candidates → quick prototype on example cases + Value Assessment (the £ case) + Mini Op Model (the path to run).","Where readiness is high, the Build POC (real, integrated data) can start early.");
-  copyText(lines.join("\n"),"Ranked backlog copied.");
+  L.push("","Next: Do-first candidates → prototype on example cases + Value Assessment (the £ case) + Mini Op Model (the path to run).");
+  copyText(L.join("\n"),"Ranked backlog copied.");
 }
-function exportJSON(){
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="discovery-screen.json"; a.click();
-}
-function importJSON(inp){
-  const f=inp.files[0]; if(!f)return; const r=new FileReader();
-  r.onload=()=>{ try{ S=JSON.parse(r.result); S.cands=S.cands||[]; S.meta=S.meta||{}; S.interviews=S.interviews||[]; S.mode=S.mode||"light"; save(); renderAll(); }catch(e){ alert("Could not read that file."); } };
-  r.readAsText(f);
-}
+function exportJSON(){ const b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(b);
+  a.download=((S.meta&&S.meta.client)||"client").replace(/\s+/g,"-").toLowerCase()+"-ai-readiness.json"; a.click(); }
+function importJSON(inp){ const f=inp.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.cands=S.cands||[];S.meta=S.meta||{};S.interviews=S.interviews||[];S.org=S.org||{};S.orgEv=S.orgEv||{};S.mode=S.mode||"light";S.target=S.target||4; save(); renderAll(); }catch(e){ alert("Could not read that file."); } };
+  r.readAsText(f); }
+
+function renderAll(){ renderMode(); renderOrg(); renderCases(); renderGapRoadmap(); renderUcRoadmap(); }
 renderAll();
 </script>
 </body>
