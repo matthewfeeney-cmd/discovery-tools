@@ -2,17 +2,30 @@
 
 Three lightweight, single-file tools that support the **Assess** phase of the Enablis service offering. Each is a form a delivery/discovery person can fill in — no discovery experience required — and get a score or a usable output at the end.
 
-## The tools, and where they fit
+## Structure — three target groups
 
-| # | Tool | Offering stage | Fill-in time | Output |
-|---|------|----------------|--------------|--------|
-| 1 | **AI Readiness Assessment** (`tools/discovery-screen.html`) | Assess · Prioritise | Org layer ~20 min once · then ~20 min per candidate (Deep: ~1 week) | Light: Value /8 + AI-readiness /24 (fit · data · tech · skills), £ at stake, build-vs-buy, **ranked backlog**. Deep adds: evidence + confidence per score, workflow step map, 10-case feasibility probe, cross-checked sizing, build-vs-buy rationale, interview/pain log, wave plan, portfolio view with programme-level gaps |
-| 2 | **Value Assessment Tool** (`tools/value-assessment.html`) | Assess · Validate + Build | ~30–45 min with the workflow owner + finance | £ value case: baseline → PEV → REV (adoption × effectiveness × integration) → costs → benefit:cost, payback, steady-state net → **go / adjust / stop** |
-| 3 | **Mini Op Model + Skill Scan** (`tools/mini-op-model.html`) | Assess + Build (one workflow) | Light: ~40 min · Deep: 3–5 days alongside the build | Light: process · people · tech readiness %, blocker list, **one-page op model**. Deep adds: approvals map, named-roles table, system & data inventories, POC-vs-production log, safeguards register, measurement plan — compiled into a **beyond-POC blueprint with an owned action list** |
+The toolkit is organised around **who is being assessed**, not around documents.
 
-They chain: screen many workflows (1) → size the winner's £ (2) → prove the path to run it for real (3). Each also works standalone.
+| Module | Target group | What it holds | Runs alone? |
+|---|---|---|---|
+| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) + team skill scan (7 capabilities, required levels scale with the 12-month target) | **Yes — this is the wedge.** `assess.html?m=team` opens it standalone |
+| **2 · Workflow** | One workflow, or many — repeat per workflow | Operating model: approvals, systems, data, safeguards, and the run-capability scan (10 jobs that exist the day after go-live) | Needs no portfolio; works with a single workflow |
+| **3 · Portfolio** | Multiple workflows / many use cases | Ranking across every use case, wave plan, aggregate business case, programme-level weak spots | Appears automatically at 2+ use cases |
 
-**Method notes:** the value logic (potential value → realisable value, discounted for adoption, effectiveness and integration; cashable vs non-cashable; assumption RAGs) and the op-model lenses reflect proven AI value-assessment practice, cut down to the light-touch shape of the Enablis offering — deliberately a screen, not a full transformation blueprint.
+**Use cases sit inside workflows.** Readiness scoring and the £ value model are per use case, because value accrues per use case. The operating model is per workflow, because approvals, roles and systems are shared by everything inside it. That's what makes "one workflow with a few use cases" and "many workflows with many use cases" the same tool at different scales.
+
+**What computes from what:** the team skill scan sets the readiness Skills dimension · the readiness ceiling gates each use case · the workflow's evidence tables rate its signals · the run-capability scan's standing effort feeds each use case's run cost · use-case values aggregate into the portfolio.
+
+## Files
+
+```
+index.html          launcher (password gate)
+assess.html         the toolkit — team, workflows, use cases, portfolio, outputs
+assess.html?m=team  the wedge — team readiness and skills only
+journey.html        visual journey map
+PLAYBOOK.md         written playbook
+tools/              the three previous standalone tools (superseded)
+```
 
 ## The journey map and playbook
 
