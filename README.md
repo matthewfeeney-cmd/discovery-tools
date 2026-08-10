@@ -14,6 +14,10 @@ They chain: screen many workflows (1) → size the winner's £ (2) → prove the
 
 **Method notes:** the value logic (potential value → realisable value, discounted for adoption, effectiveness and integration; cashable vs non-cashable; assumption RAGs) and the op-model lenses reflect proven AI value-assessment practice, cut down to the light-touch shape of the Enablis offering — deliberately a screen, not a full transformation blueprint.
 
+## The journey map and playbook
+
+`journey.html` is the visual version — both journeys as a swimlane map (activities · our pod · client people · data needed · tools in use · outputs), with click-through detail per step and an A3 print layout for the wall. It reads the same content as the playbook below.
+
 ## The playbook
 
 `PLAYBOOK.md` sets out how the consulting team uses these three tools across the Assess phase — two journeys, **Validate** (~5 days, one workflow) and **Prioritise** (2–4 weeks, a department), with day-by-day and week-by-week activities, the tool touchpoints, and a map from each promised offering output to the tool that produces it. Internal; durations are working assumptions, not client-facing commitments.
