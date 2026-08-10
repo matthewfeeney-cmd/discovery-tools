@@ -65,6 +65,28 @@
   .flagline{background:var(--amber-bg);border-left:4px solid var(--amber);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
   .infoline{background:var(--blue-bg);border-left:4px solid var(--blue);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;margin:8px 0}
   .addrow{font-size:12.5px;padding:5px 12px;margin-top:4px}
+  .band{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--red);font-weight:700;margin:14px 0 2px}
+  .lvls{display:inline-flex;gap:3px}
+  .lvl{width:24px;height:24px;line-height:22px;text-align:center;border:1px solid var(--line);border-radius:5px;cursor:pointer;font-size:11px;color:var(--grey);background:#fff}
+  .lvl:hover{border-color:var(--red)}
+  .lvl.sel{font-weight:800;color:#fff}
+  .lvl.sel.ok{background:var(--green);border-color:var(--green)}
+  .lvl.sel.near{background:var(--amber);border-color:var(--amber)}
+  .lvl.sel.bad{background:var(--red);border-color:var(--red)}
+  .lvl.req{border-color:var(--ink);border-width:2px;font-weight:700;color:var(--ink)}
+  .capname{font-weight:600;font-size:13px}
+  .caphint{font-size:11.5px;color:var(--grey)}
+  .gapchip{font-size:11px;font-weight:700;border-radius:10px;padding:1px 8px}
+  .gapchip.ok{background:var(--green-bg);color:var(--green)}
+  .gapchip.g1{background:var(--amber-bg);color:var(--amber)}
+  .gapchip.g2{background:var(--red-bg);color:var(--red)}
+  .stagebar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .stagebox{flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:11px 14px;background:#fff}
+  .stagebox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey)}
+  .stagebox .v{font-size:20px;font-weight:800;line-height:1.2}
+  .stagebox .v small{display:block;font-size:11.5px;font-weight:600;color:var(--grey)}
+  .stagebox.own{background:var(--blue-bg);border-color:var(--blue)}
+  .stagebox.risk{background:var(--red-bg);border-color:var(--red)}
   #outCard{display:none}
   #outCard h3{color:var(--red);margin:14px 0 4px;font-size:14.5px}
   #outCard .empty{color:#aaa;font-style:italic}
@@ -173,9 +195,23 @@
   <div class="sig"><div class="st">Skills to run &amp; maintain</div><div class="opts" id="rag_pe3"></div></div>
 </div>
 
+<!-- SKILL SCAN -->
+<div class="card">
+  <h2><span class="n">3</span>Skill scan — can they run this without us?</h2>
+  <p class="hint">Ten jobs that exist the day after go-live. For each: what level does running <i>this</i> workflow need, what have they got today, and who holds it. Levels are <b>0</b> none · <b>1</b> aware · <b>2</b> can do with help · <b>3</b> independent · <b>4</b> can teach others. Ask the team lead and the people who'd actually do it — not the sponsor.</p>
+  <div class="stagebar" id="skillBoxes"></div>
+  <div class="verdict" id="ownVerdict"></div>
+  <div id="skillTables"></div>
+  <div id="skillFlags"></div>
+  <div class="deep-only">
+    <label style="margin-top:12px">Standing effort <small>hours per week to keep this running, once live</small></label>
+    <div class="infoline" id="effortLine"></div>
+  </div>
+</div>
+
 <!-- TECH -->
 <div class="card">
-  <h2><span class="n">3</span>Tech — what it runs on and connects to</h2>
+  <h2><span class="n">4</span>Tech — what it runs on and connects to</h2>
   <p class="hint">Ask: the platform or architecture lead, the data owner, and security.</p>
   <div class="grid2">
     <div><label>Where would it run in production? <small>Mandated cloud/platform, approved AI tools</small></label><input data-k="t_platform"></div>
@@ -216,7 +252,7 @@
 
 <!-- GUARDRAILS (deep) -->
 <div class="card deep-only">
-  <h2><span class="n">4</span>Safeguards — what it must never do <span class="deepbadge">DEEP</span></h2>
+  <h2><span class="n">5</span>Safeguards — what it must never do <span class="deepbadge">DEEP</span></h2>
   <p class="hint">For every action the AI takes, name the worst case and who stays in control. The safe default is <b>propose → a person reviews → apply</b>; an action only earns direct execution once its track record justifies it. Ask the team: "what must never happen, whatever the case looks like?"</p>
   <table>
     <thead><tr><th style="width:26%">Action the AI takes</th><th style="width:30%">Worst case if it gets it wrong</th><th style="width:24%">Who stays in control</th><th>Escalation trigger</th><th style="width:30px"></th></tr></thead>
@@ -228,7 +264,7 @@
 
 <!-- MEASUREMENT (deep) -->
 <div class="card deep-only">
-  <h2><span class="n">5</span>Measurement &amp; trust <span class="deepbadge">DEEP</span></h2>
+  <h2><span class="n">6</span>Measurement &amp; trust <span class="deepbadge">DEEP</span></h2>
   <p class="hint">Design measurement into the build so "is it working?" is answered by the system's own logs, not by memory. Pull the success threshold from the Value Assessment.</p>
   <div class="grid3">
     <div><label>What the system logs about itself</label><textarea data-k="m_log" placeholder="cases handled, time taken, escalations, accuracy checks"></textarea></div>
@@ -269,11 +305,34 @@ const SIGNALS = [
  {id:"t3",lens:"Tech",name:"Data access & quality",g:"Accessible, good enough",a:"Reachable with work",r:"Locked away / poor"}
 ];
 const LENSES=["Process","People","Tech"];
+/* ---------- SKILL SCAN ----------
+   Ten jobs that exist the day after go-live. req = level needed to run THIS
+   workflow; own = must sit with the client if they're to run it without us. */
+const LVLS=["None","Aware","With help","Independent","Can teach"];
+const CAPS=[
+ {id:"c_use",band:"Run",name:"Use it day to day",hint:"the people whose work it changes — can they get good results from it?",req:2,own:true},
+ {id:"c_watch",band:"Run",name:"Watch that it's working",hint:"spot when output drifts, volumes change or it starts failing quietly",req:3,own:true},
+ {id:"c_escal",band:"Run",name:"Handle what it escalates",hint:"the cases it hands back — someone must catch them",req:3,own:true},
+ {id:"c_judge",band:"Assure",name:"Judge whether output is right",hint:"the domain expertise to say right or wrong, and correct it",req:4,own:true},
+ {id:"c_risk",band:"Assure",name:"Risk and compliance review",hint:"confirm it stays inside the rules as it changes",req:3,own:true},
+ {id:"c_content",band:"Improve",name:"Update prompts, rules and knowledge",hint:"when the business changes, someone has to change what it knows",req:3,own:true},
+ {id:"c_test",band:"Improve",name:"Test changes before release",hint:"check a change didn't quietly break something else",req:3,own:false},
+ {id:"c_data",band:"Sustain",name:"Keep data and connections working",hint:"the pipelines and integrations it depends on",req:3,own:false},
+ {id:"c_sec",band:"Sustain",name:"Security and access management",hint:"who can see what, keys and permissions, patching",req:3,own:false},
+ {id:"c_train",band:"Sustain",name:"Train new joiners on it",hint:"the test of real ownership — can they teach it without us?",req:4,own:true}
+];
+const BANDS=["Run","Assure","Improve","Sustain"];
+const ROUTES=[
+ {v:"build",label:"Build — train someone"},
+ {v:"buy",label:"Buy — hire"},
+ {v:"borrow",label:"Borrow — contract / we hold it"},
+ {v:"bot",label:"Bot — simplify the need away"}
+];
 const ROLE_PRESETS=["System owner","Day-to-day monitor","Escalation handler","Maintainer (rules & knowledge)","Domain expert"];
 const KEY="mini-op-model-v1";
 let S=JSON.parse(localStorage.getItem(KEY)||"{}");
 S.text=S.text||{}; S.rag=S.rag||{}; S.mode=S.mode||"light";
-S.gates=S.gates||[]; S.roles=S.roles||[]; S.conns=S.conns||[]; S.datas=S.datas||[]; S.divs=S.divs||[]; S.guards=S.guards||[];
+S.gates=S.gates||[]; S.roles=S.roles||[]; S.conns=S.conns||[]; S.datas=S.datas||[]; S.divs=S.divs||[]; S.guards=S.guards||[]; S.skills=S.skills||{};
 function save(){ localStorage.setItem(KEY,JSON.stringify(S)); document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString(); }
 function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
 function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually.")); }catch(e){ alert("Copy failed — select the text and copy manually."); } }
@@ -288,7 +347,7 @@ function renderMode(){
   document.getElementById("mode_light").classList.toggle("sel",!deep());
   document.getElementById("mode_deep").classList.toggle("sel",deep());
   document.getElementById("modeHint").textContent = deep()
-    ? "Deep mode changes how the readiness score is made: the tables don't sit beside the signals, they RATE them — every gate, role, connection and data source you record recalculates the score automatically. Tap a signal to override; tap again to hand it back to the tables. Every gap compiles into an action list with owners."
+    ? "Deep mode changes how the readiness score is made: the tables don't sit beside the signals, they RATE them — every gate, role, connection and data source you record recalculates the score automatically. Tap a signal to override; tap again to hand it back to the tables. The skill scan gains backups, hours per week and a route per gap. Every gap compiles into an action list with owners."
     : "Light mode: one pass in ~30 minutes, signals rated by hand. Switch to Deep when a build is running and the op model needs to survive scrutiny.";
   document.querySelectorAll(".deep-only").forEach(el=>{ el.style.display=deep()?"":"none"; });
   document.querySelectorAll(".light-only").forEach(el=>{ el.style.display=deep()?"none":""; });
@@ -359,6 +418,95 @@ function renderTables(){
   document.getElementById("guardFlags").innerHTML=wflags.map(f=>`<div class="flagline">${f}</div>`).join("");
 }
 
+/* ---------- skill scan ---------- */
+function sk(id){ S.skills[id]=S.skills[id]||{req:null,cur:null,who:"",backup:"",hrs:"",route:""}; return S.skills[id]; }
+function reqOf(c){ const v=sk(c.id).req; return (v===null||v===undefined)?c.req:v; }
+function setLvl(id,f,v){ const s=sk(id); s[f]=(s[f]===v?null:v); save(); renderSkills(); renderRags(); renderScore(); }
+function setSkTxt(id,f,v){ sk(id)[f]=v; save(); renderSkills(); renderRags(); renderScore(); }
+function setRoute(id,v){ const s=sk(id); s.route=(s.route===v?"":v); save(); renderSkills(); }
+function skStats(){
+  let scored=0,covered=0,ownShort=[],risks=[],hrs=0,noHolder=[];
+  CAPS.forEach(c=>{ const s=sk(c.id),req=reqOf(c);
+    if(s.cur===null||s.cur===undefined) return;
+    scored++;
+    const gap=req-s.cur;
+    if(gap<=0) covered++; else if(c.own) ownShort.push({c,req,cur:s.cur,gap});
+    if(gap>0&&!c.own) { /* non-own gaps tracked separately in gapList */ }
+    if(!s.who) noHolder.push(c);
+    else if(gap<=0&&!s.backup) risks.push({c,who:s.who});
+    hrs+=parseFloat(s.hrs)||0;
+  });
+  return {scored,covered,total:CAPS.length,ownShort,risks,hrs,noHolder,
+    coverage: scored? Math.round(covered/scored*100):null};
+}
+function skGaps(){
+  const out=[];
+  CAPS.forEach(c=>{ const s=sk(c.id),req=reqOf(c);
+    if(s.cur===null||s.cur===undefined) return;
+    const gap=req-s.cur; if(gap<=0) return;
+    out.push({c,req,cur:s.cur,gap,who:s.who,route:s.route});
+  });
+  return out.sort((a,b)=>(b.c.own-a.c.own)||(b.gap-a.gap));
+}
+function ownReady(){
+  const owns=CAPS.filter(c=>c.own);
+  const scored=owns.filter(c=>sk(c.id).cur!==null&&sk(c.id).cur!==undefined);
+  if(!scored.length) return null;
+  const short=scored.filter(c=>reqOf(c)-sk(c.id).cur>0);
+  const risky=scored.filter(c=>{const s=sk(c.id);return reqOf(c)-s.cur<=0&&s.who&&!s.backup;});
+  return {scoredN:scored.length,total:owns.length,short,risky,
+    ready:short.length===0&&risky.length===0&&scored.length===owns.length};
+}
+function renderSkills(){
+  const el=document.getElementById("skillTables"); if(!el) return;
+  el.innerHTML=BANDS.map(b=>`
+    <div class="band">${b}</div>
+    <table><thead><tr>
+      <th>Capability</th><th style="width:78px">Needs</th><th style="width:150px">Has today</th>
+      <th style="width:16%">Who holds it</th>
+      ${deep()?'<th style="width:14%">Backup</th><th style="width:70px">Hrs/wk</th><th style="width:16%">Route if short</th>':""}
+    </tr></thead><tbody>
+    ${CAPS.filter(c=>c.band===b).map(c=>{
+      const s=sk(c.id),req=reqOf(c),cur=s.cur;
+      const gap=(cur===null||cur===undefined)?null:req-cur;
+      const cls=gap===null?"":gap<=0?"ok":gap===1?"near":"bad";
+      return `<tr>
+        <td><span class="capname">${c.name}</span>${c.own?' <span class="gapchip ok" style="background:#eef;color:#446">must own</span>':""}<br><span class="caphint">${c.hint}</span></td>
+        <td><select onchange="setSkTxt('${c.id}','req',this.value===''?null:parseInt(this.value))">
+          ${[0,1,2,3,4].map(n=>`<option value="${n}" ${req===n?"selected":""}>${n}</option>`).join("")}</select></td>
+        <td><div class="lvls">${[0,1,2,3,4].map(n=>
+          `<div class="lvl ${cur===n?"sel "+cls:""} ${n===req?"req":""}" title="${LVLS[n]}${n===req?" — required":""}" onclick="setLvl('${c.id}','cur',${n})">${n}</div>`).join("")}</div></td>
+        <td><input value="${esc(s.who)}" onchange="setSkTxt('${c.id}','who',this.value)" placeholder="name"></td>
+        ${deep()?`<td><input value="${esc(s.backup)}" onchange="setSkTxt('${c.id}','backup',this.value)" placeholder="second person"></td>
+        <td><input type="number" min="0" step="0.5" value="${esc(s.hrs)}" onchange="setSkTxt('${c.id}','hrs',this.value)"></td>
+        <td>${gap!==null&&gap>0?`<select onchange="setRoute('${c.id}',this.value)"><option value="">— pick —</option>${ROUTES.map(r=>`<option value="${r.v}" ${s.route===r.v?"selected":""}>${r.label.split(" —")[0]}</option>`).join("")}</select>`:`<span class="caphint">—</span>`}</td>`:""}
+      </tr>`;}).join("")}
+    </tbody></table>`).join("");
+  const st=skStats(),or=ownReady();
+  document.getElementById("skillBoxes").innerHTML=`
+    <div class="stagebox"><div class="lbl">Covered</div><div class="v">${st.coverage!==null?st.coverage+"%":"–"}<small>${st.scored}/${st.total} capabilities scored</small></div></div>
+    <div class="stagebox own"><div class="lbl">Ownership readiness</div><div class="v">${or?(or.ready?"Ready":or.short.length+" short"):"–"}<small>${or?`of ${or.total} they must own`:"score the must-own rows"}</small></div></div>
+    <div class="stagebox ${st.risks.length?"risk":""}"><div class="lbl">Key-person risk</div><div class="v">${st.risks.length}<small>${st.risks.length?"one person, no backup":"no single points of failure"}</small></div></div>
+    <div class="stagebox"><div class="lbl">Standing effort</div><div class="v">${st.hrs?st.hrs+" hrs":"–"}<small>${st.hrs?(st.hrs/37.5).toFixed(1)+" FTE per week":"add hours in deep mode"}</small></div></div>`;
+  const v=document.getElementById("ownVerdict");
+  if(!or){ v.className="verdict"; v.innerHTML="Score the capabilities below — the must-own rows decide whether they could run this without us."; }
+  else if(or.ready){ v.className="verdict good";
+    v.innerHTML=`<b>They could run this without us.</b> Every must-own capability is at the level running it needs, and each has a backup. Handover is a scheduling exercise, not a capability build.`; }
+  else { const bits=[];
+    if(or.short.length) bits.push(`<b>${or.short.length} capabilit${or.short.length>1?"ies":"y"} short</b> — ${or.short.map(c=>c.name.toLowerCase()).join(", ")}`);
+    if(or.risky.length) bits.push(`<b>${or.risky.length} held by one person with no backup</b> — ${or.risky.map(c=>c.name.toLowerCase()).join(", ")}`);
+    if(or.scoredN<or.total) bits.push(`${or.total-or.scoredN} must-own capabilit${or.total-or.scoredN>1?"ies":"y"} not yet scored`);
+    v.className=or.short.length?"verdict bad":"verdict mid";
+    v.innerHTML=`<h4 style="margin-bottom:2px">Not yet — they'd still need us</h4>${bits.join("; ")}. One person is not a capability: the transfer plan below is what closes it.`; }
+  const flags=[];
+  st.risks.forEach(r=>flags.push(`⚠ <b>${r.c.name}</b> rests on ${esc(r.who)} alone — name a second person, or this is a single point of failure.`));
+  st.noHolder.forEach(c=>flags.push(`⚠ <b>${c.name}</b> has nobody named against it.`));
+  document.getElementById("skillFlags").innerHTML=flags.slice(0,6).map(f=>`<div class="flagline">${f}</div>`).join("");
+  const eff=document.getElementById("effortLine");
+  if(eff) eff.innerHTML=st.hrs? `<b>${st.hrs} hrs/week</b> to keep this running — about ${(st.hrs/37.5).toFixed(1)} FTE. Carry this into the Value Assessment as the run cost; it's usually guessed.`
+    : "Add hours per week against each capability and this totals the standing team cost — the number the Value Assessment usually guesses.";
+}
+
 /* ---------- signals ----------
    Deep mode: ratings are DERIVED from the tables — the data you collect
    recalculates the score. A manual tap overrides; tapping again returns
@@ -372,12 +520,26 @@ function deriveRag(id){
     case "p1":{ if(!gates.length)return null; const r=ratio(gates,g=>g.who&&g.evid); return r===1?"G":r>=0.5?"A":"R"; }
     case "p2":{ if(!gates.length)return null; const r=ratio(gates,g=>!!g.evid); return r===1?"G":r>0?"A":"R"; }
     case "p3":{ if(!gates.length)return null; const r=ratio(gates,g=>!!g.who); return r===1?"G":r>0?"A":"R"; }
-    case "pe1":{ const o=roles.find(r=>/owner/i.test(r.role)); if(!o||!o.status)return null;
+    case "pe1":{ /* the running-system owner: from the scan's "watch that it's working", else the roles table */
+      const w=sk("c_watch");
+      if(w.cur!==null&&w.cur!==undefined){
+        const meets=w.cur>=reqOf(CAPS.find(c=>c.id==="c_watch"));
+        if(w.who&&meets)return "G"; if(w.who||meets)return "A"; return "R"; }
+      const o=roles.find(r=>/owner/i.test(r.role)); if(!o||!o.status)return null;
       return o.status==="Named & willing"?"G":o.status==="Candidate, unconfirmed"?"A":"R"; }
-    case "pe2":{ const ex=roles.filter(r=>/expert/i.test(r.role)); if(!ex.length)return null;
+    case "pe2":{ /* expert checking time: from the scan's "judge whether output is right" */
+      const j=sk("c_judge");
+      if(j.cur!==null&&j.cur!==undefined){
+        const meets=j.cur>=reqOf(CAPS.find(c=>c.id==="c_judge"));
+        if(j.who&&meets&&(parseFloat(j.hrs)>0||!deep()))return "G";
+        if(j.who&&meets)return "A"; if(j.who)return "A"; return "R"; }
+      const ex=roles.filter(r=>/expert/i.test(r.role)); if(!ex.length)return null;
       if(ex.some(r=>r.person&&parseFloat(r.hrs)>0))return "G";
       if(ex.some(r=>r.person))return "A"; return "R"; }
-    case "pe3":{ const ops=roles.filter(r=>/(monitor|maintain|escalation)/i.test(r.role)&&r.status);
+    case "pe3":{ /* run & maintain skills: computed from scan coverage */
+      const st=skStats();
+      if(st.scored>=4){ if(st.coverage>=80&&!st.risks.length)return "G"; if(st.coverage>=50)return "A"; return "R"; }
+      const ops=roles.filter(r=>/(monitor|maintain|escalation)/i.test(r.role)&&r.status);
       if(!ops.length)return null;
       const vac=ops.filter(r=>r.status==="Vacant").length;
       if(vac===ops.length)return "R";
@@ -474,6 +636,19 @@ function actionList(){
     S.divs.forEach(d=>{ if(d.diff&&d.res!=="Resolved") acts.push({phase:P_MVP, who:"build team", what:`Close the POC-vs-production gap: ${d.diff}${d.why?" — matters because "+d.why:""}`}); });
     S.datas.forEach(d=>{ if(d.src&&(d.sens==="Regulated"||d.sens==="Personal data")) acts.push({phase:P_LIVE, who:"security / DPO", what:`Confirm the compliance route for ${d.src} (${d.sens.toLowerCase()}) before anything goes live`}); });
   }
+  /* --- skill scan: gaps, key-person risks and the transfer plan --- */
+  const ROUTE_TXT={build:"train them",buy:"hire for it",borrow:"contract it in (or we hold it)",bot:"simplify the need away"};
+  skGaps().forEach(g=>{
+    if(!g.who) return; /* "name someone" below is the right first step */
+    const route=g.route?` — route: ${ROUTE_TXT[g.route]}`:" — decide the route: train, hire, contract, or simplify the need away";
+    acts.push({phase:g.gap>=2?P_MVP:P_LIVE, who:g.who,
+      what:`Close the skills gap on "${g.c.name}" — needs level ${g.req} (${LVLS[g.req]}), at ${g.cur} (${LVLS[g.cur]})${route}`});
+  });
+  skStats().risks.forEach(r=>acts.push({phase:P_LIVE,who:"client sponsor",
+    what:`Name a second person for "${r.c.name}" — only ${r.who} covers it today, so leave, illness or resignation stops the workflow`}));
+  skStats().noHolder.forEach(c=>acts.push({phase:P_NOW,who:"client sponsor",
+    what:`Name who will do "${c.name}" after go-live`}));
+
   /* signal-derived actions — reds are urgent, ambers queue before MVP.
      In deep mode, table-rated signals are skipped: their rows already
      generated the specific actions above. */
@@ -507,6 +682,20 @@ function tbl(headers,rows){
   if(!rows.length) return `<p class="empty">— none captured —</p>`;
   return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c||"—")}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
+function skillOutHTML(){
+  const st=skStats(),or=ownReady();
+  if(!st.scored) return `<p class="empty">— skill scan not started —</p>`;
+  let head="";
+  if(or&&or.ready) head=`<p><b>Yes.</b> Every must-own capability is at the level running this needs, each with a backup. Handover is scheduling, not capability building.</p>`;
+  else if(or) head=`<p><b>Not yet.</b> ${or.short.length} must-own capabilit${or.short.length===1?"y":"ies"} short of the level needed${or.risky.length?`, and ${or.risky.length} held by a single person with no backup`:""}. Standing effort to run it: ${st.hrs?st.hrs+" hrs/week (~"+(st.hrs/37.5).toFixed(1)+" FTE)":"not yet estimated"}.</p>`;
+  const rows=CAPS.map(c=>{const s=sk(c.id),req=reqOf(c);
+    if(s.cur===null||s.cur===undefined) return `<tr><td>${c.name}${c.own?" (must own)":""}</td><td>${req}</td><td>—</td><td>—</td><td>not scored</td></tr>`;
+    const gap=req-s.cur;
+    const status=gap<=0?(s.who&&!s.backup?"covered — single point of failure":"covered"):`${gap} level${gap>1?"s":""} short${s.route?" · "+s.route:""}`;
+    const whoTxt=s.who?esc(s.who):"nobody named";
+    return `<tr><td>${c.name}${c.own?" (must own)":""}</td><td>${req} — ${LVLS[req]}</td><td>${s.cur} — ${LVLS[s.cur]}</td><td>${whoTxt}</td><td>${status}</td></tr>`;}).join("");
+  return head+`<table><thead><tr><th>Capability</th><th>Needs</th><th>Has</th><th>Who</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
 function buildOut(){
   const sc=renderScore();
   const out=document.getElementById("outCard");
@@ -518,6 +707,8 @@ function buildOut(){
     <h3>Route to run for real — approvals map ${ragWord("p1")}${ragWord("p2")}${ragWord("p3")}</h3>
     ${tbl(["Approval","Who decides","Evidence needed","When they meet","Spoken to?"],S.gates.filter(g=>g.gate).map(g=>[g.gate,g.who,g.evid,g.rhythm,g.spoken]))}
     <p><b>Late-veto risk:</b> ${V("p_veto")}</p>
+    <h3>Skills — can they run it without us?</h3>
+    ${skillOutHTML()}
     <h3>People — named roles ${ragWord("pe1")}${ragWord("pe2")}${ragWord("pe3")}</h3>
     ${tbl(["Role","Person","Status","Hrs/wk","Notes"],S.roles.filter(r=>r.role).map(r=>[r.role,r.person,r.status,r.hrs,r.notes]))}
     <p><b>Expert hours the build consumed last week:</b> ${V("pe_hrsused","— not logged —")} · <b>Trust:</b> ${V("pe_adopt")}</p>
@@ -539,6 +730,8 @@ function buildOut(){
     <p><b>Route to run for real:</b> ${V("p_route")}</p>
     <p><b>Approvers &amp; evidence:</b> ${V("p_gates")}</p>
     <p><b>Late-veto risk:</b> ${V("p_veto")}</p>
+    <h3>Skills — can they run it without us?</h3>
+    ${skillOutHTML()}
     <h3>People ${ragWord("pe1")}${ragWord("pe2")}${ragWord("pe3")}</h3>
     <p><b>Owner:</b> ${V("pe_owner")} · <b>Escalations:</b> ${V("pe_escal")}</p>
     <p><b>Experts &amp; time:</b> ${V("pe_experts")} · <b>Maintainer:</b> ${V("pe_maintain")}</p>
@@ -567,7 +760,7 @@ function bind(){
     const k=el.dataset.k; el.value=S.text[k]||""; el.oninput=()=>{S.text[k]=el.value;save();};
   });
 }
-function renderAll(){ renderMode(); renderRags(); renderScore(); renderTables(); }
+function renderAll(){ renderMode(); renderSkills(); renderRags(); renderScore(); renderTables(); }
 function exportJSON(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
@@ -575,7 +768,7 @@ function exportJSON(){
 }
 function importJSON(inp){
   const f=inp.files[0]; if(!f)return; const r=new FileReader();
-  r.onload=()=>{ try{ S=JSON.parse(r.result); S.text=S.text||{};S.rag=S.rag||{};S.mode=S.mode||"light";["gates","roles","conns","datas","divs","guards"].forEach(t=>S[t]=S[t]||[]); save(); bind(); renderAll(); }catch(e){ alert("Could not read that file."); } };
+  r.onload=()=>{ try{ S=JSON.parse(r.result); S.text=S.text||{};S.rag=S.rag||{};S.mode=S.mode||"light";S.skills=S.skills||{};["gates","roles","conns","datas","divs","guards"].forEach(t=>S[t]=S[t]||[]); save(); bind(); renderAll(); }catch(e){ alert("Could not read that file."); } };
   r.readAsText(f);
 }
 bind(); renderAll();
