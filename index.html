@@ -30,6 +30,12 @@
   a.tool p{color:var(--grey);font-size:13.5px}
   a.tool .go{color:var(--red);font-weight:700;font-size:13px;margin-top:8px;display:inline-block}
   .note{color:var(--grey);font-size:12.5px;margin-top:22px}
+  .wedges{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0 4px}
+  @media(max-width:820px){.wedges{grid-template-columns:1fr}}
+  .wedge{border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:#fbfbfc}
+  .wedge b{display:block;font-size:13.5px;margin-bottom:2px}
+  .wedge span{font-size:12.3px;color:var(--grey);line-height:1.45}
+  .wedge i{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--red);font-weight:700;font-style:normal;margin-bottom:3px}
   footer{text-align:center;color:var(--grey);font-size:12px;padding:20px}
 </style>
 </head>
@@ -50,12 +56,18 @@
   </div>
 
   <div id="launcher">
-    <div class="flow"><b>Three target groups, one engagement:</b> assess the <b>team</b> (organisation for a small business, department for a large one), then one or many <b>workflows</b>, each holding its own <b>use cases</b>. The team module is a wedge — it stands alone as a deliverable. The portfolio view appears once there are two or more use cases. Feedback → #discovery-tools or Matt.</div>
+    <div class="flow"><b>Three target groups, one engagement:</b> assess the <b>team</b> (organisation for a small business, department for a large one), then one or many <b>workflows</b>, each holding its own <b>use cases</b>. The team module is the wedge — three scans (readiness, team skills, codebase) sold and delivered together, standing alone as a deliverable. The portfolio view appears once there are two or more use cases. Feedback → #discovery-tools or Matt.</div>
     <div class="cards">
       <a class="tool" href="assess.html?m=team">
-        <span class="step">Wedge · stands alone</span>
+        <span class="step">Wedge · stands alone · 2 weeks</span>
         <h3>AI Readiness &amp; Skills Scan</h3>
-        <p>A two-week engagement — Delivery Lead plus Forward Deployed AI Engineer. Six readiness dimensions scored 1–5 with the weakest link setting the ceiling; a seven-capability team skill scan broken down by cohort, with required levels rising with their 12-month ambition; an interview log as the audit trail; and the <b>codebase review</b> — <a href='https://github.com/enablis-co/overwatch'>Overwatch</a>'s nine-stage pipeline across twelve audit dimensions, each scored 0–100 red/amber/green, rolled into two report angles: engineering quality, and AI readiness of the codebase. Output: readiness scorecard, skills profile by cohort, codebase review and a phased gap-closure roadmap.</p>
+        <p>Three scans, one engagement — Delivery Lead plus Forward Deployed AI Engineer, two weeks. Sold and delivered as a bundle, and a deliverable in its own right.</p>
+        <div class="wedges">
+          <div class="wedge"><i>Wedge 1</i><b>AI readiness</b><span>Six dimensions — strategy, data, technology, skills, governance, adoption — scored 1–5 and weighted 10/20/70. The weakest link sets the ceiling against their 12-month target.</span></div>
+          <div class="wedge"><i>Wedge 2</i><b>Team skills scan</b><span>Seven capabilities scored by depth and spread, broken down across leaders, practitioners and technical staff. Required levels rise with their ambition; it computes the Skills dimension.</span></div>
+          <div class="wedge"><i>Wedge 3</i><b>Codebase review</b><span><a href="https://github.com/enablis-co/overwatch">Overwatch</a> — nine stages, twelve audit dimensions scored 0–100 red/amber/green. Two report angles: engineering quality, and AI readiness of the codebase. Runs where they have their own code.</span></div>
+        </div>
+        <p>Plus an interview log as the audit trail. <b>Output:</b> readiness scorecard with the ceiling named, skills profile by cohort, codebase review, and a gap-closure roadmap phased 90 days / 3–6 / 6–12 months.</p>
         <span class="go">Open →</span>
       </a>
       <a class="tool" href="assess.html">
@@ -67,7 +79,7 @@
       <a class="tool" href="journey.html">
         <span class="step">Journey map</span>
         <h3>How we run an assessment — visual</h3>
-        <p>Both journeys as a swimlane map: activities, our pod, client people, data needed, tools in use and outputs, across the days or weeks. Click any column for the detail — including how to get each piece of data. Prints as an A3 wall chart.</p>
+        <p>All three journeys as a swimlane map: activities, our pod, client people, data needed, tools in use and outputs, across the days or weeks — Ready? (2 weeks), Validate (~5 days) and Prioritise (2–4 weeks). Click any column for the detail — including how to get each piece of data. Prints as an A3 wall chart.</p>
         <span class="go">Open →</span>
       </a>
       <a class="tool" href="PLAYBOOK.md">
@@ -86,7 +98,7 @@
   </div>
 </main>
 
-<footer>Enablis · assess toolkit · v1.1</footer>
+<footer>Enablis · assess toolkit · v1.3</footer>
 
 <script>
 "use strict";
