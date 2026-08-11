@@ -46,7 +46,7 @@ Everything runs in one app: **`assess.html`**. Tabs across the top are Engagemen
 | Role | Owns | Present for |
 |---|---|---|
 | **Delivery Lead** | The engagement and the "so what?". Workshops, immersion, the team module, the backlog, the gates. | Everything |
-| **Forward Deployed AI Engineer** | Prototypes on real examples; scores Data and Technology honestly; runs the feasibility probes; **owns the codebase review end to end** (Overwatch engine, Ground Truth scoring). | Journey 0 throughout · Journeys 1–2 from Day 0 |
+| **Forward Deployed AI Engineer** | Prototypes on real examples; scores Data and Technology honestly; runs the feasibility probes; **owns the codebase review end to end** — [Overwatch](https://github.com/enablis-co/overwatch), nine stages, twelve audit dimensions. | Journey 0 throughout · Journeys 1–2 from Day 0 |
 | **Commercial BA** | Baselines, value models, build-vs-buy, the business case. On light engagements the DL covers this at lower depth. | Journeys 1–2 |
 
 ### Client-side, and what each one unlocks
@@ -81,7 +81,7 @@ Send it when the engagement is confirmed, with the fallbacks in the same email.
 | Who currently trains whom on AI tools | Team skill scan: coaching, and the champion names | Ask the team lead who people go to when a tool gives a wrong answer |
 | AI policy / acceptable-use guidance | Governance dimension | Ask what staff may paste into a chatbot today — the answer *is* the finding |
 | **Repository read access** — named repos, named person | Codebase review — this paces the whole wedge | Request on day one, in writing. If it hasn't landed by day three, escalate to the sponsor |
-| **Check-provider sign-ups** for the scanning services | Codebase review | Start day one alongside repo access; these take days |
+| A machine that can clone and build the repo | Overwatch drives the repo's own tooling locally | Confirm language/runtime prerequisites with their engineering lead before day one |
 | A list of their repositories with owners and rough size | Codebase review scope | Build it in the day-one session and confirm with the engineering lead |
 | The approval trail for the last system that went live | Workflow approvals map | Ask the person who took it live to talk you through it |
 | Post-implementation review of a recent change | Adoption dimension | Ask "is that system used the way you intended?" and listen for the hesitation |
@@ -113,7 +113,7 @@ The single most important thing that happens on day one isn't a question, it's a
 |---|---|
 | **Agree the 12-month target stage with the sponsor** | Everything downstream is measured against it. The tool leaves it unset deliberately; don't let the room drift to Stage 5 |
 | **Request read access to the repositories** | Named person, named repos, in writing. Track it in the tool: Not requested → Requested → Granted |
-| **Start the check-provider sign-ups** | The scanning services the run depends on. These take days, not hours |
+| **Stand the run environment up** | Overwatch installed, model access configured, headless browser for the PDF. `security`, `financial-integrity`, `delivery-infrastructure` and `ai-assisted-engineering` require Opus |
 | **Book every interview slot for the fortnight** | Access to people is the second pacing item |
 | Agree the cohorts | Leaders & sponsors · practitioners · technical & engineering |
 
@@ -136,7 +136,7 @@ The single most important thing that happens on day one isn't a question, it's a
 
 Log every conversation in the **Interview log** as you go — it's the audit trail behind each score and the source list in the report. The tool flags any cohort you haven't spoken to.
 
-**Meanwhile, the FDE runs Overwatch steps 1–2** — access and inventory, then the automated checks across the tree. Fill the repository table: name, language, rough size, owner, and whether it's in scope.
+**Meanwhile the FDE runs Overwatch stages 1–3** — recon (archetypes, domains, stacks, criticality map, git context), the optional explore stage that builds the architecture graph, then plan, which selects the applicable dimensions mechanically by archetype and domain intersection. Fill the repository table and record the branch and commit audited; the report leads with it.
 
 **Output by end of day 3** — 18 readiness questions answered at least provisionally, every answer tagged confirmed / told / guessed.
 
@@ -154,7 +154,7 @@ Run the **team skill scan** — 7 capabilities: typical level, how widely held, 
 | "What would you not be allowed to put into it?" | Governance awareness, as understood on the floor |
 | "Who taught the last person who joined?" | Coaching — whether capability survives turnover |
 
-**Meanwhile, FDE runs Overwatch steps 3–5** — architecture mapping, dependency and security scan, test and pipeline assessment.
+**Meanwhile the FDE runs Overwatch stages 4–5** — recon proposes 0–3 bespoke dimensions the catalogue doesn't cover, then the audit stage runs the selected dimensions in parallel, each driving the repo's own tooling. Watch `OVERWATCH_CONCURRENCY`: an unbounded fan-out will hammer a laptop.
 
 **Output by end of week 1** — provisional readiness scores, a cohort-level skills profile, and roughly half the codebase scan complete.
 
@@ -164,15 +164,21 @@ Run the **team skill scan** — 7 capabilities: typical level, how widely held, 
 
 The DL goes back to anything tagged **guessed** and confirms it with the person who actually owns that dimension. Ambition is a sponsor question; access reality is a data-owner question; nobody else's answer counts.
 
-**FDE runs Overwatch step 6** — the AI-readiness probes: can AI be built on and against this codebase? Interfaces, data access, and where guardrails could attach. Then **step 7, the disprove-your-own-findings pass** — the deliberate attempt to break every conclusion drawn so far. This is the step that makes a score survive contact with their engineers.
+**FDE runs Overwatch stages 6–8** — verify, the adversarial pass that tries to *refute* each finding by falsifying its load-bearing assumptions (anything refuted leaves the scores and lands in `refuted.json`); dedupe, merging the same issue surfaced under several dimensions; then synthesize, which scores each dimension 0–100 with a red/amber/green band and sorts recommendations into MoSCoW buckets.
+
+This is the stage that makes a score survive contact with their engineers. A finding is only marked **measured** if it carries real tool output — everything else is **inferred**, and the report says which.
 
 **Sit down with their principal engineer and walk the findings.** Not to soften them — to catch the ones that are wrong. An engineer who has argued with a finding and lost is your best advocate at the readout.
 
 ### Day 8 · Score the four parts, and calibrate
 
-**Ground Truth's four-part score**, each 1–5 with the evidence written next to it: code quality and maintainability · architecture and scalability · security and dependency risk · delivery process and test discipline. The tool derives the two report angles from these — **engineering quality** (the buyer's-eye view) and **AI readiness of the codebase** (can AI be built on this safely).
+Stage 9 renders the artifacts: `report.json` (canonical), `report.md`, a self-contained interactive `report.html`, `report.pdf`, plus the architecture diagrams where explore ran.
 
-**Calibrate before anyone sees a number.** Run the same scoring against a codebase we know and check the result reads true. A 3 has to mean the same thing every time or the score is decoration.
+**Transcribe the dimension scores into the tool** — one row per dimension, each marked Planned, Not applicable or Incomplete, with its 0–100 score and the finding that drove it. Bands are red under 50, amber 50–74, green 75 and above. The toolkit derives the two report angles from those scores: **engineering quality** (the buyer's-eye view) and **AI readiness of the codebase** (can AI be built on this safely — weighted towards AI-assisted engineering, testing, delivery infrastructure and security).
+
+**Incomplete is not clean.** Overwatch fails loud: a dimension that crashed is marked incomplete and never scored green. Re-run it or explain it — don't let it read as a pass.
+
+**If the scan found live secrets, that is a same-day action.** Rotate at source. The report quotes secrets verbatim and is git-ignored by design — never commit it, email it or paste it into chat. Share the findings, not the file.
 
 Feed the results into the assessment deliberately: the AI-readiness angle is the evidence behind *Technology → how they build and release software*; engineering quality is the evidence behind *Skills → technical AI capability in-house*. The tool shows both as advisory — you set the dimension answers, and the report records where they came from.
 
@@ -181,6 +187,7 @@ Feed the results into the assessment deliberately: the AI-readiness angle is the
 Generate the **Team readiness & skills report** and the **Gap-closure roadmap**. Then challenge them internally before the client does:
 
 - Does the ceiling still hold once the skill scan is in? Skills is computed from the scan and can move it.
+- Is every dimension either scored, explained as not applicable, or flagged incomplete? No silent gaps.
 - Do the cohort gaps and the codebase findings tell the same story, or contradict each other? A technical cohort scoring well against a 2.4/5 codebase needs explaining.
 - Is every red backed by a named source in the interview log?
 - Would their CTO recognise the codebase findings as fair?
@@ -415,7 +422,8 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 ## Traps worth naming
 
 - **Leaving repository access to week two.** It paces the whole wedge. Request it on day one and escalate on day three — a scan nobody had time to verify is worse than no scan.
-- **Showing a Ground Truth score before the disprove pass and calibration.** Step 7 exists precisely so the number survives contact with their engineers.
+- **Showing a score before the verify stage.** Stage 6 exists precisely so the number survives contact with their engineers; unrefuted findings are claims.
+- **Circulating an Overwatch report.** It quotes discovered secrets verbatim. Share findings, never the file — and if it surfaced a live secret, rotate it at source that day.
 - **Leaving the target stage unset.** Every required skill level and every gap depends on it. The tool refuses to guess; don't guess either.
 - **Naming the ceiling before the skill scan.** Skills is computed from the scan and can move the ceiling under you.
 - **Confusing the two scans.** Team scan = can these people work with AI. Run scan = can they run this thing. Different questions, different tabs.
