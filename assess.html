@@ -230,6 +230,7 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="primary" onclick="copyTeam()">Team readiness &amp; skills report</button>
       <button onclick="copyWfOut()">Workflow blueprint</button>
+      <button onclick="copyValueCase()">£ value case (current use case)</button>
       <button onclick="copyPortfolio()">Ranked backlog</button>
       <button onclick="copyRoadmap()">Gap-closure roadmap</button>
     </div>
@@ -398,6 +399,8 @@ let S=JSON.parse(localStorage.getItem(KEY)||"{}");
 S.meta=S.meta||{}; S.mode=S.mode||"light"; S.target=S.target||4;
 S.org=S.org||{}; S.orgEv=S.orgEv||{}; S.tskills=S.tskills||{};
 S.wfs=S.wfs||[]; S.curWf=S.curWf||0; S.curUc=S.curUc||0;
+if(S.target===undefined)S.target=null;
+function TGT(){return S.target||null;}
 const QS=new URLSearchParams(location.search);
 const WEDGE=QS.get("m")==="team";
 function save(){localStorage.setItem(KEY,JSON.stringify(S));document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString();}
@@ -416,12 +419,14 @@ function tabs(){
   const ucN=S.wfs.reduce((a,w)=>a+(w.ucs||[]).length,0);
   const t=[["setup","Engagement",S.wfs.length],["team","1 · Team",null]];
   if(!WEDGE){ t.push(["wf","2 · Workflow",S.wfs.length]); t.push(["uc","Use cases",ucN]);
-    if(ucN>=2) t.push(["port","3 · Portfolio",null]); t.push(["out","Outputs",null]); }
+    if(ucN>=2) t.push(["port","3 · Portfolio",null]); else t.push(["port-off","3 · Portfolio (2+ use cases)",null]); }
+  t.push(["out","Outputs",null]);
   return t;
 }
 function renderNav(){
   document.getElementById("nav").innerHTML=tabs().map(([id,label,n])=>
-    `<button class="${TAB===id?"active":""}" onclick="showTab('${id}')">${label}${n!==null&&n!==undefined?`<span class="n">${n}</span>`:""}</button>`).join("");
+    id==="port-off"?`<button style="opacity:.42;cursor:default" title="Add a second use case to unlock">${label}</button>`
+    :`<button class="${TAB===id?"active":""}" onclick="showTab('${id}')">${label}${n!==null&&n!==undefined?`<span class="n">${n}</span>`:""}</button>`).join("");
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="p-"+TAB));
   if(WEDGE){ document.getElementById("tagline").textContent="Wedge · standalone";
     document.getElementById("apptitle").textContent="AI Readiness & Skills Scan"; }
@@ -453,7 +458,7 @@ function orgEvidence(){const a=ORG_QS.filter(q=>S.org[q.k]!==undefined&&S.org[q.
 
 /* ==================== TEAM: skills ==================== */
 function ts(id){S.tskills[id]=S.tskills[id]||{lvl:null,spread:null,champ:""};return S.tskills[id];}
-function tsReq(c){return Math.max(0,Math.min(4,c.base+((S.target||4)-3)));}
+function tsReq(c){const t=TGT();return t===null?null:Math.max(0,Math.min(4,c.base+(t-3)));}
 function setTs(id,f,v){const t=ts(id);t[f]=(t[f]===v?null:v);save();renderTeam();}
 function setTsTxt(id,v){ts(id).champ=v;save();}
 function tsStats(){
@@ -461,6 +466,7 @@ function tsStats(){
   TCAPS.forEach(c=>{const t=ts(c.id),req=tsReq(c);
     if(t.lvl===null||t.lvl===undefined)return;
     scored++;
+    if(req===null){if(t.champ)champs++;return;}
     if(t.lvl>=req)met++;else short.push({c,req,lvl:t.lvl,gap:req-t.lvl});
     if(t.spread!==null&&t.spread<=1&&t.lvl>=req)narrow.push({c,spread:t.spread});
     if(t.champ)champs++;});
@@ -479,19 +485,19 @@ function tsStage(){
 function renderTeamSkills(){
   const st=tsStats();
   document.getElementById("tsBoxes").innerHTML=`
-    <div class="box"><div class="l">Capabilities met</div><div class="v">${st.coverage!==null?st.coverage+"%":"–"}<small>${st.scored}/${st.total} scored, against a Stage ${S.target} target</small></div></div>
+    <div class="box"><div class="l">Capabilities met</div><div class="v">${TGT()===null?"–":(st.coverage!==null?st.coverage+"%":"–")}<small>${st.scored}/${st.total} scored${TGT()?", against a Stage "+TGT()+" target":" · set the target first"}</small></div></div>
     <div class="box own"><div class="l">Team skills stage</div><div class="v">${tsStage()!==null?fmtS(tsStage()):"–"}<small>feeds the Skills dimension above</small></div></div>
     <div class="box ${st.narrow.length?"ceil":""}"><div class="l">Held too narrowly</div><div class="v">${st.narrow.length}<small>${st.narrow.length?"strong, but only a few people":"no thin spots"}</small></div></div>
     <div class="box"><div class="l">Named champions</div><div class="v">${st.champs}<small>of ${st.total} capabilities</small></div></div>`;
   document.getElementById("tsTable").innerHTML=`<table><thead><tr>
     <th>Capability</th><th style="width:78px">Needs</th><th style="width:145px">Typical level</th><th style="width:150px">How widely held</th><th style="width:17%">Champion</th></tr></thead><tbody>
     ${TCAPS.map(c=>{const t=ts(c.id),req=tsReq(c),lvl=t.lvl;
-      const gap=(lvl===null||lvl===undefined)?null:req-lvl;
+      const gap=(lvl===null||lvl===undefined||req===null)?null:req-lvl;
       const cls=gap===null?"":gap<=0?"ok":gap===1?"near":"bad";
       return `<tr><td><span class="capname">${c.name}</span><br><span class="caphint">${c.hint}</span></td>
-        <td>${req} — ${LVLS[req]}</td>
+        <td>${req===null?"<span class=caphint>set target</span>":req+" — "+LVLS[req]}</td>
         <td><div class="lvls">${[0,1,2,3,4].map(n=>`<div class="lvl ${lvl===n?"sel "+cls:""} ${n===req?"req":""}" title="${LVLS[n]}" onclick="setTs('${c.id}','lvl',${n})">${n}</div>`).join("")}</div></td>
-        <td><div class="lvls">${[0,1,2,3,4].map(n=>`<div class="lvl ${t.spread===n?"sel ok":""}" title="${SPREAD[n]}" onclick="setTs('${c.id}','spread',${n})">${SPREAD[n][0]}</div>`).join("")}</div><span class="caphint">${t.spread!==null&&t.spread!==undefined?SPREAD[t.spread]:"nobody → everyone"}</span></td>
+        <td><div class="lvls">${[0,1,2,3,4].map(n=>`<div class="lvl ${t.spread===n?"sel ok":""}" title="${SPREAD[n]}" onclick="setTs('${c.id}','spread',${n})">${n}</div>`).join("")}</div><span class="caphint">${t.spread!==null&&t.spread!==undefined?SPREAD[t.spread]:"nobody → everyone"}</span></td>
         <td><input value="${esc(t.champ)}" onchange="setTsTxt('${c.id}',this.value)" placeholder="name"></td></tr>`;}).join("")}
     </tbody></table>`;
   const f=[];
@@ -501,11 +507,11 @@ function renderTeamSkills(){
 }
 function renderTeam(){
   /* scorecard */
-  const ceil=ceiling(),pot=potential(),t=S.target||4;
+  const ceil=ceiling(),pot=potential(),t=TGT();
   document.getElementById("teamBoxes").innerHTML=`
     <div class="box ceil"><div class="l">Readiness — the ceiling</div><div class="v">${ceil?"Stage "+ceil.stage:"–"}<small>${ceil?stageName(ceil.stage)+" · set by "+ceil.dims.map(d=>d.name.toLowerCase()).join(" & "):"score the dimensions"}</small></div></div>
     <div class="box pot"><div class="l">Weighted potential</div><div class="v">${pot?pot.toFixed(1):"–"}<small>if the weakest were fixed</small></div></div>
-    <div class="box tgt"><div class="l">12-month target</div><div class="v">Stage ${t}<small>${stageName(t)}</small></div></div>
+    <div class="box tgt"><div class="l">12-month target</div><div class="v">${t?"Stage "+t:"not set"}<small>${t?stageName(t):"set it on the Engagement tab"}</small></div></div>
     <div class="box"><div class="l">Answered</div><div class="v">${orgAnswered()}/18<small>${deep()&&orgEvidence()!==null?orgEvidence()+"% evidenced":"~20 min"}</small></div></div>`;
   document.getElementById("scorecard").innerHTML=ORG_DIMS.map(d=>{
     const s=orgDim(d.id),isC=ceil&&ceil.dims.some(x=>x.id===d.id);
@@ -516,10 +522,13 @@ function renderTeam(){
     +`<p class="note" style="margin-top:7px">Dashed = 12-month target · red = the dimension capping the score.</p>`;
   const v=document.getElementById("ceilVerdict");
   if(!ceil){v.className="verdict blue";v.innerHTML="Answer the questions below to see where they stand.";}
+  else if(t===null){v.className="verdict blue";v.innerHTML=`<h4>Currently Stage ${ceil.stage} — ${stageName(ceil.stage)}</h4>Capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" and ")}. Set the 12-month target on the Engagement tab to see how far short of their ambition that is.`;}
   else if(ceil.stage>=t){v.className="verdict good";
     v.innerHTML=`<h4>At or above target — Stage ${ceil.stage}, ${stageName(ceil.stage)}</h4>Nothing organisational is holding them back. Spend the effort on workflows, not foundations.`;}
   else{const g=t-ceil.stage,names=ceil.dims.map(d=>d.name.toLowerCase()).join(" and ");
     v.className=ceil.stage<=2?"verdict bad":"verdict mid";
+    const unscored=ORG_DIMS.filter(d=>orgDim(d.id).stage===null).length;
+    if(unscored)v.innerHTML=`<h4>Provisional — ${orgAnswered()}/18 answered</h4>${unscored} dimension${unscored>1?"s":""} unscored and excluded, so the ceiling flatters them. Current read: Stage ${ceil.stage} (${stageName(ceil.stage)}) capped by ${names}.`;else
     v.innerHTML=`<h4>Capped at Stage ${ceil.stage} (${stageName(ceil.stage)}) by ${names}</h4>
       The weakest dimension sets the ceiling — that's ${g} stage${g>1?"s":""} short of the Stage ${t} ambition.
       ${pot&&pot>ceil.stage+0.7?`Weighted potential is ${pot.toFixed(1)}, so the rest is ahead of what ${names} allows — the highest-leverage fix available.`:""}`;}
@@ -569,7 +578,8 @@ function renderSetup(){
   document.querySelectorAll("[data-m]").forEach(el=>{const k=el.dataset.m;el.value=S.meta[k]||"";
     el.oninput=()=>{S.meta[k]=el.value;save();};});
   document.getElementById("targetOpts").innerHTML=STAGES.map(s=>
-    `<div class="opt st${s.n} ${S.target===s.n?"sel":""}" onclick="S.target=${s.n};save();renderAll()"><b>Stage ${s.n}</b>${s.name}<br><span style="font-size:10.5px">${s.d}</span></div>`).join("");
+    `<div class="opt st${s.n} ${S.target===s.n?"sel":""}" onclick="S.target=${s.n};save();renderAll()"><b>Stage ${s.n}</b>${s.name}<br><span style="font-size:10.5px">${s.d}</span></div>`).join("")
+    +(TGT()===null?`<div class="stop" style="width:100%;margin-top:8px">Set this with the sponsor before the team skill scan — it sets the level every skill is measured against. Don't assume.</div>`:"");
   document.getElementById("mode_light").classList.toggle("sel",!deep());
   document.getElementById("mode_deep").classList.toggle("sel",deep());
   document.getElementById("modeHint").textContent=deep()
@@ -697,16 +707,16 @@ function renderWf(){
     ${or?`<div class="verdict ${or.ready?"good":or.short.length?"bad":"mid"}">${or.ready
       ?"<b>They could run this without us.</b> Every must-own capability is at the level needed, each with a backup."
       :`<h4>Not yet — they'd still need us</h4>${[or.short.length?`<b>${or.short.length} short</b> — ${or.short.map(c=>c.name.toLowerCase()).join(", ")}`:"",or.risky.length?`<b>${or.risky.length} held by one person</b> — ${or.risky.map(c=>c.name.toLowerCase()).join(", ")}`:""].filter(Boolean).join("; ")}.`}</div>`:""}
-    ${RBANDS.map(b=>`<div class="band">${b}</div><table><thead><tr><th>Capability</th><th style="width:74px">Needs</th><th style="width:140px">Has today</th><th style="width:15%">Who holds it</th>${deep()?'<th style="width:13%">Backup</th><th style="width:64px">Hrs/wk</th><th style="width:14%">Route</th>':""}</tr></thead><tbody>
+    ${RBANDS.map(b=>`<div class="band">${b}</div><table><thead><tr><th>Capability</th><th style="width:74px">Needs</th><th style="width:140px">Has today</th><th style="width:15%">Who holds it</th><th style="width:13%">Backup</th><th style="width:64px">Hrs/wk</th>${deep()?'<th style="width:14%">Route</th>':""}</tr></thead><tbody>
       ${RCAPS.filter(c=>c.band===b).map(c=>{const s=rcap(w,c.id),req=rReq(w,c),cur=s.cur;
         const gap=(cur===null||cur===undefined)?null:req-cur,cls=gap===null?"":gap<=0?"ok":gap===1?"near":"bad";
         return `<tr><td><span class="capname">${c.name}</span>${c.own?' <span class="pill b">must own</span>':""}<br><span class="caphint">${c.hint}</span></td>
         <td><select onchange="setCapTxt('${c.id}','req',this.value===''?null:parseInt(this.value))">${[0,1,2,3,4].map(n=>`<option value="${n}" ${req===n?"selected":""}>${n}</option>`).join("")}</select></td>
         <td><div class="lvls">${[0,1,2,3,4].map(n=>`<div class="lvl ${cur===n?"sel "+cls:""} ${n===req?"req":""}" title="${LVLS[n]}" onclick="setCap('${c.id}','cur',${n})">${n}</div>`).join("")}</div></td>
         <td><input value="${esc(s.who)}" onchange="setCapTxt('${c.id}','who',this.value)" placeholder="name"></td>
-        ${deep()?`<td><input value="${esc(s.backup)}" onchange="setCapTxt('${c.id}','backup',this.value)"></td>
+        <td><input value="${esc(s.backup)}" onchange="setCapTxt('${c.id}','backup',this.value)" placeholder="second person"></td>
         <td><input type="number" min="0" step="0.5" value="${esc(s.hrs)}" onchange="setCapTxt('${c.id}','hrs',this.value)"></td>
-        <td>${gap!==null&&gap>0?`<select onchange="setCapTxt('${c.id}','route',this.value)"><option value="">—</option>${ROUTES.map(r=>`<option value="${r.v}" ${s.route===r.v?"selected":""}>${r.label}</option>`).join("")}</select>`:"<span class=caphint>—</span>"}</td>`:""}</tr>`;}).join("")}
+        ${deep()?`<td>${gap!==null&&gap>0?`<select onchange="setCapTxt('${c.id}','route',this.value)"><option value="">—</option>${ROUTES.map(r=>`<option value="${r.v}" ${s.route===r.v?"selected":""}>${r.label}</option>`).join("")}</select>`:"<span class=caphint>—</span>"}</td>`:""}</tr>`;}).join("")}
       </tbody></table>`).join("")}
     ${st.risks.map(r=>`<div class="flag">⚠ <b>${r.c.name}</b> rests on ${esc(r.who)} alone — name a second person.</div>`).join("")}
     ${SIGNALS.filter(s=>s.lens==="People").map(s=>sigHTML(w,s)).join("")}
@@ -753,8 +763,12 @@ function ucEff(u,q){
 function ucScore(u,qs){fixUc(u);let s=0,n=0;qs.forEach(q=>{const v=ucEff(u,q);if(v!==null){s+=v;n++;}});return{s:Math.round(s*10)/10,n};}
 function ucDim(u,id){return ucScore(u,EASE_QS.filter(q=>q.dim===id));}
 function ucWeakest(u){let w=null;UDIMS.forEach(d=>{const s=ucDim(u,d.id);if(!w||s.s<w.s)w={...d,s:s.s};});return w;}
-function ucMoney(u){const v=u.val||{};const p=parseFloat(v.fte)||0,h=parseFloat(v.hrsWk)||0,c=parseFloat(v.cost)||0;
-  return(!p||!h||!c)?0:p*h*52*(c/1820);}
+function ucHours(u){const v=u.val||{},n=k=>parseFloat(v[k])||0;
+  const A=n("fte")*(n("pctTime")/100)*1820, B=n("volume")*n("timeCase");
+  const basis=v.basis==="case"?"case":"fte";
+  return{A,B,basis,addr:basis==="case"?(B||A):(A||B)};}
+function ucMoney(u){const v=u.val||{},c=parseFloat(v.cost)||0,hr=ucHours(u).addr;
+  return(!hr||!c)?0:hr*(c/1820);}
 function ucCoverage(u){const st=u.steps.filter(s=>s.name&&parseFloat(s.pct)>0);
   const tot=st.reduce((a,s)=>a+parseFloat(s.pct),0);if(!tot)return null;
   return st.filter(s=>s.ai).reduce((a,s)=>a+parseFloat(s.pct),0)/tot;}
@@ -795,7 +809,7 @@ function setProbe(i,f,v){const u=uc();if(f==="r")u.probe.cases[i].r=(u.probe.cas
 function calcVal(u){
   const v=u.val||{},n=k=>parseFloat(v[k])||0;
   const hoursYr=n("hoursYr")||1820;
-  const addr=v.basis==="case"?n("volume")*n("timeCase"):n("fte")*(n("pctTime")/100)*hoursYr;
+  const addr=ucHours(u).addr;
   const saved=addr*(n("eff")/100);
   const rate=hoursYr?n("cost")/hoursYr:0;
   const prod=saved*rate*(n("mult")||1);
@@ -832,6 +846,8 @@ function renderUc(){
     </div>
     <label>In one sentence — who does what today, and what would the AI do?</label>
     <textarea onchange="updUc('desc',this.value)">${esc(u.desc)}</textarea>
+    <label>Build vs buy — why <small>name the tools that already do this, and say whether this workflow is a competitive edge</small></label>
+    <textarea onchange="updUc('bvbTools',this.value)" placeholder="e.g. Zendesk AI and Intercom Fin both do triage; but claims wording is our differentiator, so configure rather than buy">${esc(u.bvbTools)}</textarea>
     <div class="boxes" style="margin-top:12px">
       <div class="box"><div class="l">Value</div><div class="v">${v.n?fmtS(v.s)+" / 8":"–"}</div></div>
       <div class="box"><div class="l">Use-case readiness</div><div class="v">${e.n?fmtS(e.s)+" / 24":"–"}</div></div>
@@ -878,10 +894,11 @@ function renderUc(){
     <label>Which company goal does this support? <small>their OKR or KPI</small></label><input value="${esc(N("okr"))}" onchange="setVal('okr',this.value)">
     <label>Success threshold <small>the number that makes leadership call it a success</small></label><input value="${esc(N("threshold"))}" onchange="setVal('threshold',this.value)">
     <div class="band">Baseline — how the work happens today</div>
+    <label>Which route are you sizing on? <small>fill both if you can — the cross-check catches a wrong number</small></label>
+    <div class="opts">${[["fte","People × % of their time"],["case","Cases × time per case"]].map(([v,l])=>`<div class="opt n ${(u.val.basis||"fte")===v?"sel":""}" onclick="setVal('basis','${v}')">${l}</div>`).join("")}</div>
     <div class="g4">
       <div><label>People on the task (FTE)</label><input type="number" step="0.5" value="${esc(N("fte"))}" onchange="setVal('fte',this.value)"></div>
       <div><label>% of their time</label><input type="number" value="${esc(N("pctTime"))}" onchange="setVal('pctTime',this.value)"></div>
-      <div><label>Hours per person per week</label><input type="number" step="0.5" value="${esc(N("hrsWk"))}" onchange="setVal('hrsWk',this.value)"></div>
       <div><label>Cost per person / yr (£) <small>salary × 1.3</small></label><input type="number" value="${esc(N("cost"))}" onchange="setVal('cost',this.value)"></div>
       <div><label>Cases per year</label><input type="number" value="${esc(N("volume"))}" onchange="setVal('volume',this.value)"></div>
       <div><label>Time per case (hrs)</label><input type="number" step="0.1" value="${esc(N("timeCase"))}" onchange="setVal('timeCase',this.value)"></div>
@@ -891,6 +908,10 @@ function renderUc(){
     <label>Baseline quality</label>
     <div class="opts">${["Measured","Estimated","None — nobody tracks it"].map((o,i)=>`<div class="opt ${i===0?"g":i===1?"a":"r"} ${N("baseQ")===o?"sel":""}" onclick="setVal('baseQ','${N("baseQ")===o?"":o}')">${o}</div>`).join("")}</div>
     ${N("baseQ")==="None — nobody tracks it"?`<div class="stop">⚠ <b>No baseline — improvement will be unprovable.</b> Shadow the task this week and measure it yourself.</div>`:""}
+    ${(()=>{const H=ucHours(u);if(!H.A||!H.B)return H.addr?`<div class="info">Addressable time: <b>${Math.round(H.addr).toLocaleString()} hrs/yr</b> (${H.basis==="case"?"cases × time per case":"people × % of time"}). Fill the other route and the tool cross-checks it.</div>`:"";
+      const r=H.A/H.B;return (r>2||r<0.5)
+        ?`<div class="flag">⚠ Your two routes disagree — ${Math.round(H.A).toLocaleString()} hrs/yr (people × time) vs ${Math.round(H.B).toLocaleString()} (cases × time per case). Reconcile with the team before quoting anything.</div>`
+        :`<div class="info">Cross-check holds: ${Math.round(H.A).toLocaleString()} vs ${Math.round(H.B).toLocaleString()} hrs/yr — within 2×. Quote with confidence.</div>`;})()}
     <div class="band">Potential</div>
     <div class="g3">
       <div><label>How much of that time could AI remove? (%)</label><input type="number" value="${esc(N("eff"))}" onchange="setVal('eff',this.value)" placeholder="a guess is fine; the POC proves it"></div>
@@ -1006,7 +1027,7 @@ function unblocks(dimId){
   if(!sc.length)return 0;
   if(!mapped.length)return sc.length;
   return sc.filter(r=>mapped.some(m=>ucDim(r.u,m).s<=3)).length;}
-function gaps(){const t=S.target||4,ceil=ceiling();
+function gaps(){const t=TGT();if(t===null)return[];const ceil=ceiling();
   return ORG_DIMS.map(d=>{const s=orgDim(d.id);if(s.stage===null)return null;
     const size=t-s.stage;if(size<=0)return null;
     const isC=ceil&&ceil.dims.some(x=>x.id===d.id),ub=unblocks(d.id);
@@ -1061,7 +1082,7 @@ function wfActions(w){
 function renderOut(){
   const road=document.getElementById("roadOut");
   const ph=phasedGaps(),tsa=tsActions();
-  road.innerHTML=(!ceiling()?`<p class="hint">Score the team module and the roadmap builds itself.</p>`
+  road.innerHTML=(TGT()===null?`<div class="stop">Set the 12-month target on the Engagement tab — without it there is nothing to measure the gaps against.</div>`:!ceiling()?`<p class="hint">Score the team module and the roadmap builds itself.</p>`
     :(!ph.length&&!tsa.length?`<div class="verdict good"><h4>No gaps — they're at target</h4>Put the effort into workflows.</div>`
     :ph.map(p=>`<div class="phase"><h3>${p.phase}</h3>${p.items.map(g=>`<div class="act">
         <b>${g.dim.name}</b> — Stage ${g.current} → ${g.target} <span class="who">${g.isCeil?"· sets the ceiling":""}${g.unblocks?` · unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}`:""}${g.note?" · "+g.note:""}</span>
@@ -1082,21 +1103,21 @@ function renderOut(){
 }
 function hdr(){const m=S.meta||{};return [m.client||"Client",m.by?"assessed by "+m.by:"",m.date||""].filter(Boolean).join(" · ");}
 function copyTeam(){
-  const ceil=ceiling(),pot=potential(),t=S.target||4,st=tsStats();
+  const ceil=ceiling(),pot=potential(),t=TGT(),st=tsStats();
   const L=["AI READINESS & SKILLS — "+(S.meta.client||"client"),hdr()];
   if(S.meta.ambition)L.push("Ambition: "+S.meta.ambition);
   L.push("");
   if(!ceil){L.push("Not yet scored.");copyText(L.join("\n"),"Report copied.");return;}
   L.push(`READINESS: Stage ${ceil.stage} — ${stageName(ceil.stage)}`);
   L.push(`Capped by: ${ceil.dims.map(d=>d.name).join(" and ")} (the weakest dimension sets the ceiling)`);
-  L.push(`Weighted potential ${pot.toFixed(1)} · 12-month target Stage ${t} (${stageName(t)})`);
+  L.push(`Weighted potential ${pot.toFixed(1)} · 12-month target ${t?"Stage "+t+" ("+stageName(t)+")":"NOT SET — agree it with the sponsor"}`);
   if(deep()&&orgEvidence()!==null)L.push(`Evidence: ${orgEvidence()}% of answers confirmed`);
   L.push("","SCORECARD");
   ORG_DIMS.forEach(d=>{const s=orgDim(d.id);
     L.push(`- ${d.name} (${d.w}%): ${s.stage!==null?"Stage "+s.stage+" — "+stageName(s.stage):"not scored"}${ceil.dims.some(x=>x.id===d.id)?"  <- ceiling":""}${s.fromScan?"  [from the skill scan]":""}`);});
-  L.push("","TEAM SKILLS — against a Stage "+t+" ambition");
+  L.push("","TEAM SKILLS"+(t?" — against a Stage "+t+" ambition":" — no target set, so no required levels"));
   TCAPS.forEach(c=>{const x=ts(c.id),req=tsReq(c);
-    L.push(`- ${c.name}: needs ${req} (${LVLS[req]}), at ${x.lvl===null||x.lvl===undefined?"not scored":x.lvl+" ("+LVLS[x.lvl]+")"}${x.spread!==null&&x.spread!==undefined?", held by "+SPREAD[x.spread].toLowerCase():""}${x.champ?" · champion: "+x.champ:""}`);});
+    L.push(`- ${c.name}: needs ${req===null?"—":req+" ("+LVLS[req]+")"}, at ${x.lvl===null||x.lvl===undefined?"not scored":x.lvl+" ("+LVLS[x.lvl]+")"}${x.spread!==null&&x.spread!==undefined?", held by "+SPREAD[x.spread].toLowerCase():""}${x.champ?" · champion: "+x.champ:""}`);});
   if(st.short.length)L.push("",`${st.short.length} capability gap(s): ${st.short.map(s=>s.c.name).join(", ")}`);
   if(st.narrow.length)L.push(`Held too narrowly: ${st.narrow.map(n=>n.c.name).join(", ")}`);
   const ph=phasedGaps(),tsa=tsActions();
@@ -1133,6 +1154,42 @@ function copyWfOut(){
       L.push("",p.toUpperCase());it.forEach(a=>L.push(`- [ ] ${a.who}: ${a.what}`));});}
   copyText(L.join("\n"),"Workflow blueprint copied.");
 }
+function copyValueCase(){
+  const u=uc(),w=wf();
+  if(!u){alert("Open a use case first.");return;}
+  const c=calcVal(u),H=ucHours(u),v=u.val||{},vd=ucVerdict(u),g=ucGates(u);
+  const L=[`VALUE CASE — ${u.name||"use case"}`,`${w.name||"workflow"} · ${hdr()}`,""];
+  if(v.okr)L.push(`Supports: ${v.okr}`);
+  if(v.threshold)L.push(`Success threshold: ${v.threshold}`);
+  L.push("","BASELINE");
+  L.push(`- ${v.fte||"—"} people, ${v.pctTime||"—"}% of their time · ${v.volume?Number(v.volume).toLocaleString()+" cases/yr":"volume not captured"}${v.timeCase?", "+v.timeCase+" hrs/case":""}`);
+  L.push(`- Addressable time: ${H.addr?Math.round(H.addr).toLocaleString()+" hrs/yr":"—"} (${H.basis==="case"?"cases × time per case":"people × % of time"})`);
+  if(H.A&&H.B)L.push(`- Cross-check: ${Math.round(H.A).toLocaleString()} vs ${Math.round(H.B).toLocaleString()} hrs/yr — ${(H.A/H.B>2||H.A/H.B<0.5)?"THESE DISAGREE, reconcile before quoting":"agree within 2×"}`);
+  L.push(`- Cost per person: ${v.cost?fmt(v.cost):"—"} · baseline quality: ${v.baseQ||"not stated"}`);
+  L.push("","THE NUMBERS (per year)");
+  L.push(`- Potential:  ${fmt(c.PEV)}   (${v.eff||"—"}% of addressable time removed${v.mult&&v.mult!=1?", multiplier "+v.mult:""})`);
+  L.push(`- Realistic:  ${fmt(c.REV)}   (adoption ${v.adopt||"—"}% × effectiveness ${v.effect||"—"}% × integration ${v.integ||"—"}%)`);
+  if(c.PEV&&c.REV)L.push(`- Potential is ${(c.PEV/c.REV).toFixed(1)}× realistic${(c.PEV/c.REV)<2?" — below the 2–10× the evidence expects, so the discounts may be optimistic":""}`);
+  L.push(`- Cost year 1: ${fmt(c.costY1)}${v.aggr?" (incl. 25% contingency)":""} · net year 1 ${fmt(c.net)}`);
+  L.push(`- Steady state (yr 2+): ${fmt(c.net2)} · benefit:cost ${isFinite(c.roi)?c.roi.toFixed(1)+"×":"—"} · payback ${isFinite(c.payback)?Math.ceil(c.payback)+" months":"—"}`);
+  const st=w?capStats(w):null;
+  L.push(`- Run cost basis: ${st&&st.hrs?st.hrs+" hrs/week (~"+(st.hrs/37.5).toFixed(1)+" FTE) from the run-capability scan":"NOT taken from the run-capability scan — likely understated"}`);
+  L.push("","ASSUMPTION REGISTER — what is still a guess");
+  const reg=[["Baseline",v.baseQ||"not stated"],["Efficiency factor",v.eff?v.eff+"%":"not set"],
+    ["Adoption",v.adopt?v.adopt+"%":"not set"],["Effectiveness",v.effect?v.effect+"%":"not set"],
+    ["Integration",v.integ?v.integ+"%":"not set"],["Value multiplier",v.mult||"1"]];
+  reg.forEach(([k,x])=>L.push(`- ${k}: ${x}`));
+  const ev=Object.entries(u.ev||{}).filter(([,x])=>x&&x.c);
+  const guessed=ev.filter(([,x])=>x.c==="guessed").length, conf=ev.filter(([,x])=>x.c==="confirmed").length;
+  if(ev.length)L.push(`- Evidence behind the readiness scores: ${conf} confirmed, ${guessed} still guessed, of ${ev.length} tagged`);
+  const p=ucProbe(u);
+  L.push(`- Feasibility: ${p.scored>=5?p.cr+"/"+p.scored+" cases credible in a tested probe":"not probed — feasibility is still an opinion"}`);
+  if(g.length)L.push("",`GATED BY TEAM READINESS: ${g.map(x=>x.dim.name.toLowerCase()+" (Stage "+x.stage+")").join(", ")}`);
+  L.push("","VERDICT: "+(u.verdict||"not recorded"));
+  if(u.verdictWhy)L.push(u.verdictWhy);
+  L.push("","On GO this value case becomes the scope of the Build — which is what protects the fixed price from drift.");
+  copyText(L.join("\n"),"Value case copied.");
+}
 function copyPortfolio(){
   const rows=ranked();
   if(!rows.length){alert("No use cases yet.");return;}
@@ -1145,6 +1202,7 @@ function copyPortfolio(){
     L.push(`${i+1}. ${r.u.name||"unnamed"} — ${r.w.name||"workflow"} · value ${fmtS(r.v.s)}/8 · readiness ${fmtS(r.e.s)}/24 (${dims}) · realistic ${fmt(c.REV)}/yr · ${r.u.bvb?BVB_SHORT[r.u.bvb]:"buy/build ?"} · ${r.vd.label}`);
     if(r.u.desc)L.push(`   ${r.u.desc}`);
     if(g.length)L.push(`   GATED by team readiness: ${g.map(x=>x.dim.name.toLowerCase()+" (Stage "+x.stage+")").join(", ")}`);
+    if(r.u.bvbTools)L.push(`   Buy/build rationale: ${r.u.bvbTools}`);
     if(r.u.contact)L.push(`   Ask: ${r.u.contact}`);});
   const waves={NOW:[],NEXT:[],LATER:[]};rows.forEach(r=>{const wv=waveOf(r.vd);if(waves[wv])waves[wv].push(r);});
   L.push("","WAVE PLAN");
@@ -1156,7 +1214,7 @@ function copyPortfolio(){
 function copyRoadmap(){
   const L=["GAP-CLOSURE ROADMAP",hdr()];
   const ceil=ceiling();
-  if(ceil)L.push(`Currently Stage ${ceil.stage} (${stageName(ceil.stage)}), capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" & ")}; target Stage ${S.target}.`);
+  if(ceil)L.push(`Currently Stage ${ceil.stage} (${stageName(ceil.stage)}), capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" & ")}; target ${TGT()?"Stage "+TGT():"not set"}.`);
   phasedGaps().forEach(p=>{L.push("",p.phase.toUpperCase());
     p.items.forEach(g=>L.push(`- [ ] ${g.dim.name}: ${g.step}${g.unblocks?`  (unblocks ${g.unblocks})`:""}`));});
   const tsa=tsActions();
