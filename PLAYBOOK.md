@@ -46,7 +46,7 @@ Everything runs in one app: **`assess.html`**. Tabs across the top are Engagemen
 | Role | Owns | Present for |
 |---|---|---|
 | **Delivery Lead** | The engagement and the "so what?". Workshops, immersion, the team module, the backlog, the gates. | Everything |
-| **Forward Deployed AI Engineer** | Prototypes on real examples; scores Data and Technology honestly; runs the feasibility probes. | Day 0 onwards; heaviest days 2–4 / weeks 2–3 |
+| **Forward Deployed AI Engineer** | Prototypes on real examples; scores Data and Technology honestly; runs the feasibility probes; **owns the codebase review end to end** (Overwatch engine, Ground Truth scoring). | Journey 0 throughout · Journeys 1–2 from Day 0 |
 | **Commercial BA** | Baselines, value models, build-vs-buy, the business case. On light engagements the DL covers this at lower depth. | Journeys 1–2 |
 
 ### Client-side, and what each one unlocks
@@ -80,6 +80,9 @@ Send it when the engagement is confirmed, with the fallbacks in the same email.
 | AI licence counts — seats deployed **vs seats active** | Team skill scan: literacy level and how widely held | Ask IT for both numbers; deployed is vanity, active is the finding |
 | Who currently trains whom on AI tools | Team skill scan: coaching, and the champion names | Ask the team lead who people go to when a tool gives a wrong answer |
 | AI policy / acceptable-use guidance | Governance dimension | Ask what staff may paste into a chatbot today — the answer *is* the finding |
+| **Repository read access** — named repos, named person | Codebase review — this paces the whole wedge | Request on day one, in writing. If it hasn't landed by day three, escalate to the sponsor |
+| **Check-provider sign-ups** for the scanning services | Codebase review | Start day one alongside repo access; these take days |
+| A list of their repositories with owners and rough size | Codebase review scope | Build it in the day-one session and confirm with the engineering lead |
 | The approval trail for the last system that went live | Workflow approvals map | Ask the person who took it live to talk you through it |
 | Post-implementation review of a recent change | Adoption dimension | Ask "is that system used the way you intended?" and listen for the hesitation |
 
@@ -87,43 +90,110 @@ Send it when the engagement is confirmed, with the fallbacks in the same email.
 
 ---
 
-# Journey 0 — Ready? (team wedge, 1–2 days)
+# Journey 0 — Ready? (AI Readiness & Skills Scan, 2 weeks)
 
-The smallest saleable engagement, and the one to lead with when a client isn't ready to name a workflow. No workflows, no use cases. Open **`assess.html?m=team`** — it hides everything else.
+The standalone wedge, and the one to lead with when a client isn't ready to name a workflow. No workflows, no use cases — but two weeks of real evidence rather than a workshop and a guess. Open **`assess.html?m=team`**.
 
-**Buyer question** — "Are we ready to do anything with AI, and can our people carry it?"
-**Pod** — Delivery Lead, with the FDE for 90 minutes to score Data and Technology honestly.
-**Client time** — ~4–5 person-hours.
+**Buyer question** — "Are we ready to do anything with AI, can our people carry it, and will our codebase take it?"
+**Pod** — Delivery Lead throughout; Forward Deployed AI Engineer throughout, owning the codebase review and the Data/Technology dimensions.
+**Client time** — ~18–25 person-hours across 12–20 people.
+**Deliverables** — readiness scorecard with the ceiling named · team skills profile with a cohort breakdown · codebase review in two report angles · gap-closure roadmap phased 90 days / 3–6 / 6–12 months · a named source list.
 
-### Step 1 · Half-day workshop (3 hrs)
+> **The codebase review runs only where the client has their own product or in-house development.** For a non-technical department, mark it "not applicable" in the tool — Technology and the technical half of Skills are then scored from interviews alone, and the report says so rather than implying a scan happened.
 
-**In the room** — sponsor, team lead, 2–3 people who'd actually use AI in their work.
+## Week 1 — access, frame and scan
 
-1. **Agree the 12-month target stage first.** "What do you want to be true in 12 months?" Everything downstream is measured against it, so don't let the room drift into Stage 5 by default.
-2. **The 18 readiness questions, live on screen.** Out loud, as a conversation. Asking them in the room is what makes it feel like an assessment rather than a survey.
-3. **The team skill scan** — 7 capabilities, ~10 minutes. For each: the typical level across the team, how widely it's held, and a named champion. Ask the practitioners, not the sponsor.
+### Day 1 · Kick off, and start the clock on access
 
-### Step 2 · Confirm the guesses (2 hrs, same day or next)
+**In the room** — DL + FDE · sponsor, and whoever controls repository access and tooling budgets.
 
-| Who | 45 min each | What you're confirming |
+The single most important thing that happens on day one isn't a question, it's a request. **Repository access and check-provider sign-ups pace the whole engagement** — start both before you do anything else, and put the risk in writing to the sponsor the same day.
+
+| Do | Why |
+|---|---|
+| **Agree the 12-month target stage with the sponsor** | Everything downstream is measured against it. The tool leaves it unset deliberately; don't let the room drift to Stage 5 |
+| **Request read access to the repositories** | Named person, named repos, in writing. Track it in the tool: Not requested → Requested → Granted |
+| **Start the check-provider sign-ups** | The scanning services the run depends on. These take days, not hours |
+| **Book every interview slot for the fortnight** | Access to people is the second pacing item |
+| Agree the cohorts | Leaders & sponsors · practitioners · technical & engineering |
+
+**Tool** — Engagement tab (client, target stage, Light) · `1 · Team` → Codebase review card: set "has a codebase", log the access states.
+
+**Watch for** — access granted on day nine is an engagement that delivers a scan nobody had time to verify. If it hasn't landed by day three, escalate to the sponsor rather than absorbing it.
+
+### Days 2–3 · Readiness interviews
+
+**In the room** — DL running 45-minute conversations; FDE joining for Data and Technology.
+
+| Who | Dimensions they own | The question that gets past the policy answer |
 |---|---|---|
-| Platform / IT lead | Technology dimension | Approved AI services, integration reality, licence seats deployed vs active |
-| Data owner | Data dimension | Where data lives, quality, how fast access really is |
-| Change lead / PMO | Adoption dimension | The last post-implementation review; does change stick? |
+| Sponsor / exec | Strategy | "How did the last AI spend actually get approved?" |
+| Platform / architecture lead | Technology | "Where could an AI service run today without a new approval?" |
+| Data owner | Data | "How long did the last access request take, start to finish?" |
+| Risk / compliance / DPO | Governance | "What are staff allowed to paste into a chatbot today?" |
+| Change lead / PMO | Adoption | "The last new system — is it used the way you intended?" |
+| HR / L&D | Skills evidence | "Licence seats deployed, and seats actually active?" |
 
-Re-score anything you guessed in the workshop. In Deep mode, tag each answer confirmed / told / guessed.
+Log every conversation in the **Interview log** as you go — it's the audit trail behind each score and the source list in the report. The tool flags any cohort you haven't spoken to.
 
-### Step 3 · Generate and read out (half-day, then 60 min)
+**Meanwhile, the FDE runs Overwatch steps 1–2** — access and inventory, then the automated checks across the tree. Fill the repository table: name, language, rough size, owner, and whether it's in scope.
 
-**Outputs tab** → `Team readiness & skills report` and `Gap-closure roadmap`.
+**Output by end of day 3** — 18 readiness questions answered at least provisionally, every answer tagged confirmed / told / guessed.
 
-**Deliverables** — the readiness ceiling with the capping dimension named; the team skills profile, required vs actual against their target; the "held too narrowly" list; a gap-closure roadmap phased 90 days / 3–6 / 6–12 months.
+### Days 4–5 · Skills, by cohort
 
-**Watch for** — a Stage 4 ambition sitting on a Stage 1 skills reality. That gap *is* the finding, and it's worth more to them than any use-case list.
+**In the room** — DL with each cohort separately, 60–90 minutes each. Practitioners matter most; don't let the sponsor answer for them.
 
-**Exit** — into Validate ("now bring us one workflow"), or a capability-building engagement.
+Run the **team skill scan** — 7 capabilities: typical level, how widely held, and a named champion. Then the **cohort breakdown**: score each capability for leaders, practitioners and technical staff separately. A team-wide average hides the shape, and the shape is what makes a training plan costable.
 
----
+| Ask | To get at |
+|---|---|
+| "Show me what you did with it this week" | Real literacy, not claimed literacy |
+| "How would you know if it gave you a wrong answer?" | Judging output quality — the capability that keeps AI safe |
+| "Who do people ask when a tool misbehaves?" | Your champion, by name |
+| "What would you not be allowed to put into it?" | Governance awareness, as understood on the floor |
+| "Who taught the last person who joined?" | Coaching — whether capability survives turnover |
+
+**Meanwhile, FDE runs Overwatch steps 3–5** — architecture mapping, dependency and security scan, test and pipeline assessment.
+
+**Output by end of week 1** — provisional readiness scores, a cohort-level skills profile, and roughly half the codebase scan complete.
+
+## Week 2 — verify, disprove, calibrate, deliver
+
+### Days 6–7 · Confirm the guesses and probe AI readiness
+
+The DL goes back to anything tagged **guessed** and confirms it with the person who actually owns that dimension. Ambition is a sponsor question; access reality is a data-owner question; nobody else's answer counts.
+
+**FDE runs Overwatch step 6** — the AI-readiness probes: can AI be built on and against this codebase? Interfaces, data access, and where guardrails could attach. Then **step 7, the disprove-your-own-findings pass** — the deliberate attempt to break every conclusion drawn so far. This is the step that makes a score survive contact with their engineers.
+
+**Sit down with their principal engineer and walk the findings.** Not to soften them — to catch the ones that are wrong. An engineer who has argued with a finding and lost is your best advocate at the readout.
+
+### Day 8 · Score the four parts, and calibrate
+
+**Ground Truth's four-part score**, each 1–5 with the evidence written next to it: code quality and maintainability · architecture and scalability · security and dependency risk · delivery process and test discipline. The tool derives the two report angles from these — **engineering quality** (the buyer's-eye view) and **AI readiness of the codebase** (can AI be built on this safely).
+
+**Calibrate before anyone sees a number.** Run the same scoring against a codebase we know and check the result reads true. A 3 has to mean the same thing every time or the score is decoration.
+
+Feed the results into the assessment deliberately: the AI-readiness angle is the evidence behind *Technology → how they build and release software*; engineering quality is the evidence behind *Skills → technical AI capability in-house*. The tool shows both as advisory — you set the dimension answers, and the report records where they came from.
+
+### Day 9 · Assemble and challenge
+
+Generate the **Team readiness & skills report** and the **Gap-closure roadmap**. Then challenge them internally before the client does:
+
+- Does the ceiling still hold once the skill scan is in? Skills is computed from the scan and can move it.
+- Do the cohort gaps and the codebase findings tell the same story, or contradict each other? A technical cohort scoring well against a 2.4/5 codebase needs explaining.
+- Is every red backed by a named source in the interview log?
+- Would their CTO recognise the codebase findings as fair?
+
+### Day 10 · Readout
+
+**In the room** — sponsor, department head, CTO or engineering lead, HR/L&D, finance if budget is in play. 90 minutes.
+
+Lead with the ceiling and what caps it. Then the skills profile by cohort — that's the slide people argue about, so have the interview log to hand. Then the codebase, in the two angles. Close on the 90-day roadmap, sequenced by leverage.
+
+**Exit** — into Validate ("now bring us one workflow"), a capability-building engagement, or remediation work on the codebase.
+
+**Watch for** — a Stage 4 ambition sitting on a Stage 1 skills reality, or an ambitious AI roadmap sitting on a codebase that scores 2 for release safety. That gap *is* the finding, and it's worth more to them than any use-case list.
 
 # Journey 1 — Validate (light, ~5 days)
 
@@ -311,7 +381,7 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 | Module / tab | Journey 0 (wedge) | Journey 1 (Validate) | Journey 2 (Prioritise) |
 |---|---|---|---|
 | **Engagement** | Client, date, **target stage**, Light | Same, Day 0 · add the workflow | Same, Week 0 · add one workflow per candidate |
-| **1 · Team** | The whole engagement — 18 questions + team skill scan | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
+| **1 · Team** | The whole engagement — 18 questions, team skill scan, cohort breakdown, interview log, codebase review | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
 | **2 · Workflow** | — | Day 2: approvals, run-capability scan, systems, data, safeguards | Week 3 on the leading workflow |
 | **Use cases** | — | Day 0 score, Day 1 baseline, Day 3 value model | Week 1 to cut the list · Week 2 deep · Week 3 value |
 | **3 · Portfolio** | — | Only if the workflow has 2+ use cases | Week 4 — ranking, waves, aggregate |
@@ -335,7 +405,8 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 | Go / adjust / stop verdict | Recorded on the use case; cross-checked against the blueprint and the readiness ceiling |
 | Ranked opportunity backlog | Outputs → **Ranked backlog**, gated by team readiness |
 | AI-readiness assessment (data, technology, skills scored) | Outputs → **Team readiness & skills report** — scorecard, ceiling, skills profile |
-| Team skills profile and training plan | The team skill scan, inside the same report |
+| Team skills profile and training plan | The team skill scan plus the cohort breakdown, inside the same report |
+| Codebase review — engineering quality and AI readiness | The codebase review card: Overwatch step tracker, Ground Truth four-part score, both angles in the team report |
 | Build-vs-buy calls, and why | The call plus its rationale on each use case; carried into the ranked backlog |
 | Quantified business case | Value models across the top use cases, aggregated on the Portfolio tab |
 | The mini operating model around it | Outputs → **Workflow blueprint** — approvals, roles, systems, safeguards, phased actions |
@@ -343,6 +414,8 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 
 ## Traps worth naming
 
+- **Leaving repository access to week two.** It paces the whole wedge. Request it on day one and escalate on day three — a scan nobody had time to verify is worse than no scan.
+- **Showing a Ground Truth score before the disprove pass and calibration.** Step 7 exists precisely so the number survives contact with their engineers.
 - **Leaving the target stage unset.** Every required skill level and every gap depends on it. The tool refuses to guess; don't guess either.
 - **Naming the ceiling before the skill scan.** Skills is computed from the scan and can move the ceiling under you.
 - **Confusing the two scans.** Team scan = can these people work with AI. Run scan = can they run this thing. Different questions, different tabs.
