@@ -322,27 +322,39 @@ const COHORTS=[{id:"lead",name:"Leaders & sponsors",hint:"decide, fund and unblo
  {id:"prac",name:"Practitioners",hint:"the people whose work AI would change"},
  {id:"tech",name:"Technical & engineering",hint:"whoever builds, integrates or maintains"}];
 
-/* ---------- Codebase review: Overwatch engine + Ground Truth scoring ----------
-   PROVISIONAL — step names and the four scoring parts are placeholders taken from
-   "Building AI that Sticks" (slide 20: eight steps, disprove-your-own-findings pass,
-   four-part scoring model). Confirm against the Launch Pad definitions before a
-   client sees a score, and calibrate on a codebase we know first. */
+/* ---------- Codebase review — Overwatch (github.com/enablis-co/overwatch) ----------
+   Real model from the repo: a nine-stage pipeline; twelve catalogue audit dimensions
+   selected mechanically by archetype/domain intersection, plus 0-3 bespoke dimensions
+   recon proposes. Each scores 0-100 with a red/amber/green band; recommendations sort
+   into MoSCoW buckets. Scores here are transcribed from the run's report.json — this
+   tool records and interprets them, it does not compute them.
+   eng / ai = the weight each dimension carries in the two report angles. */
 const OW_STEPS=[
- {id:"o1",n:"Access and inventory",h:"repos, languages, size, ownership — what is actually in scope"},
- {id:"o2",n:"Automated checks",h:"static analysis and the check providers, run across the tree"},
- {id:"o3",n:"Architecture mapping",h:"how it hangs together, and where the seams are"},
- {id:"o4",n:"Dependency and security scan",h:"known vulnerabilities, licence exposure, stale packages"},
- {id:"o5",n:"Test and pipeline assessment",h:"coverage, CI/CD, whether a change can ship safely"},
- {id:"o6",n:"AI-readiness probes",h:"can AI be built on and against this — interfaces, data access, guardrail points"},
- {id:"o7",n:"Disprove your own findings",h:"the deliberate pass that tries to break every conclusion drawn so far"},
- {id:"o8",n:"Report generation",h:"one scan, two angles: engineering quality and AI readiness"}];
+ {id:"o1",n:"1 · Recon",h:"explore the repo — archetypes, domains, stacks, criticality map, git context"},
+ {id:"o2",n:"2 · Explore (optional)",h:"build the architecture graph; every edge marked measured or inferred"},
+ {id:"o3",n:"3 · Plan",h:"mechanically select which catalogue dimensions apply — set intersection, no guessing"},
+ {id:"o4",n:"4 · Propose bespoke",h:"recon proposes 0-3 repo-specific dimensions the catalogue doesn't cover"},
+ {id:"o5",n:"5 · Audit",h:"run the selected dimensions in parallel, driving the repo's own tooling"},
+ {id:"o6",n:"6 · Verify",h:"the adversarial pass that tries to refute each finding by falsifying its assumptions"},
+ {id:"o7",n:"7 · Dedupe",h:"merge the same issue surfaced under several dimensions"},
+ {id:"o8",n:"8 · Synthesize",h:"score each dimension red/amber/green and sort recommendations into MoSCoW"},
+ {id:"o9",n:"9 · Assemble & render",h:"report.json, .md, interactive .html, .pdf, plus architecture diagrams"}];
 const OW_STATUS=["Not started","Blocked","Running","Done"];
 const GT_PARTS=[
- {id:"g1",n:"Code quality and maintainability",h:"could a new engineer safely change this?",eng:1,ai:0.5},
- {id:"g2",n:"Architecture and scalability",h:"will it take load, and can it be extended?",eng:1,ai:1},
- {id:"g3",n:"Security and dependency risk",h:"what would a buyer's technical due diligence find?",eng:1,ai:1},
- {id:"g4",n:"Delivery process and test discipline",h:"tests, CI/CD, release safety — the thing AI changes fastest",eng:1,ai:1}];
-const GT_SCALE=["","1 — serious concerns","2 — below par","3 — workmanlike","4 — strong","5 — exemplary"];
+ {id:"security",n:"Security",pre:"SEC",h:"exploitable vulnerabilities, secrets, authn/authz, injection",eng:1,ai:1,opus:true},
+ {id:"architecture",n:"Architecture",pre:"ARCH",h:"layering, cycles, coupling hotspots, egress surface",eng:1,ai:1},
+ {id:"code-quality",n:"Code quality",pre:"CODE",h:"structure, complexity hotspots, dead code, naming",eng:1,ai:0.5},
+ {id:"testing",n:"Testing",pre:"TEST",h:"would the tests catch the failures that matter?",eng:1,ai:1},
+ {id:"dependency-health",n:"Dependency health",pre:"DEP",h:"currency, maintenance, pinning, provenance",eng:1,ai:0.5},
+ {id:"delivery-infrastructure",n:"Delivery infrastructure",pre:"INF",h:"is the path from code to running infra declared and reproducible?",eng:1,ai:1,opus:true},
+ {id:"sre-operability",n:"SRE / operability",pre:"SRE",h:"observability, alerting, deploy and rollback, recovery",eng:1,ai:1},
+ {id:"ai-assisted-engineering",n:"AI-assisted engineering",pre:"AIE",h:"set up for safe, effective, governed AI-assisted development",eng:0.5,ai:1.5,opus:true},
+ {id:"docs-onboarding",n:"Docs & onboarding",pre:"DOCS",h:"can a competent engineer land cold?",eng:1,ai:0.5},
+ {id:"release-distribution",n:"Release & distribution",pre:"REL",h:"pipeline, signing, versioning, upgrade path",eng:1,ai:0.5},
+ {id:"licensing",n:"Licensing",pre:"LIC",h:"is distributing the artifact legally clean?",eng:0.5,ai:0},
+ {id:"financial-integrity",n:"Financial integrity",pre:"FIN",h:"can the numbers be wrong? money-system-of-record only",eng:1,ai:0,opus:true}];
+const DIM_STATE=["Planned","Not applicable","Incomplete"];
+function bandOf(sc){return (sc===null||sc===undefined||sc==="")?null:(sc<50?"red":sc<75?"amber":"green");}
 
 /* use-case questions */
 const VAL_QS=[
@@ -590,69 +602,90 @@ function addRepo(){S.cb.repos.push({name:"",lang:"",size:"",owner:"",scope:"Yes"
 function delRepo(i){S.cb.repos.splice(i,1);save();renderTeam();}
 function setRepo(i,f,v){S.cb.repos[i][f]=v;save();renderTeam();}
 function setOw(id,v){S.cb.ow[id]=v;save();renderTeam();}
-function setGt(id,v){S.cb.gt[id]=(S.cb.gt[id]===v?null:v);save();renderTeam();}
+function setGt(id,v){S.cb.gt[id]=v===""?null:Math.max(0,Math.min(100,Number(v)));save();renderTeam();}
 function cbScores(){
-  const parts=GT_PARTS.map(p=>({p,v:S.cb.gt[p.id]})).filter(x=>x.v!==null&&x.v!==undefined);
+  S.cb.state=S.cb.state||{};
+  const parts=GT_PARTS.map(p=>({p,st:S.cb.state[p.id],v:S.cb.gt[p.id]}))
+    .filter(x=>x.st==="Planned"&&x.v!==null&&x.v!==undefined&&x.v!=="");
   if(!parts.length)return null;
-  const wavg=(k)=>{const w=parts.reduce((a,x)=>a+x.p[k],0);return w?parts.reduce((a,x)=>a+x.v*x.p[k],0)/w:null;};
+  const wavg=k=>{const w=parts.reduce((a,x)=>a+x.p[k],0);return w?parts.reduce((a,x)=>a+Number(x.v)*x.p[k],0)/w:null;};
   const eng=wavg("eng"),ai=wavg("ai");
-  return{n:parts.length,eng,ai,engStage:eng?Math.max(1,Math.min(5,Math.round(eng))):null,
-    aiStage:ai?Math.max(1,Math.min(5,Math.round(ai))):null};}
+  return{n:parts.length,eng,ai,engBand:bandOf(eng),aiBand:bandOf(ai),
+    reds:parts.filter(x=>bandOf(x.v)==="red"),ambers:parts.filter(x=>bandOf(x.v)==="amber"),
+    engStage:eng===null?null:Math.max(1,Math.min(5,Math.round(eng/20))),
+    aiStage:ai===null?null:Math.max(1,Math.min(5,Math.round(ai/20)))};}
 function owDone(){return OW_STEPS.filter(s=>S.cb.ow[s.id]==="Done").length;}
+function cbIncomplete(){S.cb.state=S.cb.state||{};return GT_PARTS.filter(p=>S.cb.state[p.id]==="Incomplete");}
+function setCbState(id,v){S.cb.state=S.cb.state||{};S.cb.state[id]=v;save();renderTeam();}
 function renderCb(){
-  const has=S.cb.has;
-  document.getElementById("cbHas").innerHTML=[["yes","Yes — run the review"],["no","No — not a software client"]]
+  const has=S.cb.has; S.cb.state=S.cb.state||{};
+  document.getElementById("cbHas").innerHTML=[["yes","Yes — run Overwatch"],["no","No — not a software client"]]
     .map(([v,l])=>`<div class="opt n ${has===v?"sel":""}" onclick="setCb('has','${v}')">${l}</div>`).join("");
   const b=document.getElementById("cbBody");
   if(has!=="yes"){b.innerHTML=has==="no"
     ?`<div class="info">Skipped. Technology and the technical half of Skills are scored by interview only — say so in the report so nobody mistakes an opinion for a scan.</div>`:"";return;}
-  const sc=cbScores(),blocked=OW_STEPS.filter(s=>S.cb.ow[s.id]==="Blocked");
+  const sc=cbScores(),blocked=OW_STEPS.filter(s=>S.cb.ow[s.id]==="Blocked"),inc=cbIncomplete();
+  const pill=x=>x===null?'<span class="pill b">—</span>':`<span class="pill ${x==="green"?"g":x==="amber"?"a":"r"}">${x}</span>`;
   b.innerHTML=`
     <div class="g2" style="margin-top:12px">
       <div><label>Repository access <small>request on day one — this paces everything</small></label>
         <div class="opts">${["Not requested","Requested","Granted"].map(o=>`<div class="opt ${o==="Granted"?"g":o==="Requested"?"a":"r"} ${S.cb.repoAccess===o?"sel":""}" onclick="setCb('repoAccess','${o}')">${o}</div>`).join("")}</div></div>
-      <div><label>Check-provider sign-ups <small>the scanning services the run depends on</small></label>
-        <div class="opts">${["Not started","In progress","Done"].map(o=>`<div class="opt ${o==="Done"?"g":o==="In progress"?"a":"r"} ${S.cb.checkAccess===o?"sel":""}" onclick="setCb('checkAccess','${o}')">${o}</div>`).join("")}</div></div>
+      <div><label>Run environment ready <small>Overwatch installed, model access configured, headless browser for the PDF</small></label>
+        <div class="opts">${["Not started","In progress","Ready"].map(o=>`<div class="opt ${o==="Ready"?"g":o==="In progress"?"a":"r"} ${S.cb.checkAccess===o?"sel":""}" onclick="setCb('checkAccess','${o}')">${o}</div>`).join("")}</div></div>
     </div>
-    ${(S.cb.repoAccess&&S.cb.repoAccess!=="Granted")||(S.cb.checkAccess&&S.cb.checkAccess!=="Done")
-      ?`<div class="stop">⚠ Access is the pacing item. Until the repo is readable and the check providers are live, the scan cannot start — chase it daily, and flag the risk to the sponsor in week one, not week two.</div>`:""}
+    ${(S.cb.repoAccess&&S.cb.repoAccess!=="Granted")||(S.cb.checkAccess&&S.cb.checkAccess!=="Ready")
+      ?`<div class="stop">⚠ Access is the pacing item. Overwatch clones the repo and drives its own tooling locally, so nothing starts until you can read the code. Chase daily; flag the risk to the sponsor in week one.</div>`:""}
     <div class="boxes" style="margin-top:12px">
-      <div class="box"><div class="l">Overwatch progress</div><div class="v">${owDone()}/8<small>steps complete${blocked.length?" · "+blocked.length+" blocked":""}</small></div></div>
-      <div class="box pot"><div class="l">Engineering quality</div><div class="v">${sc&&sc.eng?sc.eng.toFixed(1)+" / 5":"–"}<small>the buyer's-eye report angle</small></div></div>
-      <div class="box own"><div class="l">AI readiness of the codebase</div><div class="v">${sc&&sc.ai?sc.ai.toFixed(1)+" / 5":"–"}<small>can AI be built on this safely?</small></div></div>
-      <div class="box"><div class="l">Repos in scope</div><div class="v">${S.cb.repos.filter(r=>r.name&&r.scope==="Yes").length}<small>of ${S.cb.repos.filter(r=>r.name).length} listed</small></div></div>
+      <div class="box"><div class="l">Pipeline progress</div><div class="v">${owDone()}/9<small>stages complete${blocked.length?" · "+blocked.length+" blocked":""}</small></div></div>
+      <div class="box pot"><div class="l">Engineering quality</div><div class="v">${sc&&sc.eng!==null?Math.round(sc.eng):"–"}<small>${sc?"/100 · "+sc.engBand+" · the buyer's-eye angle":"weighted across scored dimensions"}</small></div></div>
+      <div class="box own"><div class="l">AI readiness of the codebase</div><div class="v">${sc&&sc.ai!==null?Math.round(sc.ai):"–"}<small>${sc?"/100 · "+sc.aiBand:"can AI be built on this safely?"}</small></div></div>
+      <div class="box ${sc&&sc.reds.length?"ceil":""}"><div class="l">Red dimensions</div><div class="v">${sc?sc.reds.length:"–"}<small>${sc&&sc.reds.length?sc.reds.map(x=>x.p.pre).join(" "):"scored below 50"}</small></div></div>
     </div>
-    <label style="margin-top:12px">Repositories</label>
-    <table><thead><tr><th>Repository</th><th style="width:15%">Language</th><th style="width:13%">Rough size</th><th style="width:16%">Owner</th><th style="width:90px">In scope</th><th style="width:28px"></th></tr></thead><tbody>
+    ${inc.length?`<div class="stop">⚠ <b>${inc.length} dimension${inc.length>1?"s":""} incomplete</b> — ${inc.map(p=>p.n).join(", ")}. Overwatch fails loud: an incomplete dimension is never scored clean. Re-run it or explain it in the report.</div>`:""}
+    ${S.cb.secrets==="Yes"?`<div class="stop">🔴 <b>Live secrets found.</b> Rotate at source now. The report quotes them verbatim — keep it out of email, chat and any repository.</div>`:""}
+    <label style="margin-top:14px">Repositories audited</label>
+    <table><thead><tr><th>Repository</th><th style="width:15%">Language</th><th style="width:13%">Rough size</th><th style="width:16%">Owner</th><th style="width:88px">In scope</th><th style="width:28px"></th></tr></thead><tbody>
     ${S.cb.repos.map((r,i)=>`<tr>
       <td><input value="${esc(r.name)}" onchange="setRepo(${i},'name',this.value)"></td>
       <td><input value="${esc(r.lang)}" onchange="setRepo(${i},'lang',this.value)"></td>
-      <td><input value="${esc(r.size)}" onchange="setRepo(${i},'size',this.value)" placeholder="e.g. 120k lines"></td>
+      <td><input value="${esc(r.size)}" onchange="setRepo(${i},'size',this.value)" placeholder="e.g. 180k lines"></td>
       <td><input value="${esc(r.owner)}" onchange="setRepo(${i},'owner',this.value)"></td>
       <td><select onchange="setRepo(${i},'scope',this.value)"><option ${r.scope==="Yes"?"selected":""}>Yes</option><option ${r.scope==="No"?"selected":""}>No</option></select></td>
       <td><button style="padding:2px 7px" onclick="delRepo(${i})">✕</button></td></tr>`).join("")}
     </tbody></table><button class="addrow" onclick="addRepo()">+ Add repository</button>
-
-    <label style="margin-top:14px">Overwatch — the eight steps <span class="deepbadge">PROVISIONAL</span> <small>step names taken from the internal deck; confirm against the Launch Pad definition</small></label>
-    <table><thead><tr><th style="width:26px">#</th><th>Step</th><th style="width:150px">Status</th></tr></thead><tbody>
-    ${OW_STEPS.map((s,i)=>`<tr><td>${i+1}</td>
-      <td><span class="capname">${s.n}</span><br><span class="caphint">${s.h}</span></td>
+    <div class="g3" style="margin-top:10px">
+      <div><label>Branch and commit audited <small>the report leads with this</small></label><input value="${esc(S.cb.commit||"")}" onchange="setCbTxt('commit',this.value)" placeholder="main @ a1b2c3d"></div>
+      <div><label>Architecture model built? <small>stage 2 ran and produced a graph</small></label>
+        <div class="opts">${["Yes","No"].map(o=>`<div class="opt ${o==="Yes"?"g":"r"} ${S.cb.arch===o?"sel":""}" onclick="setCb('arch','${o}')">${o}</div>`).join("")}</div></div>
+      <div><label>Live secrets found? <small>if yes, rotate at source</small></label>
+        <div class="opts">${["Yes","No"].map(o=>`<div class="opt ${o==="Yes"?"r":"g"} ${S.cb.secrets===o?"sel":""}" onclick="setCb('secrets','${o}')">${o}</div>`).join("")}</div></div>
+    </div>
+    <label style="margin-top:14px">The nine-stage pipeline</label>
+    <table><thead><tr><th>Stage</th><th style="width:148px">Status</th></tr></thead><tbody>
+    ${OW_STEPS.map(s=>`<tr><td><span class="capname">${s.n}</span><br><span class="caphint">${s.h}</span></td>
       <td><select onchange="setOw('${s.id}',this.value)"><option value=""></option>${OW_STATUS.map(o=>`<option ${S.cb.ow[s.id]===o?"selected":""}>${o}</option>`).join("")}</select></td></tr>`).join("")}
     </tbody></table>
-    ${S.cb.ow.o7==="Done"?`<div class="info">Step 7 complete — findings have been through the disprove pass. That's the step that makes a score defensible in front of their engineers.</div>`
-      :`<div class="flag">⚠ Do not issue a score until step 7 (disprove your own findings) is done, and calibrate against a codebase we know first.</div>`}
-
-    <label style="margin-top:14px">Ground Truth — the four-part score <span class="deepbadge">PROVISIONAL</span> <small>part names are a working set; confirm before a client sees one</small></label>
-    <table><thead><tr><th>Part</th><th style="width:210px">Score</th><th style="width:32%">What you saw</th></tr></thead><tbody>
-    ${GT_PARTS.map(p=>`<tr>
-      <td><span class="capname">${p.n}</span><br><span class="caphint">${p.h}</span></td>
-      <td><div class="lvls">${[1,2,3,4,5].map(n=>`<div class="lvl ${S.cb.gt[p.id]===n?"sel "+(n>=4?"ok":n===3?"near":"bad"):""}" title="${GT_SCALE[n]}" onclick="setGt('${p.id}',${n})">${n}</div>`).join("")}</div>
-        <span class="caphint">${S.cb.gt[p.id]?GT_SCALE[S.cb.gt[p.id]]:"1 poor → 5 exemplary"}</span></td>
-      <td><input value="${esc(S.cb.gtNotes[p.id]||"")}" onchange="S.cb.gtNotes['${p.id}']=this.value;save()" placeholder="the evidence behind the score"></td></tr>`).join("")}
+    ${S.cb.ow.o6==="Done"?`<div class="info">Stage 6 complete — findings have been through the adversarial verify pass, and anything refuted is out of the scores and parked in <code>refuted.json</code>. That is what makes a number defensible in front of their engineers.</div>`
+      :`<div class="flag">⚠ Don't present a score before stage 6 (verify). Findings that haven't survived the refutation pass are claims, not findings.</div>`}
+    <label style="margin-top:14px">Dimension scores <small>transcribed from <code>report.json</code> → <code>dimension_scores</code>. Bands: red &lt;50 · amber 50–74 · green ≥75</small></label>
+    <table><thead><tr><th>Dimension</th><th style="width:128px">Plan</th><th style="width:86px">Score</th><th style="width:72px">Band</th><th style="width:27%">Headline finding</th></tr></thead><tbody>
+    ${GT_PARTS.map(p=>{const st=S.cb.state[p.id]||"",v=S.cb.gt[p.id],bd=st==="Planned"?bandOf(v):null;
+      return `<tr>
+        <td><span class="capname">${p.n}</span> <span class="caphint">${p.pre}</span>${p.opus?' <span class="pill b">Opus</span>':""}<br><span class="caphint">${p.h}</span></td>
+        <td><select onchange="setCbState('${p.id}',this.value)"><option value=""></option>${DIM_STATE.map(o=>`<option ${st===o?"selected":""}>${o}</option>`).join("")}</select></td>
+        <td>${st==="Planned"?`<input type="number" min="0" max="100" value="${v===undefined||v===null?"":esc(v)}" onchange="setGt('${p.id}',this.value)">`:'<span class="caphint">—</span>'}</td>
+        <td>${pill(bd)}</td>
+        <td><input value="${esc(S.cb.gtNotes[p.id]||"")}" onchange="S.cb.gtNotes['${p.id}']=this.value;save()" placeholder="${st==="Not applicable"?"why not applicable":"the finding that drove the score"}"></td></tr>`;}).join("")}
     </tbody></table>
-    ${sc?`<div class="info">Feeds two dimensions: <b>AI readiness of the codebase (${sc.ai.toFixed(1)})</b> is the evidence behind <i>Technology → how they build and release software</i>; <b>engineering quality (${sc.eng.toFixed(1)})</b> is the evidence behind <i>Skills → technical AI capability in-house</i>. Both are advisory — set the dimension answers yourself, and say in the report where they came from.</div>`:""}
+    <div class="g3" style="margin-top:10px">
+      <div><label>Bespoke dimensions proposed <small>stage 4 — 0 to 3, repo-specific</small></label><input value="${esc(S.cb.bespoke||"")}" onchange="setCbTxt('bespoke',this.value)" placeholder="e.g. tenant-isolation, transport-parity"></div>
+      <div><label>Critical / high findings</label><input value="${esc(S.cb.critHigh||"")}" onchange="setCbTxt('critHigh',this.value)" placeholder="e.g. 3 critical, 11 high"></div>
+      <div><label>MoSCoW "must" count <small>from recommendations_by_moscow</small></label><input value="${esc(S.cb.must||"")}" onchange="setCbTxt('must',this.value)"></div>
+    </div>
+    ${sc?`<div class="info">Feeds two dimensions as evidence: <b>AI readiness ${Math.round(sc.ai)}/100 (${sc.aiBand})</b> behind <i>Technology → how they build and release software</i>; <b>engineering quality ${Math.round(sc.eng)}/100 (${sc.engBand})</b> behind <i>Skills → technical AI capability in-house</i>. Roughly Stage ${sc.aiStage} and Stage ${sc.engStage} on the 1–5 scale. Advisory — you set the dimension answers, and the report records where they came from.</div>`:""}
     <label>Headline findings for the report</label>
-    <textarea onchange="setCbTxt('notes',this.value)" placeholder="The two or three things their CTO needs to hear — and what a buyer's technical due diligence would find">${esc(S.cb.notes||"")}</textarea>`;
+    <textarea onchange="setCbTxt('notes',this.value)" placeholder="The two or three things their CTO needs to hear — and what a buyer's technical due diligence would find">${esc(S.cb.notes||"")}</textarea>
+    <div class="flag" style="margin-top:8px">Overwatch reports are git-ignored by design and quote discovered secrets verbatim. Never commit, email or paste one — share the findings, not the file.</div>`;
 }
 function renderTeamSkills(){
   const st=tsStats();
@@ -1216,11 +1249,14 @@ function tsActions(){const o=[];
   cohSummary().forEach(x=>{if(x.n&&x.gaps>=3)o.push({who:"HR / L&D with "+x.c.name.toLowerCase(),
     what:`Stand up a training track for ${x.c.name.toLowerCase()} — short on ${x.gaps} capabilities${x.worst?", starting with "+x.worst.cap.name.toLowerCase():""}`});});
   if(S.cb.has==="yes"){const sc=cbScores();
-    if(sc&&sc.ai&&sc.ai<3)o.push({who:"client CTO / platform lead",
-      what:`Lift the codebase to a state AI can be built on safely — AI readiness scored ${sc.ai.toFixed(1)}/5 by the review`});
-    if(sc&&sc.eng&&sc.eng<3)o.push({who:"client engineering lead",
-      what:`Address the engineering-quality findings before any build — scored ${sc.eng.toFixed(1)}/5${S.cb.notes?": "+S.cb.notes:""}`});
-    if(S.cb.ow.o7!=="Done")o.push({who:"FDE",what:"Complete Overwatch step 7 (disprove your own findings) and calibrate before any score is shown to the client"});}
+    if(S.cb.secrets==="Yes")o.push({who:"client engineering lead — today",
+      what:"Rotate the live secrets Overwatch found at source, and confirm the report has not been circulated"});
+    if(sc)sc.reds.forEach(r=>o.push({who:"client engineering lead",
+      what:`Fix the ${r.p.n.toLowerCase()} findings — scored ${r.v}/100, red${S.cb.gtNotes[r.p.id]?": "+S.cb.gtNotes[r.p.id]:""}`}));
+    if(sc&&sc.ai!==null&&sc.ai<50)o.push({who:"client CTO",
+      what:`Lift the codebase to a state AI can safely be built on — the AI-readiness angle is ${Math.round(sc.ai)}/100, red`});
+    cbIncomplete().forEach(p=>o.push({who:"FDE",what:`Re-run or explain the incomplete ${p.n.toLowerCase()} dimension — Overwatch fails loud, so it cannot be reported clean`}));
+    if(S.cb.ow.o6!=="Done")o.push({who:"FDE",what:"Complete the verify stage before any score is shown to the client — unrefuted findings are claims"});}
   tsStats().short.forEach(s=>o.push({who:s.c.id==="ts_coach"?"client sponsor":"team manager",
     what:`Raise "${s.c.name}" from ${LVLS[s.lvl]} to ${LVLS[s.req]} — training for the teams whose work changes`}));
   tsStats().narrow.forEach(n=>o.push({who:"client sponsor",
@@ -1305,14 +1341,21 @@ function copyTeam(){
   if(cs.length){L.push("","BY COHORT");
     cs.forEach(x=>L.push(`- ${x.c.name}: average ${x.avg.toFixed(1)}/4 across ${x.n} capabilities · ${x.gaps} short of target${x.worst?` · weakest: ${x.worst.cap.name.toLowerCase()} (${LVLS[x.worst.lvl]} vs ${LVLS[x.worst.req]})`:""}`));}
   /* codebase */
-  if(S.cb.has==="yes"){const sc=cbScores();
-    L.push("","CODEBASE REVIEW — Overwatch engine, Ground Truth scoring");
-    L.push(`- Scan progress: ${owDone()}/8 steps${S.cb.ow.o7==="Done"?", disprove pass complete":", DISPROVE PASS NOT DONE — scores are provisional"}`);
+  if(S.cb.has==="yes"){const sc=cbScores(),inc=cbIncomplete();
+    L.push("","CODEBASE REVIEW — Overwatch");
+    L.push(`- Pipeline: ${owDone()}/9 stages${S.cb.ow.o6==="Done"?", verify pass complete":", VERIFY PASS NOT DONE — findings are claims, not findings"}`);
+    if(S.cb.commit)L.push(`- Audited: ${S.cb.commit}`);
     L.push(`- Repositories in scope: ${S.cb.repos.filter(r=>r.name&&r.scope==="Yes").map(r=>r.name+(r.lang?" ("+r.lang+")":"")).join(", ")||"none listed"}`);
-    if(sc){L.push(`- Engineering quality: ${sc.eng.toFixed(1)}/5 · AI readiness of the codebase: ${sc.ai.toFixed(1)}/5`);
-      GT_PARTS.forEach(p=>{const v=S.cb.gt[p.id];
-        L.push(`  · ${p.n}: ${v?v+"/5":"not scored"}${S.cb.gtNotes[p.id]?" — "+S.cb.gtNotes[p.id]:""}`);});}
+    if(S.cb.arch)L.push(`- Architecture model built: ${S.cb.arch}`);
+    if(sc){L.push(`- Engineering quality: ${Math.round(sc.eng)}/100 (${sc.engBand}) · AI readiness of the codebase: ${Math.round(sc.ai)}/100 (${sc.aiBand})`);
+      L.push("- Dimension scores:");
+      GT_PARTS.forEach(p=>{const st=(S.cb.state||{})[p.id],v=S.cb.gt[p.id];if(!st)return;
+        L.push(`  · ${p.n} (${p.pre}): ${st==="Planned"?(v!==null&&v!==undefined?v+"/100 "+bandOf(v):"not scored"):st}${S.cb.gtNotes[p.id]?" — "+S.cb.gtNotes[p.id]:""}`);});}
     else L.push("- Not yet scored");
+    if(inc.length)L.push(`- INCOMPLETE (never scored clean): ${inc.map(p=>p.n).join(", ")}`);
+    if(S.cb.bespoke)L.push(`- Bespoke dimensions: ${S.cb.bespoke}`);
+    if(S.cb.critHigh)L.push(`- Findings: ${S.cb.critHigh}${S.cb.must?" · "+S.cb.must+" MoSCoW must-do":""}`);
+    if(S.cb.secrets==="Yes")L.push("- LIVE SECRETS FOUND — rotate at source. The report quotes them verbatim; do not circulate it.");
     if(S.cb.notes)L.push(`- Headline: ${S.cb.notes}`);}
   else if(S.cb.has==="no")L.push("","CODEBASE REVIEW: not applicable — Technology and technical Skills are scored from interviews only.");
   /* sources */
