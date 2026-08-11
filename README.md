@@ -8,7 +8,7 @@ The toolkit is organised around **who is being assessed**, not around documents.
 
 | Module | Target group | What it holds | Runs alone? |
 |---|---|---|---|
-| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) · team skill scan (7 capabilities, required levels scale with the 12-month target) · cohort breakdown · interview log · **codebase review** ([Overwatch](https://github.com/enablis-co/overwatch) — nine stages, twelve dimensions, two report angles) | **Yes — this is the wedge.** A two-week DL+FDE engagement; `assess.html?m=team` opens it standalone |
+| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) · team skill scan (7 capabilities, required levels scale with the 12-month target) · cohort breakdown · interview log · **codebase review** ([Overwatch](https://github.com/enablis-co/overwatch) — nine stages, twelve dimensions, two report angles) | **Yes — this is the wedge.** Three scans sold as one two-week DL+FDE engagement; `assess.html?m=team` opens it standalone |
 | **2 · Workflow** | One workflow, or many — repeat per workflow | Operating model: approvals, systems, data, safeguards, and the run-capability scan (10 jobs that exist the day after go-live) | Needs no portfolio; works with a single workflow |
 | **3 · Portfolio** | Multiple workflows / many use cases | Ranking across every use case, wave plan, aggregate business case, programme-level weak spots | Appears automatically at 2+ use cases |
 

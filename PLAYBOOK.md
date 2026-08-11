@@ -94,6 +94,14 @@ Send it when the engagement is confirmed, with the fallbacks in the same email.
 
 The standalone wedge, and the one to lead with when a client isn't ready to name a workflow. No workflows, no use cases — but two weeks of real evidence rather than a workshop and a guess. Open **`assess.html?m=team`**.
 
+**It is three scans sold and delivered as one thing:**
+
+| | What it answers | Owner |
+|---|---|---|
+| **1 · AI readiness** | Six dimensions scored 1–5, weakest link sets the ceiling against their 12-month target | Delivery Lead, with the FDE on data and technology |
+| **2 · Team skills scan** | Seven capabilities by depth and spread, broken down across leaders, practitioners and technical staff — and it computes the Skills dimension | Delivery Lead |
+| **3 · Codebase review** | [Overwatch](https://github.com/enablis-co/overwatch): nine stages, twelve audit dimensions, two report angles. Runs only where they have their own code | Forward Deployed AI Engineer |
+
 **Buyer question** — "Are we ready to do anything with AI, can our people carry it, and will our codebase take it?"
 **Pod** — Delivery Lead throughout; Forward Deployed AI Engineer throughout, owning the codebase review and the Data/Technology dimensions.
 **Client time** — ~18–25 person-hours across 12–20 people.
