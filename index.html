@@ -30,8 +30,8 @@
   a.tool p{color:var(--grey);font-size:13.5px}
   a.tool .go{color:var(--red);font-weight:700;font-size:13px;margin-top:8px;display:inline-block}
   .note{color:var(--grey);font-size:12.5px;margin-top:22px}
-  .wedges{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0 4px}
-  @media(max-width:820px){.wedges{grid-template-columns:1fr}}
+  .wedges{display:grid;grid-template-columns:1fr;gap:9px;margin:12px 0 10px}
+  
   .wedge{border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:#fbfbfc}
   .wedge b{display:block;font-size:13.5px;margin-bottom:2px}
   .wedge span{font-size:12.3px;color:var(--grey);line-height:1.45}
@@ -56,24 +56,18 @@
   </div>
 
   <div id="launcher">
-    <div class="flow"><b>Three target groups, one engagement:</b> assess the <b>team</b> (organisation for a small business, department for a large one), then one or many <b>workflows</b>, each holding its own <b>use cases</b>. The team module is the wedge — three scans (readiness, team skills, codebase) sold and delivered together, standing alone as a deliverable. The portfolio view appears once there are two or more use cases. Feedback → #discovery-tools or Matt.</div>
+    <div class="flow"><b>One tool, three levels.</b> Assess the <b>team</b> (organisation for a small business, department for a large one), then one or many <b>workflows</b>, each holding its own <b>use cases</b>. Start anywhere and stop anywhere — a team assessment on its own is a deliverable; the portfolio view appears once there are two or more use cases. Feedback → #discovery-tools or Matt.</div>
     <div class="cards">
-      <a class="tool" href="assess.html?m=team">
-        <span class="step">Wedge · stands alone · 2 weeks</span>
-        <h3>AI Readiness &amp; Skills Scan</h3>
-        <p>Three scans, one engagement — Delivery Lead plus Forward Deployed AI Engineer, two weeks. Sold and delivered as a bundle, and a deliverable in its own right.</p>
-        <div class="wedges">
-          <div class="wedge"><i>Wedge 1</i><b>AI readiness</b><span>Six dimensions — strategy, data, technology, skills, governance, adoption — scored 1–5 and weighted 10/20/70. The weakest link sets the ceiling against their 12-month target.</span></div>
-          <div class="wedge"><i>Wedge 2</i><b>Team skills scan</b><span>Seven capabilities scored by depth and spread, broken down across leaders, practitioners and technical staff. Required levels rise with their ambition; it computes the Skills dimension.</span></div>
-          <div class="wedge"><i>Wedge 3</i><b>Codebase review</b><span><a href="https://github.com/enablis-co/overwatch">Overwatch</a> — nine stages, twelve audit dimensions scored 0–100 red/amber/green. Two report angles: engineering quality, and AI readiness of the codebase. Runs where they have their own code.</span></div>
-        </div>
-        <p>Plus an interview log as the audit trail. <b>Output:</b> readiness scorecard with the ceiling named, skills profile by cohort, codebase review, and a gap-closure roadmap phased 90 days / 3–6 / 6–12 months.</p>
-        <span class="go">Open →</span>
-      </a>
       <a class="tool" href="assess.html">
-        <span class="step">Full toolkit · team → workflows → use cases</span>
+        <span class="step">The toolkit</span>
         <h3>Assess Toolkit</h3>
-        <p>Everything in one engagement. Team module as above; add a workflow for each area you're assessing (operating model, run-capability scan, approvals, systems, data, safeguards); add use cases inside each workflow (readiness scoring and a £ value model each). Two or more use cases unlocks the portfolio: ranking, waves and the aggregate business case, with every use case showing which team-level gap gates it.</p>
+        <p>Everything in one engagement, one data model. Set the client and their 12-month target on the Engagement tab, then work down the tabs.</p>
+        <div class="wedges">
+          <div class="wedge"><i>Tab 1 · Team</i><b>AI readiness &amp; skills</b><span>Six readiness dimensions scored 1–5 and weighted 10/20/70, with the weakest link setting the ceiling. A seven-capability team skill scan by depth and spread, broken down across leaders, practitioners and technical staff. An interview log as the audit trail. And, where the client has their own code, the <a href="https://github.com/enablis-co/overwatch">Overwatch</a> codebase review — nine stages, twelve audit dimensions scored 0–100, giving engineering quality and AI readiness of the codebase. All one assessment: the skill scan computes the Skills dimension, the codebase review evidences Technology.</span></div>
+          <div class="wedge"><i>Tab 2 · Workflow</i><b>Operating model</b><span>Repeated per workflow: approvals, systems, data sources and safeguards, plus the ten-capability run-capability scan answering "could they run this without us?" and giving the standing run cost. The evidence tables rate the readiness signals automatically.</span></div>
+          <div class="wedge"><i>Tabs 3–4</i><b>Use cases &amp; portfolio</b><span>Use cases sit inside workflows — each with 16 readiness questions (48 factual checks in Deep) and its own £ value model, potential through to realistic, with a go / adjust / stop verdict. Two or more unlocks the portfolio: ranking, waves, aggregate value, and which team-level gap gates each one.</span></div>
+        </div>
+        <p><b>Outputs:</b> team readiness &amp; skills report · £ value case · workflow blueprint · ranked backlog · gap-closure roadmap — all generated, all copy-paste ready.</p>
         <span class="go">Open →</span>
       </a>
       <a class="tool" href="journey.html">

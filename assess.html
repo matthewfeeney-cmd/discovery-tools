@@ -189,7 +189,7 @@
 <section class="panel" id="p-team">
   <div class="card">
     <h2><span class="n">1</span>Team readiness &amp; skills</h2>
-    <p class="hint">The organisation for a small business; the department or team for a large one. Scored once, ~30 minutes with the sponsor, IT and a team lead. This module stands alone — it's a deliverable in its own right. Readiness is a weakest-link system: the lowest dimension caps everything above it.</p>
+    <p class="hint">The organisation for a small business; the department or team for a large one. Scored once per engagement. Readiness, the team skill scan and the codebase review are one assessment, not three: the skill scan computes the Skills dimension, and the codebase review evidences Technology. Stop here and it's a deliverable in its own right. Readiness is a weakest-link system: the lowest dimension caps everything above it.</p>
     <div class="boxes" id="teamBoxes"></div>
     <div id="scorecard"></div>
     <div class="verdict" id="ceilVerdict"></div>
@@ -462,8 +462,7 @@ S.cb=S.cb||{has:null,repoAccess:"",checkAccess:"",repos:[],ow:{},gt:{},gtNotes:{
 S.wfs=S.wfs||[]; S.curWf=S.curWf||0; S.curUc=S.curUc||0;
 if(S.target===undefined)S.target=null;
 function TGT(){return S.target||null;}
-const QS=new URLSearchParams(location.search);
-const WEDGE=QS.get("m")==="team";
+const WEDGE=false; /* one tool: the team module is tab 1, not a separate product */
 function save(){localStorage.setItem(KEY,JSON.stringify(S));document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString();}
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
 const fmtK=n=>!isFinite(n)||n<=0?"—":n<1000?"<£1k":n>=1e6?"£"+(n/1e6).toFixed(1)+"m":"£"+Math.round(n/1000)+"k";
@@ -475,12 +474,12 @@ function resetAll(){if(!confirm("Clear this engagement and start again? Export f
 function copyText(t,msg){try{navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually."));}catch(e){alert("Copy failed — select the text and copy manually.");}}
 
 /* ==================== NAV ==================== */
-let TAB=WEDGE?"team":"setup";
+let TAB="setup";
 function tabs(){
   const ucN=S.wfs.reduce((a,w)=>a+(w.ucs||[]).length,0);
   const t=[["setup","Engagement",S.wfs.length],["team","1 · Team",null]];
-  if(!WEDGE){ t.push(["wf","2 · Workflow",S.wfs.length]); t.push(["uc","Use cases",ucN]);
-    if(ucN>=2) t.push(["port","3 · Portfolio",null]); else t.push(["port-off","3 · Portfolio (2+ use cases)",null]); }
+  t.push(["wf","2 · Workflow",S.wfs.length]); t.push(["uc","Use cases",ucN]);
+  if(ucN>=2) t.push(["port","3 · Portfolio",null]); else t.push(["port-off","3 · Portfolio (2+ use cases)",null]);
   t.push(["out","Outputs",null]);
   return t;
 }
@@ -489,8 +488,7 @@ function renderNav(){
     id==="port-off"?`<button style="opacity:.42;cursor:default" title="Add a second use case to unlock">${label}</button>`
     :`<button class="${TAB===id?"active":""}" onclick="showTab('${id}')">${label}${n!==null&&n!==undefined?`<span class="n">${n}</span>`:""}</button>`).join("");
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="p-"+TAB));
-  if(WEDGE){ document.getElementById("tagline").textContent="Wedge · standalone";
-    document.getElementById("apptitle").textContent="AI Readiness & Skills Scan"; }
+
 }
 function showTab(id){TAB=id;renderNav();window.scrollTo(0,0);renderAll();}
 
