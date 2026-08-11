@@ -104,9 +104,9 @@
   <div class="card">
     <div class="mapwrap"><div class="map" id="map"></div></div>
     <div class="toolkey">
-      <span><i class="t-read"></i>AI Readiness Assessment</span>
-      <span><i class="t-val"></i>Value Assessment</span>
-      <span><i class="t-op"></i>Mini Op Model + Skill Scan</span>
+      <span><i class="t-read"></i>1 · Team — readiness + team skill scan</span>
+      <span><i class="t-val"></i>Use cases — readiness + value model</span>
+      <span><i class="t-op"></i>2 · Workflow — op model + run-capability scan</span>
       <span style="opacity:.6"><i style="background:#999;opacity:.45"></i>faded = light / partial use</span>
     </div>
   </div>
@@ -117,23 +117,61 @@
 
 <script>
 "use strict";
-const T={read:{n:"AI Readiness",c:"t-read"},val:{n:"Value Assessment",c:"t-val"},op:{n:"Mini Op Model",c:"t-op"}};
+const T={team:{n:"1 · Team",c:"t-read"},uc:{n:"Use cases",c:"t-val"},wf:{n:"2 · Workflow",c:"t-op"}};
 
 const J={
+wedge:{
+ name:"Ready? — team wedge", sub:"1–2 days · a team or department, no workflows",
+ meta:[["Buyer question","“Are we ready to do anything with AI, and can our people carry it?”"],
+   ["Enablis pod","Delivery Lead, plus FDE for 90 minutes"],
+   ["Client time","~4–5 person-hours"],["Ends in","Validate — “now bring us one workflow” — or a capability build"]],
+ steps:[
+ {id:"z1",step:"Step 1",t:"Half-day workshop",q:"Where do they stand, and against what ambition?",
+  act:["Agree the 12-month target stage with the sponsor — first, before anything is scored","Run the 18 readiness questions live on screen, out loud","Run the team skill scan — 7 capabilities, ~10 minutes","Name a champion per capability where one exists"],
+  pod:["Delivery Lead","FDE for the technology and data questions"],
+  client:["Executive sponsor","Team lead","2–3 people who would actually use AI in their work"],
+  data:[["The 12-month ambition","Sponsor","“What do you want to be true in 12 months?” — sets every required skill level. Never leave it unset"],
+    ["Governance posture","The room","“What are staff allowed to paste into a chatbot today?” — the hesitation is the finding"],
+    ["Adoption track record","Sponsor / team lead","“The last new system — is it used the way you intended?”"],
+    ["Typical AI skill level and spread","The practitioners, not the sponsor","Ask what they actually use weekly, and how many others do the same"],
+    ["Who trains whom","Team lead","“Who do people ask when a tool gives a wrong answer?” — that's your champion"]],
+  tools:[["team","18 questions + team skill scan, live"]],
+  out:["Readiness ceiling with the capping dimension named","Team skills profile against their stated ambition","Champions identified by name"],
+  watch:"Score the skill scan before you name the ceiling — the Skills dimension is computed from it and can move the ceiling under you."},
+ {id:"z2",step:"Step 2",t:"Confirm the guesses",q:"Which answers were guessed, and are they right?",
+  act:["Re-score anything answered from the room rather than from evidence","Tag each answer confirmed / told / guessed if running Deep"],
+  pod:["Delivery Lead","FDE (technology, data)"],
+  client:["Platform / IT lead (45 min)","Data owner (45 min)","Change lead or PMO (30 min)","HR / L&amp;D (30 min)"],
+  data:[["Approved AI services and cloud","Platform lead","Ask for the approved software list, not the aspiration"],
+    ["Licence seats deployed vs active","IT or HR","Deployed is vanity; active is the finding"],
+    ["Data access reality","Data owner","How long did the last access request actually take?"],
+    ["The AI policy, or its absence","Risk / DPO","Ask for the document; if there isn't one, that's Stage 1"],
+    ["Post-implementation review","PMO","Two recent ones beat any adoption survey"]],
+  tools:[["team","Re-score with evidence"]],
+  out:["A readiness picture backed by the people who own each dimension","Evidence strength recorded where Deep is on"],
+  watch:"If you never speak to security or the data owner, say so at the readout — an assessment without them has a hole in it."},
+ {id:"z3",step:"Step 3",t:"Generate and read out",q:"What should they do in the next 90 days?",
+  act:["Generate the team report and the gap-closure roadmap","Sense-check the roadmap against what the sponsor can actually fund","60-minute readout"],
+  pod:["Delivery Lead"],client:["Sponsor","Whoever owns the budget","Team lead"],
+  data:[["Nothing new","—","If you're still collecting here, the scope was wrong"]],
+  tools:[["team","Outputs → team report + gap-closure roadmap"]],
+  out:["Readiness scorecard with the ceiling named","Team skills profile — required vs actual, and what is held too narrowly","Gap-closure roadmap phased 90 days / 3–6 / 6–12 months"],
+  watch:"A Stage 4 ambition sitting on a Stage 1 skills reality is the finding — and it is worth more to them than any use-case list."}
+]},
 light:{
  name:"Validate — light", sub:"~5 days · one workflow, brought by the client",
  meta:[["Buyer question","“Is this idea good — and what's it worth?”"],["Enablis pod","Delivery Lead + FDE (DL covers the value model)"],
    ["Client time","~8–10 person-hours"],["Ends in","Build POC — the value case becomes the scope"]],
  steps:[
  {id:"d0",step:"Day 0",t:"Free half-day workshop",q:"Is there anything here, and can they carry it?",
-  act:["Download the problem: goals, users, constraints","Walk the workflow end to end on a whiteboard","Run the 18 organisation questions live on screen","Score the one workflow","Agree what “worth it” means"],
+  act:["Download the problem: goals, users, constraints","Walk the workflow end to end on a whiteboard","Agree the 12-month target stage, then run the 18 readiness questions live on screen","Add the workflow, add one use case inside it, score its 16 questions","Agree what “worth it” means"],
   pod:["Delivery Lead","FDE"],
   client:["Executive sponsor","Workflow owner","1–2 people who do the task","IT/security for the last 30 min if possible"],
   data:[["Nothing in advance","—","This session generates the first data"],
     ["Strategy &amp; budget reality","Sponsor","Ask “how did the last AI spend get approved?”"],
     ["Governance posture","Whoever's in the room","Ask “what are staff allowed to paste into ChatGPT today?” — the hesitation is the finding"],
     ["Adoption track record","Sponsor","Ask “think of the last new system — is it used the way you intended?”"]],
-  tools:[["read","Light mode — org layer + one use case"]],
+  tools:[["team","18 questions + team skill scan, live"],["uc","Add workflow, then score one use case"]],
   out:["Readiness ceiling with the capping dimension named","First-cut value × readiness for the workflow","Go/no-go on the engagement itself"],
   watch:"A Stage 1 governance ceiling plus regulated data means Validate is the wrong sale. Saying so wins more trust than proceeding."},
  {id:"d1",step:"Day 1",t:"Baseline &amp; immersion",q:"What does this work cost today?",
@@ -147,11 +185,11 @@ light:{
     ["Error / rework rate","Quality log, complaints","If untracked, ask how often work comes back and what it costs to fix"],
     ["15–30 worked examples","The team","A spread: typical, harder, genuinely awkward"],
     ["Sample data extract","Data owner","Anonymised, non-integrated. Go synthetic if it'll take more than a day"]],
-  tools:[["val","Sections 1–2 — use case, threshold, baseline"],["read","Refine the use-case scores"]],
+  tools:[["uc","Value model card — sizing basis + baseline"]],
   out:["A defensible baseline, tagged measured / estimated / none","The number that would make leadership call this a success"],
   watch:"If the baseline is “none”, you've found the most important gap in the engagement — improvement will be unprovable without it."},
  {id:"d2",step:"Day 2",t:"Prototype v1 &amp; the operating picture",q:"Does it work, and what would it take to run it?",
-  act:["FDE builds prototype v1 on the real examples","Demo to real users by end of day","Structured interviews on process, people, tech","Complete the skill scan with the team lead"],
+  act:["FDE builds prototype v1 on the real examples","Demo to real users by end of day","Structured interviews on process, people, tech","Complete the run-capability scan with the team lead"],
   pod:["FDE (heads-down building)","Delivery Lead (interviews)"],
   client:["Change/release owner","Risk or compliance","IT security","Platform lead","Team lead + the individuals"],
   data:[["The approval route to production","Change/release owner","“If this proved itself tomorrow, walk me through every approval, in order”"],
@@ -160,7 +198,7 @@ light:{
     ["Systems touched + connector state","Platform lead","Which have APIs, and what did the last integration take?"],
     ["Ten capabilities: who holds each, at what level","Team lead + individuals","Ask “who'd fix this if it broke on a Tuesday?” and “who checks the answer is right?”"],
     ["Hours/week per capability","Team lead","Estimate together; refine during the build"]],
-  tools:[["op","Light mode (~40 min) incl. skill scan"]],
+  tools:[["wf","Approvals, run-capability scan, systems, data, safeguards"]],
   out:["Prototype v1 demoed","Readiness-to-run signals rated","Ownership readiness verdict + key-person risks named"],
   watch:"The skill scan surfaces the single-expert problem on day 2 rather than at handover — and its hrs/week is the run cost the value case usually guesses."},
  {id:"d3",step:"Day 3",t:"The value case",q:"What is it actually worth?",
@@ -172,18 +210,18 @@ light:{
     ["Effectiveness discount","Probe / prototype","How it did on the awkward examples, not the clean ones"],
     ["Integration discount","Platform lead","Connector answers from day 2"],
     ["Licence &amp; platform cost","Vendor pricing / our estimate","Include the 12-month price-rise risk"],
-    ["Run cost","Skill scan","Take hrs/week straight from day 2 — don't re-guess it"]],
-  tools:[["val","Sections 3–8 — potential, realistic, costs, sensitivity"]],
+    ["Run cost","Run-capability scan","Take hrs/week straight from day 2 — the value model shows you the number"]],
+  tools:[["uc","Value model — potential, realistic, costs"]],
   out:["Potential vs realistic £, benefit:cost, payback, steady-state net","Assumption register showing what's still a guess"],
   watch:"If potential is less than 2× realistic, your discounts are probably optimistic — the evidence says 2–10× is normal."},
- {id:"d4",step:"Day 4",t:"Assemble &amp; cross-check",q:"Do our three tools agree?",
+ {id:"d4",step:"Day 4",t:"Assemble &amp; cross-check",q:"Do the modules agree with each other?",
   act:["Generate all outputs","Run the four cross-checks","Rehearse the readout"],
   pod:["The pod, no client"],client:["None — this is our day"],
-  data:[["Op model standing effort → value case run cost","Both tools","Usually missing; the case is optimistic until it's in"],
-    ["Skill scan vs verdict","Both tools","A GO with four must-own capabilities missing is an ADJUST with a training plan"],
-    ["Readiness ceiling vs this workflow","Readiness tool","If it gates the workflow, say so in the readout, not after contracting"],
-    ["Sizing route A vs B","Value + readiness","People×hours vs volume×time-per-case; &gt;2× apart means one is wrong"]],
-  tools:[["read","Generate report"],["val","Generate value case"],["op","Generate blueprint"]],
+  data:[["Run cost vs standing effort","Value model states it","The card shows the scan's hrs/week — confirm your cost reflects it"],
+    ["Run-capability scan vs verdict","Your judgement","A GO with four must-own capabilities missing is an ADJUST with a training plan"],
+    ["Readiness gates","Shown on each use case","⛔ appears automatically — explain it in the readout, don't discover it there"],
+    ["Sizing route A vs B","Value model","Fill both routes — the tool flags a &gt;2× disagreement for you"]],
+  tools:[["team","Confirm the ceiling and skills profile"],["uc","Check the sizing cross-check"],["wf","Check run cost vs standing effort"]],
   out:["One consistent story across prototype, numbers and operating picture"],
   watch:"This is the day that stops a client finding the contradiction for you."},
  {id:"d5",step:"Day 5",t:"Readout &amp; decision",q:"Go, adjust or stop?",
@@ -191,7 +229,7 @@ light:{
   pod:["Delivery Lead","FDE","BA if involved"],
   client:["Sponsor","Workflow owner","Finance","IT"],
   data:[["Nothing new","—","If you're still collecting on day 5, the scope was wrong"]],
-  tools:[["val","Verdict recorded"],["op","Action list copied out"]],
+  tools:[["uc","Verdict recorded on the use case"],["wf","Outputs → value case + workflow blueprint"]],
   out:["Working prototype, demonstrated","£ value case a CFO can interrogate","Go / adjust / stop verdict with rationale","Workflow-sized op model + phased action list"],
   watch:"On GO the value case becomes the Build scope — that's what protects the fixed price from drift."}
 ]},
@@ -207,11 +245,11 @@ deep:{
   data:[["Advance data request sent","Email","Eleven items, each with a fallback so “we don't have that” doesn't stall you"],
     ["Interview slots booked","PMO / EAs","Access is the single biggest schedule risk — lock it in week 0"],
     ["Provisional org scores","Workshop","Treat as guessed; re-score with evidence in week 1"]],
-  tools:[["read","Light mode — provisional org layer"]],
+  tools:[["team","Light — provisional team scores"]],
   out:["Scope, sponsor, booked diary","Provisional readiness picture","Data request in flight"],
   watch:"Every week-1 overrun traces back to interviews not booked in week 0."},
  {id:"w1",step:"Week 1",t:"Frame &amp; scan",q:"Where do they stand, and what are the candidates?",
-  act:["Sponsor session to set the 12-month target stage","8–12 structured interviews across the department","Longlist 6–12 candidate workflows","Re-score the org layer with evidence tags"],
+  act:["Sponsor session to set the 12-month target stage","Run the team skill scan with team leads and practitioners","8–12 structured interviews across the department","Longlist 6–12 candidates as workflows, one use case each"],
   pod:["DL (strategy, governance, adoption)","FDE (data, technology)","BA (anything with a number)"],
   client:["Sponsor","8–12 interviewees","Data owner","Platform lead","Security/risk","Change lead/PMO","HR/L&amp;D"],
   data:[["The 12-month ambition","Sponsor","“What do you want to be true in 12 months?” — sets the target stage. Don't assume Stage 5"],
@@ -222,7 +260,7 @@ deep:{
     ["AI policy, approval routes, past DPIAs","Risk / DPO","Ask for the last one completed"],
     ["Post-implementation reviews","PMO","Two recent ones beat any adoption survey"],
     ["Licence deployment vs active usage","IT / HR","Seats deployed is vanity; seats active is the finding"]],
-  tools:[["read","Deep — org layer with evidence tags, interview log, longlist scoring"]],
+  tools:[["team","Light — 18 questions + team skill scan"],["uc","One workflow + one use case per candidate; score Value only"]],
   out:["Readiness ceiling with evidence strength","Longlist cut to a shortlist of 5–6","Interview record that answers “why this one?”"],
   watch:"A Stage 1–2 ceiling on governance or adoption is a programme-level finding — it changes the shape of the whole recommendation."},
  {id:"w2",step:"Week 2",t:"Deepen &amp; test",q:"Which of these survive evidence?",
@@ -235,7 +273,7 @@ deep:{
     ["Data access reality","Data owner","Ask directly and note whether it's yes, slow, or no"],
     ["Integration depth","Platform lead","Read-only extract vs write-back into core records changes everything"],
     ["Champion, checker, owner","Team lead","Names, not roles"]],
-  tools:[["read","Deep — 48 checks, step maps, probes, sizing cross-check"],["val","Baselines for the top candidates"]],
+  tools:[["team","Switch to Deep; re-score with evidence tags"],["uc","48 checks, step maps, probes, both sizing routes"]],
   out:["Evidence-backed scores per candidate","Probe verdicts replacing the precedent guess","£ ranges with a stated basis","Portfolio view of programme-level weak spots"],
   watch:"The step map routinely halves an inflated number — and sometimes points at a better candidate one step over."},
  {id:"w3",step:"Week 3",t:"Value, shape &amp; build-vs-buy",q:"What are the top ones worth, and how should they be built?",
@@ -248,7 +286,7 @@ deep:{
     ["Licence &amp; platform pricing","Vendors / our estimates","Include the 12-month price-rise risk"],
     ["Skill scan for the leading candidate","Team lead + individuals","Ten capabilities, named holders and backups"],
     ["Standing hours per capability","Team lead","Feeds the run cost, otherwise guessed"]],
-  tools:[["val","Full model on top 2–3"],["read","Build-vs-buy block with rationale"],["op","Full op model + skill scan on the winner"]],
+  tools:[["uc","Value model on top 2–3 + build-vs-buy and its why"],["wf","Op model + run-capability scan on the winner"]],
   out:["Quantified business case per top candidate","Build-vs-buy calls with the why","Working prototypes","Ownership readiness + key-person risks"],
   watch:"Keep potential-vs-realistic inside 2–10×. Outside it, your discounts need re-examining before finance does it for you."},
  {id:"w4",step:"Week 4",t:"Synthesise &amp; play back",q:"What should they do on Monday?",
@@ -256,12 +294,12 @@ deep:{
   pod:["Whole pod — three days heads-down, then present"],
   client:["Sponsor (pre-brief)","Leadership: department head, IT, finance, risk (2-hr playback)"],
   data:[["Nothing new","—","If you're still collecting in week 4, the scope was too wide"]],
-  tools:[["read","Readiness report, gap roadmap, gated backlog, wave plan"],["val","Business case"],["op","Blueprint + action list"]],
+  tools:[["team","Outputs → readiness report + gap roadmap"],["uc","Portfolio → ranked backlog, waves, aggregate"],["wf","Outputs → workflow blueprint"]],
   out:["Ranked opportunity backlog, gated by org readiness","AI-readiness assessment — data, technology, skills scored","Build-vs-buy calls with rationale","Quantified business case","Working prototypes of the top workflows"],
   watch:"No surprises in the playback. Pressure-test the ranking with the sponsor first — if they'll disagree, disagree in private."}
 ]}};
 
-let cur="light", open_=null;
+let cur="wedge", open_=null;
 function esc(s){return String(s??"");}
 function renderChips(){
   document.getElementById("chips").innerHTML=Object.entries(J).map(([k,j])=>
@@ -271,7 +309,7 @@ function renderChips(){
 }
 function setJ(k){ cur=k; open_=null; render(); }
 function toolBars(s){
-  return ["read","val","op"].map(t=>{
+  return ["team","uc","wf"].map(t=>{
     const hit=s.tools.find(x=>x[0]===t);
     if(!hit) return `<div class="tnone"></div>`;
     const lightUse=/light|refine|provisional|baseline|verdict|copied|generate/i.test(hit[1]);
