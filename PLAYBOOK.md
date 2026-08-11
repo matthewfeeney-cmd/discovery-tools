@@ -10,7 +10,7 @@ Everything runs in one app: **`assess.html`**. Tabs across the top are Engagemen
 
 **Three modules, matching the three things you might be assessing.**
 
-- **1 · Team** — the organisation for a small business; a department or team for a large one. AI readiness across six dimensions, plus the **team skill scan**. Scored once per engagement. It stands alone as a deliverable — that's Journey 0.
+- **1 · Team** — the organisation for a small business; a department or team for a large one. AI readiness across six dimensions, the **team skill scan**, and the **codebase review** where they have their own code. One assessment, scored once per engagement; run it alone and stop, and that's Journey 0.
 - **2 · Workflow** — repeated per workflow. The operating model (approvals, systems, data, safeguards) and the **run-capability scan**. Approvals, roles and systems are shared by everything inside a workflow, which is why they sit here.
 - **Use cases live inside workflows.** Each use case has its own readiness scoring and its own £ value model, because value accrues per use case. A workflow with three use cases is normal.
 - **3 · Portfolio** — appears once there are two or more use cases: ranking, waves, aggregate value.
@@ -92,9 +92,9 @@ Send it when the engagement is confirmed, with the fallbacks in the same email.
 
 # Journey 0 — Ready? (AI Readiness & Skills Scan, 2 weeks)
 
-The standalone wedge, and the one to lead with when a client isn't ready to name a workflow. No workflows, no use cases — but two weeks of real evidence rather than a workshop and a guess. Open **`assess.html?m=team`**.
+The one to lead with when a client isn't ready to name a workflow: run the **Team tab only** and stop there. No workflows, no use cases — but two weeks of real evidence rather than a workshop and a guess. Same tool, same URL; you simply don't open the later tabs.
 
-**It is three scans sold and delivered as one thing:**
+**It is one assessment made of three scans, sold and delivered together:**
 
 | | What it answers | Owner |
 |---|---|---|
@@ -397,6 +397,7 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 |---|---|---|---|
 | **Engagement** | Client, date, **target stage**, Light | Same, Day 0 · add the workflow | Same, Week 0 · add one workflow per candidate |
 | **1 · Team** | The whole engagement — 18 questions, team skill scan, cohort breakdown, interview log, codebase review | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
+| *(there is no separate wedge app)* | Run the Team tab and stop | — | — |
 | **2 · Workflow** | — | Day 2: approvals, run-capability scan, systems, data, safeguards | Week 3 on the leading workflow |
 | **Use cases** | — | Day 0 score, Day 1 baseline, Day 3 value model | Week 1 to cut the list · Week 2 deep · Week 3 value |
 | **3 · Portfolio** | — | Only if the workflow has 2+ use cases | Week 4 — ranking, waves, aggregate |

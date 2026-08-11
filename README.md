@@ -8,7 +8,7 @@ The toolkit is organised around **who is being assessed**, not around documents.
 
 | Module | Target group | What it holds | Runs alone? |
 |---|---|---|---|
-| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) · team skill scan (7 capabilities, required levels scale with the 12-month target) · cohort breakdown · interview log · **codebase review** ([Overwatch](https://github.com/enablis-co/overwatch) — nine stages, twelve dimensions, two report angles) | **Yes — this is the wedge.** Three scans sold as one two-week DL+FDE engagement; `assess.html?m=team` opens it standalone |
+| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) · team skill scan (7 capabilities, required levels scale with the 12-month target) · cohort breakdown · interview log · **codebase review** ([Overwatch](https://github.com/enablis-co/overwatch) — nine stages, twelve dimensions, two report angles) | **Yes.** Run the Team tab and stop — that's the two-week DL+FDE wedge. One tool, no separate mode |
 | **2 · Workflow** | One workflow, or many — repeat per workflow | Operating model: approvals, systems, data, safeguards, and the run-capability scan (10 jobs that exist the day after go-live) | Needs no portfolio; works with a single workflow |
 | **3 · Portfolio** | Multiple workflows / many use cases | Ranking across every use case, wave plan, aggregate business case, programme-level weak spots | Appears automatically at 2+ use cases |
 
@@ -21,7 +21,6 @@ The toolkit is organised around **who is being assessed**, not around documents.
 ```
 index.html          launcher (password gate)
 assess.html         the toolkit — team, workflows, use cases, portfolio, outputs
-assess.html?m=team  the wedge — team readiness and skills only
 journey.html        visual journey map
 PLAYBOOK.md         written playbook
 tools/              the three previous standalone tools (superseded)
@@ -90,6 +89,8 @@ Both the Discovery Screen and the Mini Op Model have a **light/deep switch**. Th
 Light answers carry over as fallback when you switch; nothing is lost. Use light on day one, deep when the output has to survive scrutiny.
 
 ## Status / changelog
+
+- **v1.4** — one tool. The separate wedge entry point is gone: readiness, the team skill scan and the codebase review are presented and delivered as a single assessment on tab 1, and the launcher has one toolkit card instead of two. Running the wedge simply means working the Team tab and stopping — the playbook says so, the app no longer implies otherwise.
 
 - **v1.3** — codebase review rebuilt against the real [Overwatch](https://github.com/enablis-co/overwatch) rather than the placeholder. The nine-stage pipeline (recon · explore · plan · propose bespoke · audit · verify · dedupe · synthesize · assemble), the twelve catalogue audit dimensions with their prefixes and Opus floors, per-dimension 0–100 scores with red/amber/green bands transcribed from `report.json`, Planned / Not applicable / **Incomplete** states honouring fail-loud, bespoke dimensions, MoSCoW must-count, branch-and-commit provenance, and a live-secrets flag that generates a same-day rotation action and a do-not-circulate warning. The two report angles are now weighted rollups across the real dimensions — AI readiness leans on AI-assisted engineering, testing, delivery infrastructure and security. Playbook and journey map updated to match, including the correct prerequisites (repo access plus an Overwatch run environment, not "check providers").
 
