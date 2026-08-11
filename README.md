@@ -8,7 +8,7 @@ The toolkit is organised around **who is being assessed**, not around documents.
 
 | Module | Target group | What it holds | Runs alone? |
 |---|---|---|---|
-| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) + team skill scan (7 capabilities, required levels scale with the 12-month target) | **Yes — this is the wedge.** `assess.html?m=team` opens it standalone |
+| **1 · Team** | The organisation for a small business; a department or team for a large one | AI readiness (6 dimensions, 1–5 stages, weakest link sets the ceiling) · team skill scan (7 capabilities, required levels scale with the 12-month target) · cohort breakdown · interview log · **codebase review** (Overwatch engine, Ground Truth scoring — two report angles) | **Yes — this is the wedge.** A two-week DL+FDE engagement; `assess.html?m=team` opens it standalone |
 | **2 · Workflow** | One workflow, or many — repeat per workflow | Operating model: approvals, systems, data, safeguards, and the run-capability scan (10 jobs that exist the day after go-live) | Needs no portfolio; works with a single workflow |
 | **3 · Portfolio** | Multiple workflows / many use cases | Ranking across every use case, wave plan, aggregate business case, programme-level weak spots | Appears automatically at 2+ use cases |
 
@@ -90,6 +90,8 @@ Both the Discovery Screen and the Mini Op Model have a **light/deep switch**. Th
 Light answers carry over as fallback when you switch; nothing is lost. Use light on day one, deep when the output has to survive scrutiny.
 
 ## Status / changelog
+
+- **v1.2** — the wedge becomes a full two-week engagement. Added to the team module: **cohort breakdown** (every capability scored for leaders, practitioners and technical staff separately, producing costable training tracks), an **interview log** that flags any cohort you haven't spoken to, and the **codebase review** — access tracking for repos and check providers, a repository inventory, Overwatch's eight-step tracker with the disprove-your-own-findings gate, and Ground Truth's four-part score deriving two report angles (engineering quality · AI readiness of the codebase), fed as advisory evidence into the Technology and Skills dimensions. Codebase review runs only where the client has their own code; marked not-applicable otherwise and the report says so. Playbook Journey 0 and the journey map rewritten as a two-week, day-by-day engagement. **Step names and the four scoring parts are provisional placeholders** — confirm against the Launch Pad definitions before a client sees a score.
 
 - **v1.1** — stress-tested against the restructure. App: Outputs tab now reachable in wedge mode; the 12-month target starts unset and is required before skill levels mean anything; partly-scored readiness is labelled provisional rather than reporting a confident ceiling; backups and hours moved into light mode (key-person risk no longer false-positives); one addressable-hours model with a two-route sizing cross-check; new **£ value case** export with an assumption register; build-vs-buy rationale captured and carried into the backlog. Docs: playbook and journey map rewritten against the new module/tab names, the two skill scans named and distinguished throughout, and a third journey added — **Ready?**, the 1–2 day team wedge.
 

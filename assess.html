@@ -197,11 +197,34 @@
   <div id="orgDims"></div>
 
   <div class="card">
+    <h2>Interview log <span class="hint" style="display:inline">— who told us what</span></h2>
+    <p class="hint">Over a two-week scan you'll speak to 12–20 people. Log each one: it's the audit trail behind every score, and the source list in the report.</p>
+    <table><thead><tr><th style="width:17%">Name</th><th style="width:17%">Role</th><th style="width:12%">Date</th><th style="width:15%">Cohort</th><th>What they told you that changed a score</th><th style="width:28px"></th></tr></thead><tbody id="intBody"></tbody></table>
+    <button class="addrow" onclick="addInt()">+ Add interview</button>
+    <div id="intFlags"></div>
+  </div>
+
+  <div class="card">
     <h2>Team skill scan <span class="hint" style="display:inline">— can these people work with AI?</span></h2>
     <p class="hint">Seven capabilities, scored across the team as a whole: the <b>typical level</b> people are at, and <b>how widely</b> it's held. Levels: 0 none · 1 aware · 2 with help · 3 independent · 4 can teach. Required levels rise with the 12-month target you set — so a Stage 4 ambition demands more than a Stage 2 one.</p>
     <div class="boxes" id="tsBoxes"></div>
     <div id="tsTable"></div>
     <div id="tsFlags"></div>
+  </div>
+
+  <div class="card">
+    <h2>Cohort breakdown <span class="hint" style="display:inline">— who is short of what</span></h2>
+    <p class="hint">A team-wide average hides the shape. Score each capability for the three cohorts separately — that's what turns a skills profile into a training plan someone can cost. Leave a cell blank where the capability isn't relevant to that cohort.</p>
+    <div id="cohTable"></div>
+    <div id="cohFlags"></div>
+  </div>
+
+  <div class="card">
+    <h2>Codebase review <span class="hint" style="display:inline">— Overwatch engine, Ground Truth scoring</span></h2>
+    <p class="hint">Run where the client has their own product or in-house development. One scan, two report angles: <b>engineering quality</b> and <b>AI readiness of the codebase</b>. The FDE owns it across both weeks. Skip it for a non-technical department — Technology is then scored by interview alone, and the report says so.</p>
+    <label>Does this client have their own codebase?</label>
+    <div class="opts" id="cbHas"></div>
+    <div id="cbBody"></div>
   </div>
 </section>
 
@@ -295,6 +318,31 @@ const TCAPS=[
  {id:"ts_gov",name:"Governance awareness",hint:"knowing what may not be shared, and when to escalate",base:2},
  {id:"ts_coach",name:"Coaching others",hint:"the test of whether capability sticks after we leave",base:2}];
 const SPREAD=["Nobody","A few","About half","Most","Everyone"];
+const COHORTS=[{id:"lead",name:"Leaders & sponsors",hint:"decide, fund and unblock"},
+ {id:"prac",name:"Practitioners",hint:"the people whose work AI would change"},
+ {id:"tech",name:"Technical & engineering",hint:"whoever builds, integrates or maintains"}];
+
+/* ---------- Codebase review: Overwatch engine + Ground Truth scoring ----------
+   PROVISIONAL — step names and the four scoring parts are placeholders taken from
+   "Building AI that Sticks" (slide 20: eight steps, disprove-your-own-findings pass,
+   four-part scoring model). Confirm against the Launch Pad definitions before a
+   client sees a score, and calibrate on a codebase we know first. */
+const OW_STEPS=[
+ {id:"o1",n:"Access and inventory",h:"repos, languages, size, ownership — what is actually in scope"},
+ {id:"o2",n:"Automated checks",h:"static analysis and the check providers, run across the tree"},
+ {id:"o3",n:"Architecture mapping",h:"how it hangs together, and where the seams are"},
+ {id:"o4",n:"Dependency and security scan",h:"known vulnerabilities, licence exposure, stale packages"},
+ {id:"o5",n:"Test and pipeline assessment",h:"coverage, CI/CD, whether a change can ship safely"},
+ {id:"o6",n:"AI-readiness probes",h:"can AI be built on and against this — interfaces, data access, guardrail points"},
+ {id:"o7",n:"Disprove your own findings",h:"the deliberate pass that tries to break every conclusion drawn so far"},
+ {id:"o8",n:"Report generation",h:"one scan, two angles: engineering quality and AI readiness"}];
+const OW_STATUS=["Not started","Blocked","Running","Done"];
+const GT_PARTS=[
+ {id:"g1",n:"Code quality and maintainability",h:"could a new engineer safely change this?",eng:1,ai:0.5},
+ {id:"g2",n:"Architecture and scalability",h:"will it take load, and can it be extended?",eng:1,ai:1},
+ {id:"g3",n:"Security and dependency risk",h:"what would a buyer's technical due diligence find?",eng:1,ai:1},
+ {id:"g4",n:"Delivery process and test discipline",h:"tests, CI/CD, release safety — the thing AI changes fastest",eng:1,ai:1}];
+const GT_SCALE=["","1 — serious concerns","2 — below par","3 — workmanlike","4 — strong","5 — exemplary"];
 
 /* use-case questions */
 const VAL_QS=[
@@ -397,7 +445,8 @@ const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
 const KEY="enablis-assess-v1";
 let S=JSON.parse(localStorage.getItem(KEY)||"{}");
 S.meta=S.meta||{}; S.mode=S.mode||"light"; S.target=S.target||4;
-S.org=S.org||{}; S.orgEv=S.orgEv||{}; S.tskills=S.tskills||{};
+S.org=S.org||{}; S.orgEv=S.orgEv||{}; S.tskills=S.tskills||{}; S.coh=S.coh||{}; S.ints=S.ints||[];
+S.cb=S.cb||{has:null,repoAccess:"",checkAccess:"",repos:[],ow:{},gt:{},gtNotes:{},notes:""};
 S.wfs=S.wfs||[]; S.curWf=S.curWf||0; S.curUc=S.curUc||0;
 if(S.target===undefined)S.target=null;
 function TGT(){return S.target||null;}
@@ -482,6 +531,129 @@ function tsStage(){
   const blended=depth*0.65+reach*0.35;                          /* 0-4 */
   return Math.max(1,Math.min(5,1+blended));                     /* 1-5 */
 }
+/* ---- cohorts ---- */
+function cohKey(cap,coh){return cap+"|"+coh;}
+function setCoh(cap,coh,v){const k=cohKey(cap,coh);S.coh[k]=(S.coh[k]===v?undefined:v);save();renderTeam();}
+function cohGaps(){
+  const out=[];const t=TGT();
+  COHORTS.forEach(c=>{TCAPS.forEach(cap=>{
+    const v=S.coh[cohKey(cap.id,c.id)];if(v===undefined||v===null)return;
+    const req=tsReq(cap);if(req===null)return;
+    if(v<req)out.push({coh:c,cap,lvl:v,req,gap:req-v});});});
+  return out.sort((a,b)=>b.gap-a.gap);}
+function cohSummary(){
+  return COHORTS.map(c=>{
+    const vals=TCAPS.map(cap=>S.coh[cohKey(cap.id,c.id)]).filter(v=>v!==undefined&&v!==null);
+    const gaps=cohGaps().filter(g=>g.coh.id===c.id);
+    return{c,n:vals.length,avg:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null,gaps:gaps.length,
+      worst:gaps.length?gaps[0]:null};});}
+function renderCoh(){
+  const t=TGT();
+  document.getElementById("cohTable").innerHTML=`<table><thead><tr><th>Capability</th><th style="width:66px">Needs</th>
+    ${COHORTS.map(c=>`<th style="width:150px">${c.name}<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.75">${c.hint}</span></th>`).join("")}</tr></thead><tbody>
+    ${TCAPS.map(cap=>{const req=tsReq(cap);
+      return `<tr><td><span class="capname">${cap.name}</span></td>
+        <td>${req===null?"<span class=caphint>—</span>":req}</td>
+        ${COHORTS.map(c=>{const v=S.coh[cohKey(cap.id,c.id)];
+          const cls=(v===undefined||v===null||req===null)?"":v>=req?"ok":req-v===1?"near":"bad";
+          return `<td><div class="lvls">${[0,1,2,3,4].map(n=>`<div class="lvl ${v===n?"sel "+cls:""} ${n===req?"req":""}" title="${LVLS[n]}" onclick="setCoh('${cap.id}','${c.id}',${n})">${n}</div>`).join("")}</div></td>`;}).join("")}
+      </tr>`;}).join("")}</tbody></table>`;
+  const s=cohSummary(),f=[];
+  s.forEach(x=>{if(x.n&&x.gaps>=4)f.push(`⚠ <b>${x.c.name}</b> are short on ${x.gaps} of ${x.n} capabilities scored — that cohort needs its own training track, not a general session.`);
+    else if(x.worst)f.push(`<b>${x.c.name}</b> — biggest gap is ${x.worst.cap.name.toLowerCase()} (${LVLS[x.worst.lvl]} vs ${LVLS[x.worst.req]} needed).`);});
+  if(t===null)f.unshift(`Set the 12-month target on the Engagement tab — without it there is nothing to score these against.`);
+  document.getElementById("cohFlags").innerHTML=f.slice(0,5).map(x=>`<div class="${x.startsWith("⚠")||x.startsWith("Set")?"flag":"info"}">${x}</div>`).join("");
+}
+/* ---- interviews ---- */
+function addInt(){S.ints.push({name:"",role:"",date:"",coh:"",note:""});save();renderTeam();}
+function delInt(i){S.ints.splice(i,1);save();renderTeam();}
+function setInt(i,f,v){S.ints[i][f]=v;save();if(f==="coh")renderTeam();}
+function renderInts(){
+  document.getElementById("intBody").innerHTML=S.ints.length?S.ints.map((x,i)=>`<tr>
+    <td><input value="${esc(x.name)}" onchange="setInt(${i},'name',this.value)"></td>
+    <td><input value="${esc(x.role)}" onchange="setInt(${i},'role',this.value)"></td>
+    <td><input type="date" value="${esc(x.date)}" onchange="setInt(${i},'date',this.value)"></td>
+    <td><select onchange="setInt(${i},'coh',this.value)"><option value=""></option>${COHORTS.map(c=>`<option value="${c.id}" ${x.coh===c.id?"selected":""}>${c.name}</option>`).join("")}</select></td>
+    <td><input value="${esc(x.note)}" onchange="setInt(${i},'note',this.value)" placeholder="in their words"></td>
+    <td><button style="padding:2px 7px" onclick="delInt(${i})">✕</button></td></tr>`).join("")
+    :`<tr><td colspan="6" style="color:#aaa;text-align:center">No interviews logged yet</td></tr>`;
+  const n=S.ints.filter(x=>x.name).length,byC={};
+  S.ints.forEach(x=>{if(x.coh)byC[x.coh]=(byC[x.coh]||0)+1;});
+  const missing=COHORTS.filter(c=>!byC[c.id]);
+  document.getElementById("intFlags").innerHTML=
+    (n?`<div class="info">${n} logged${missing.length?` · nobody yet from: <b>${missing.map(c=>c.name.toLowerCase()).join(", ")}</b> — a scan that never spoke to them has a hole in it`:" · all three cohorts covered"}</div>`:"");
+}
+/* ---- codebase review ---- */
+function setCb(k,v){S.cb[k]=(S.cb[k]===v?"":v);save();renderTeam();}
+function setCbTxt(k,v){S.cb[k]=v;save();renderTeam();}
+function addRepo(){S.cb.repos.push({name:"",lang:"",size:"",owner:"",scope:"Yes"});save();renderTeam();}
+function delRepo(i){S.cb.repos.splice(i,1);save();renderTeam();}
+function setRepo(i,f,v){S.cb.repos[i][f]=v;save();renderTeam();}
+function setOw(id,v){S.cb.ow[id]=v;save();renderTeam();}
+function setGt(id,v){S.cb.gt[id]=(S.cb.gt[id]===v?null:v);save();renderTeam();}
+function cbScores(){
+  const parts=GT_PARTS.map(p=>({p,v:S.cb.gt[p.id]})).filter(x=>x.v!==null&&x.v!==undefined);
+  if(!parts.length)return null;
+  const wavg=(k)=>{const w=parts.reduce((a,x)=>a+x.p[k],0);return w?parts.reduce((a,x)=>a+x.v*x.p[k],0)/w:null;};
+  const eng=wavg("eng"),ai=wavg("ai");
+  return{n:parts.length,eng,ai,engStage:eng?Math.max(1,Math.min(5,Math.round(eng))):null,
+    aiStage:ai?Math.max(1,Math.min(5,Math.round(ai))):null};}
+function owDone(){return OW_STEPS.filter(s=>S.cb.ow[s.id]==="Done").length;}
+function renderCb(){
+  const has=S.cb.has;
+  document.getElementById("cbHas").innerHTML=[["yes","Yes — run the review"],["no","No — not a software client"]]
+    .map(([v,l])=>`<div class="opt n ${has===v?"sel":""}" onclick="setCb('has','${v}')">${l}</div>`).join("");
+  const b=document.getElementById("cbBody");
+  if(has!=="yes"){b.innerHTML=has==="no"
+    ?`<div class="info">Skipped. Technology and the technical half of Skills are scored by interview only — say so in the report so nobody mistakes an opinion for a scan.</div>`:"";return;}
+  const sc=cbScores(),blocked=OW_STEPS.filter(s=>S.cb.ow[s.id]==="Blocked");
+  b.innerHTML=`
+    <div class="g2" style="margin-top:12px">
+      <div><label>Repository access <small>request on day one — this paces everything</small></label>
+        <div class="opts">${["Not requested","Requested","Granted"].map(o=>`<div class="opt ${o==="Granted"?"g":o==="Requested"?"a":"r"} ${S.cb.repoAccess===o?"sel":""}" onclick="setCb('repoAccess','${o}')">${o}</div>`).join("")}</div></div>
+      <div><label>Check-provider sign-ups <small>the scanning services the run depends on</small></label>
+        <div class="opts">${["Not started","In progress","Done"].map(o=>`<div class="opt ${o==="Done"?"g":o==="In progress"?"a":"r"} ${S.cb.checkAccess===o?"sel":""}" onclick="setCb('checkAccess','${o}')">${o}</div>`).join("")}</div></div>
+    </div>
+    ${(S.cb.repoAccess&&S.cb.repoAccess!=="Granted")||(S.cb.checkAccess&&S.cb.checkAccess!=="Done")
+      ?`<div class="stop">⚠ Access is the pacing item. Until the repo is readable and the check providers are live, the scan cannot start — chase it daily, and flag the risk to the sponsor in week one, not week two.</div>`:""}
+    <div class="boxes" style="margin-top:12px">
+      <div class="box"><div class="l">Overwatch progress</div><div class="v">${owDone()}/8<small>steps complete${blocked.length?" · "+blocked.length+" blocked":""}</small></div></div>
+      <div class="box pot"><div class="l">Engineering quality</div><div class="v">${sc&&sc.eng?sc.eng.toFixed(1)+" / 5":"–"}<small>the buyer's-eye report angle</small></div></div>
+      <div class="box own"><div class="l">AI readiness of the codebase</div><div class="v">${sc&&sc.ai?sc.ai.toFixed(1)+" / 5":"–"}<small>can AI be built on this safely?</small></div></div>
+      <div class="box"><div class="l">Repos in scope</div><div class="v">${S.cb.repos.filter(r=>r.name&&r.scope==="Yes").length}<small>of ${S.cb.repos.filter(r=>r.name).length} listed</small></div></div>
+    </div>
+    <label style="margin-top:12px">Repositories</label>
+    <table><thead><tr><th>Repository</th><th style="width:15%">Language</th><th style="width:13%">Rough size</th><th style="width:16%">Owner</th><th style="width:90px">In scope</th><th style="width:28px"></th></tr></thead><tbody>
+    ${S.cb.repos.map((r,i)=>`<tr>
+      <td><input value="${esc(r.name)}" onchange="setRepo(${i},'name',this.value)"></td>
+      <td><input value="${esc(r.lang)}" onchange="setRepo(${i},'lang',this.value)"></td>
+      <td><input value="${esc(r.size)}" onchange="setRepo(${i},'size',this.value)" placeholder="e.g. 120k lines"></td>
+      <td><input value="${esc(r.owner)}" onchange="setRepo(${i},'owner',this.value)"></td>
+      <td><select onchange="setRepo(${i},'scope',this.value)"><option ${r.scope==="Yes"?"selected":""}>Yes</option><option ${r.scope==="No"?"selected":""}>No</option></select></td>
+      <td><button style="padding:2px 7px" onclick="delRepo(${i})">✕</button></td></tr>`).join("")}
+    </tbody></table><button class="addrow" onclick="addRepo()">+ Add repository</button>
+
+    <label style="margin-top:14px">Overwatch — the eight steps <span class="deepbadge">PROVISIONAL</span> <small>step names taken from the internal deck; confirm against the Launch Pad definition</small></label>
+    <table><thead><tr><th style="width:26px">#</th><th>Step</th><th style="width:150px">Status</th></tr></thead><tbody>
+    ${OW_STEPS.map((s,i)=>`<tr><td>${i+1}</td>
+      <td><span class="capname">${s.n}</span><br><span class="caphint">${s.h}</span></td>
+      <td><select onchange="setOw('${s.id}',this.value)"><option value=""></option>${OW_STATUS.map(o=>`<option ${S.cb.ow[s.id]===o?"selected":""}>${o}</option>`).join("")}</select></td></tr>`).join("")}
+    </tbody></table>
+    ${S.cb.ow.o7==="Done"?`<div class="info">Step 7 complete — findings have been through the disprove pass. That's the step that makes a score defensible in front of their engineers.</div>`
+      :`<div class="flag">⚠ Do not issue a score until step 7 (disprove your own findings) is done, and calibrate against a codebase we know first.</div>`}
+
+    <label style="margin-top:14px">Ground Truth — the four-part score <span class="deepbadge">PROVISIONAL</span> <small>part names are a working set; confirm before a client sees one</small></label>
+    <table><thead><tr><th>Part</th><th style="width:210px">Score</th><th style="width:32%">What you saw</th></tr></thead><tbody>
+    ${GT_PARTS.map(p=>`<tr>
+      <td><span class="capname">${p.n}</span><br><span class="caphint">${p.h}</span></td>
+      <td><div class="lvls">${[1,2,3,4,5].map(n=>`<div class="lvl ${S.cb.gt[p.id]===n?"sel "+(n>=4?"ok":n===3?"near":"bad"):""}" title="${GT_SCALE[n]}" onclick="setGt('${p.id}',${n})">${n}</div>`).join("")}</div>
+        <span class="caphint">${S.cb.gt[p.id]?GT_SCALE[S.cb.gt[p.id]]:"1 poor → 5 exemplary"}</span></td>
+      <td><input value="${esc(S.cb.gtNotes[p.id]||"")}" onchange="S.cb.gtNotes['${p.id}']=this.value;save()" placeholder="the evidence behind the score"></td></tr>`).join("")}
+    </tbody></table>
+    ${sc?`<div class="info">Feeds two dimensions: <b>AI readiness of the codebase (${sc.ai.toFixed(1)})</b> is the evidence behind <i>Technology → how they build and release software</i>; <b>engineering quality (${sc.eng.toFixed(1)})</b> is the evidence behind <i>Skills → technical AI capability in-house</i>. Both are advisory — set the dimension answers yourself, and say in the report where they came from.</div>`:""}
+    <label>Headline findings for the report</label>
+    <textarea onchange="setCbTxt('notes',this.value)" placeholder="The two or three things their CTO needs to hear — and what a buyer's technical due diligence would find">${esc(S.cb.notes||"")}</textarea>`;
+}
 function renderTeamSkills(){
   const st=tsStats();
   document.getElementById("tsBoxes").innerHTML=`
@@ -543,7 +715,7 @@ function renderTeam(){
         return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
           ${q.o.map((o,i)=>`<div class="opt st${i+1} ${val===i+1?"sel":""}" onclick="setOrg('${q.k}',${i+1})"><b>${i+1}</b>${o}</div>`).join("")}</div>
           ${deep()?orgEvHTML(q.k):""}</div>`;}).join("")}</div>`;}).join("");
-  renderTeamSkills();
+  renderTeamSkills(); renderCoh(); renderInts(); renderCb();
 }
 function orgEvHTML(k){const e=S.orgEv[k]||{};
   return `<div class="evrow"><input placeholder="Source — who said it / what you saw" value="${esc(e.t||"")}" onchange="setOrgEv('${k}','t',this.value)">
@@ -1041,6 +1213,14 @@ function phasedGaps(){const g=gaps();
     .filter(x=>x.items.length);}
 /* team skills gaps become actions too */
 function tsActions(){const o=[];
+  cohSummary().forEach(x=>{if(x.n&&x.gaps>=3)o.push({who:"HR / L&D with "+x.c.name.toLowerCase(),
+    what:`Stand up a training track for ${x.c.name.toLowerCase()} — short on ${x.gaps} capabilities${x.worst?", starting with "+x.worst.cap.name.toLowerCase():""}`});});
+  if(S.cb.has==="yes"){const sc=cbScores();
+    if(sc&&sc.ai&&sc.ai<3)o.push({who:"client CTO / platform lead",
+      what:`Lift the codebase to a state AI can be built on safely — AI readiness scored ${sc.ai.toFixed(1)}/5 by the review`});
+    if(sc&&sc.eng&&sc.eng<3)o.push({who:"client engineering lead",
+      what:`Address the engineering-quality findings before any build — scored ${sc.eng.toFixed(1)}/5${S.cb.notes?": "+S.cb.notes:""}`});
+    if(S.cb.ow.o7!=="Done")o.push({who:"FDE",what:"Complete Overwatch step 7 (disprove your own findings) and calibrate before any score is shown to the client"});}
   tsStats().short.forEach(s=>o.push({who:s.c.id==="ts_coach"?"client sponsor":"team manager",
     what:`Raise "${s.c.name}" from ${LVLS[s.lvl]} to ${LVLS[s.req]} — training for the teams whose work changes`}));
   tsStats().narrow.forEach(n=>o.push({who:"client sponsor",
@@ -1120,6 +1300,25 @@ function copyTeam(){
     L.push(`- ${c.name}: needs ${req===null?"—":req+" ("+LVLS[req]+")"}, at ${x.lvl===null||x.lvl===undefined?"not scored":x.lvl+" ("+LVLS[x.lvl]+")"}${x.spread!==null&&x.spread!==undefined?", held by "+SPREAD[x.spread].toLowerCase():""}${x.champ?" · champion: "+x.champ:""}`);});
   if(st.short.length)L.push("",`${st.short.length} capability gap(s): ${st.short.map(s=>s.c.name).join(", ")}`);
   if(st.narrow.length)L.push(`Held too narrowly: ${st.narrow.map(n=>n.c.name).join(", ")}`);
+  /* cohort breakdown */
+  const cs=cohSummary().filter(x=>x.n);
+  if(cs.length){L.push("","BY COHORT");
+    cs.forEach(x=>L.push(`- ${x.c.name}: average ${x.avg.toFixed(1)}/4 across ${x.n} capabilities · ${x.gaps} short of target${x.worst?` · weakest: ${x.worst.cap.name.toLowerCase()} (${LVLS[x.worst.lvl]} vs ${LVLS[x.worst.req]})`:""}`));}
+  /* codebase */
+  if(S.cb.has==="yes"){const sc=cbScores();
+    L.push("","CODEBASE REVIEW — Overwatch engine, Ground Truth scoring");
+    L.push(`- Scan progress: ${owDone()}/8 steps${S.cb.ow.o7==="Done"?", disprove pass complete":", DISPROVE PASS NOT DONE — scores are provisional"}`);
+    L.push(`- Repositories in scope: ${S.cb.repos.filter(r=>r.name&&r.scope==="Yes").map(r=>r.name+(r.lang?" ("+r.lang+")":"")).join(", ")||"none listed"}`);
+    if(sc){L.push(`- Engineering quality: ${sc.eng.toFixed(1)}/5 · AI readiness of the codebase: ${sc.ai.toFixed(1)}/5`);
+      GT_PARTS.forEach(p=>{const v=S.cb.gt[p.id];
+        L.push(`  · ${p.n}: ${v?v+"/5":"not scored"}${S.cb.gtNotes[p.id]?" — "+S.cb.gtNotes[p.id]:""}`);});}
+    else L.push("- Not yet scored");
+    if(S.cb.notes)L.push(`- Headline: ${S.cb.notes}`);}
+  else if(S.cb.has==="no")L.push("","CODEBASE REVIEW: not applicable — Technology and technical Skills are scored from interviews only.");
+  /* sources */
+  const ints=S.ints.filter(x=>x.name);
+  if(ints.length){L.push("","SOURCES — "+ints.length+" interviews");
+    ints.forEach(x=>L.push(`- ${x.name}${x.role?" ("+x.role+")":""}${x.date?", "+x.date:""}${x.note?": "+x.note:""}`));}
   const ph=phasedGaps(),tsa=tsActions();
   if(ph.length||tsa.length){L.push("","GAP-CLOSURE ROADMAP");
     ph.forEach(p=>{L.push("",p.phase.toUpperCase());
@@ -1232,7 +1431,7 @@ function exportJSON(){const b=new Blob([JSON.stringify(S,null,2)],{type:"applica
   const a=document.createElement("a");a.href=URL.createObjectURL(b);
   a.download=((S.meta&&S.meta.client)||"client").replace(/\s+/g,"-").toLowerCase()+"-assess.json";a.click();}
 function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{S=JSON.parse(r.result);S.meta=S.meta||{};S.org=S.org||{};S.orgEv=S.orgEv||{};S.tskills=S.tskills||{};
+  r.onload=()=>{try{S=JSON.parse(r.result);S.meta=S.meta||{};S.org=S.org||{};S.orgEv=S.orgEv||{};S.tskills=S.tskills||{};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repoAccess:'',checkAccess:'',repos:[],ow:{},gt:{},gtNotes:{},notes:''};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repos:[],ow:{},gt:{},gtNotes:{}};
     S.wfs=S.wfs||[];S.mode=S.mode||"light";S.target=S.target||4;S.curWf=0;S.curUc=0;save();renderAll();
   }catch(e){alert("Could not read that file.");}};r.readAsText(f);}
 
