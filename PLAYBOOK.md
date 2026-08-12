@@ -10,7 +10,7 @@ Everything runs in one app: **`assess.html`**. Tabs across the top are Engagemen
 
 **Three modules, matching the three things you might be assessing.**
 
-- **1 · Team** — the organisation for a small business; a department or team for a large one. AI readiness across six dimensions, plus the **team skill scan**. Scored once per engagement. It stands alone as a deliverable — that's Journey 0.
+- **1 · Team** — the organisation for a small business; a department or team for a large one. AI readiness across fourteen dimensions, plus the **team skill scan**. Scored once per engagement. It stands alone as a deliverable — that's Journey 0.
 - **2 · Workflow** — repeated per workflow. The operating model (approvals, systems, data, safeguards) and the **run-capability scan**. Approvals, roles and systems are shared by everything inside a workflow, which is why they sit here.
 - **Use cases live inside workflows.** Each use case has its own readiness scoring and its own £ value model, because value accrues per use case. A workflow with three use cases is normal.
 - **3 · Portfolio** — appears once there are two or more use cases: ranking, waves, aggregate value.
@@ -101,7 +101,7 @@ The standalone wedge, and the one to lead with when a client isn't ready to name
 
 | | What it answers | Owner |
 |---|---|---|
-| **AI readiness** | Six dimensions scored 1–5, weakest link sets the ceiling against their 12-month target | Delivery Lead, with the FDE on data and technology |
+| **AI readiness** | Fourteen dimensions scored 1–5 (spine question + corroborating checklist), DORA-sourced weights, weakest link sets the ceiling against their 12-month target | Delivery Lead, with the FDE on data and technology |
 | **Skills scan** | Seven capabilities by depth and spread, broken down across leaders, practitioners and technical staff — and it computes the Skills dimension | Delivery Lead |
 | **Overwatch** — codebase review | [Overwatch](https://github.com/enablis-co/overwatch): nine stages, twelve audit dimensions, two report angles. Runs only where they have their own code | Forward Deployed AI Engineer |
 
@@ -336,7 +336,7 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 | AI policy, approval routes, past DPIAs | Risk / DPO | Ask for the last one completed |
 | Post-implementation reviews | PMO | Two recent ones beat any adoption survey |
 
-**Tool** — `1 · Team`: 18 questions plus the team skill scan. Then create **one workflow per longlist candidate** on the Engagement tab, with **one use case each**, and score only the four Value questions to cut the list fast.
+**Tool** — `1 · Team`: 28 questions (a spine and a checklist per dimension) plus the team skill scan. Then create **one workflow per longlist candidate** on the Engagement tab, with **one use case each**, and score only the four Value questions to cut the list fast.
 
 **Output** — readiness ceiling; longlist cut to a shortlist of 5–6; team skills profile.
 
@@ -399,7 +399,7 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 | Module / tab | Journey 0 (wedge) | Journey 1 (Validate) | Journey 2 (Prioritise) |
 |---|---|---|---|
 | **Engagement** | Client, date, **target stage**, Light | Same, Day 0 · add the workflow | Same, Week 0 · add one workflow per candidate |
-| **1 · Team** | The whole engagement — 26 questions, team skill scan, cohort breakdown, interview log, codebase review | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
+| **1 · Team** | The whole engagement — 28 questions across 14 dimensions, team skill scan, cohort breakdown, interview log, codebase review | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
 | **2 · Workflow** | — | Day 2: approvals, run-capability scan, systems, data, safeguards | Week 3 on the leading workflow |
 | **Use cases** | — | Day 0 score, Day 1 baseline, Day 3 value model | Week 1 to cut the list · Week 2 deep · Week 3 value |
 | **3 · Portfolio** | — | Only if the workflow has 2+ use cases | Week 4 — ranking, waves, aggregate |
