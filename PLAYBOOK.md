@@ -79,6 +79,9 @@ Send it when the engagement is confirmed, with the fallbacks in the same email.
 | List of systems the workflow touches | Workflow module | Whiteboard it during immersion |
 | AI licence counts — seats deployed **vs seats active** | Team skill scan: literacy level and how widely held | Ask IT for both numbers; deployed is vanity, active is the finding |
 | Who currently trains whom on AI tools | Team skill scan: coaching, and the champion names | Ask the team lead who people go to when a tool gives a wrong answer |
+| What AI already costs — licences, seats, cloud, and any personal subscriptions | Cost dimension | Ask IT for the licence spend and finance for the cost centre; shadow spend is usually the surprise |
+| Whether AI can reach internal docs, decision logs and codebases | Data — AI-accessible internal data | Ask what an assistant can actually see today. "Nothing" is the common answer and it's the finding |
+| How big their releases are, and how long rollback takes | Delivery & user focus · Technology | Ask when they last rolled something back and how long it took |
 | AI policy / acceptable-use guidance | Governance dimension | Ask what staff may paste into a chatbot today — the answer *is* the finding |
 | **Repository read access** — named repos, named person | Codebase review — this paces the whole wedge | Request on day one, in writing. If it hasn't landed by day three, escalate to the sponsor |
 | A machine that can clone and build the repo | Overwatch drives the repo's own tooling locally | Confirm language/runtime prerequisites with their engineering lead before day one |
@@ -221,7 +224,7 @@ One workflow the client already has in mind. Prove it's worth doing and show the
 **Activities**
 - Download the problem: goals, users, constraints. Walk the workflow end to end on a whiteboard.
 - **Agree the 12-month target stage with the sponsor** — before anything is scored.
-- Run the **18 readiness questions** live on screen (`1 · Team`).
+- Run the **26 readiness questions** live on screen (`1 · Team`) — allow ~40 minutes now the model covers delivery, user focus and cost.
 - Run the **team skill scan** — 7 capabilities with the sponsor, team lead and practitioners in the room, ~10 minutes.
 - On the **Engagement** tab, add the workflow. Inside it, add one use case and score its 16 questions.
 
@@ -396,7 +399,7 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 | Module / tab | Journey 0 (wedge) | Journey 1 (Validate) | Journey 2 (Prioritise) |
 |---|---|---|---|
 | **Engagement** | Client, date, **target stage**, Light | Same, Day 0 · add the workflow | Same, Week 0 · add one workflow per candidate |
-| **1 · Team** | The whole engagement — 18 questions, team skill scan, cohort breakdown, interview log, codebase review | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
+| **1 · Team** | The whole engagement — 26 questions, team skill scan, cohort breakdown, interview log, codebase review | Day 0, live in the workshop | Week 1 light, re-scored Deep in Week 2 |
 | **2 · Workflow** | — | Day 2: approvals, run-capability scan, systems, data, safeguards | Week 3 on the leading workflow |
 | **Use cases** | — | Day 0 score, Day 1 baseline, Day 3 value model | Week 1 to cut the list · Week 2 deep · Week 3 value |
 | **3 · Portfolio** | — | Only if the workflow has 2+ use cases | Week 4 — ranking, waves, aggregate |
@@ -404,6 +407,8 @@ Agree scope, name the sponsor, **book every interview slot now** — access is t
 
 **Rules of thumb**
 
+- **Fill the context box, not just the score.** Every question takes a source *and* a context line. The context is what makes the report read bespoke rather than templated — it's the raw material for the per-dimension narrative.
+- **Write the narrative as you go.** Each dimension has: doing well · to improve · risk if not fixed · risk if they push on anyway · why it matters. Filling these in the room beats writing them from a blank page on day nine.
 - **Set the target stage first.** Nothing in the team module means anything without it.
 - **Score the team module once per engagement**, not per workflow.
 - **Run the team skill scan before you name the ceiling** — the Skills dimension is computed from it.
