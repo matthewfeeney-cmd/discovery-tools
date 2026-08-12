@@ -278,82 +278,285 @@ const STAGES=[{n:1,name:"Exploring",d:"curious, nothing running"},{n:2,name:"Exp
 const stageName=n=>(STAGES.find(x=>x.n===n)||{}).name||"—";
 const LVLS=["None","Aware","With help","Independent","Can teach"];
 
+/* Dimensions, weights and question set aligned to enablis-co/AI-Maturity-Tool (requirements v0.4).
+   12 core + 2 optional, DORA-sourced weights (×1.5 = amplifier). Weights renormalise over active dimensions. */
+const GROUPS={A:"Intent and control",B:"Data and technical foundations",C:"How work flows",D:"People and value"};
 const ORG_DIMS=[
- {id:"strategy",name:"Strategy & sponsorship",sub:"is someone accountable, with money?",w:12},
- {id:"data",name:"Data",sub:"can it be found, trusted, reached — and reached by AI?",w:20},
- {id:"tech",name:"Technology",sub:"is there somewhere safe to build and run?",w:10},
- {id:"skills",name:"Skills",sub:"can their people build with it and use it?",w:12},
- {id:"gov",name:"Governance & risk",sub:"is there a route to a yes?",w:12},
- {id:"adopt",name:"Adoption & change",sub:"do changes actually stick here?",w:12},
- {id:"deliv",name:"Delivery & user focus",sub:"do they know who the work is for, and ship in small steps?",w:12},
- {id:"cost",name:"Cost",sub:"do they know what AI costs them, and what it's worth?",w:10}];
+ {id:"d1",n:1,g:"A",w:1,src:"DORA",rl:"cond",name:"AI stance & policy clarity",sub:"do people know what they're expected, supported and permitted to do?",
+  rf:"Ambiguity is already producing shadow usage — staff hiding AI from managers rather than not using it."},
+ {id:"d2",n:2,g:"A",w:1,src:"Enablis",rl:"hi",name:"AI governance, risk & assurance",sub:"is there a route to a yes, and does anyone own the risk?",
+  rf:"AI is in use with nobody accountable for the risk. The exposure is live, not theoretical."},
+ {id:"d3",n:3,g:"A",w:1,src:"Enablis",rl:"cond",name:"Leadership sponsorship & AI strategy",sub:"is there a funded, owned ambition tied to business outcomes?",
+  rf:"Money is going out on AI with nobody accountable for what comes back."},
+ {id:"d4",n:4,g:"B",w:1.5,src:"DORA",rl:"hi",name:"Data ecosystem health",sub:"is it findable, trusted, joined up and owned?",
+  rf:"AI on this data won't just underperform — it will produce confident, plausible, wrong answers."},
+ {id:"d5",n:5,g:"B",w:1.5,src:"DORA",rl:"cond",name:"AI-accessible internal context",sub:"can AI tools actually see their code, docs and tickets?",
+  rf:"Approved tools can't reach internal context, so people route around them to ones that can."},
+ {id:"d6",n:6,g:"B",w:1.5,src:"DORA",rl:"cond",name:"Internal platform quality",sub:"paved roads, or does every team rebuild the plumbing?",
+  rf:"AI coding tools generate more change than this platform can safely absorb."},
+ {id:"d7",n:7,g:"B",w:1,src:"DORA",rl:"cond",name:"Version control & change safety",sub:"frequent commits, fast rollback — and are prompts versioned too?",
+  rf:"AI is writing a meaningful share of the code and the safety net hasn't kept up."},
+ {id:"d8",n:8,g:"C",w:1,src:"DORA",rl:"cond",name:"Working in small batches",sub:"small, frequent, reversible changes — the safety net for AI volume",
+  rf:"Large batches plus AI-accelerated output means more change per release, reviewed by the same people."},
+ {id:"d9",n:9,g:"C",w:1.5,src:"DORA",rl:"hi",name:"User-centric focus",sub:"the one where a low score makes AI actively harmful",
+  rf:"The most important flag in the model. The research found AI makes weak-user-focus teams measurably worse — faster delivery of the wrong thing."},
+ {id:"d10",n:10,g:"C",w:1,src:"DORA-adjacent",rl:"",name:"Value stream visibility & flow",sub:"can they draw how work flows, and name where it waits?",rf:""},
+ {id:"d11",n:11,g:"D",w:1,src:"Enablis",rl:"cond",name:"Skills, enablement & champions",sub:"does capability survive the best people leaving?",
+  rf:"Capability sits with one or two named people. A resignation resets the programme."},
+ {id:"d12",n:12,g:"D",w:1,src:"Enablis",rl:"cond",name:"AI adoption breadth & measured value",sub:"has it spread past engineering — and is anyone measuring the value?",
+  rf:"Material spend with no value measurement. The next budget round has no defensible answer."},
+ {id:"d13",n:13,g:"A",w:1,src:"Enablis",rl:"hi",name:"Agentic readiness",sub:"if agents act on their systems, who bounded what they can do?",
+  rf:"Agents are acting on their behalf, often on personal credentials, with no inventory, no agreed limits and no reviewable record. That is unbounded exposure, not a maturity gap."},
+ {id:"d14",n:14,g:"D",w:1,src:"Enablis",rl:"cond",name:"Cost & licensing economics",sub:"do they know what AI costs them, and what a unit of it buys?",
+  rf:"AI spend stays invisible until it surprises someone — usually mid-business-case."}];
+/* Two scored questions per dimension: a spine that sets the level, and a corroborating checklist that
+   confirms or contradicts it. Disagreement is a finding, not an error — the tool surfaces it. */
 const ORG_QS=[
- {dim:"strategy",k:"s_sponsor",t:"Who owns AI here?",h:"Not who's interested — who is accountable and can unblock things.",o:["Nobody owns it","Interest, no owner","A named sponsor","Sponsor with budget","Board priority with targets"]},
- {dim:"strategy",k:"s_ambition",t:"Is there a stated ambition for AI?",h:"Written down and tied to the business, or just enthusiasm?",o:["None","Vague enthusiasm","Goals written somewhere","Tied to business goals","In the plan, with numbers"]},
- {dim:"strategy",k:"s_money",t:"Is there money set aside?",h:"Ask how the last AI spend got approved.",o:["None","Would need finding","Project by project","Annual budget line","Multi-year funding"]},
+ {dim:"d1",k:"q1s",ty:"s",t:"Is there an organisation-level statement of their stance on AI use — and do people know it?",
+  h:"Existence and communication are different things — test both. A great document nobody can find is a 2.",
+  o:["No stance — staff decide individually or guess","Informal, draft, or only in some teams; answers differ by who you ask","Documented and communicated; most staff know it and where to find it","Documented, owned, versioned, reviewed on a cadence; adherence is visible","It demonstrably evolves from usage evidence, and is experienced as enabling"]},
+ {dim:"d1",k:"q1c",ty:"c",t:"Which of these can a typical employee answer without asking a manager?",h:"The four sub-tests. Ask two people in different teams and compare.",
+  c:["Expectation — is using AI expected of me?","Support — will they help me use it?","Permission — am I allowed, and which tools?","Applicability — does this apply to my role and work?"],b:[1,3,4]},
 
- {dim:"data",k:"d_known",t:"Do they know where the key data lives, and who owns it?",h:"Could someone point you at it this week, and name the owner?",o:["Scattered, no map, no owners","Some of it known","Key systems documented","Catalogued with named owners","Governed catalogue, self-serve"]},
- {dim:"data",k:"d_quality",t:"Is the data trusted, and can you trace where a number came from?",h:"Do people already build reports and decisions on it — and could they show you the lineage?",o:["Not trusted, no lineage","Patchy","Good in core systems","Measured, monitored, traceable","Managed to standards with lineage"]},
- {dim:"data",k:"d_access",t:"How fast can someone new get access?",h:"The honest answer, not the policy. Ask how long the last request actually took.",o:["Months, and political","Slow but possible","Routine with approval","Fast and governed","Self-serve within policy"]},
- {dim:"data",k:"d_unified",t:"Is the data unified, or scattered across silos?",h:"AI amplifies whatever it can see. Fragmented data produces fragmented answers — and the joins are where the effort goes.",o:["Every system its own island","Some joined, manually","Core domains joined","Unified for the main domains","One coherent estate"]},
- {dim:"data",k:"d_aiaccess",t:"Can AI tools actually reach their internal knowledge?",h:"Not the database — the documentation, decision logs, past tickets, codebase. The context that makes an answer theirs rather than generic.",o:["No — AI sees nothing internal","Copy-paste only","One or two sources wired in","Most key sources reachable","Retrieval across the estate"]},
+ {dim:"d2",k:"q2s",ty:"s",t:"How is AI-specific risk owned and managed — data handling, model approval, human review, IP, regulatory exposure?",
+  h:"Look for enforcement and records, not intentions. A policy that says the right things but is unenforced is a 2.",
+  o:["Not owned; risks unmanaged and largely invisible","Recognised, handled reactively by individual caution; no owner","Named owner; documented rules for data handling, approved models, human review and IP","Controls enforced and evidenced; audit trail actually used; reviewed on a cadence","Controls tested and posture tracked; adapts to regulation and usage; demonstrable on demand"]},
+ {dim:"d2",k:"q2c",ty:"c",t:"Which AI-risk controls are actually in place — not just written?",h:"Tick only what you saw evidence of.",
+  c:["Data-handling rules for what may go to AI tools","Approved vendor/model list with an approval gate","Human review required for sensitive uses","IP and confidentiality guidance specific to AI","An audit trail of AI-assisted decisions","An assessed view of regulatory exposure"],b:[1,3,5]},
 
- {dim:"tech",k:"t_platform",t:"Where can AI actually run, and is the platform any good?",h:"An approved service, or nothing yet? And does the platform help teams or get in their way?",o:["Nothing approved","Cloud yes, AI no","One approved AI service","Platform with guardrails","Standard platform teams choose to use"]},
- {dim:"tech",k:"t_integrate",t:"Can systems be connected to?",h:"Modern APIs or locked-down legacy?",o:["Locked legacy","A few APIs","Most systems reachable","Integration is routine","API-first estate"]},
- {dim:"tech",k:"t_eng",t:"How disciplined is version control and rollback?",h:"AI writes more code, faster. Frequent commits and a reliable way back matter more, not less.",o:["No modern practice","Basic, manual, rollback is a drama","Version control solid, rollback slow","Frequent commits, tested rollback","Rollback is routine and fast"]},
+ {dim:"d3",k:"q3s",ty:"s",t:"How is AI ambition sponsored at leadership level — articulated, owned and funded?",
+  h:"Separate rhetoric from resourcing. Enthusiasm with no budget or owner is a 2, however loud.",
+  o:["No leadership position; unsponsored and bottom-up","Interest and statements, but unarticulated, unfunded or unowned; personality-dependent","Documented ambition, named exec owner, allocated budget, tied to business outcomes","Actively steered and funded; tracked against outcomes; survives a change of person","Embedded in business planning; ambition and funding adjust to measured outcomes"]},
+ {dim:"d3",k:"q3c",ty:"c",t:"Which of these are true?",h:"Ask how the last AI spend actually got approved.",
+  c:["A named executive owns it, documented","An allocated budget line, not scraps from elsewhere","Expressed as business outcomes, not tool rollout","Those outcomes are tracked and steered"],b:[1,2,4]},
 
- {dim:"skills",k:"k_literacy",t:"Can ordinary staff use AI well?",h:"Daily practical use, not one-off curiosity.",o:["Almost nobody","Pockets of curiosity","Some trained users","Widespread daily use","Fluent — they teach others"]},
- {dim:"skills",k:"k_technical",t:"Is there technical AI capability in-house?",h:"People who could build or maintain it.",o:["None","Interested engineers","One or two capable","A working team","Deep in-house capability"]},
- {dim:"skills",k:"k_time",t:"Do people have time to learn?",h:"Protected time, or their own evenings?",o:["No capacity","Own time only","Ad hoc allowance","Protected time","Structured programme"]},
+ {dim:"d4",k:"q4s",ty:"s",t:"What is the overall health of the data AI would rely on — quality, ownership, unification, access?",
+  h:"Judge the ecosystem, not the flagship dataset. One excellent warehouse in a sea of silos is a 2.",
+  o:["Fragmented, undocumented, unknown quality; finding data is tribal","Well managed in pockets only; quality variable and unmeasured","Key datasets documented, stewarded, meeting defined quality; real unification","Quality, freshness and lineage measured and managed; governed self-service access","Continuously monitored with SLAs and observability; data treated as a product"]},
+ {dim:"d4",k:"q4c",ty:"c",t:"Which hold true for the data that matters?",h:"The important domains, not one good system.",
+  c:["Named data stewards or owners","Documented, shared definitions","Real unification — warehouse, lake or shared platform","Known, governed access channels","Understood or guaranteed freshness","Measured quality, not assumed"],b:[1,3,5]},
 
- {dim:"gov",k:"g_policy",t:"Is there a clear, communicated position on AI use?",h:"Ambiguity cuts both ways — people either avoid it entirely or use it recklessly. Ask what staff believe they're allowed to do, not what the policy says.",o:["Nothing — people guess","Being discussed","Written, but not really known","Clear, communicated, understood","Clear, understood, and actively supported"]},
- {dim:"gov",k:"g_route",t:"Is there a route to approving an AI system?",h:"Has anything like it ever been through?",o:["None — we'd invent it","IT route, untested for AI","Route exists, used once","Clear and repeatable","Fast-track with standards"]},
- {dim:"gov",k:"g_risk",t:"How well understood is the risk and regulatory picture?",h:"Personal data, regulated decisions, audit needs.",o:["Unknown","Concerns unresolved","Understood, manageable","Controls in place","Assured and audited"]},
+ {dim:"d5",k:"q5s",ty:"s",t:"How well can their AI tools actually reach internal context — code, docs, tickets, data?",
+  h:"\"We have Copilot\" is not the answer — check what the tools can see beyond the file that's open.",
+  o:["Blind — only what a user pastes in","A few individual connections; a fraction of coverage; depends who set it up","Deliberate, documented access to key sources for the main use cases","Managed, governed access across the estate that matters; coverage and freshness maintained","A managed capability — discoverable, permission-aware, current, monitored"]},
+ {dim:"d5",k:"q5c",ty:"c",t:"Which internal sources are genuinely connected to AI tools?",h:"Connected, not theoretically connectable.",
+  c:["Codebases and repositories","Documentation, wikis, knowledge base","Work management — tickets, backlog","Data warehouse for analysis"],b:[1,2,4]},
 
- {dim:"adopt",k:"a_track",t:"Do changes stick here?",h:"Think of the last new system — is it used as intended?",o:["Change usually stalls","Mixed record","Some successes","Change lands reliably","Change is a strength"]},
- {dim:"adopt",k:"a_champ",t:"Are there champions in the business?",h:"People outside IT who pull change through.",o:["None","Enthusiasts, unsupported","Informal champions","Named, with time","Network with a mandate"]},
- {dim:"adopt",k:"a_measure",t:"Do they measure benefits after go-live?",h:"Against a baseline, or by anecdote?",o:["Never","Anecdotes only","Sometimes","Usually, vs baseline","Always — and they act on it"]},
+ {dim:"d6",k:"q6s",ty:"s",t:"How good are the internal platforms teams rely on — paved roads, self-service, feedback?",
+  h:"Trace one team from idea to production; where they wait tells you the level.",
+  o:["None; teams assemble their own each time; slow and manual","Partial shared tooling, inconsistently adopted; teams route around it; provisioning by ticket","Defined paved roads most teams use; self-service for common cases; documented","Platforms run as products; self-service covers most needs; reliability and adoption measured","Continuously improved from usage; developer experience measured; the right thing is the cheap thing"]},
+ {dim:"d6",k:"q6c",ty:"c",t:"Which are true of the internal platform?",h:"",
+  c:["Paved roads for provisioning, deployment, environments","Genuine self-service for common needs — no ticket-and-wait","Real abstraction of the underlying complexity","Teams get feedback on what they ship","Named owners — it's run as a product"],b:[1,3,4]},
 
- {dim:"deliv",k:"v_user",t:"Do teams know who the work is for, and what good looks like to them?",h:"The single clearest finding in the research: teams without a real user focus get <i>worse</i> with AI, not better. Faster delivery of the wrong thing.",o:["No idea who the end user is","Assumed, never checked","Understood by some","Clear, shared understanding","User outcomes drive the roadmap"]},
- {dim:"deliv",k:"v_feedback",t:"Is there a feedback loop from users into what gets changed?",h:"Ask when a user last changed a priority — and how they knew to.",o:["None","Complaints only","Periodic reviews","Regular, structured","Continuous, and it moves the roadmap"]},
- {dim:"deliv",k:"v_batch",t:"How big are the changes they release?",h:"Small, frequent changes are the safety net for AI-accelerated work. Big-bang releases and AI volume are a bad combination.",o:["Big-bang, infrequent","Large releases, some slippage","Regular medium releases","Small and frequent","Continuous, safe to release anytime"]},
+ {dim:"d7",k:"q7s",ty:"s",t:"How strong is version control and the ability to change safely — including prompts and agent config?",
+  h:"In an AI assessment, whether prompts and agent config are versioned is the differentiator, not whether code is.",
+  o:["Absent, partial or bypassed; rollback painful; prompts and configs outside version control","Code in version control but inconsistent — big batches, long branches; rollback slow","Consistent version control, defined branching, practised rollback; IaC and key prompts versioned","Small frequent commits; fast, exercised rollback; prompt and agent config versioned and reviewed","Change failure measured and improving; recovery routinely tested; everything traceable"]},
+ {dim:"d7",k:"q7c",ty:"c",t:"Which are actually under version control?",h:"Ask to see the repository, don't ask the question.",
+  c:["Application code","Infrastructure as code","CI/CD pipeline configuration","Prompts","Agent and model configuration"],b:[2,3,4]},
 
- {dim:"cost",k:"c_known",t:"Do they know what AI already costs them?",h:"Licences, seats, cloud, and the personal subscriptions nobody's counting.",o:["No idea","Rough licence total","Licence spend known","Licence plus infrastructure known","Full picture including shadow spend"]},
- {dim:"cost",k:"c_attrib",t:"Can AI cost be attributed to a team, product or outcome?",h:"Per-agent or per-team cost rarely appears in cloud billing — it usually has to be derived.",o:["Not at all","One central line","Split by department","Attributed to teams or products","Attributed to outcomes, reviewed"]},
- {dim:"cost",k:"c_model",t:"Have they compared buying productivity tools with building for a workflow?",h:"Licences for everyone is a different bet from building one thing that changes one process. Most have only priced the first.",o:["Neither priced","Licences only, no comparison","Rough sense of both","Modelled, with assumptions","Modelled, and revisited as prices move"]}];
-const ORG_ACTIONS={
- strategy:{1:{a:"Get a named exec to own AI — one person accountable, not a committee",why:"Without a name, every decision escalates and nothing gets unblocked",lifts:["gov"]},
-   2:{a:"Turn the interest into a written ambition tied to a business goal",why:"An ambition nobody wrote down can't be funded or measured against"},
-   3:{a:"Secure a budget line so use cases stop competing for scraps",why:"Project-by-project funding caps everything at pilot size",lifts:["cost"]},
-   4:{a:"Set measurable AI targets in the business plan",why:"Targets are what turn sponsorship into accountability"}},
- data:{1:{a:"Map the data behind the top workflows — where it lives, who owns it",why:"You cannot negotiate access to something nobody can name"},
-   2:{a:"Fix quality on the two or three sources the first use cases need",why:"AI amplifies whatever the data says, including the wrong parts"},
-   3:{a:"Agree a repeatable access route so projects stop renegotiating each time",why:"Access latency is the most common hidden cost in an AI programme",lifts:["gov"]},
-   4:{a:"Wire the internal knowledge sources into retrieval — docs, decision logs, tickets",why:"Generic answers become their answers only when AI can see their context",lifts:["tech"]}},
- tech:{1:{a:"Get one AI service approved for use — an approved sandbox beats a policy debate",why:"Teams cannot practise on something they are not allowed to touch",lifts:["gov","skills"]},
-   2:{a:"Move from tolerated pilots to a platform the business can build on",why:"Pilots that each rebuild the plumbing never compound"},
-   3:{a:"Tighten version control and make rollback fast and tested",why:"AI raises the volume of change; the safety net has to keep up",lifts:["deliv"]},
-   4:{a:"Standardise the platform so each use case is cheaper than the last",why:"This is where the unit economics of AI actually improve",lifts:["cost"]}},
- skills:{1:{a:"Run practical AI training for the teams whose work will change",why:"Literacy is the floor — nothing else lands without it"},
-   2:{a:"Give a few people protected time to build real capability",why:"Capability built in people's own time leaves when they do"},
-   3:{a:"Build a small internal team that can maintain what gets built",why:"Without it, every build becomes a permanent dependency on us",lifts:["adopt"]},
-   4:{a:"Formalise the programme so capability outlives individuals",why:"One expert is a single point of failure, not a capability"}},
- gov:{1:{a:"Write a short, usable AI position — what staff may and may not do today",why:"Ambiguity produces both timid underuse and reckless overuse",lifts:["skills","adopt"]},
-   2:{a:"Walk one system through an approval route and document what it took",why:"The first one through is what makes the second one routine"},
-   3:{a:"Publish the route and the evidence each approver needs",why:"Approvers who can state their evidence stop moving the goalposts"},
-   4:{a:"Fast-track low-risk cases against a published standard",why:"Governance that treats everything as high-risk becomes the bottleneck"}},
- adopt:{1:{a:"Pick one change and see it through with real user support",why:"A single visible success does more than any communications plan",lifts:["deliv"]},
-   2:{a:"Name champions in the business and give them time",why:"Change pulled by peers sticks; change pushed by IT does not"},
-   3:{a:"Measure adoption against a baseline on the next go-live",why:"Without a baseline, 'it's going well' is the only available answer",lifts:["cost"]},
-   4:{a:"Make benefit tracking standard on every rollout",why:"Benefits nobody tracked are benefits nobody can defend"}},
- deliv:{1:{a:"Name the end user for each team's work, and what good looks like to them",why:"Teams without a user focus get measurably worse with AI, not better — faster delivery of the wrong thing",lifts:["adopt"]},
-   2:{a:"Put a real feedback loop in — users seeing output and changing priorities",why:"Speed without feedback just compounds the wrong direction"},
-   3:{a:"Cut release size — smaller changes, more often",why:"Small batches are the safety net that lets AI-accelerated work stay safe",lifts:["tech"]},
-   4:{a:"Make it safe to release any day, and let user outcomes set the roadmap",why:"This is where AI speed finally converts into business outcome"}},
- cost:{1:{a:"Count what AI already costs — licences, cloud, and the personal subscriptions nobody tracks",why:"Shadow spend is usually the first surprise in an AI business case"},
-   2:{a:"Get AI cost attributable to a team or product, not one central line",why:"Cost you cannot attribute is cost you cannot manage or defend"},
-   3:{a:"Model buying productivity tools against building for one workflow",why:"They are different bets with different economics; most clients have only priced one",lifts:["strategy"]},
-   4:{a:"Review the model as vendor prices move",why:"A price rise around month twelve quietly invalidates most business cases"}}};
+ {dim:"d8",k:"q8s",ty:"s",t:"How does work flow — small sliced increments with limited work in progress, or big infrequent batches?",
+  h:"Frequent deploys of large batches is still not small-batch working — check the size of a unit of change.",
+  o:["Large, infrequent batches; no WIP limits; no slicing; no flags","Some teams try; inconsistent; work in progress piles up; slicing depends on the individual","Small-batch understood and generally followed; WIP limited; flags where it matters","Consistent and managed; batch and WIP watched; flags standard; fast feedback","Batch, WIP and lead time measured and driving improvement; shrinks further as AI accelerates"]},
+ {dim:"d8",k:"q8c",ty:"c",t:"Which small-batch practices are actually in use?",h:"",
+  c:["Work sliced into small increments","WIP limits that are respected","Feature flags decoupling deploy from release","Feedback on a change in hours or days, not weeks","Batch size or flow is measured"],b:[1,3,4]},
+
+ {dim:"d9",k:"q9s",ty:"s",t:"How strongly is work driven by real user needs and validated outcomes?",
+  h:"A low answer here is a report-level risk flag, not a routine weakness. The research found AI makes teams without user focus <i>worse</i>. Score it honestly.",
+  o:["They build what's assumed or what they're told; no user contact; success means output","Some user contact and outcome thinking, inconsistent, overridden by delivery pressure","Defined ways to understand needs, validate and check impact; most work ties to a real need","Routine user engagement; outcomes framed and measured; wrong things caught early","Outcome measurement embedded; discovery and delivery coupled; work that isn't helping gets killed"]},
+ {dim:"d9",k:"q9c",ty:"c",t:"Which user-focus practices are genuinely in place?",h:"",
+  c:["Regular direct contact with actual users","Validating the need before building","Success framed as user or business outcomes, not output","Measuring whether a shipped change helped","Acting on that — changing or killing work"],b:[1,3,4]},
+
+ {dim:"d10",k:"q10s",ty:"s",t:"Can they draw their value stream end to end and name where wait time accumulates?",
+  h:"A diagram of process steps is not a value stream map — look for the queues and wait states between the steps.",
+  o:["No shared picture; wait states invisible; improvement aimed wherever","Parts understood locally; no end-to-end view; bottlenecks anecdotal","Main streams drawn end to end; major wait states named; some lead-time measurement","Mapped, measured, managed; flow tracked; improvement aimed at the constraint","Continuously monitored; constraints tracked as they move; AI's flow impact measured"]},
+ {dim:"d10",k:"q10c",ty:"c",t:"Which of these exist?",h:"",
+  c:["A mapped end-to-end value stream for key work","Named, agreed major wait states or queues","Lead-time or cycle-time measurement across the stream","Flow efficiency or end-to-end WIP measured","Improvement targeted at an evidenced constraint"],b:[1,3,4]},
+
+ {dim:"d11",k:"q11s",ty:"s",t:"How is AI capability built and sustained — training, champions, community?",
+  h:"The resilience test usually settles it: what happens if the top two people leave?",
+  o:["A few self-taught enthusiasts; no training, champions or community; fragile","Some ad hoc training; a few informal champions; concentrated and uneven","Role-based training; champions across more than one team; a community of practice; survives one leaver","Managed enablement; champions across seniority and teams; active communities; capability measured","Self-sustaining; champions grow champions; demonstrably turnover-resilient"]},
+ {dim:"d11",k:"q11c",ty:"c",t:"Which are actually in place?",h:"",
+  c:["Role-appropriate AI training provision","Named champions in more than one team","Champions across seniority levels, not one cohort","An active community of practice or forum","Capability documented enough to survive a key leaver"],b:[1,3,4]},
+
+ {dim:"d12",k:"q12s",ty:"s",t:"How broad is AI adoption across functions, and how well is its value measured?",
+  h:"Breadth means across functions, not more seats in engineering. Value means measured, not felt.",
+  o:["Narrow — mostly individual coding; value unmeasured; investment on faith","Spreading unevenly to some functions; value anecdotal, not measured","Deliberately across multiple functions; value measured for key uses","Broad and managed; value measured against metrics and reviewed; effort reallocated","Broad and continuously optimised against measured value; embedded in investment decisions"]},
+ {dim:"d12",k:"q12c",ty:"c",t:"In which functions is AI genuinely used — beyond one curious individual?",h:"",
+  c:["Software engineering","Business analysis and requirements","QA and testing","Delivery and project management","Other — design, data, ops, support"],b:[2,3,5]},
+
+ {dim:"d13",k:"q13s",ty:"s",t:"How ready are they to run AI agents safely — guardrails, human in the loop, observability?",
+  h:"Agents <i>act</i>; assistants only suggest. No agents plus a written \"not yet\" position with stated preconditions can honestly be a 3 — it's deliberateness that scores, not activity.",
+  o:["None, or agents run with no guardrails, no human in the loop, no observability","Early experiments; ad hoc guardrails; little observability; human review informal","Defined guardrails, human review for consequential actions, basic observability","Managed — enforced guardrails, human review by risk level, agent activity observable and audited","Continuously improved; behaviour monitored against bounds; autonomy scaled on evidence"]},
+ {dim:"d13",k:"q13c",ty:"c",t:"Which agentic safeguards exist where agents are used?",h:"Vendor defaults are not an organisational position.",
+  c:["Stated boundaries on what an agent may do","Enforced permissions, allow-lists or blast-radius limits","Human review designed in for consequential actions","Logging and observability of agent activity","Audit and review of agent actions"],b:[1,3,4]},
+
+ {dim:"d14",k:"q14s",ty:"s",t:"How well are AI costs and licences understood and managed?",
+  h:"Knowing the licence bill is not the same as understanding unit economics — the second is the test. Ask about the personal subscriptions nobody counts.",
+  o:["Uncontrolled and invisible; ad hoc buying; no inventory; bills are a surprise","Rough awareness; uneven procurement; sprawl suspected; consumption untracked","Defined procurement; licence inventory; aggregate spend visible; basic unit economics understood","Actively managed; licences rationalised; consumption budgeted and alerted; unit economics inform decisions","Cost per outcome steers the portfolio; tuned against value; waste designed out"]},
+ {dim:"d14",k:"q14c",ty:"c",t:"Which cost controls actually exist?",h:"",
+  c:["An inventory of the AI tools and licences paid for","A defined procurement or approval route for AI tools","Tracking of consumption costs — API calls, tokens","Budgets or alerts on AI spend","Understood unit economics — cost per seat, call or outcome"],b:[1,3,4]}];
+const ACTIONS=[
+ {id:"A001",dim:"d1",dep:[],tr:[["d1",1,3],["d2",1,2]],also:["d2"],f:1,t:3,h:"0-3m",e:"low",sp:"CIO or CTO",ow:"Head of IT with People / HR co-signature",
+  a:"Publish an AI stance that answers the four DORA sub-tests",
+  why:"This is the earliest action on the stance-and-governance track and unblocks almost everything downstream",
+  ev:"A published AI stance document with a date and a named owner, findable from the intranet home page",pre:[]},
+ {id:"A002",dim:"d1",dep:["A001"],tr:[["d1",2,3]],also:[],f:2,t:3,h:"0-3m",e:"low",sp:"CIO or CTO",ow:"Head of IT (with input from Security and Legal)",
+  a:"Classify AI tools into the three buckets and publish the middle-bucket guardrails",
+  why:"This is the natural next step after A001",
+  ev:"A written classification of AI tools and use categories into prohibited, permitted-with-guardrails, allowed",pre:[]},
+ {id:"A003",dim:"d1",dep:["A001","A002"],tr:[["d1",3,4]],also:[],f:3,t:4,h:"3-6m",e:"low",sp:"CIO or CTO",ow:"A named executive with People or IT in remit",
+  a:"Name a stance owner and put the stance to work in decisions",
+  why:"This is the move that separates a polished document from an operating instrument",
+  ev:"A named executive owner of the AI stance, with review cadence written down",pre:[]},
+ {id:"A004",dim:"d1",dep:["A003"],tr:[["d1",4,5]],also:[],f:4,t:5,h:"6-12m",e:"medium",sp:"CIO or CTO",ow:"The named stance owner from A003",
+  a:"Version the AI stance and drive revisions from usage evidence",
+  why:"Level 5 requires the stance to demonstrably evolve from usage evidence — the rubric wording is specific",
+  ev:"The stance carries a changelog with the reasoning behind each revision",pre:[["d12", 3]]},
+ {id:"A005",dim:"d2",dep:["A001"],tr:[["d2",1,3]],also:[],f:1,t:3,h:"0-3m",e:"low",sp:"CIO, CISO or COO",ow:"A named executive (typically CISO or Head of Risk) with the AI risk remit in writing",
+  a:"Appoint a named AI risk owner and publish data-handling rules per tool category",
+  why:"This is the earliest risk action and the one Level 3 on Dimension 02 demands most literally",
+  ev:"A single named executive owns AI risk in writing, with a route for staff to raise questions",pre:[]},
+ {id:"A006",dim:"d2",dep:["A005"],tr:[["d2",2,3],["d14",1,2]],also:["d14"],f:2,t:3,h:"3-6m",e:"medium",sp:"COO or CFO (procurement authority)",ow:"Head of Procurement, with Security and the AI risk owner from A005",
+  a:"Add an AI-specific vendor and model approval gate to procurement",
+  why:"This is the second risk action and the one that closes the 'generic procurement is not AI procurement' gap the Level 2-vs-3 descriptor pivots on",
+  ev:"A published procurement checklist for AI tools that asks about training use, retention, residency, sub-processors and human-in-the-loop expectations",pre:[]},
+ {id:"A007",dim:"d2",dep:["A005","A006"],tr:[["d2",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CISO or Head of Risk",ow:"The AI risk owner (from A005), with Security operations",
+  a:"Define human-in-the-loop requirements and stand up an AI audit trail",
+  why:"The rubric's Level 4 explicitly requires 'controls enforced and evidenced; audit trail actually used",
+  ev:"Named use cases carry written human-in-the-loop requirements, and evidence exists that they are checked (spot check, technical control, sample review)",pre:[]},
+ {id:"A008",dim:"d3",dep:[],tr:[["d3",1,3]],also:[],f:1,t:3,h:"3-6m",e:"medium",sp:"CEO",ow:"A named executive (CIO, COO or business-line lead) with AI in their objectives",
+  a:"Write a funded, executive-owned AI ambition tied to business outcomes",
+  why:"This is the earliest sponsorship action and skips the intermediate Level 2 deliberately: an 'interested but unowned and unfunded' leadership posture is the failure…",
+  ev:"A written AI ambition document, dated, with a named executive owner and a budget line",pre:[]},
+ {id:"A009",dim:"d3",dep:["A008","A033"],tr:[["d3",3,4],["d12",3,4]],also:["d12"],f:3,t:4,h:"6-12m",e:"medium",sp:"CFO with the executive owner (from A008)",ow:"The executive owner (A008)",
+  a:"Review AI outcomes on a stated cadence, with funding consequences",
+  why:"This is the Level 3-to-4 move on Dimension 03, and it depends critically on A033 (measurement framework)",
+  ev:"A quarterly (or sector-appropriate cadence) review point in the operating rhythm where AI outcomes are discussed against the ambition",pre:[["d12", 3]]},
+ {id:"A010",dim:"d3",dep:[],tr:[["d3",2,3]],also:[],f:2,t:3,h:"3-6m",e:"low",sp:"The current executive sponsor of the tool rollout (typically CIO or COO)",ow:"The named executive who will now own the ambition (may be the same person)",
+  a:"Reframe an existing tool-adoption programme as an outcome-led ambition",
+  why:"This is the Level 2-to-3 move for a specific — and common — Level 2 shape: the sponsored tool rollout",
+  ev:"The existing tool rollout is re-anchored to a written statement of business outcomes it should move",pre:[]},
+ {id:"A011",dim:"d4",dep:[],tr:[["d4",1,3]],also:[],f:1,t:3,h:"3-6m",e:"medium",sp:"CDO, CIO or the Chief Data Officer equivalent",ow:"A named Head of Data or lead data steward",
+  a:"Publish a data catalogue with named stewards for the core domains",
+  why:"This is the earliest data-ecosystem action and a prerequisite for almost anything AI-adjacent that follows",
+  ev:"A catalogue or inventory covers the core data domains with named owners and dates",pre:[]},
+ {id:"A012",dim:"d4",dep:["A011"],tr:[["d4",2,3]],also:[],f:2,t:3,h:"3-6m",e:"low",sp:"CFO or COO (whoever the recurring arguments end up in front of)",ow:"Head of Data or the lead data steward",
+  a:"Retire the recurring definition arguments — agree the contested measures",
+  why:"Depends on A011 because the definitions need somewhere to live and someone to own them",
+  ev:"A written business glossary or agreed definitions for the two or three measures the organisation currently argues about",pre:[]},
+ {id:"A013",dim:"d4",dep:["A011","A012"],tr:[["d4",3,4]],also:[],f:3,t:4,h:"6-12m",e:"high",sp:"CDO or CIO",ow:"Data platform lead",
+  a:"Instrument freshness, completeness and quality with alerts on the core domains",
+  why:"The Level 3-to-4 move on Dimension 04",
+  ev:"Freshness, completeness and accuracy are tracked against stated expectations for the core domains",pre:[]},
+ {id:"A014",dim:"d5",dep:["A005","A011"],tr:[["d5",1,3]],also:[],f:1,t:3,h:"6-12m",e:"high",sp:"CIO or CTO with the AI risk owner (A005)",ow:"An engineering / platform lead with the AI risk owner as accountable",
+  a:"Connect internal context to approved AI tools through supported routes",
+  why:"This is the canonical sequencing rule the library encodes. Connecting AI to internal context before access governance (Dimension 02) is at Level 3 produces a…",
+  ev:"An inventory of connected sources exists with each source's owner and the approved tool it feeds",pre:[["d2", 3], ["d4", 2]]},
+ {id:"A015",dim:"d5",dep:["A014"],tr:[["d5",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CIO or CTO",ow:"The context-estate lead (A014's owner)",
+  a:"Measure answer quality on the connected context estate",
+  why:"The Level 3-to-4 move on Dimension 05",
+  ev:"An inventory of connected sources with owner, freshness expectation and last-checked date",pre:[]},
+ {id:"A016",dim:"d6",dep:[],tr:[["d6",1,2]],also:[],f:1,t:2,h:"6-12m",e:"high",sp:"CTO",ow:"A named platform lead (may be a new hire)",
+  a:"Establish a paved road for environments, pipelines and deployment",
+  why:"This is the earliest platform action",
+  ev:"A named platform team (or lead) with a written charter and a place teams take requests",pre:[]},
+ {id:"A017",dim:"d6",dep:["A016"],tr:[["d6",2,4]],also:[],f:2,t:4,h:"6-12m",e:"high",sp:"CTO",ow:"The platform lead (from A016)",
+  a:"Run the internal platform as a product and cover the common paths",
+  why:"This action covers two rubric transitions — Emerging to Defined, and Defined to Managed",
+  ev:"Documented paved roads cover provisioning, pipelines and deployment for the common cases; most teams use them",pre:[]},
+ {id:"A018",dim:"d6",dep:["A017","A014"],tr:[["d6",4,5],["d5",4,5],["d13",3,4]],also:["d5", "d13"],f:4,t:5,h:"12m+",e:"high",sp:"CTO",ow:"The platform lead (from A017), with the AI risk owner accountable",
+  a:"Platformise AI — governed model access, evaluation harnesses, agent tooling as services",
+  why:"Level 5 on Dimension 06 and 05, and the Level 3-to-4 move on Dimension 13",
+  ev:"Model access is a governed platform service — teams no longer wire in personal API keys",pre:[["d2", 4], ["d5", 3]]},
+ {id:"A019",dim:"d7",dep:[],tr:[["d7",1,3],["d2",2,3]],also:["d2"],f:1,t:3,h:"3-6m",e:"low",sp:"CTO",ow:"Head of Engineering or an appointed engineering lead",
+  a:"Put prompts, agent configuration and IaC into version control alongside code",
+  why:"This is the earliest version-control action and covers two transitions on Dimension 07 (Ad Hoc-to-Emerging and Emerging-to-Defined) because the AI-asset piece is…",
+  ev:"Prompts and agent configuration files live in repositories alongside the code they serve",pre:[]},
+ {id:"A020",dim:"d7",dep:["A019"],tr:[["d7",2,3],["d8",2,3]],also:["d8"],f:2,t:3,h:"3-6m",e:"medium",sp:"CTO",ow:"Head of Engineering",
+  a:"Practise rollback and shrink change size",
+  why:"The Level 2-to-3 move on Dimension 07, with a genuine Level 2-to-3 lift on Dimension 08",
+  ev:"Rollback is a written, followable procedure — not folklore",pre:[]},
+ {id:"A021",dim:"d7",dep:["A020"],tr:[["d7",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CTO",ow:"Head of Engineering",
+  a:"Measure change failure rate and recovery time; treat them as flow data",
+  why:"The Level 3-to-4 move on Dimension 07",
+  ev:"Change failure rate and mean time to recovery are tracked continuously and reviewed on a cadence",pre:[]},
+ {id:"A022",dim:"d8",dep:[],tr:[["d8",1,3]],also:[],f:1,t:3,h:"3-6m",e:"low",sp:"CTO or Head of Delivery",ow:"Head of Engineering with delivery leads",
+  a:"Introduce story-slicing patterns and work-in-progress limits",
+  why:"This is the earliest small-batch action",
+  ev:"A documented slicing guide covers the common story-splitting patterns and lives where delivery staff can find it",pre:[]},
+ {id:"A023",dim:"d8",dep:["A022"],tr:[["d8",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CTO or Head of Delivery",ow:"Head of Delivery, with the platform team where they own the pipeline",
+  a:"Track batch size, cycle time and deployment frequency and act on them",
+  why:"The Level 3-to-4 move on Dimension 08",
+  ev:"Change size, story cycle time and deployment frequency are tracked continuously",pre:[]},
+ {id:"A024",dim:"d8",dep:["A022"],tr:[["d8",2,3],["d7",2,3]],also:["d7"],f:2,t:3,h:"3-6m",e:"medium",sp:"CTO",ow:"Head of Engineering",
+  a:"Adopt feature flags to decouple deployment from release",
+  why:"The Level 2-to-3 move on Dimension 08, with a genuine side effect on Dimension 07 (flags without owners and retirement are a version-control failure mode",
+  ev:"A supported feature-flag mechanism is available and used by most teams that ship user-facing change",pre:[]},
+ {id:"A025",dim:"d9",dep:[],tr:[["d9",1,3]],also:[],f:1,t:3,h:"3-6m",e:"medium",sp:"CEO or COO (the risk of AI making a low-user-focus organisation worse is a board-level issue)",ow:"Head of Product or Head of Delivery",
+  a:"Establish direct user contact and require user evidence in prioritisation",
+  why:"This is the risk-remediation action of the whole library. DORA found that AI adoption makes weak-user-focus teams worse, not better",
+  ev:"Every delivery team can name its users and describe how it reaches them",pre:[]},
+ {id:"A026",dim:"d9",dep:["A025"],tr:[["d9",3,4],["d12",3,4]],also:["d12"],f:3,t:4,h:"6-12m",e:"medium",sp:"CEO or COO",ow:"Head of Product with the delivery leads",
+  a:"Measure user outcomes on shipped work and act on the measurements",
+  why:"The Level 3-to-4 move on Dimension 09, with a genuine push on Dimension 12 because outcome measurement is what the Level 4 descriptor of Dimension 12 also asks for",
+  ev:"Teams track adoption, task success or satisfaction for what they ship — the specific measure varies by team but each has one",pre:[]},
+ {id:"A027",dim:"d10",dep:[],tr:[["d10",1,3]],also:[],f:1,t:3,h:"0-3m",e:"low",sp:"COO or Head of Delivery",ow:"A named value-stream owner (typically Head of Delivery)",
+  a:"Map the main value stream end-to-end and name the wait states",
+  why:"This is the earliest value-stream action and covers 1→2 and 2→3 in one move because the Level 2 shape (local segments, no end-to-end view) is not a stable state",
+  ev:"A current value stream map for the main product or service, with a date and a named owner",pre:[]},
+ {id:"A028",dim:"d10",dep:["A027"],tr:[["d10",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"COO or Head of Delivery",ow:"The value-stream owner (from A027)",
+  a:"Measure end-to-end lead time continuously and separate work time from wait time",
+  why:"The Level 3-to-4 move on Dimension 10",
+  ev:"End-to-end lead time and cycle time are tracked continuously and split into work time and wait time",pre:[]},
+ {id:"A029",dim:"d11",dep:["A001"],tr:[["d11",1,3]],also:[],f:1,t:3,h:"3-6m",e:"medium",sp:"CPO or Head of People",ow:"Head of Learning & Development",
+  a:"Publish a role-based AI training pathway",
+  why:"Skips Level 2 deliberately (informal ad-hoc training, uneven distribution) because that state is not a stable one that this action would extend",
+  ev:"A published training pathway covers the approved tools (from A002) and identifies role-appropriate content for the main functions",pre:[]},
+ {id:"A030",dim:"d11",dep:["A029"],tr:[["d11",2,3],["d12",1,2]],also:["d12"],f:2,t:3,h:"3-6m",e:"low",sp:"CPO or the executive owner of the AI ambition (from A008)",ow:"Head of L&D with the executive owner",
+  a:"Deliberately distribute AI champions across teams and seniority",
+  why:"The Level 2-to-3 move on Dimension 11, with a genuine nudge on Dimension 12 because distributed champions are the human vehicle by which AI adoption reaches BA, QA",
+  ev:"A named champion list covers more than one team and more than one seniority level — not just enthusiastic engineers",pre:[]},
+ {id:"A031",dim:"d11",dep:["A030"],tr:[["d11",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CPO",ow:"The senior champion (from A030) or Head of L&D",
+  a:"Run a community of practice and curate the learning into playbooks",
+  why:"The Level 3-to-4 move on Dimension 11",
+  ev:"The community of practice meets on a stated cadence; attendance is tracked and reviewed",pre:[]},
+ {id:"A032",dim:"d12",dep:["A008","A030"],tr:[["d12",1,3]],also:[],f:1,t:3,h:"6-12m",e:"medium",sp:"The executive owner of the AI ambition (from A008)",ow:"The champion group lead (A030) with each function's leadership",
+  a:"Extend AI beyond engineering with named use cases per function",
+  why:"The Level 1-to-3 move on Dimension 12",
+  ev:"Named AI use cases exist for at least three functions beyond software engineering — typically some of BA, QA, delivery, PM, ops, support",pre:[["d1", 3], ["d11", 2]]},
+ {id:"A033",dim:"d12",dep:["A032"],tr:[["d12",2,3],["d14",2,3]],also:["d14"],f:2,t:3,h:"6-12m",e:"medium",sp:"CFO or the executive owner (from A008)",ow:"Head of Finance with the executive owner",
+  a:"Establish a value measurement framework with a baseline",
+  why:"The Level 2-to-3 move on Dimension 12, with a real Level 2-to-3 push on Dimension 14 because a measurement framework that connects spend to outcomes is what the…",
+  ev:"A written value measurement framework names the measures (time saved, cycle time, quality signals, adoption) per use case",pre:[]},
+ {id:"A034",dim:"d13",dep:["A005"],tr:[["d13",1,3],["d2",3,4]],also:["d2"],f:1,t:3,h:"3-6m",e:"medium",sp:"CIO with the AI risk owner (A005)",ow:"The AI risk owner",
+  a:"Inventory agents in use and publish a written delegation policy",
+  why:"The Level 1-to-3 move on Dimension 13, and the specific move that turns the Dimension 02 framework from documented to reflects reality",
+  ev:"A live inventory of agents in use — the coding agent, the triage bot, the workflow automation, the browser automations — with each agent's owner",pre:[]},
+ {id:"A035",dim:"d13",dep:["A007","A019","A034"],tr:[["d13",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CIO with the AI risk owner",ow:"The AI risk owner with the platform lead",
+  a:"Manage agent identities, enforce HITL by risk level and review agent logs on cadence",
+  why:"The Level 3-to-4 move on Dimension 13",
+  ev:"Every agent runs under a managed identity with permissions scoped to its task",pre:[]},
+ {id:"A036",dim:"d14",dep:["A006"],tr:[["d14",1,3]],also:[],f:1,t:3,h:"3-6m",e:"low",sp:"CFO or COO",ow:"Head of Procurement with Finance",
+  a:"Stand up an AI licence register and a defined procurement route",
+  why:"The Level 1-to-3 move on Dimension 14",
+  ev:"A live register of AI licences and subscriptions records owner, cost, renewal date and cost centre",pre:[]},
+ {id:"A037",dim:"d14",dep:["A036","A033"],tr:[["d14",3,4]],also:[],f:3,t:4,h:"6-12m",e:"medium",sp:"CFO",ow:"Head of Procurement with the executive owner (A008)",
+  a:"Review AI utilisation, reclaim seats and set budget alerts on metered consumption",
+  why:"The Level 3-to-4 move on Dimension 14",
+  ev:"Utilisation is reviewed on a known cadence; unused seats are reclaimed and the record shows it happening",pre:[]},
+ {id:"A038",dim:"d2",dep:["A007","A021"],tr:[["d2",4,5],["d7",4,5]],also:["d7"],f:4,t:5,h:"6-12m",e:"medium",sp:"CISO or the AI risk owner (A005)",ow:"The AI risk owner",
+  a:"Run a cross-team AI incidents and near-miss review that changes guardrails",
+  why:"The Level 4-to-5 nudge on Dimension 02 and Dimension 07 together — the two dimensions whose Level 5 descriptors most directly ask for 'controls adapt in response to…",
+  ev:"A recurring AI incidents / near-miss review runs on a stated cadence with the risk owner, engineering leads and Legal represented",pre:[]},
+ {id:"A039",dim:"d12",dep:["A030","A032"],tr:[["d12",2,3],["d11",3,4]],also:["d11"],f:2,t:3,h:"6-12m",e:"medium",sp:"The executive owner of the AI ambition (A008)",ow:"The senior champion (A030) with each function's lead",
+  a:"Champion-authored playbooks that carry AI practice into non-engineering functions",
+  why:"Two-dimension bridge action",
+  ev:"Playbooks exist for AI use in at least three non-engineering functions — BA, QA, delivery, PM or ops — authored by champions in those functions",pre:[]},
+ {id:"A040",dim:"d5",dep:["A015","A011"],tr:[["d5",4,5],["d4",3,4]],also:["d4"],f:4,t:5,h:"12m+",e:"high",sp:"CIO",ow:"The context-estate lead (A015)",
+  a:"Curate internal content for AI consumption — structure, metadata, interfaces",
+  why:"The Level 4-to-5 move on Dimension 05, with a genuine Level 3-to-4 push on Dimension 04 because the same content curation work is the shape a mature data ecosystem…",
+  ev:"Documentation is structured and written with retrieval in mind, not just human reading — headings, chunkability, metadata",pre:[]},
+];
 
 /* team skills — base = level needed at target Stage 3; scales with target */
 const TCAPS=[
@@ -410,9 +613,9 @@ const VAL_QS=[
  {k:"volume",t:"How often does the task happen?",h:"AI value compounds with repetition.",o:["Occasionally / ad hoc","Regularly — weekly","High volume — daily"]},
  {k:"baseline",t:"Do we know what it costs today?",h:"Volume, time per case, cost — measured, not remembered.",o:["No — nobody tracks it","Rough numbers exist","Measured and vouched for"]}];
 const UDIMS=[{id:"fit",name:"Fit",sub:"is this the kind of work AI does well?",org:null},
- {id:"data",name:"Data",sub:"will this workflow's data feed it?",org:"data"},
- {id:"tech",name:"Tech",sub:"can it connect to what this uses?",org:"tech"},
- {id:"skills",name:"Skills",sub:"will this team make it work?",org:"skills"}];
+ {id:"data",name:"Data",sub:"will this workflow's data feed it?",org:"d4"},
+ {id:"tech",name:"Tech",sub:"can it connect to what this uses?",org:"d6"},
+ {id:"skills",name:"Skills",sub:"will this team make it work?",org:"d11"}];
 const EASE_QS=[
  {k:"fit_nature",dim:"fit",t:"What kind of work is it?",h:"Repetitive judgement on digital information suits AI.",o:["Mostly physical / relationship","Mixed","Mostly repetitive judgement"]},
  {k:"fit_error",dim:"fit",t:"What happens if the AI gets one wrong?",h:"Someone must catch a mistake before it costs.",o:["Serious harm, hard to catch","Caught eventually","A person checks first"]},
@@ -504,7 +707,7 @@ const BVB_SHORT={buy:"Buy",configure:"Configure",build:"Build",unknown:"?"};
 const KEY="enablis-assess-v1";
 let S=JSON.parse(localStorage.getItem(KEY)||"{}");
 S.meta=S.meta||{}; S.mode=S.mode||"light"; S.target=S.target||4;
-S.org=S.org||{}; S.orgEv=S.orgEv||{}; S.dimNote=S.dimNote||{}; S.tskills=S.tskills||{}; S.coh=S.coh||{}; S.ints=S.ints||[];
+S.org=S.org||{}; S.orgC=S.orgC||{}; S.dimOff=S.dimOff||{}; S.orgEv=S.orgEv||{}; S.dimNote=S.dimNote||{}; S.tskills=S.tskills||{}; S.coh=S.coh||{}; S.ints=S.ints||[];
 S.cb=S.cb||{has:null,repoAccess:"",checkAccess:"",repos:[],ow:{},gt:{},gtNotes:{},notes:""};
 S.wfs=S.wfs||[]; S.curWf=S.curWf||0; S.curUc=S.curUc||0;
 if(S.target===undefined)S.target=null;
@@ -523,25 +726,32 @@ function loadExample(){
   S={meta:{client:"Northwind Logistics (worked example)",by:"Delivery Lead",date:new Date().toISOString().slice(0,10),
       ambition:"cut cost-to-serve 15% and stop losing quotes to slow turnaround"},
     mode:"deep",target:4,
-    org:{s_sponsor:3,s_ambition:2,s_money:2, d_known:3,d_quality:3,d_access:2,d_unified:2,d_aiaccess:1,
-      t_platform:3,t_integrate:3,t_eng:2, k_literacy:2,k_technical:3,k_time:2,
-      g_policy:1,g_route:2,g_risk:2, a_track:2,a_champ:2,a_measure:1,
-      v_user:3,v_feedback:2,v_batch:2, c_known:2,c_attrib:1,c_model:1},
-    orgEv:{g_policy:{t:"Ops director, 4 Aug",c:"confirmed",x:"No written position at all — three teams are already pasting customer data into public chatbots"},
-      d_aiaccess:{t:"Head of data, 5 Aug",c:"confirmed",x:"Twelve years of quote history sits in a system nothing can query"},
-      c_attrib:{t:"Finance, 6 Aug",c:"told",x:"All AI spend lands in one IT cost centre; nobody can say what the sales team's tools cost"},
-      v_user:{t:"Shadowing, 5 Aug",c:"confirmed",x:"The quoting team can name their customers and what annoys them — genuinely strong here"}},
-    dimNote:{gov:{well:"Risk team is engaged and wants to help — they've asked for this, not resisted it.",
+    org:{q1s:1,q2s:2,q3s:3,q4s:2,q5s:1,q6s:3,q7s:2,q8s:2,q9s:3,q10s:2,q11s:2,q12s:2,q13s:1,q14s:2},
+    orgC:{q1c:[1],q2c:[3],q3c:[0,1],q4c:[0,1],q5c:[],q6c:[0,1,3],q7c:[0,1,2],q8c:[0,3],q9c:[0,1,2],
+      q10c:[1],q11c:[1],q12c:[0,1],q13c:[],q14c:[0]},
+    dimOff:{},
+    orgEv:{q1s:{t:"Ops director, 4 Aug",c:"confirmed",x:"No written position at all — three teams are already pasting customer data into public chatbots"},
+      q1c:{t:"Asked four staff separately, 4–5 Aug",c:"confirmed",x:"Only 'support' came back consistently; nobody could say what they were permitted to use"},
+      q5s:{t:"Head of data, 5 Aug",c:"confirmed",x:"Twelve years of quote history sits in a system nothing can query"},
+      q13s:{t:"Principal engineer, 6 Aug",c:"confirmed",x:"One engineer runs an unattended script against the ticket system on a personal API key — nobody else knew"},
+      q14c:{t:"Finance, 6 Aug",c:"told",x:"All AI spend lands in one IT cost centre; nobody can say what the sales team's tools cost"},
+      q9s:{t:"Shadowing, 5 Aug",c:"confirmed",x:"The quoting team can name their customers and what annoys them — genuinely strong here"},
+      q10s:{t:"Delivery lead, 6 Aug",c:"told",x:"Quotes wait an average of three days for pricing sign-off; nobody had measured it before we asked"}},
+    dimNote:{d1:{well:"Risk team is engaged and wants to help — they've asked for this, not resisted it.",
         improve:"No written AI position, so people are inventing their own rules. Three teams already using public tools with customer data.",
         riskNot:"A data incident is a matter of time, and it would set AI back two years internally.",
         riskGo:"Building on an unstated position means every use case renegotiates permission from scratch — and the first refusal kills momentum.",
-        why:"Governance is the ceiling here: everything else is ready for more than governance allows."},
-      data:{well:"Core systems are documented and the data owner is responsive.",
-        improve:"Nothing is joined up, and AI cannot reach the quote history that would make answers theirs.",
+        why:"Stance is the ceiling here: everything else is ready for more than the absence of a position allows."},
+      d5:{well:"Core systems are documented and the data owner is responsive.",
+        improve:"AI cannot reach the quote history that would make answers theirs rather than generic.",
         riskNot:"Every use case pays the integration cost again, and answers stay generic.",
-        riskGo:"AI on fragmented data produces confidently wrong answers that look plausible — worse than no answer.",
+        riskGo:"Staff route around approved tools to ones that can see something — which is how customer data reached a public chatbot.",
         why:"AI amplifies whatever it can see. Right now it can see almost nothing internal."},
-      cost:{improve:"AI spend is one line in IT. Nobody has priced licences-for-everyone against building one thing properly.",
+      d13:{improve:"An unattended agent is already updating the ticket system on a personal API key, with no inventory and no log anyone reads.",
+        riskNot:"Nobody could reconstruct what it did if it went wrong.",
+        riskGo:"Scaling agents from here multiplies an exposure nobody has bounded.",
+        why:"Agents act. This one already does, and it is invisible to the organisation."},
+      d14:{improve:"AI spend is one line in IT. Nobody has priced licences-for-everyone against building one thing properly.",
         riskNot:"The business case for the first build will be argued on guesses.",
         why:"Nobody funds a second phase without knowing what the first one cost."}},
     tskills:{ts_lit:{lvl:2,spread:2,champ:"A Shah, ops"},ts_task:{lvl:1,spread:1,champ:""},
@@ -602,26 +812,58 @@ function showTab(id){TAB=id;renderNav();window.scrollTo(0,0);renderAll();}
 
 /* ==================== TEAM: readiness ==================== */
 function setOrg(k,v){S.org[k]=(S.org[k]===v?undefined:v);save();renderAll();}
+function setOrgC(k,i){const a=S.orgC[k]=S.orgC[k]||[],p=a.indexOf(i);if(p>=0)a.splice(p,1);else a.push(i);save();renderAll();}
+function toggleDim(id){S.dimOff[id]=!S.dimOff[id];save();renderAll();}
 function setOrgEv(k,f,v){S.orgEv[k]=S.orgEv[k]||{t:"",c:""};
   if(f==="c")S.orgEv[k].c=(S.orgEv[k].c===v?"":v);else S.orgEv[k][f]=v;save();if(f==="c")renderTeam();}
+function dimOff(id){return !!S.dimOff[id];}
+function activeDims(){return ORG_DIMS.filter(d=>!dimOff(d.id));}
+function wPct(d){const A=activeDims(),t=A.reduce((a,x)=>a+x.w,0)||1;
+  const raw=A.map(x=>({id:x.id,v:x.w/t*100})),fl=raw.map(x=>({...x,f:Math.floor(x.v),r:x.v-Math.floor(x.v)}));
+  let left=100-fl.reduce((a,x)=>a+x.f,0);
+  fl.slice().sort((a,b)=>b.r-a.r).forEach(x=>{if(left>0){x.f++;left--;}});
+  const m=fl.find(x=>x.id===d.id);return m?m.f:0;}
+function qOf(id,ty){return ORG_QS.find(q=>q.dim===id&&q.ty===ty);}
+/* corroborating checklist bands to a level, capped at 4 — a checklist cannot evidence Optimising */
+function corrLvl(q){const set=S.orgC[q.k];if(!set||!set.length)return null;
+  const c=set.length,b=q.b;return c>=b[2]?4:c>=b[1]?3:c>=b[0]?2:1;}
+/* spine sets the level; the checklist confirms it or moves it half a point and raises a flag */
 function orgDim(id){
-  const qs=ORG_QS.filter(q=>q.dim===id);
-  if(id==="skills"){ const ts=tsStage(); if(ts!==null) return {avg:ts,stage:Math.max(1,Math.floor(ts)),answered:qs.length,total:qs.length,fromScan:true}; }
-  const vals=qs.map(q=>S.org[q.k]).filter(v=>v!==undefined&&v!==null);
-  if(!vals.length)return{avg:null,stage:null,answered:0,total:qs.length};
-  const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
-  return{avg,stage:Math.max(1,Math.floor(avg)),answered:vals.length,total:qs.length};
+  if(dimOff(id))return{off:true,avg:null,stage:null,answered:0,total:2};
+  const sq=qOf(id,"s"),cq=qOf(id,"c");
+  const sp=S.org[sq.k]||null,co=corrLvl(cq);
+  let answered=(sp?1:0)+(co?1:0),avg=null,flag=null;
+  if(sp&&co){const diff=co-sp;
+    if(Math.abs(diff)>=1){avg=Math.max(1,Math.min(5,sp+(diff>0?0.5:-0.5)));flag={sp,co};}else avg=sp;}
+  else if(sp)avg=sp;else if(co)avg=co;
+  if(avg===null){ if(id==="d11"){const ts=tsStage();
+      if(ts!==null)return{avg:ts,stage:Math.max(1,Math.floor(ts)),answered:0,total:2,fromScan:true};}
+    return{avg:null,stage:null,answered:0,total:2};}
+  const r={avg,stage:Math.max(1,Math.floor(avg)),answered,total:2,flag};
+  if(id==="d11"){const ts=tsStage();if(ts!==null&&Math.abs(ts-avg)>=1)r.scanFlag=ts;}
+  return r;
 }
-function ceiling(){const sc=ORG_DIMS.map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.stage!==null);
+function ceiling(){const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.stage!==null);
   if(!sc.length)return null;const min=Math.min(...sc.map(x=>x.s.stage));
   return{stage:min,dims:sc.filter(x=>x.s.stage===min).map(x=>x.d)};}
-function potential(){const sc=ORG_DIMS.map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.avg!==null);
+function potential(){const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.avg!==null);
   if(!sc.length)return null;const w=sc.reduce((a,x)=>a+x.d.w,0);
   return sc.reduce((a,x)=>a+x.s.avg*x.d.w,0)/w;}
-function orgAnswered(){return ORG_QS.filter(q=>S.org[q.k]!==undefined&&S.org[q.k]!==null).length;}
-function orgEvidence(){const a=ORG_QS.filter(q=>S.org[q.k]!==undefined&&S.org[q.k]!==null);
-  if(!a.length)return null;
-  return Math.round(a.reduce((x,q)=>{const e=S.orgEv[q.k]||{};return x+(e.c==="confirmed"?2:e.c==="told"?1:0);},0)/(2*a.length)*100);}
+function orgTotalQ(){return activeDims().length*2;}
+function orgAnswered(){return activeDims().reduce((a,d)=>a+orgDim(d.id).answered,0);}
+function riskDims(lv){return activeDims().filter(d=>d.rf&&d.rl===lv&&orgDim(d.id).stage!==null&&orgDim(d.id).stage<=2);}
+function answeredKeys(){const k=[];activeDims().forEach(d=>{const sq=qOf(d.id,"s"),cq=qOf(d.id,"c");
+  if(S.org[sq.k])k.push(sq.k);if(corrLvl(cq)!==null)k.push(cq.k);});return k;}
+function orgEvidence(){const k=answeredKeys();if(!k.length)return null;
+  return Math.round(k.reduce((x,q)=>{const e=S.orgEv[q]||{};return x+(e.c==="confirmed"?2:e.c==="told"?1:0);},0)/(2*k.length)*100);}
+/* ---- action library helpers (ids and sequencing from enablis-co/AI-Maturity-Tool) ---- */
+function trOf(a,dimId){return (a.tr||[]).find(t=>t[0]===dimId);}
+function actFor(dimId,cur){return ACTIONS.filter(x=>{const t=trOf(x,dimId);return t&&cur>=t[1]&&cur<t[2];})
+  .sort((a,b)=>{const A=trOf(a,dimId),B=trOf(b,dimId);
+    return (a.dim===dimId?0:1)-(b.dim===dimId?0:1)||Math.abs(A[1]-cur)-Math.abs(B[1]-cur)||(A[2]-A[1])-(B[2]-B[1]);});}
+function preMissing(a){return(a.pre||[]).filter(([d,l])=>{const s=orgDim(d);
+  return !dimOff(d)&&(s.stage===null||s.stage<l);});}
+function preMet(a){return preMissing(a).length===0;}
 
 /* ==================== TEAM: skills ==================== */
 function ts(id){S.tskills[id]=S.tskills[id]||{lvl:null,spread:null,champ:""};return S.tskills[id];}
@@ -818,61 +1060,77 @@ function renderTeamSkills(){
 }
 function renderRadar(){
   const el=document.getElementById("radar");if(!el)return;
-  const t=TGT(),R=118,cx=165,cy=140,n=ORG_DIMS.length;
+  const D=activeDims(),t=TGT(),R=112,cx=175,cy=150,n=D.length;
+  if(!n){el.innerHTML="";return;}
   const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n,r=R*(v/5);return[cx+r*Math.cos(a),cy+r*Math.sin(a)];};
-  const rings=[1,2,3,4,5].map(v=>`<polygon points="${ORG_DIMS.map((_,i)=>pt(i,v).join(",")).join(" ")}" fill="none" stroke="#e3e3e3" stroke-width="1"/>`).join("");
-  const spokes=ORG_DIMS.map((_,i)=>{const[x,y]=pt(i,5);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e3e3e3" stroke-width="1"/>`;}).join("");
-  const scored=ORG_DIMS.map(d=>orgDim(d.id).stage);
-  const cur=scored.every(s=>s===null)?"":`<polygon points="${ORG_DIMS.map((d,i)=>pt(i,orgDim(d.id).stage||0).join(",")).join(" ")}" fill="rgba(11,92,138,.22)" stroke="#0b5c8a" stroke-width="2"/>`;
-  const tgt=t?`<polygon points="${ORG_DIMS.map((_,i)=>pt(i,t).join(",")).join(" ")}" fill="none" stroke="#1e7e44" stroke-width="1.5" stroke-dasharray="5 4"/>`:"";
-  const labels=ORG_DIMS.map((d,i)=>{const[x,y]=pt(i,5.62);
-    const anchor=Math.abs(x-cx)<6?"middle":(x>cx?"start":"end");
-    const short=d.name.replace(" & ","/").replace("Strategy/sponsorship","Strategy").replace("Governance/risk","Governance").replace("Adoption/change","Adoption").replace("Delivery/user focus","Delivery");
-    return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="10.5" fill="#5f6368">${short}</text>`;}).join("");
-  el.innerHTML=`<svg viewBox="0 0 330 285" style="width:100%;height:auto">${rings}${spokes}${tgt}${cur}${labels}</svg>
+  const rings=[1,2,3,4,5].map(v=>`<polygon points="${D.map((_,i)=>pt(i,v).join(",")).join(" ")}" fill="none" stroke="#e3e3e3" stroke-width="1"/>`).join("");
+  const spokes=D.map((_,i)=>{const[x,y]=pt(i,5);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e3e3e3" stroke-width="1"/>`;}).join("");
+  const scored=D.map(d=>orgDim(d.id).avg);
+  const cur=scored.every(v=>v===null)?"":`<polygon points="${D.map((d,i)=>pt(i,orgDim(d.id).avg||0).join(",")).join(" ")}" fill="rgba(11,92,138,.22)" stroke="#0b5c8a" stroke-width="2"/>`;
+  const tgt=t?`<polygon points="${D.map((_,i)=>pt(i,t).join(",")).join(" ")}" fill="none" stroke="#1e7e44" stroke-width="1.5" stroke-dasharray="5 4"/>`:"";
+  const labels=D.map((d,i)=>{const[x,y]=pt(i,5.5);
+    const anchor=Math.abs(x-cx)<8?"middle":(x>cx?"start":"end");
+    return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="9.5" fill="#5f6368">${d.n}</text>`;}).join("");
+  el.innerHTML=`<svg viewBox="0 0 350 300" style="width:100%;height:auto">${rings}${spokes}${tgt}${cur}${labels}</svg>
     <div class="note" style="text-align:center;margin-top:-6px">
       <span style="color:#0b5c8a;font-weight:700">▬</span> where they are ·
-      <span style="color:#1e7e44;font-weight:700">▭</span> ${t?"target stage "+t:"target not set"}</div>`;
+      <span style="color:#1e7e44;font-weight:700">▭</span> ${t?"target stage "+t:"target not set"}<br>
+      ${D.map(d=>d.n+" "+d.name.split(" &")[0].toLowerCase()).join(" · ")}</div>`;
 }
 function renderTeam(){
-  /* scorecard */
-  const ceil=ceiling(),pot=potential(),t=TGT();
+  const ceil=ceiling(),pot=potential(),t=TGT(),tot=orgTotalQ(),ans=orgAnswered();
   document.getElementById("teamBoxes").innerHTML=`
     <div class="box ceil"><div class="l">Readiness — the ceiling</div><div class="v">${ceil?"Stage "+ceil.stage:"–"}<small>${ceil?stageName(ceil.stage)+" · set by "+ceil.dims.map(d=>d.name.toLowerCase()).join(" & "):"score the dimensions"}</small></div></div>
     <div class="box pot"><div class="l">Weighted potential</div><div class="v">${pot?pot.toFixed(1):"–"}<small>if the weakest were fixed</small></div></div>
     <div class="box tgt"><div class="l">12-month target</div><div class="v">${t?"Stage "+t:"not set"}<small>${t?stageName(t):"set it on the Engagement tab"}</small></div></div>
-    <div class="box"><div class="l">Answered</div><div class="v">${orgAnswered()}/18<small>${deep()&&orgEvidence()!==null?orgEvidence()+"% evidenced":"~20 min"}</small></div></div>`;
-  document.getElementById("scorecard").innerHTML=ORG_DIMS.map(d=>{
-    const s=orgDim(d.id),isC=ceil&&ceil.dims.some(x=>x.id===d.id);
-    const cells=[1,2,3,4,5].map(n=>`<div class="sc-cell ${s.stage!==null&&n<=s.stage?(isC?"ceil":"on"):""} ${n===t?"tgt":""}"></div>`).join("");
-    return `<div class="sc-row"><div><b>${d.name}</b><br><span class="note">${d.w}% weight${s.fromScan?" · from the skill scan":""}</span></div>
-      <div class="sc-track">${cells}</div>
-      <div class="note">${s.stage!==null?"Stage "+s.stage+(isC?" · ceiling":""):"not scored"}</div></div>`;}).join("")
-    +`<p class="note" style="margin-top:7px">Dashed = 12-month target · red = the dimension capping the score.</p>`;
+    <div class="box"><div class="l">Answered</div><div class="v">${ans}/${tot}<small>${orgEvidence()!==null?orgEvidence()+"% evidenced":"~45 min"}</small></div></div>`;
+  /* scorecard, grouped */
+  document.getElementById("scorecard").innerHTML=["A","B","C","D"].map(gk=>{
+    const ds=ORG_DIMS.filter(d=>d.g===gk);if(!ds.length)return"";
+    return `<div class="note" style="margin:9px 0 3px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:10.5px;color:#e8112d">${GROUPS[gk]}</div>`
+      +ds.map(d=>{const s=orgDim(d.id),isC=ceil&&ceil.dims.some(x=>x.id===d.id),off=dimOff(d.id);
+      const cells=[1,2,3,4,5].map(n=>`<div class="sc-cell ${!off&&s.stage!==null&&n<=s.stage?(isC?"ceil":"on"):""} ${n===t?"tgt":""}"></div>`).join("");
+      return `<div class="sc-row" style="${off?"opacity:.4":""}"><div><b>${d.n}. ${d.name}</b><br><span class="note">${off?"not assessed":wPct(d)+"% weight"+(d.w>1?" · amplifier":"")}${s.fromScan?" · from the skill scan":""}</span></div>
+        <div class="sc-track">${cells}</div>
+        <div class="note">${off?"N/A":s.avg!==null?"Stage "+fmtS(s.avg)+(isC?" · ceiling":""):"not scored"}</div></div>`;}).join("");}).join("")
+    +`<p class="note" style="margin-top:7px">Dashed = 12-month target · red = the dimension capping the score · amplifier = weighted ×1.5 (dimensions the research found the rest depends on).</p>`;
   const v=document.getElementById("ceilVerdict");
+  const hi=riskDims("hi"),cond=riskDims("cond");
+  const riskHTML=(hi.length?`<div class="stop" style="margin-top:9px">⚠ <b>Say these out loud in the readout — they are exposure, not maturity gaps:</b><ul style="margin:5px 0 0 17px">${hi.map(d=>`<li><b>${d.name}</b> at Stage ${orgDim(d.id).stage} — ${esc(d.rf)}</li>`).join("")}</ul></div>`:"")
+    +(cond.length?`<div class="info" style="margin-top:7px"><b>Conditional flags</b> — real where AI is already in use here, worth a line each in the report: ${cond.map(d=>d.name.toLowerCase()).join(" · ")}</div>`:"");
   if(!ceil){v.className="verdict blue";v.innerHTML="Answer the questions below to see where they stand.";}
-  else if(t===null){v.className="verdict blue";v.innerHTML=`<h4>Currently Stage ${ceil.stage} — ${stageName(ceil.stage)}</h4>Capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" and ")}. Set the 12-month target on the Engagement tab to see how far short of their ambition that is.`;}
+  else if(t===null){v.className="verdict blue";v.innerHTML=`<h4>Currently Stage ${ceil.stage} — ${stageName(ceil.stage)}</h4>Capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" and ")}. Set the 12-month target on the Engagement tab to see how far short of their ambition that is.`+riskHTML;}
   else if(ceil.stage>=t){v.className="verdict good";
-    v.innerHTML=`<h4>At or above target — Stage ${ceil.stage}, ${stageName(ceil.stage)}</h4>Nothing organisational is holding them back. Spend the effort on workflows, not foundations.`;}
+    v.innerHTML=`<h4>At or above target — Stage ${ceil.stage}, ${stageName(ceil.stage)}</h4>Nothing organisational is holding them back. Spend the effort on workflows, not foundations.`+riskHTML;}
   else{const g=t-ceil.stage,names=ceil.dims.map(d=>d.name.toLowerCase()).join(" and ");
     v.className=ceil.stage<=2?"verdict bad":"verdict mid";
-    const unscored=ORG_DIMS.filter(d=>orgDim(d.id).stage===null).length;
-    if(unscored)v.innerHTML=`<h4>Provisional — ${orgAnswered()}/18 answered</h4>${unscored} dimension${unscored>1?"s":""} unscored and excluded, so the ceiling flatters them. Current read: Stage ${ceil.stage} (${stageName(ceil.stage)}) capped by ${names}.`;else
+    const unscored=activeDims().filter(d=>orgDim(d.id).stage===null).length;
+    if(unscored)v.innerHTML=`<h4>Provisional — ${ans}/${tot} answered</h4>${unscored} dimension${unscored>1?"s":""} unscored and excluded, so the ceiling flatters them. Current read: Stage ${ceil.stage} (${stageName(ceil.stage)}) capped by ${names}.`+riskHTML;else
     v.innerHTML=`<h4>Capped at Stage ${ceil.stage} (${stageName(ceil.stage)}) by ${names}</h4>
       The weakest dimension sets the ceiling — that's ${g} stage${g>1?"s":""} short of the Stage ${t} ambition.
-      ${pot&&pot>ceil.stage+0.7?`Weighted potential is ${pot.toFixed(1)}, so the rest is ahead of what ${names} allows — the highest-leverage fix available.`:""}`;}
+      ${pot&&pot>ceil.stage+0.7?`Weighted potential is ${pot.toFixed(1)}, so the rest is ahead of what ${names} allows — the highest-leverage fix available.`:""}`+riskHTML;}
   /* dimension questions */
-  document.getElementById("orgDims").innerHTML=ORG_DIMS.map(d=>{
-    const s=orgDim(d.id),cls=s.stage===null?"":s.stage>=4?"g":s.stage>=3?"a":"r";
-    const fromScan=d.id==="skills"&&s.fromScan;
-    return `<div class="card"><div class="dim-head"><h3>${d.name}</h3><span class="s2">${d.sub}</span>
-      <span class="wt">${d.w}%</span><span class="dscore ${cls}">${s.stage!==null?"Stage "+s.stage:"– not scored"}</span></div>
-      ${fromScan?`<div class="info">Scored from the team skill scan below (${fmtS(s.avg)}). The three questions here stay as a cross-check.</div>`:""}
-      ${ORG_QS.filter(q=>q.dim===d.id).map(q=>{const val=S.org[q.k];
-        return `<div class="q"><div class="qt">${q.t}</div><div class="qh">${q.h}</div><div class="opts">
-          ${q.o.map((o,i)=>`<div class="opt st${i+1} ${val===i+1?"sel":""}" onclick="setOrg('${q.k}',${i+1})"><b>${i+1}</b>${o}</div>`).join("")}</div>
-          ${orgEvHTML(q.k)}</div>`;}).join("")}
-      ${dimNoteHTML(d)}</div>`;}).join("");
+  document.getElementById("orgDims").innerHTML=["A","B","C","D"].map(gk=>{
+    const ds=ORG_DIMS.filter(d=>d.g===gk);if(!ds.length)return"";
+    return `<h2 style="font-size:14px;margin:18px 0 6px;color:#e8112d;letter-spacing:.04em;text-transform:uppercase">${GROUPS[gk]}</h2>`+ds.map(d=>{
+    const s=orgDim(d.id),off=dimOff(d.id),cls=off?"":s.stage===null?"":s.stage>=4?"g":s.stage>=3?"a":"r";
+    const sq=qOf(d.id,"s"),cq=qOf(d.id,"c"),sel=S.orgC[cq.k]||[];
+    return `<div class="card" style="${off?"opacity:.5":""}"><div class="dim-head"><h3>${d.n}. ${d.name}</h3><span class="s2">${d.sub}</span>
+      <span class="wt" title="${d.src}">${off?"N/A":wPct(d)+"%"}</span><span class="dscore ${cls}">${off?"not assessed":s.avg!==null?"Stage "+fmtS(s.avg):"– not scored"}</span>
+      <span class="evc ${off?"sel":""}" style="cursor:pointer;font-size:10.5px" onclick="toggleDim('${d.id}')">${off?"include":"N/A"}</span></div>
+      ${off?`<p class="hint">Excluded — the remaining weights renormalise. Click "include" to assess it.</p>`:`
+      ${s.flag?`<div class="info">⚖ <b>The two questions disagree</b> — the spine says Stage ${s.flag.sp}, the checklist evidences ${s.flag.co}. Scored at ${fmtS(s.avg)} and worth resolving before the readout: usually one of them was answered on what they say rather than what you saw.</div>`:""}
+      ${s.scanFlag?`<div class="info">⚖ The team skill scan reads ${fmtS(s.scanFlag)} against ${fmtS(s.avg)} here. The scan measures depth and spread of skill; this measures whether the organisation builds and keeps it.</div>`:""}
+      ${s.fromScan?`<div class="info">Scored from the team skill scan below (${fmtS(s.avg)}) because the questions here aren't answered yet.</div>`:""}
+      ${d.rf&&s.stage!==null&&s.stage<=2?`<div class="stop">⚠ <b>Risk flag:</b> ${esc(d.rf)}</div>`:""}
+      <div class="q"><div class="qt">${sq.t}</div><div class="qh">${sq.h}</div><div class="opts">
+        ${sq.o.map((o,i)=>`<div class="opt st${i+1} ${S.org[sq.k]===i+1?"sel":""}" onclick="setOrg('${sq.k}',${i+1})"><b>${i+1}</b>${o}</div>`).join("")}</div>
+        ${orgEvHTML(sq.k)}</div>
+      <div class="q"><div class="qt">${cq.t} <span class="caphint" style="font-weight:400">— tick only what you saw evidence of</span></div>${cq.h?`<div class="qh">${cq.h}</div>`:""}
+        <div class="opts">${cq.c.map((o,i)=>`<div class="opt ${sel.includes(i)?"sel":""}" style="flex:1 1 46%" onclick="setOrgC('${cq.k}',${i})"><b>${sel.includes(i)?"✓":"·"}</b>${o}</div>`).join("")}</div>
+        <div class="note" style="margin-top:4px">${sel.length} of ${cq.c.length} — evidences Stage ${corrLvl(cq)||"–"}</div>
+        ${orgEvHTML(cq.k)}</div>
+      ${dimNoteHTML(d)}`}</div>`;}).join("");}).join("");
   renderRadar(); renderTeamSkills(); renderCoh(); renderInts(); renderCb();
 }
 function orgEvHTML(k){const e=S.orgEv[k]||{};
@@ -923,6 +1181,8 @@ function renderSetup(){
     el.oninput=()=>{S.meta[k]=el.value;save();};});
   document.getElementById("targetOpts").innerHTML=STAGES.map(s=>
     `<div class="opt st${s.n} ${S.target===s.n?"sel":""}" onclick="S.target=${s.n};save();renderAll()"><b>Stage ${s.n}</b>${s.name}<br><span style="font-size:10.5px">${s.d}</span></div>`).join("")
+    +`<div class="info" style="width:100%;margin-top:8px">Same 1–5 scale as the Enablis AI Maturity assessment, different labels — publish this mapping if a client has had both:
+       <b>1</b> Exploring = Ad Hoc · <b>2</b> Experimenting = Emerging · <b>3</b> Operationalising = Defined · <b>4</b> Scaling = Managed · <b>5</b> AI-native = Optimising</div>`
     +(TGT()===null?`<div class="stop" style="width:100%;margin-top:8px">Set this with the sponsor before the team skill scan — it sets the level every skill is measured against. Don't assume.</div>`:"");
   document.getElementById("mode_light").classList.toggle("sel",!deep());
   document.getElementById("mode_deep").classList.toggle("sel",deep());
@@ -1120,7 +1380,7 @@ function ucOpp(u){const m=ucMoney(u);if(!m)return null;const cov=deep()?ucCovera
   if(cov!==null)return{lo:m*cov*0.3,hi:m*cov*0.6,basis:`AI touches ${Math.round(cov*100)}% of task time × 30–60% efficiency`};
   return{lo:m*0.25,hi:m*0.5,basis:"25–50% capture assumption"};}
 function ucGates(u){const out=[],ceil=ceiling();
-  ORG_DIMS.forEach(d=>{const s=orgDim(d.id);if(s.stage===null||s.stage>=3)return;
+  activeDims().forEach(d=>{const s=orgDim(d.id);if(s.stage===null||s.stage>=3)return;
     const mapped=UDIMS.filter(x=>x.org===d.id).map(x=>x.id);
     if(!mapped.length){out.push({dim:d,stage:s.stage,why:"applies to every use case"});return;}
     if(mapped.some(m=>ucDim(u,m).s<=3))out.push({dim:d,stage:s.stage,why:"and this use case scores low on the same dimension"});});
@@ -1372,19 +1632,82 @@ function unblocks(dimId){
   if(!mapped.length)return sc.length;
   return sc.filter(r=>mapped.some(m=>ucDim(r.u,m).s<=3)).length;}
 function gaps(){const t=TGT();if(t===null)return[];const ceil=ceiling();
-  return ORG_DIMS.map(d=>{const s=orgDim(d.id);if(s.stage===null)return null;
+  return activeDims().map(d=>{const s=orgDim(d.id);if(s.stage===null)return null;
     const size=t-s.stage;if(size<=0)return null;
-    const isC=ceil&&ceil.dims.some(x=>x.id===d.id),ub=unblocks(d.id);
-    return{dim:d,current:s.stage,target:t,size,isCeil:isC,unblocks:ub,leverage:(isC?100:0)+size*10+ub,
-      action:((ORG_ACTIONS[d.id]||{})[s.stage])||{a:"Push to the next stage",why:""},
-      next:((ORG_ACTIONS[d.id]||{})[s.stage+1])||null};
+    const isC=ceil&&ceil.dims.some(x=>x.id===d.id),ub=unblocks(d.id),cand=actFor(d.id,s.stage);
+    return{dim:d,current:s.stage,target:t,size,isCeil:isC,unblocks:ub,
+      leverage:(isC?100:0)+size*10+ub+(d.w>1?15:0),
+      action:cand[0]||null,noAction:!cand.length,
+      next:cand[1]||(cand[0]?actFor(d.id,trOf(cand[0],d.id)[2])[0]:null)||null};
   }).filter(Boolean).sort((a,b)=>b.leverage-a.leverage);}
-function phasedGaps(){const g=gaps();
-  const wrap=(x,src,note)=>({...x,step:src.a,why:src.why||"",lifts:src.lifts||[],note:note||""});
-  return[{phase:"First 90 days — lift the ceiling",items:g.filter(x=>x.isCeil).map(x=>wrap(x,x.action,"lifts the ceiling"))},
-    {phase:"3–6 months — the next constraints",items:g.filter(x=>!x.isCeil).map(x=>wrap(x,x.action))},
-    {phase:"6–12 months — reach the target",items:g.filter(x=>x.size>=2&&x.next).map(x=>wrap(x,x.next,"follows on"))}]
-    .filter(x=>x.items.length);}
+/* Sequencing follows the library's own rules (action-library/sequencing.md):
+   walk each dimension's transition chain to its target, pull in unsatisfied depends_on,
+   topologically sort, then phase by depth, horizon and dimension prerequisites. */
+const HRZ=h=>h==="0-3m"?0:h==="3-6m"?1:h==="6-12m"?2:3;
+const ACT=id=>ACTIONS.find(a=>a.id===id);
+/* a depends_on is satisfied if the client already has the result state that action produces */
+function depSatisfied(id){const a=ACT(id);if(!a)return true;
+  const t=(a.tr||[]).find(x=>x[0]===a.dim);if(!t)return true;
+  const s=orgDim(a.dim);return dimOff(a.dim)||(s.stage!==null&&s.stage>=t[2]);}
+function selectActions(){const t=TGT();if(t===null)return[];
+  const picked=new Map(),reason=new Map();
+  gaps().forEach(g=>{let cur=g.current,guard=0;
+    while(cur<t&&guard++<6){
+      const a=actFor(g.dim.id,cur).find(x=>!picked.has(x.id));
+      if(!a)break;
+      picked.set(a.id,a); if(!reason.has(a.id))reason.set(a.id,g);
+      cur=trOf(a,g.dim.id)[2];}});
+  /* pull in prerequisites the client hasn't already outgrown */
+  let added=true,guard=0;
+  while(added&&guard++<12){added=false;
+    [...picked.values()].forEach(a=>(a.dep||[]).forEach(id=>{
+      if(picked.has(id)||depSatisfied(id))return;
+      const b=ACT(id);if(!b)return;
+      picked.set(id,b); reason.set(id,reason.get(a.id)); added=true;}));}
+  /* topological sort — depth = longest dependency chain within the selection */
+  const sel=[...picked.values()],depth=new Map();
+  const d=(a,seen)=>{if(depth.has(a.id))return depth.get(a.id);
+    if(seen.has(a.id))return 0; seen.add(a.id);
+    const v=Math.max(0,...(a.dep||[]).filter(x=>picked.has(x)).map(x=>d(picked.get(x),seen)+1));
+    depth.set(a.id,v);return v;};
+  sel.forEach(a=>d(a,new Set()));
+  return sel.map(a=>({act:a,g:reason.get(a.id),depth:depth.get(a.id)||0}))
+    .sort((x,y)=>x.depth-y.depth||HRZ(x.act.h)-HRZ(y.act.h)||y.g.leverage-x.g.leverage);}
+function phasedGaps(){const sel=selectActions();if(!sel.length)return[];
+  /* slot = later of the stated horizon and the dependency depth */
+  const slot=x=>Math.min(3,Math.max(HRZ(x.act.h),x.depth));
+  const stuck=new Set(sel.filter(x=>!preMet(x.act)).map(x=>x.act.id));
+  let grew=true,gg=0;
+  while(grew&&gg++<12){grew=false;
+    sel.forEach(x=>{if(stuck.has(x.act.id))return;
+      if((x.act.dep||[]).some(d=>stuck.has(d))){stuck.add(x.act.id);grew=true;}});}
+  const ready=sel.filter(x=>!stuck.has(x.act.id)),blocked=sel.filter(x=>stuck.has(x.act.id));
+  const mk=x=>{const own=ORG_DIMS.find(d=>d.id===x.act.dim)||x.g.dim,os=orgDim(x.act.dim);
+    return {...x.g,dim:own,current:os.stage!==null?os.stage:x.g.current,act:x.act,depth:x.depth,
+    note:[x.depth?"after "+(x.act.dep||[]).filter(i=>sel.some(y=>y.act.id===i)).join(", "):"",
+      own.id!==x.g.dim.id?"prerequisite for "+x.g.dim.name.toLowerCase():"",
+      x.g.isCeil&&own.id===x.g.dim.id&&!x.depth?"lifts the ceiling":""].filter(Boolean).join(" · ")};};
+  const ph=[["First 90 days — lift the ceiling",x=>x.g.isCeil&&slot(x)<=1],
+    ["3–6 months — the next constraints",x=>!x.g.isCeil&&slot(x)<=1],
+    ["6–12 months — reach the target",x=>slot(x)===2],
+    ["12 months+ — only once the foundations hold",x=>slot(x)>=3]];
+  const out=ph.map(([n,f])=>({phase:n,items:ready.filter(f).map(mk)})).filter(x=>x.items.length);
+  if(blocked.length)out.push({phase:"Not yet — gated by a dimension that has to move first",items:blocked.map(mk),blocked:true});
+  const orphan=gaps().filter(g=>g.noAction);
+  if(orphan.length)out.push({phase:"No library action — needs a bespoke recommendation",noLib:true,
+    items:orphan.map(g=>({...g,act:{id:"—",a:"Nothing in the action library covers Stage "+g.current+"→"+g.target+" on this dimension. Write the recommendation, then add it to the library.",
+      why:"",sp:"Delivery Lead",ow:"Delivery Lead",h:"—",e:"—",ev:"",also:[],pre:[]}}))});
+  return out;}
+function actLine(g){const a=g.act,L=[];
+  L.push(`${a.id} · ${a.a}`);
+  if(a.why)L.push(`Why: ${a.why}`);
+  L.push(`Sponsor: ${a.sp} · Owner: ${a.ow} · ${a.h}, ${a.e} effort`);
+  if(g.note)L.push(`(${g.note})`);
+  if(a.ev)L.push(`Done when: ${a.ev}`);
+  if(a.also&&a.also.length)L.push(`Also lifts: ${a.also.map(x=>{const d=ORG_DIMS.find(y=>y.id===x);return d?d.name:x;}).join(", ")}`);
+  const pm=preMissing(a);
+  if(pm.length)L.push(`Blocked until: ${pm.map(([d,l])=>{const x=ORG_DIMS.find(y=>y.id===d);return(x?x.name:d)+" reaches Stage "+l;}).join("; ")}`);
+  return L;}
 /* team skills gaps become actions too */
 function tsActions(){const o=[];
   cohSummary().forEach(x=>{if(x.n&&x.gaps>=3)o.push({who:"HR / L&D with "+x.c.name.toLowerCase(),
@@ -1441,11 +1764,17 @@ function renderOut(){
   const ph=phasedGaps(),tsa=tsActions();
   road.innerHTML=(TGT()===null?`<div class="stop">Set the 12-month target on the Engagement tab — without it there is nothing to measure the gaps against.</div>`:!ceiling()?`<p class="hint">Score the team module and the roadmap builds itself.</p>`
     :(!ph.length&&!tsa.length?`<div class="verdict good"><h4>No gaps — they're at target</h4>Put the effort into workflows.</div>`
-    :ph.map(p=>`<div class="phase"><h3>${p.phase}</h3>${p.items.map(g=>`<div class="act">
-        <b>${g.dim.name}</b> — Stage ${g.current} → ${g.target} <span class="who">${g.isCeil?"· sets the ceiling":""}${g.unblocks?` · unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}`:""}${g.note?" · "+g.note:""}</span>
-        <div style="margin-top:3px">${esc(g.step)}</div>
-        ${g.why?`<div class="who" style="margin-top:3px"><b>Why:</b> ${esc(g.why)}</div>`:""}
-        ${g.lifts&&g.lifts.length?`<div class="who" style="margin-top:2px"><b>Also lifts:</b> ${g.lifts.map(x=>{const d=ORG_DIMS.find(y=>y.id===x);return d?d.name.toLowerCase():x;}).join(", ")}</div>`:""}
+    :ph.map(p=>`<div class="phase"><h3>${p.phase}</h3>
+      ${p.blocked?`<p class="hint">Each of these needs another dimension to reach a given stage first. That is the argument for the sequence — not our preference, the dependency.</p>`:""}
+      ${p.noLib?`<p class="hint">The shared action library stops at Stage 4 on these dimensions. Write the recommendation yourself, then contribute it back so the next engagement has it.</p>`:""}
+      ${p.items.map(g=>`<div class="act">
+        <b>${g.dim.n}. ${g.dim.name}</b> — Stage ${g.current} → ${g.target} <span class="who">${g.note?"· "+esc(g.note):""}${g.isCeil?"· sets the ceiling":""}${g.unblocks?` · unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}`:""}${g.note?" · "+g.note:""}</span>
+        <div style="margin-top:3px"><span class="who" style="font-weight:700">${g.act.id}</span> ${esc(g.act.a)}</div>
+        ${g.act.why?`<div class="who" style="margin-top:3px"><b>Why:</b> ${esc(g.act.why)}</div>`:""}
+        <div class="who" style="margin-top:2px"><b>Sponsor:</b> ${esc(g.act.sp)} · <b>Owner:</b> ${esc(g.act.ow)} · ${g.act.h}, ${g.act.e} effort</div>
+        ${g.act.ev?`<div class="who" style="margin-top:2px"><b>Done when:</b> ${esc(g.act.ev)}</div>`:""}
+        ${preMissing(g.act).length?`<div class="who" style="margin-top:2px;color:#b3261e"><b>Blocked until:</b> ${preMissing(g.act).map(x=>{const d=ORG_DIMS.find(y=>y.id===x[0]);return (d?d.name:x[0])+" reaches Stage "+x[1];}).join("; ")}</div>`:""}
+        ${g.act.also&&g.act.also.length?`<div class="who" style="margin-top:2px"><b>Also lifts:</b> ${g.act.also.map(x=>{const d=ORG_DIMS.find(y=>y.id===x);return d?d.name.toLowerCase():x;}).join(", ")}</div>`:""}
       </div>`).join("")}</div>`).join("")
       +(tsa.length?`<div class="phase"><h3>Team skills</h3>${tsa.map(a=>`<div class="act"><b>${esc(a.who)}:</b> ${esc(a.what)}</div>`).join("")}</div>`:"")));
   const el=document.getElementById("ucActOut");
@@ -1473,13 +1802,15 @@ function copyTeam(){
   L.push(`Weighted potential ${pot.toFixed(1)} · 12-month target ${t?"Stage "+t+" ("+stageName(t)+")":"NOT SET — agree it with the sponsor"}`);
   if(deep()&&orgEvidence()!==null)L.push(`Evidence: ${orgEvidence()}% of answers confirmed`);
   L.push("","SCORECARD");
-  ORG_DIMS.forEach(d=>{const s=orgDim(d.id),n=S.dimNote[d.id]||{};
+  activeDims().forEach(d=>{const s=orgDim(d.id),n=S.dimNote[d.id]||{};
     L.push("",`${d.name.toUpperCase()} — ${s.stage!==null?"Stage "+s.stage+", "+stageName(s.stage):"not scored"}${ceil.dims.some(x=>x.id===d.id)?"   <- THE CEILING":""}${s.fromScan?"   [scored from the skill scan]":""}`);
     if(n.why)L.push(`  Why it matters: ${n.why}`);
     if(n.well)L.push(`  Doing well: ${n.well}`);
     if(n.improve)L.push(`  To improve: ${n.improve}`);
     if(n.riskNot)L.push(`  Risk if not fixed: ${n.riskNot}`);
     if(n.riskGo)L.push(`  Risk if they proceed anyway: ${n.riskGo}`);
+    if(d.rf&&s.stage!==null&&s.stage<=2)L.push(`  RISK FLAG: ${d.rf}`);
+    if(s.flag)L.push(`  Note: the spine answer and the evidence checklist disagreed (${s.flag.sp} vs ${s.flag.co}) — scored at ${fmtS(s.avg)}.`);
     const ctx=ORG_QS.filter(q=>q.dim===d.id).map(q=>(S.orgEv[q.k]||{}).x).filter(Boolean);
     if(ctx.length)L.push(`  Context: ${ctx.join(" · ")}`);});
   L.push("","TEAM SKILLS"+(t?" — against a Stage "+t+" ambition":" — no target set, so no required levels"));
@@ -1516,11 +1847,10 @@ function copyTeam(){
   const ph=phasedGaps(),tsa=tsActions();
   if(ph.length||tsa.length){L.push("","GAP-CLOSURE ROADMAP");
     ph.forEach(p=>{L.push("",p.phase.toUpperCase());
-      p.items.forEach(g=>{L.push(`- [ ] ${g.dim.name} (Stage ${g.current} → ${g.target}): ${g.step}${g.unblocks?`  [unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}]`:""}`);
-        if(g.why)L.push(`      Why: ${g.why}`);
-        if(g.lifts&&g.lifts.length)L.push(`      Also lifts: ${g.lifts.map(x=>{const d=ORG_DIMS.find(y=>y.id===x);return d?d.name:x;}).join(", ")}`);});});
+      p.items.forEach(g=>{L.push(`- [ ] ${g.dim.n}. ${g.dim.name} (Stage ${g.current} → ${g.target})${g.unblocks?`  [unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}]`:""}`);
+        actLine(g).forEach(x=>L.push("      "+x));});});
     if(tsa.length){L.push("","TEAM SKILLS");tsa.forEach(a=>L.push(`- [ ] ${a.who}: ${a.what}`));}}
-  L.push("","Method: eight dimensions scored 1–5. Readiness is the lowest dimension — the weakest link sets the ceiling. Dimensions and questions adapted from the DORA 2025 AI Capabilities Model research; scoring, thresholds and recommendations are ours.");
+  L.push("","Method: fourteen dimensions scored 1–5 — a spine question that sets the level and a corroborating checklist that confirms or contradicts it. Weighted, with four amplifier dimensions at ×1.5. Readiness is the lowest dimension — the weakest link sets the ceiling. Dimensions, weights and the action library are shared with the Enablis AI Maturity assessment; the dimension model is adapted from the DORA 2025 AI Capabilities Model research; scoring, thresholds and recommendations are ours.");
   copyText(L.join("\n"),"Team report copied.");
 }
 function copyWfOut(){
@@ -1611,8 +1941,8 @@ function copyRoadmap(){
   const ceil=ceiling();
   if(ceil)L.push(`Currently Stage ${ceil.stage} (${stageName(ceil.stage)}), capped by ${ceil.dims.map(d=>d.name.toLowerCase()).join(" & ")}; target ${TGT()?"Stage "+TGT():"not set"}.`);
   phasedGaps().forEach(p=>{L.push("",p.phase.toUpperCase());
-    p.items.forEach(g=>{L.push(`- [ ] ${g.dim.name}: ${g.step}${g.unblocks?`  (unblocks ${g.unblocks})`:""}`);
-      if(g.why)L.push(`      Why: ${g.why}`);});});
+    p.items.forEach(g=>{L.push(`- [ ] ${g.dim.n}. ${g.dim.name}${g.unblocks?`  (unblocks ${g.unblocks})`:""}`);
+      actLine(g).forEach(x=>L.push("      "+x));});});
   const tsa=tsActions();
   if(tsa.length){L.push("","TEAM SKILLS");tsa.forEach(a=>L.push(`- [ ] ${a.who}: ${a.what}`));}
   S.wfs.forEach(w=>{fixWf(w);const acts=wfActions(w);if(!acts.length)return;
@@ -1628,7 +1958,7 @@ function exportJSON(){const b=new Blob([JSON.stringify(S,null,2)],{type:"applica
   const a=document.createElement("a");a.href=URL.createObjectURL(b);
   a.download=((S.meta&&S.meta.client)||"client").replace(/\s+/g,"-").toLowerCase()+"-assess.json";a.click();}
 function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{S=JSON.parse(r.result);S.meta=S.meta||{};S.org=S.org||{};S.orgEv=S.orgEv||{};S.dimNote=S.dimNote||{};S.tskills=S.tskills||{};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repoAccess:'',checkAccess:'',repos:[],ow:{},gt:{},gtNotes:{},notes:''};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repos:[],ow:{},gt:{},gtNotes:{}};
+  r.onload=()=>{try{S=JSON.parse(r.result);S.meta=S.meta||{};S.org=S.org||{};S.orgC=S.orgC||{};S.dimOff=S.dimOff||{};S.orgEv=S.orgEv||{};S.dimNote=S.dimNote||{};S.tskills=S.tskills||{};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repoAccess:'',checkAccess:'',repos:[],ow:{},gt:{},gtNotes:{},notes:''};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repos:[],ow:{},gt:{},gtNotes:{}};
     S.wfs=S.wfs||[];S.mode=S.mode||"light";S.target=S.target||4;S.curWf=0;S.curUc=0;save();renderAll();
   }catch(e){alert("Could not read that file.");}};r.readAsText(f);}
 
