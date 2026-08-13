@@ -2,7 +2,9 @@
 
 Two fictional PE-backed mid-market clients, fully assessed through the AI Readiness wedge. Both are engagement files you can load straight into the tool.
 
-**To load:** open `assess.html` (or the AI Readiness entry on the launcher) → **Import** → pick the `.json`. It replaces whatever is in the tool, so export first if you have live work in there.
+**Easiest way to read them:** open `assess.html` and click **Worked examples** in the header. Both are built into the tool — pick one and it loads. No downloading, no importing.
+
+These `.json` files are the same two engagements as portable files, for editing, diffing, or loading via **Import**. Either route replaces whatever is currently in the tool, so export first if you have live work in there.
 
 Neither company exists. Any resemblance to a real client is accidental, and nothing here should be shared outside Enablis as a case study.
 
