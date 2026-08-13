@@ -1,0 +1,439 @@
+{
+ "meta": {
+  "client": "Ridgeway Logistics Group",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-13",
+  "ambition": "Get cost-to-serve down across the six depots and stop the B2C last-mile arm losing money on failed first-time deliveries, in time for a 2027 exit process that is already a year late."
+ },
+ "mode": "deep",
+ "target": 4,
+ "org": {
+  "q1s": 1,
+  "q2s": 1,
+  "q3s": 2,
+  "q4s": 3,
+  "q5s": 2,
+  "q6s": 3,
+  "q7s": 3,
+  "q8s": 3,
+  "q9s": 2,
+  "q10s": 4,
+  "q11s": 2,
+  "q12s": 2,
+  "q13s": 2,
+  "q14s": 3
+ },
+ "orgC": {
+  "q1c": [
+   4
+  ],
+  "q2c": [
+   6
+  ],
+  "q3c": [
+   2
+  ],
+  "q4c": [
+   0,
+   2,
+   3,
+   4
+  ],
+  "q5c": [
+   0
+  ],
+  "q6c": [
+   0,
+   1,
+   4
+  ],
+  "q7c": [
+   0,
+   1,
+   2
+  ],
+  "q8c": [
+   0,
+   1,
+   2
+  ],
+  "q9c": [
+   0,
+   2
+  ],
+  "q10c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q11c": [
+   0,
+   3
+  ],
+  "q12c": [
+   0,
+   2
+  ],
+  "q13c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q14c": [
+   0,
+   1,
+   2,
+   3
+  ]
+ },
+ "dimOff": {},
+ "orgEv": {
+  "q1s": {
+   "t": "COO and HR Director, 4 Aug",
+   "c": "confirmed",
+   "x": "There is no written position of any kind. The COO assumed IT had issued one; IT assumed HR had. Neither had."
+  },
+  "q1c": {
+   "t": "Asked seven staff across two depots and head office, 4-6 Aug",
+   "c": "confirmed",
+   "x": "Not one of the four questions could be answered by anyone we asked, in any function. Depot staff assumed AI was 'a head office thing'; two planners were already using ChatGPT on their phones for shift rotas."
+  },
+  "q2s": {
+   "t": "CFO and IT Director, 5 Aug",
+   "c": "confirmed",
+   "x": "Nobody owns AI risk. Not a regulated industry, so nobody has been forced to ask. Customer address and consignee contact data is going into consumer AI tools by individual choice with no rule against it."
+  },
+  "q3s": {
+   "t": "CEO, 4 Aug",
+   "c": "confirmed",
+   "x": "Sharp on the outcome — he talks about cost-to-serve and failed first-time delivery, not about tools, which is unusual and good. But there is no budget line and no named owner below him."
+  },
+  "q4s": {
+   "t": "Head of Data + TMS lead, 5 Aug",
+   "c": "confirmed",
+   "x": "Operational data is genuinely strong: every consignment event is captured, stewarded and measured, with quality monitored because SLAs depend on it. Commercial and customer data is the weak half — three CRM instances from the 2021 and 2022 acquisitions, no golden customer record."
+  },
+  "q5s": {
+   "t": "Head of Engineering, 6 Aug",
+   "c": "confirmed",
+   "x": "The portal repositories are wired into Copilot. Nothing else — no runbooks, no depot SOPs, no TMS documentation, no ticket history. Every operational question an AI tool is asked gets a generic answer."
+  },
+  "q9s": {
+   "t": "Shadowed the B2C control room, 5 Aug",
+   "c": "confirmed",
+   "x": "The split is stark. On B2B contract logistics they know the client's operation intimately and manage to the SLA. On B2C last-mile nobody has ever spoken to a consignee. Failed first-time delivery is treated as a driver performance metric, not as a consignee experience problem, and the failure reasons captured are the driver's account only."
+  },
+  "q10s": {
+   "t": "Operations Director + network planning, 5 Aug",
+   "c": "confirmed",
+   "x": "The strongest dimension we have scored in any engagement. The whole stream from booking to POD is mapped, measured continuously, decomposed into work and wait time, and reviewed weekly with consequences. They can name their constraint this week and show what it cost."
+  },
+  "q11s": {
+   "t": "Head of Engineering + HR, 6 Aug",
+   "c": "confirmed",
+   "x": "Engineering has a real practice — an internal guild, shared prompt patterns, sensible norms. Operations, planning, customer service and finance have had nothing. The gap between the two is the finding."
+  },
+  "q13s": {
+   "t": "Head of Engineering, 6 Aug",
+   "c": "confirmed",
+   "x": "The dev team runs coding agents against the portal repos with genuinely good discipline: written boundaries, scoped service accounts, every agent-raised PR reviewed by a human, activity logged. None of this is an organisational position — it is one team's own standard, undocumented outside the guild, and nothing covers the automations the planning team is building in Power Platform."
+  },
+  "q14s": {
+   "t": "CFO, 4 Aug",
+   "c": "confirmed",
+   "x": "Cost-to-serve per drop, per route, per depot, reviewed monthly. AI spend sits inside the IT licence line and is visible. What has never been modelled is licences-for-everyone against building one thing for the planning workflow."
+  }
+ },
+ "dimNote": {
+  "d1": {
+   "well": "Nothing to report — this is the gap.",
+   "improve": "There is no written position of any kind, and the assumption gap is telling: the COO thought IT had issued one, IT thought HR had. Meanwhile planners are using consumer AI on their phones for shift rotas.",
+   "riskNot": "Staff are already using AI with customer and consignee data because nothing tells them not to and nothing offers them a sanctioned alternative.",
+   "riskGo": "Any rollout on top of silence will be read as permission for everything, including what is currently happening on personal phones with address data.",
+   "why": "This and governance are the two dimensions capping the whole business. Everything else here is ready for more than these two allow."
+  },
+  "d2": {
+   "well": "The CFO engaged seriously the moment the exposure was described and did not reach for a defence.",
+   "improve": "Nobody owns AI risk. There are no data-handling rules, no approved tools, no human-review requirement, no audit trail. Because logistics is not a regulated industry in the way financial services is, nobody has been forced to ask the question.",
+   "riskNot": "Consignee names, addresses and contact numbers are going into consumer AI tools by individual choice. That is a UK GDPR exposure with a live data subject population, and there is no record of it.",
+   "riskGo": "This is the binding constraint. Connecting AI to the operational estate before anyone owns the risk would take a contained problem and make it structural.",
+   "why": "Alongside the stance, this is the ceiling. It is also the cheapest pair of fixes on the list — which is the good news."
+  },
+  "d3": {
+   "well": "Unusually good framing from the CEO. He talks about cost-to-serve and failed first-time delivery, not about rolling out a tool. Most sponsors we meet do the opposite.",
+   "improve": "No budget line and no named owner below the CEO, so the ambition depends entirely on his attention.",
+   "riskNot": "With the exit already a year late, an initiative that depends on the CEO's personal attention will lose to whatever else the process demands.",
+   "why": "The framing is right and rare. It needs a name and a number attached to survive a busy quarter."
+  },
+  "d4": {
+   "well": "Operational data is genuinely strong and better than most businesses twice this size. Every consignment event captured, stewarded, quality-monitored, because the SLAs depend on it.",
+   "improve": "The commercial half is the weak one — three CRM instances left over from the 2021 and 2022 acquisitions, no golden customer record. The operational estate would support AI today; the customer estate would not.",
+   "riskGo": "A use case that spans both halves inherits the weaker one. Scope the first one to the operational estate and it can start now.",
+   "why": "This is the rare case where the data answer is 'yes, for some things' — and knowing which things is worth more than a programme."
+  },
+  "d5": {
+   "improve": "The portal repositories are connected to Copilot. Nothing operational is: no runbooks, no depot SOPs, no TMS documentation, no ticket history. Every operational question gets a generic answer.",
+   "riskNot": "The business with the best operational data in the sector cannot get an AI tool to answer a question about its own operation.",
+   "why": "This is the largest single opportunity here, and it is gated behind governance rather than behind capability."
+  },
+  "d6": {
+   "well": "A real platform team with paved roads, genuine self-service and named ownership. Engineering is not the constraint in this business.",
+   "improve": "The paved road covers the portal stack only. Anything touching the TMS still goes through a manual route.",
+   "why": "Worth stating plainly in the readout, because the leadership assumption is that technology is what is holding them back. It is not."
+  },
+  "d9": {
+   "well": "On B2B contract logistics, excellent. They know the client's operation, manage to the SLA and can name what a missed window costs the client.",
+   "improve": "On B2C last-mile, nobody has ever spoken to a consignee. Failed first-time delivery is treated as a driver performance metric, and the only failure reasons recorded are the driver's own account.",
+   "riskNot": "The arm that is losing money is the one with no user contact. The business is optimising a number it collects from the wrong end.",
+   "riskGo": "This is the dimension where the research is unambiguous: applying AI to a workflow nobody has validated with its actual users makes outcomes worse, not better. Route optimisation aimed at a failure reason recorded by the driver will confidently optimise the wrong thing.",
+   "why": "The B2C loss and the user-focus gap are the same problem viewed from two ends. Fix the second and the first becomes measurable."
+  },
+  "d10": {
+   "well": "The strongest dimension we have scored anywhere. Booking to POD is mapped, measured continuously, decomposed into work time and wait time, and reviewed weekly with real consequences. They can name this week's constraint and show what it cost.",
+   "improve": "Only the physical stream. The commercial stream — quote to contract — has none of this discipline and is where deals are lost.",
+   "why": "This capability is an asset most clients have to build. Point AI at the constraint they can already see, and the value is measurable from day one."
+  },
+  "d11": {
+   "well": "Engineering has a genuine practice: an internal guild, shared prompt patterns, sensible norms that people actually follow.",
+   "improve": "Operations, planning, customer service and finance have had nothing at all. The distance between engineering and everyone else is the finding, not the average.",
+   "riskNot": "AI stays an engineering activity in a business whose value is created in depots and planning offices.",
+   "why": "The champions already exist. They are all in one function."
+  },
+  "d13": {
+   "well": "The dev team's own agent hygiene is genuinely good — written boundaries, scoped service accounts, human review of every agent-raised PR, activity logged. Better than most engineering organisations we assess.",
+   "improve": "None of it is an organisational position. It is one team's standard, undocumented outside the guild, and nothing at all covers the automations the planning team is building in Power Platform.",
+   "riskNot": "The good practice does not survive the person who set it, and the practice that has no guardrails is growing in a different function.",
+   "riskGo": "Scoring this on engineering's standard would flatter the business and hide the planning-team exposure. We have scored the organisation, not its best team.",
+   "why": "This is the clearest example in the assessment of why one excellent team is not an organisational capability."
+  },
+  "d14": {
+   "well": "Cost-to-serve per drop, per route, per depot, reviewed monthly. AI spend is visible inside the IT licence line. This is a genuinely well-run cost base.",
+   "improve": "The one thing never modelled is licences-for-everyone against building a single thing for the planning workflow. They are two different bets and only the first has been priced.",
+   "why": "The discipline is already here. It has simply never been pointed at this decision."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lvl": 2,
+   "spread": 2,
+   "champ": "D Ferris, engineering"
+  },
+  "ts_task": {
+   "lvl": 2,
+   "spread": 1,
+   "champ": "D Ferris, engineering"
+  },
+  "ts_judge": {
+   "lvl": 2,
+   "spread": 1,
+   "champ": "N Balewa, network planning"
+  },
+  "ts_data": {
+   "lvl": 3,
+   "spread": 2,
+   "champ": "N Balewa, network planning"
+  },
+  "ts_redesign": {
+   "lvl": 2,
+   "spread": 1,
+   "champ": "H Mistry, ops improvement"
+  },
+  "ts_gov": {
+   "lvl": 0,
+   "spread": 0,
+   "champ": ""
+  },
+  "ts_coach": {
+   "lvl": 1,
+   "spread": 1,
+   "champ": "D Ferris, engineering"
+  }
+ },
+ "coh": {
+  "ts_lit|lead": 1,
+  "ts_lit|prac": 1,
+  "ts_lit|tech": 3,
+  "ts_task|lead": 0,
+  "ts_task|prac": 1,
+  "ts_task|tech": 3,
+  "ts_judge|lead": 1,
+  "ts_judge|prac": 2,
+  "ts_judge|tech": 3,
+  "ts_data|lead": 2,
+  "ts_data|prac": 3,
+  "ts_data|tech": 3,
+  "ts_redesign|lead": 2,
+  "ts_redesign|prac": 2,
+  "ts_redesign|tech": 2,
+  "ts_gov|lead": 0,
+  "ts_gov|prac": 0,
+  "ts_gov|tech": 1,
+  "ts_coach|lead": 0,
+  "ts_coach|prac": 1,
+  "ts_coach|tech": 2
+ },
+ "ints": [
+  {
+   "name": "G Traynor",
+   "role": "CEO",
+   "date": "2026-08-04",
+   "coh": "lead",
+   "note": "Talks in outcomes, not tools — cost-to-serve and failed first-time delivery. Exit already a year late and he knows it. Wants to know what he can start on Monday."
+  },
+  {
+   "name": "E Vasquez",
+   "role": "CFO",
+   "date": "2026-08-05",
+   "coh": "lead",
+   "note": "Knows the cost base cold. Engaged immediately on the consignee-data exposure without defending it, and asked what containment looks like."
+  },
+  {
+   "name": "B Okafor",
+   "role": "Chief Operating Officer",
+   "date": "2026-08-04",
+   "coh": "lead",
+   "note": "Assumed IT had issued an AI policy. Genuinely surprised there was none. Owns the depots and would be the right sponsor for the stance."
+  },
+  {
+   "name": "D Ferris",
+   "role": "Head of Engineering",
+   "date": "2026-08-06",
+   "coh": "tech",
+   "note": "Runs the best agent discipline we have seen at this size, entirely on his own initiative. Frustrated that nothing he has written down counts as company policy."
+  },
+  {
+   "name": "N Balewa",
+   "role": "Head of Network Planning",
+   "date": "2026-08-05",
+   "coh": "prac",
+   "note": "Exceptional on flow and constraint. Building Power Platform automations with no guardrails because nobody told her there were any. The two facts are related."
+  },
+  {
+   "name": "S Kaur",
+   "role": "Operations Director",
+   "date": "2026-08-05",
+   "coh": "lead",
+   "note": "Walked us through the value stream from memory, then produced the measurement to back it. This capability is the business's real asset."
+  },
+  {
+   "name": "H Mistry",
+   "role": "Ops improvement lead",
+   "date": "2026-08-06",
+   "coh": "prac",
+   "note": "Understands process redesign properly — wants to change the work, not bolt AI onto it. The right person to own a first workflow."
+  },
+  {
+   "name": "T Whelan",
+   "role": "B2C control room manager",
+   "date": "2026-08-05",
+   "coh": "prac",
+   "note": "Confirmed nobody has ever contacted a consignee about a failed delivery. Failure reasons come from the driver only. Said it had never occurred to anyone to ask."
+  },
+  {
+   "name": "M Duarte",
+   "role": "Head of Data",
+   "date": "2026-08-05",
+   "coh": "tech",
+   "note": "Operational estate is his and it is good. Three CRM instances are not his and he has raised them twice."
+  },
+  {
+   "name": "R Lindqvist",
+   "role": "IT Director",
+   "date": "2026-08-06",
+   "coh": "tech",
+   "note": "Assumed HR owned the AI question. Comfortable owning the tooling side if someone else owns the position."
+  },
+  {
+   "name": "J Adeyemi",
+   "role": "Depot manager, Bardon",
+   "date": "2026-08-06",
+   "coh": "prac",
+   "note": "Had never been asked about AI by anyone. Two of his planners use ChatGPT on their phones for rotas. Assumed that was fine."
+  }
+ ],
+ "cb": {
+  "has": "yes",
+  "repoAccess": "Granted",
+  "checkAccess": "Ready",
+  "commit": "main @ b41e07d",
+  "arch": "Yes",
+  "secrets": "No",
+  "repos": [
+   {
+    "name": "ridgeway-portal",
+    "lang": "TypeScript / React",
+    "size": "210k lines",
+    "owner": "D Ferris",
+    "scope": "Yes"
+   },
+   {
+    "name": "ridgeway-tms-bridge",
+    "lang": "C# / .NET",
+    "size": "95k lines",
+    "owner": "R Lindqvist",
+    "scope": "Yes"
+   },
+   {
+    "name": "depot-scan-android",
+    "lang": "Kotlin",
+    "size": "40k lines",
+    "owner": "D Ferris",
+    "scope": "No"
+   }
+  ],
+  "ow": {
+   "o1": "Done",
+   "o2": "Done",
+   "o3": "Done",
+   "o4": "Done",
+   "o5": "Done",
+   "o6": "Done",
+   "o7": "Done",
+   "o8": "Done",
+   "o9": "Done"
+  },
+  "state": {
+   "security": "Planned",
+   "architecture": "Planned",
+   "code-quality": "Planned",
+   "testing": "Planned",
+   "dependency-health": "Planned",
+   "delivery-infrastructure": "Planned",
+   "sre-operability": "Planned",
+   "ai-assisted-engineering": "Planned",
+   "docs-onboarding": "Planned",
+   "release-distribution": "Planned",
+   "licensing": "Planned",
+   "financial-integrity": "Not applicable"
+  },
+  "gt": {
+   "security": 58,
+   "architecture": 64,
+   "code-quality": 71,
+   "testing": 42,
+   "dependency-health": 37,
+   "delivery-infrastructure": 73,
+   "sre-operability": 76,
+   "ai-assisted-engineering": 45,
+   "docs-onboarding": 52,
+   "release-distribution": 68,
+   "licensing": 81
+  },
+  "gtNotes": {
+   "dependency-health": "The .NET bridge is two major versions behind on a framework with a support end date inside the exit window — 14 packages with known advisories",
+   "testing": "Portal coverage 44% and falling as agent-generated code lands faster than tests are written",
+   "ai-assisted-engineering": "Good informal practice but no rules file in the repo, no evals on agent output, and the standard exists only in the guild's heads",
+   "security": "No secrets found. Deductions are for missing dependency scanning in CI and inconsistent authorisation checks in the bridge",
+   "docs-onboarding": "Portal is documented; the TMS bridge has none and one person understands it"
+  },
+  "bespoke": "tms-integration-contract, depot-offline-sync",
+  "critHigh": "0 critical, 6 high",
+  "must": "7",
+  "notes": "Better engineering than the leadership believes it has. The constraint is not capability — it is that agent-generated volume is outrunning test coverage, and one undocumented integration carries the whole TMS relationship. Neither is an AI problem; both get worse if AI volume increases before they are fixed."
+ },
+ "wfs": [],
+ "num": {}
+}

@@ -284,11 +284,11 @@ const GROUPS={A:"Intent and control",B:"Data and technical foundations",C:"How w
 const ORG_DIMS=[
  {id:"d1",n:1,g:"A",w:1,src:"DORA",rl:"cond",name:"AI stance & policy clarity",sub:"do people know what they're expected, supported and permitted to do?",
   rf:"Ambiguity is already producing shadow usage — staff hiding AI from managers rather than not using it."},
- {id:"d2",n:2,g:"A",w:1,src:"Enablis",rl:"hi",name:"AI governance, risk & assurance",sub:"is there a route to a yes, and does anyone own the risk?",
+ {id:"d2",n:2,g:"A",w:1,src:"Enablis",rl:"hi",ca:"Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.",name:"AI governance, risk & assurance",sub:"is there a route to a yes, and does anyone own the risk?",
   rf:"AI is in use with nobody accountable for the risk. The exposure is live, not theoretical."},
  {id:"d3",n:3,g:"A",w:1,src:"Enablis",rl:"cond",name:"Leadership sponsorship & AI strategy",sub:"is there a funded, owned ambition tied to business outcomes?",
   rf:"Money is going out on AI with nobody accountable for what comes back."},
- {id:"d4",n:4,g:"B",w:1.5,src:"DORA",rl:"hi",name:"Data ecosystem health",sub:"is it findable, trusted, joined up and owned?",
+ {id:"d4",n:4,g:"B",w:1.5,src:"DORA",rl:"hi",ca:"Stop any AI work that depends on the unreconciled data until the first use case has a golden record. Reconcile one domain, not all of them.",name:"Data ecosystem health",sub:"is it findable, trusted, joined up and owned?",
   rf:"AI on this data won't just underperform — it will produce confident, plausible, wrong answers."},
  {id:"d5",n:5,g:"B",w:1.5,src:"DORA",rl:"cond",name:"AI-accessible internal context",sub:"can AI tools actually see their code, docs and tickets?",
   rf:"Approved tools can't reach internal context, so people route around them to ones that can."},
@@ -298,14 +298,14 @@ const ORG_DIMS=[
   rf:"AI is writing a meaningful share of the code and the safety net hasn't kept up."},
  {id:"d8",n:8,g:"C",w:1,src:"DORA",rl:"cond",name:"Working in small batches",sub:"small, frequent, reversible changes — the safety net for AI volume",
   rf:"Large batches plus AI-accelerated output means more change per release, reviewed by the same people."},
- {id:"d9",n:9,g:"C",w:1.5,src:"DORA",rl:"hi",name:"User-centric focus",sub:"the one where a low score makes AI actively harmful",
+ {id:"d9",n:9,g:"C",w:1.5,src:"DORA",rl:"hi",ca:"Do not accelerate delivery until this is addressed. The research finding is that AI makes organisations at this level worse, not slower to improve — speed applied to the wrong work.",name:"User-centric focus",sub:"the one where a low score makes AI actively harmful",
   rf:"The most important flag in the model. The research found AI makes weak-user-focus teams measurably worse — faster delivery of the wrong thing."},
  {id:"d10",n:10,g:"C",w:1,src:"DORA-adjacent",rl:"",name:"Value stream visibility & flow",sub:"can they draw how work flows, and name where it waits?",rf:""},
  {id:"d11",n:11,g:"D",w:1,src:"Enablis",rl:"cond",name:"Skills, enablement & champions",sub:"does capability survive the best people leaving?",
   rf:"Capability sits with one or two named people. A resignation resets the programme."},
  {id:"d12",n:12,g:"D",w:1,src:"Enablis",rl:"cond",name:"AI adoption breadth & measured value",sub:"has it spread past engineering — and is anyone measuring the value?",
   rf:"Material spend with no value measurement. The next budget round has no defensible answer."},
- {id:"d13",n:13,g:"A",w:1,src:"Enablis",rl:"hi",name:"Agentic readiness",sub:"if agents act on their systems, who bounded what they can do?",
+ {id:"d13",n:13,g:"A",w:1,src:"Enablis",rl:"hi",ca:"Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list.",name:"Agentic readiness",sub:"if agents act on their systems, who bounded what they can do?",
   rf:"Agents are acting on their behalf, often on personal credentials, with no inventory, no agreed limits and no reviewable record. That is unbounded exposure, not a maturity gap."},
  {id:"d14",n:14,g:"D",w:1,src:"Enablis",rl:"cond",name:"Cost & licensing economics",sub:"do they know what AI costs them, and what a unit of it buys?",
   rf:"AI spend stays invisible until it surprises someone — usually mid-business-case."}];
@@ -812,7 +812,11 @@ function showTab(id){TAB=id;renderNav();window.scrollTo(0,0);renderAll();}
 
 /* ==================== TEAM: readiness ==================== */
 function setOrg(k,v){S.org[k]=(S.org[k]===v?undefined:v);save();renderAll();}
-function setOrgC(k,i){const a=S.orgC[k]=S.orgC[k]||[],p=a.indexOf(i);if(p>=0)a.splice(p,1);else a.push(i);save();renderAll();}
+function setOrgC(k,i){const q=ORG_QS.find(x=>x.k===k),n=NONE(q);
+  let a=S.orgC[k]=S.orgC[k]||[];const p=a.indexOf(i);
+  if(p>=0)a.splice(p,1);
+  else{ if(i===n)a=S.orgC[k]=[n]; else {a=S.orgC[k]=a.filter(x=>x!==n); a.push(i);} }
+  save();renderAll();}
 function toggleDim(id){S.dimOff[id]=!S.dimOff[id];save();renderAll();}
 function setOrgEv(k,f,v){S.orgEv[k]=S.orgEv[k]||{t:"",c:""};
   if(f==="c")S.orgEv[k].c=(S.orgEv[k].c===v?"":v);else S.orgEv[k][f]=v;save();if(f==="c")renderTeam();}
@@ -825,7 +829,9 @@ function wPct(d){const A=activeDims(),t=A.reduce((a,x)=>a+x.w,0)||1;
   const m=fl.find(x=>x.id===d.id);return m?m.f:0;}
 function qOf(id,ty){return ORG_QS.find(q=>q.dim===id&&q.ty===ty);}
 /* corroborating checklist bands to a level, capped at 4 — a checklist cannot evidence Optimising */
+const NONE=q=>q.c.length; /* synthetic last option: checked, and none of them exist */
 function corrLvl(q){const set=S.orgC[q.k];if(!set||!set.length)return null;
+  if(set.includes(NONE(q)))return 1;
   const c=set.length,b=q.b;return c>=b[2]?4:c>=b[1]?3:c>=b[0]?2:1;}
 /* spine sets the level; the checklist confirms it or moves it half a point and raises a flag */
 function orgDim(id){
@@ -851,6 +857,8 @@ function potential(){const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x
   return sc.reduce((a,x)=>a+x.s.avg*x.d.w,0)/w;}
 function orgTotalQ(){return activeDims().length*2;}
 function orgAnswered(){return activeDims().reduce((a,d)=>a+orgDim(d.id).answered,0);}
+/* exposure is contained, not sequenced — a live risk does not wait for a dependency chain */
+function containment(){return riskDims("hi").filter(d=>d.ca).map(d=>({dim:d,stage:orgDim(d.id).stage,ca:d.ca}));}
 function riskDims(lv){return activeDims().filter(d=>d.rf&&d.rl===lv&&orgDim(d.id).stage!==null&&orgDim(d.id).stage<=2);}
 function answeredKeys(){const k=[];activeDims().forEach(d=>{const sq=qOf(d.id,"s"),cq=qOf(d.id,"c");
   if(S.org[sq.k])k.push(sq.k);if(corrLvl(cq)!==null)k.push(cq.k);});return k;}
@@ -1127,8 +1135,9 @@ function renderTeam(){
         ${sq.o.map((o,i)=>`<div class="opt st${i+1} ${S.org[sq.k]===i+1?"sel":""}" onclick="setOrg('${sq.k}',${i+1})"><b>${i+1}</b>${o}</div>`).join("")}</div>
         ${orgEvHTML(sq.k)}</div>
       <div class="q"><div class="qt">${cq.t} <span class="caphint" style="font-weight:400">— tick only what you saw evidence of</span></div>${cq.h?`<div class="qh">${cq.h}</div>`:""}
-        <div class="opts">${cq.c.map((o,i)=>`<div class="opt ${sel.includes(i)?"sel":""}" style="flex:1 1 46%" onclick="setOrgC('${cq.k}',${i})"><b>${sel.includes(i)?"✓":"·"}</b>${o}</div>`).join("")}</div>
-        <div class="note" style="margin-top:4px">${sel.length} of ${cq.c.length} — evidences Stage ${corrLvl(cq)||"–"}</div>
+        <div class="opts">${cq.c.map((o,i)=>`<div class="opt ${sel.includes(i)?"sel":""}" style="flex:1 1 46%" onclick="setOrgC('${cq.k}',${i})"><b>${sel.includes(i)?"✓":"·"}</b>${o}</div>`).join("")}
+          <div class="opt st1 ${sel.includes(cq.c.length)?"sel":""}" style="flex:1 1 100%" onclick="setOrgC('${cq.k}',${cq.c.length})"><b>${sel.includes(cq.c.length)?"✓":"·"}</b>None of these — I checked, and none of them exist</div></div>
+        <div class="note" style="margin-top:4px">${sel.includes(cq.c.length)?"none confirmed absent":sel.length+" of "+cq.c.length} — evidences Stage ${corrLvl(cq)||"–"}</div>
         ${orgEvHTML(cq.k)}</div>
       ${dimNoteHTML(d)}`}</div>`;}).join("");}).join("");
   renderRadar(); renderTeamSkills(); renderCoh(); renderInts(); renderCb();
@@ -1673,7 +1682,14 @@ function selectActions(){const t=TGT();if(t===null)return[];
   sel.forEach(a=>d(a,new Set()));
   return sel.map(a=>({act:a,g:reason.get(a.id),depth:depth.get(a.id)||0}))
     .sort((x,y)=>x.depth-y.depth||HRZ(x.act.h)-HRZ(y.act.h)||y.g.leverage-x.g.leverage);}
-function phasedGaps(){const sel=selectActions();if(!sel.length)return[];
+function phasedGaps(){const sel=selectActions();const con=containment();
+  if(!sel.length&&!con.length)return[];
+  const pre=con.length?[{phase:"Before the roadmap — contain these now",contain:true,
+    items:con.map(c=>({dim:c.dim,current:c.stage,target:TGT(),isCeil:false,unblocks:0,note:"",
+      act:{id:"NOW",a:c.ca,why:"Scored "+c.stage+" on a dimension that flags as exposure rather than a maturity gap.",
+        sp:"Client executive sponsor",ow:"Named on the day",h:"immediate",e:"low",
+        ev:"The exposure is closed or formally accepted in writing by a named executive.",also:[],pre:[],dep:[]}}))}]:[];
+  if(!sel.length)return pre;
   /* slot = later of the stated horizon and the dependency depth */
   const slot=x=>Math.min(3,Math.max(HRZ(x.act.h),x.depth));
   const stuck=new Set(sel.filter(x=>!preMet(x.act)).map(x=>x.act.id));
@@ -1691,7 +1707,7 @@ function phasedGaps(){const sel=selectActions();if(!sel.length)return[];
     ["3–6 months — the next constraints",x=>!x.g.isCeil&&slot(x)<=1],
     ["6–12 months — reach the target",x=>slot(x)===2],
     ["12 months+ — only once the foundations hold",x=>slot(x)>=3]];
-  const out=ph.map(([n,f])=>({phase:n,items:ready.filter(f).map(mk)})).filter(x=>x.items.length);
+  const out=pre.concat(ph.map(([n,f])=>({phase:n,items:ready.filter(f).map(mk)})).filter(x=>x.items.length));
   if(blocked.length)out.push({phase:"Not yet — gated by a dimension that has to move first",items:blocked.map(mk),blocked:true});
   const orphan=gaps().filter(g=>g.noAction);
   if(orphan.length)out.push({phase:"No library action — needs a bespoke recommendation",noLib:true,
@@ -1765,6 +1781,7 @@ function renderOut(){
   road.innerHTML=(TGT()===null?`<div class="stop">Set the 12-month target on the Engagement tab — without it there is nothing to measure the gaps against.</div>`:!ceiling()?`<p class="hint">Score the team module and the roadmap builds itself.</p>`
     :(!ph.length&&!tsa.length?`<div class="verdict good"><h4>No gaps — they're at target</h4>Put the effort into workflows.</div>`
     :ph.map(p=>`<div class="phase"><h3>${p.phase}</h3>
+      ${p.contain?`<p class="hint">These are not maturity gaps. They are things already happening that carry exposure now, so they sit outside the sequence — raise them at the readout and close them or have someone accept them in writing.</p>`:""}
       ${p.blocked?`<p class="hint">Each of these needs another dimension to reach a given stage first. That is the argument for the sequence — not our preference, the dependency.</p>`:""}
       ${p.noLib?`<p class="hint">The shared action library stops at Stage 4 on these dimensions. Write the recommendation yourself, then contribute it back so the next engagement has it.</p>`:""}
       ${p.items.map(g=>`<div class="act">

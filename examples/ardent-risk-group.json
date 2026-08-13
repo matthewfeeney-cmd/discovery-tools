@@ -1,0 +1,351 @@
+{
+ "meta": {
+  "client": "Ardent Risk Group",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-13",
+  "ambition": "Take 400bps out of the cost base before the 2027 exit, and have a credible AI story in the IM — without a Consumer Duty incident on the personal-lines book."
+ },
+ "mode": "deep",
+ "target": 4,
+ "org": {
+  "q1s": 2,
+  "q2s": 3,
+  "q3s": 2,
+  "q4s": 2,
+  "q5s": 1,
+  "q6s": 1,
+  "q7s": 2,
+  "q8s": 2,
+  "q9s": 3,
+  "q10s": 2,
+  "q11s": 1,
+  "q12s": 2,
+  "q13s": 1,
+  "q14s": 2
+ },
+ "orgC": {
+  "q1c": [
+   2
+  ],
+  "q2c": [
+   0,
+   5
+  ],
+  "q3c": [
+   0
+  ],
+  "q4c": [
+   3,
+   4
+  ],
+  "q5c": [
+   4
+  ],
+  "q6c": [
+   5
+  ],
+  "q7c": [
+   0,
+   1
+  ],
+  "q8c": [
+   0,
+   3
+  ],
+  "q9c": [
+   0,
+   1,
+   2
+  ],
+  "q10c": [
+   1
+  ],
+  "q11c": [
+   5
+  ],
+  "q12c": [
+   0,
+   1
+  ],
+  "q13c": [
+   5
+  ],
+  "q14c": [
+   0,
+   1
+  ]
+ },
+ "dimOff": {},
+ "orgEv": {
+  "q1s": {
+   "t": "Group Compliance Director, 4 Aug",
+   "c": "confirmed",
+   "x": "An all-staff email in March said 'do not use ChatGPT with client data'. That is the entire written position. Three of four acquired businesses had never seen it — it went to the legacy Ardent distribution list only."
+  },
+  "q1c": {
+   "t": "Asked six staff across three offices, 4-6 Aug",
+   "c": "confirmed",
+   "x": "Every one of them said 'we're not allowed'. None could say what they were allowed to use, whether the firm would help them, or whether it applied to their role. Prohibition is not a stance."
+  },
+  "q2s": {
+   "t": "Chief Risk Officer, 5 Aug",
+   "c": "told",
+   "x": "The CRO has taken AI risk into her remit and is confident it is covered by the existing model-risk framework."
+  },
+  "q2c": {
+   "t": "Walked the framework with Risk and IT, 5 Aug",
+   "c": "confirmed",
+   "x": "The model-risk framework predates generative AI and covers pricing models only. No approved-vendor list, no human-in-the-loop requirement, no audit trail of AI-assisted decisions. The confidence and the controls do not match."
+  },
+  "q3s": {
+   "t": "CEO and CFO, 4 Aug",
+   "c": "confirmed",
+   "x": "Kestrel asked 'what's your AI story for the IM' at the June board. The answer being prepared is a Copilot rollout. Nobody has connected it to the 400bps."
+  },
+  "q4s": {
+   "t": "Head of IT + data lead, 5 Aug",
+   "c": "confirmed",
+   "x": "Acturis for commercial lines, two legacy platforms from the 2023 and 2024 acquisitions still running in parallel. Client records exist in all three with no golden record. A renewal for a client of two acquired firms is manual reconciliation."
+  },
+  "q5s": {
+   "t": "Head of IT, 5 Aug",
+   "c": "confirmed",
+   "x": "Nothing internal is reachable by any AI tool. Eleven years of policy wordings, endorsements and claims correspondence sit in a document store nothing can query."
+  },
+  "q6s": {
+   "t": "IT Director + outsourcer account manager, 6 Aug",
+   "c": "confirmed",
+   "x": "IT is outsourced to a managed provider on a ticket SLA. A new environment is a change request with a 15-day lead time and a charge. There is no route for a team to try anything."
+  },
+  "q9s": {
+   "t": "Shadowed two account executives, 5 Aug",
+   "c": "confirmed",
+   "x": "Genuinely strong. Brokers know their clients' businesses in detail, challenge the client's own assumptions on cover, and can name what a bad renewal costs the client. This is the firm's actual product and it should be protected, not automated over."
+  },
+  "q10s": {
+   "t": "Renewals manager, 6 Aug",
+   "c": "confirmed",
+   "x": "The renewals path is well understood as a sequence. Nobody has ever measured where a renewal waits. Our own sample of 20 suggested 9 of 14 elapsed days are queue time, mostly awaiting insurer response and internal referral."
+  },
+  "q11s": {
+   "t": "HR Director, 6 Aug",
+   "c": "confirmed",
+   "x": "No AI training has been provided. Two people in claims are self-taught and are quietly doing everyone else's drafting for them."
+  },
+  "q13s": {
+   "t": "Claims team lead, 6 Aug",
+   "c": "confirmed",
+   "x": "A team leader in claims built a Power Automate flow that reads the claims inbox, drafts an acknowledgement and sends it, running on her personal Microsoft account. It has been live for four months. Nobody in IT or Risk knew. There is no log anyone reads and no way to reconstruct what it has sent to policyholders."
+  },
+  "q14s": {
+   "t": "CFO + FP&A, 4 Aug",
+   "c": "confirmed",
+   "x": "Cost discipline everywhere else is excellent — this is a PE-backed business that knows its cost-to-serve by branch. AI spend is the exception: no line item, and at least nine personal Copilot and ChatGPT subscriptions on expenses."
+  }
+ },
+ "dimNote": {
+  "d1": {
+   "well": "Compliance moved fast when the risk was raised, and the instinct to protect client data is right.",
+   "improve": "A prohibition is not a position. Staff know they are not allowed to use ChatGPT and nothing else — not what is permitted, not what support exists, not whether it applies to their role. Three of the four acquired businesses never received even that.",
+   "riskNot": "Prohibition without an alternative produces exactly what we found: a claims team leader running an unauthorised automation on a personal account because there was no sanctioned route.",
+   "riskGo": "Rolling out Copilot on top of a blanket prohibition sends two contradictory instructions at once. Adoption will stall, and the people already working around the rule will keep doing it — now with more tools.",
+   "why": "This is the cheapest thing on the list to fix and it unblocks the most. Two pages, signed by the CEO, distributed to all four businesses."
+  },
+  "d2": {
+   "well": "A named executive owns AI risk, which most firms this size cannot say. Regulatory exposure has been assessed properly, and the Consumer Duty implications of the personal-lines book are understood.",
+   "improve": "The controls do not match the confidence. The model-risk framework covers pricing models and predates generative AI. There is no approved-vendor list, no human-in-the-loop requirement for consequential actions, and no audit trail of AI-assisted decisions.",
+   "riskNot": "An FCA-regulated firm cannot evidence how an AI-assisted customer decision was reached. On the personal-lines book that is a Consumer Duty exposure, not a maturity gap.",
+   "riskGo": "Proceeding on the belief that this is already covered is the more dangerous path than proceeding knowing it is not. The framework will be cited in a file review and it will not hold.",
+   "why": "In a regulated business the route to a yes is the constraint on everything. Right now there is no route — only a belief that one exists."
+  },
+  "d3": {
+   "well": "There is genuine executive attention and the sponsor is asking. Money would be found for the right proposal.",
+   "improve": "The ambition is expressed as a tool rollout, not an outcome. Nobody has connected AI to the 400bps mandate, so there is no test for whether any of it worked.",
+   "riskNot": "A Copilot rollout with no outcome attached is the 'more for show' strategy the sponsor will eventually ask about.",
+   "why": "PE-backed businesses do not lack the ability to fund things. They lack the framing that makes funding defensible at exit."
+  },
+  "d4": {
+   "well": "The Acturis book is well managed and the data lead is capable and responsive.",
+   "improve": "Two legacy platforms from the 2023 and 2024 acquisitions still run in parallel. The same client exists three times with no golden record, so a cross-sold renewal is manual reconciliation.",
+   "riskNot": "Every AI use case will pay the integration cost again, and the first one will be quoted as if it were the last.",
+   "riskGo": "AI on three unreconciled client records produces confident answers about the wrong client. In a regulated advice context that is a complaint, not an inconvenience.",
+   "why": "Platform consolidation is already on the integration plan for other reasons. Sequencing AI behind it costs nothing; sequencing it ahead costs twice."
+  },
+  "d5": {
+   "improve": "Nothing internal is reachable. Eleven years of wordings, endorsements and claims correspondence — the thing that would make an answer Ardent's rather than generic — sits in a store nothing can query.",
+   "riskNot": "Any AI deployed here answers like a search engine, because that is all it can see. Staff will conclude AI does not work in insurance.",
+   "riskGo": "Connecting it before governance exists is the sequencing error we see most often. The roadmap holds this back until the risk controls are real.",
+   "why": "This is the difference between a tool that drafts a generic letter and one that drafts theirs."
+  },
+  "d6": {
+   "improve": "IT is outsourced on a ticket SLA. A new environment is a 15-day change request with a charge attached. There is no sanctioned way for anyone to try anything.",
+   "riskNot": "Nothing gets piloted, so nothing gets learned, and the AI story stays theoretical until someone builds it on a personal account.",
+   "why": "The outsourcing contract is up for renewal in 2027. The right ask is a small sanctioned sandbox now, not a renegotiation."
+  },
+  "d9": {
+   "well": "The strongest dimension in the business and the one to protect. Brokers know their clients' operations in detail and will challenge a client's own assumptions on cover. Account executives can name what a bad renewal costs the client.",
+   "improve": "The knowledge is individual rather than institutional. It leaves when the broker leaves, which for a business being sold in 2027 is a diligence question.",
+   "riskGo": "The research finding is that AI makes weak-user-focus organisations worse. Ardent is the opposite case — the risk here is automating over the judgement that is the product.",
+   "why": "This is why an AI programme here should aim at the admin around the broker, not at the broking."
+  },
+  "d10": {
+   "improve": "The renewals path is understood as a sequence but has never been measured. Our sample of 20 suggested 9 of 14 elapsed days are queue time — awaiting insurer response and internal referral.",
+   "riskNot": "Speeding up broker drafting when two thirds of the elapsed time is queue will produce no change the client can feel, and no change the sponsor can see.",
+   "why": "This is the cheapest measurement on the list and it decides where AI is worth pointing."
+  },
+  "d11": {
+   "improve": "No training has been provided. Two self-taught people in claims are quietly doing other people's drafting for them.",
+   "riskNot": "Capability sits with two people who were not asked to have it and are not recognised for it. If either leaves, the only working AI practice in the business goes with them.",
+   "why": "Champions here already exist. They just have no mandate, no time and no cover."
+  },
+  "d13": {
+   "improve": "A claims team leader has been running an unattended automation against the claims inbox for four months — drafting and sending acknowledgements to policyholders on her personal Microsoft account. IT and Risk did not know. There is no reviewable log.",
+   "riskNot": "Nobody can reconstruct what has been sent to policyholders, or on whose authority. For an FCA-regulated firm that is an evidencing failure with a live customer population.",
+   "riskGo": "Scaling agents from this position multiplies an exposure nobody has bounded. The inventory has to come first.",
+   "why": "This is not a maturity gap. It is an unauthorised system acting on customers, and it should be raised at the readout rather than folded into a score."
+  },
+  "d14": {
+   "well": "Cost discipline everywhere else is genuinely strong — cost-to-serve is known by branch, which most firms this size cannot do.",
+   "improve": "AI is the exception. No line item, and at least nine personal Copilot and ChatGPT subscriptions coming through expenses.",
+   "riskNot": "The business case for the first real build will be argued against a baseline nobody can state.",
+   "why": "The discipline already exists in this business. It just has not been pointed at this yet."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lvl": 1,
+   "spread": 1,
+   "champ": "J Okonkwo, claims"
+  },
+  "ts_task": {
+   "lvl": 1,
+   "spread": 1,
+   "champ": "J Okonkwo, claims"
+  },
+  "ts_judge": {
+   "lvl": 2,
+   "spread": 2,
+   "champ": "S Whitfield, technical claims"
+  },
+  "ts_data": {
+   "lvl": 1,
+   "spread": 1,
+   "champ": ""
+  },
+  "ts_redesign": {
+   "lvl": 1,
+   "spread": 1,
+   "champ": ""
+  },
+  "ts_gov": {
+   "lvl": 2,
+   "spread": 3,
+   "champ": "Compliance team"
+  },
+  "ts_coach": {
+   "lvl": 0,
+   "spread": 0,
+   "champ": ""
+  }
+ },
+ "coh": {
+  "ts_lit|lead": 1,
+  "ts_lit|prac": 1,
+  "ts_lit|tech": 2,
+  "ts_task|lead": 0,
+  "ts_task|prac": 1,
+  "ts_task|tech": 2,
+  "ts_judge|lead": 2,
+  "ts_judge|prac": 3,
+  "ts_judge|tech": 2,
+  "ts_data|lead": 1,
+  "ts_data|prac": 1,
+  "ts_data|tech": 2,
+  "ts_redesign|lead": 1,
+  "ts_redesign|prac": 1,
+  "ts_redesign|tech": 1,
+  "ts_gov|lead": 3,
+  "ts_gov|prac": 2,
+  "ts_gov|tech": 2,
+  "ts_coach|lead": 0,
+  "ts_coach|prac": 1,
+  "ts_coach|tech": 0
+ },
+ "ints": [
+  {
+   "name": "M Halloran",
+   "role": "CEO",
+   "date": "2026-08-04",
+   "coh": "lead",
+   "note": "Kestrel asked for an AI story at the June board. Wants something in the IM. Open about the fact that nobody has connected it to the 400bps."
+  },
+  {
+   "name": "R Devi",
+   "role": "CFO",
+   "date": "2026-08-04",
+   "coh": "lead",
+   "note": "Knows cost-to-serve by branch to two decimal places. Could not say what AI costs the group. Immediately asked for the expenses query when we raised shadow subscriptions."
+  },
+  {
+   "name": "C Bellamy",
+   "role": "Chief Risk Officer",
+   "date": "2026-08-05",
+   "coh": "lead",
+   "note": "Believes AI risk is covered by the model-risk framework. Constructive when shown that it predates generative AI — asked for the gap list rather than defending it."
+  },
+  {
+   "name": "P Ngata",
+   "role": "Group Compliance Director",
+   "date": "2026-08-04",
+   "coh": "lead",
+   "note": "Author of the March 'do not use ChatGPT' email. Agrees it went to the legacy distribution list only. Wants to write the real position and asked what good looks like."
+  },
+  {
+   "name": "T Ashworth",
+   "role": "IT Director",
+   "date": "2026-08-06",
+   "coh": "tech",
+   "note": "Outsourcer contract up in 2027. A new environment is a 15-day change request. Says he could get a sandbox approved if someone senior asked for it."
+  },
+  {
+   "name": "S Whitfield",
+   "role": "Head of Technical Claims",
+   "date": "2026-08-05",
+   "coh": "prac",
+   "note": "Sharp on where AI would get claims wrong. Wants a human check on anything touching a policyholder. The most useful sceptic in the business."
+  },
+  {
+   "name": "J Okonkwo",
+   "role": "Claims team leader",
+   "date": "2026-08-06",
+   "coh": "prac",
+   "note": "Built the Power Automate acknowledgement flow on her personal account. Did it because there was no sanctioned route and the backlog was hurting customers. Should be a champion, not a disciplinary."
+  },
+  {
+   "name": "A Ferreira",
+   "role": "Account Executive, commercial",
+   "date": "2026-08-05",
+   "coh": "prac",
+   "note": "Shadowed a renewal. Knows the client's operation better than the client's own FD does. Spends roughly half a day per renewal on document assembly."
+  },
+  {
+   "name": "K Osei",
+   "role": "Head of Data",
+   "date": "2026-08-05",
+   "coh": "tech",
+   "note": "Capable and blocked. Has a written consolidation plan for the two legacy platforms that has been deferred twice for integration capacity."
+  },
+  {
+   "name": "L Moreau",
+   "role": "Renewals Manager",
+   "date": "2026-08-06",
+   "coh": "prac",
+   "note": "Agreed to the elapsed-time sample. Was surprised by the 9-of-14-days queue finding — expected it to be broker capacity."
+  }
+ ],
+ "cb": {
+  "has": "no"
+ },
+ "wfs": [],
+ "num": {}
+}
