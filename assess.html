@@ -299,7 +299,7 @@ const ORG_DIMS=[
   rf:"AI is writing a meaningful share of the code and the safety net hasn't kept up."},
  {id:"d8",n:8,g:"C",w:1,src:"DORA",rl:"cond",name:"Working in small batches",sub:"small, frequent, reversible changes — the safety net for AI volume",
   rf:"Large batches plus AI-accelerated output means more change per release, reviewed by the same people."},
- {id:"d9",n:9,g:"C",w:1.5,src:"DORA",rl:"hi",ca:"Do not accelerate delivery until this is addressed. The research finding is that AI makes organisations at this level worse, not slower to improve — speed applied to the wrong work.",name:"User-centric focus",sub:"the one where a low score makes AI actively harmful",
+ {id:"d9",n:9,g:"C",w:1.5,src:"DORA",rl:"stop",ca:"Do not accelerate delivery until this is addressed. The research finding is that AI makes organisations at this level worse, not slower to improve — speed applied to the wrong work.",name:"User-centric focus",sub:"the one where a low score makes AI actively harmful",
   rf:"The most important flag in the model. The research found AI makes weak-user-focus teams measurably worse — faster delivery of the wrong thing."},
  {id:"d10",n:10,g:"C",w:1,src:"DORA-adjacent",rl:"",name:"Value stream visibility & flow",sub:"can they draw how work flows, and name where it waits?",rf:""},
  {id:"d11",n:11,g:"D",w:1,src:"Enablis",rl:"cond",name:"Skills, enablement & champions",sub:"does capability survive the best people leaving?",
@@ -828,7 +828,7 @@ function reportRadar(){
 function lc(x){return String(x).toLowerCase().replace(/\bai\b/g,"AI").replace(/\bsre\b/g,"SRE");}
 function clientReport(){
   const E=esc, ceil=ceiling(), pot=potential(), t=TGT(), D=activeDims();
-  const con=containment(), hi=riskDims("hi"), ph=phasedGaps();
+  const con=containment(), stop=stopFlags(), hi=riskDims("hi"), ph=phasedGaps(), proj=projected();
   const unscored=D.filter(d=>orgDim(d.id).stage===null);
   const scan=S.cb&&S.cb.has==="yes"?cbScores():null;
   const p=(s)=>s?`<p>${E(s)}</p>`:"";
@@ -842,8 +842,8 @@ function clientReport(){
     : `You are at Stage ${ceil.stage} of 5 against a Stage ${t} ambition — and it is ${capNames.length>1?capList:capList} that puts you there.`;
   const gapNote = ceil.stage>=t ? "" :
     (pot&&pot>ceil.stage+0.7
-      ? `Weighted across all ${D.length} dimensions you score ${pot.toFixed(1)}. The distance between that and Stage ${ceil.stage} is the point of this report: most of the organisation is ready for more than ${capNames.length>1?"these dimensions allow":"this dimension allows"}. Lift the constraint and the rest is already there.`
-      : `Weighted across all ${D.length} dimensions you score ${pot.toFixed(1)}, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
+      ? `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today. The distance between that and Stage ${ceil.stage} is the point of this report: most of the organisation is already operating above what ${capNames.length>1?"these dimensions allow":"this dimension allows"}.${proj?` Bring ${capNames.length>1?"them":"it"} up to Stage ${t} and that average moves to ${proj.toFixed(1)} — but the ceiling moves further, which is what actually changes what you can do.`:""}`
+      : `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
 
   /* ---- dimension sections ---- */
   const dimHTML=["A","B","C","D"].map(g=>{
@@ -1047,7 +1047,8 @@ function clientReport(){
     <div class="kpis">
       <div class="kpi${ceil.stage<t?" red":""}"><span>Today</span><b>Stage ${ceil.stage}</b><small>${E(stageName(ceil.stage))}</small></div>
       <div class="kpi"><span>Your 12-month ambition</span><b>Stage ${t}</b><small>${E(stageName(t))}</small></div>
-      <div class="kpi"><span>Weighted across all ${D.length}</span><b>${pot.toFixed(1)}</b><small>what you would score if the constraint were lifted</small></div>
+      <div class="kpi"><span>Weighted average today</span><b>${pot.toFixed(1)}</b><small>across all ${D.length} dimensions as they stand — not a projection</small></div>
+      ${proj&&proj>pot+0.05?`<div class="kpi"><span>If the constraint were lifted</span><b>${proj.toFixed(1)}</b><small>the same average with ${capNames.length>1?"those dimensions":"that dimension"} at Stage ${t}</small></div>`:""}
     </div>
     <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is ${ceil.stage}, set by ${E(capList)}, and the fastest route to a higher number is not broad improvement. It is that.</p>
     ${unscored.length?`<p class="flag"><b>Scope note.</b> ${unscored.length} dimension${unscored.length>1?"s were":" was"} not assessed in this engagement — ${unscored.map(d=>E(lc(d.name))).join(", ")}. ${unscored.length>1?"They are":"It is"} excluded from your score rather than assumed, so the figures above describe only what we examined.</p>`:""}
@@ -1062,6 +1063,10 @@ function clientReport(){
           ${n.riskNot?`<p class="ex-why"><b>Why now.</b> ${E(n.riskNot)}</p>`:""}</div>`;}).join("")}
     </div>
     <p class="method">Each of these should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision. Leaving them open is not, and it is the state we found them in.</p>
+    ${stop.length?`<h4 class="sub-h">And one thing not to do yet</h4>
+      ${stop.map(c=>{const n=S.dimNote[c.dim.id]||{};
+        return `<p><b>${E(c.dim.name)} — Stage ${c.stage}.</b> ${E(c.ca)}</p>${n.riskGo?`<p class="method">${E(n.riskGo)}</p>`:""}`;}).join("")}
+      <p class="method">This is not something already happening. It is a warning about sequence: applying AI here before this is addressed tends to make the outcome worse rather than merely leaving value unclaimed.</p>`:""}
   </div>`:""}
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How to read the scores</h2></div>
@@ -1198,13 +1203,21 @@ function orgDim(id){
 function ceiling(){const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.stage!==null);
   if(!sc.length)return null;const min=Math.min(...sc.map(x=>x.s.stage));
   return{stage:min,dims:sc.filter(x=>x.s.stage===min).map(x=>x.d)};}
+/* weighted average of what they score TODAY — not a projection */
 function potential(){const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.avg!==null);
   if(!sc.length)return null;const w=sc.reduce((a,x)=>a+x.d.w,0);
   return sc.reduce((a,x)=>a+x.s.avg*x.d.w,0)/w;}
+/* what they would actually score if the capping dimensions reached target — the real projection */
+function projected(){const t=TGT(),c=ceiling();if(t===null||!c)return null;
+  const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.avg!==null);
+  if(!sc.length)return null;const w=sc.reduce((a,x)=>a+x.d.w,0);
+  return sc.reduce((a,x)=>a+(c.dims.some(y=>y.id===x.d.id)?t:x.s.avg)*x.d.w,0)/w;}
 function orgTotalQ(){return activeDims().length*2;}
 function orgAnswered(){return activeDims().reduce((a,d)=>a+orgDim(d.id).answered,0);}
 /* exposure is contained, not sequenced — a live risk does not wait for a dependency chain */
 function containment(){return riskDims("hi").filter(d=>d.ca).map(d=>({dim:d,stage:orgDim(d.id).stage,ca:d.ca}));}
+/* distinct from exposure: nothing is happening yet, but proceeding would make it worse */
+function stopFlags(){return riskDims("stop").filter(d=>d.ca).map(d=>({dim:d,stage:orgDim(d.id).stage,ca:d.ca}));}
 function riskDims(lv){return activeDims().filter(d=>d.rf&&d.rl===lv&&orgDim(d.id).stage!==null&&orgDim(d.id).stage<=2);}
 function answeredKeys(){const k=[];activeDims().forEach(d=>{const sq=qOf(d.id,"s"),cq=qOf(d.id,"c");
   if(S.org[sq.k])k.push(sq.k);if(corrLvl(cq)!==null)k.push(cq.k);});return k;}
@@ -1435,7 +1448,7 @@ function renderTeam(){
   const ceil=ceiling(),pot=potential(),t=TGT(),tot=orgTotalQ(),ans=orgAnswered();
   document.getElementById("teamBoxes").innerHTML=`
     <div class="box ceil"><div class="l">Readiness — the ceiling</div><div class="v">${ceil?"Stage "+ceil.stage:"–"}<small>${ceil?stageName(ceil.stage)+" · set by "+ceil.dims.map(d=>d.name.toLowerCase()).join(" & "):"score the dimensions"}</small></div></div>
-    <div class="box pot"><div class="l">Weighted potential</div><div class="v">${pot?pot.toFixed(1):"–"}<small>if the weakest were fixed</small></div></div>
+    <div class="box pot"><div class="l">Weighted average today</div><div class="v">${pot?pot.toFixed(1):"–"}<small>${pot&&ceil?"vs Stage "+ceil.stage+" ceiling — the spread the ceiling hides":"across all scored dimensions"}</small></div></div>
     <div class="box tgt"><div class="l">12-month target</div><div class="v">${t?"Stage "+t:"not set"}<small>${t?stageName(t):"set it on the Engagement tab"}</small></div></div>
     <div class="box"><div class="l">Answered</div><div class="v">${ans}/${tot}<small>${orgEvidence()!==null?orgEvidence()+"% evidenced":"~45 min"}</small></div></div>`;
   /* scorecard, grouped */
