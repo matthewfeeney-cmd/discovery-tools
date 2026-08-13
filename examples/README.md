@@ -42,6 +42,10 @@ Ridgeway is the better demonstration of why the ceiling matters: a genuinely wel
 
 ---
 
+## Sample client reports
+
+`sample-report-ardent.html` and `sample-report-ridgeway.html` are the client-facing documents generated from these two engagements — what the client actually receives. Open either in a browser; print to PDF from there. They are produced by **Outputs → Client report** in the tool, so they regenerate whenever the assessment changes.
+
 ## What's in each file
 
 Everything the wedge captures: all 28 scored questions, the evidence and context notes behind them, the per-dimension narrative including both risk framings, the seven-capability skill scan with the cohort breakdown, and the interview log. Ridgeway additionally carries a full Overwatch record — three repositories, all nine stages, twelve audit dimensions scored, with three reds.
