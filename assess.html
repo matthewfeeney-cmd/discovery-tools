@@ -255,6 +255,7 @@
     <h2>Outputs</h2>
     <p class="hint">Everything below is generated from what you've scored. Copy straight into an email, a deck or a plan.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="primary" style="background:var(--red);border-color:var(--red);color:#fff" onclick="openReportDialog()">Client report — HTML / PDF</button>
       <button class="primary" onclick="copyTeam()">Team readiness &amp; skills report</button>
       <button onclick="copyWfOut()">Workflow blueprint</button>
       <button onclick="copyValueCase()">£ value case (current use case)</button>
@@ -762,6 +763,377 @@ function loadExample(id){
     c.dims.map(d=>d.name.toLowerCase()).join(" and ")+".\n\nStart on the Team tab, then look at the roadmap on Outputs.");
 }
 function resetAll(){if(!confirm("Clear this engagement and start again? Export first if you want to keep it."))return;localStorage.removeItem(KEY);location.reload();}
+/* ==================== CLIENT-FACING REPORT ====================
+   Builds a single self-contained HTML document from the current engagement.
+   Prints to PDF from the browser — no library, no server, works offline. */
+const RPT={src:false,sell:true};
+function setRpt(k){RPT[k]=!RPT[k];openReportDialog();}
+function openReportDialog(){
+  const old=document.getElementById("rptOverlay"); if(old)old.remove();
+  const ceil=ceiling(),t=TGT();
+  const blocked=[];
+  if(!S.meta.client)blocked.push("The client name is empty — set it on the Engagement tab.");
+  if(t===null)blocked.push("No 12-month target is set, so the report has no gap to describe.");
+  if(!ceil)blocked.push("No dimensions are scored yet.");
+  const un=ceil?activeDims().filter(d=>orgDim(d.id).stage===null).length:0;
+  const o=document.createElement("div"); o.id="rptOverlay";
+  o.style.cssText="position:fixed;inset:0;background:rgba(26,26,26,.45);z-index:99;display:flex;align-items:center;justify-content:center;padding:20px";
+  o.onclick=e=>{if(e.target===o)o.remove();};
+  o.innerHTML=`<div style="background:#fff;border-radius:12px;max-width:560px;width:100%;padding:24px;max-height:88vh;overflow:auto">
+    <h2 style="font-size:17px;margin-bottom:3px">Client report</h2>
+    <p class="note" style="margin-bottom:14px">Opens in a new tab. Print from there to produce a PDF — choose A4, margins Default, and tick "Background graphics".</p>
+    ${blocked.length?`<div class="stop">Not ready yet:<ul style="margin:5px 0 0 17px">${blocked.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>`:""}
+    ${!blocked.length&&un?`<div class="info">${un} dimension${un>1?"s are":" is"} unscored. The report will say so rather than quietly leaving them out.</div>`:""}
+    ${!blocked.length&&orgEvidence()!==null&&orgEvidence()<40?`<div class="info">Only ${orgEvidence()}% of answers are marked confirmed. The method section reports this — worth a pass over the evidence tags before this goes to a client.</div>`:""}
+    <div class="sub" style="margin-top:12px">
+      <div class="st">Options</div>
+      <div class="opt ${RPT.src?"sel":""}" style="flex:1 1 100%;margin-bottom:6px" onclick="setRpt('src')"><b>${RPT.src?"✓":"·"}</b>Name our sources against each finding</div>
+      <p class="note" style="margin:-2px 0 8px 4px">Off by default. Naming who told us what is useful internally and risky in a client room — a finding that contradicts the person who gave it becomes personal. The evidence base is summarised either way.</p>
+      <div class="opt ${RPT.sell?"sel":""}" style="flex:1 1 100%;margin-bottom:6px" onclick="setRpt('sell')"><b>${RPT.sell?"✓":"·"}</b>Include "How Enablis can help" at the end</div>
+      <p class="note" style="margin:-2px 0 0 4px">A clearly separated final section, so the assessment reads as assessment and the sell reads as a sell.</p>
+    </div>
+    <button style="width:100%;margin-top:14px;background:${blocked.length?"#bbb":"var(--red)"};color:#fff;border:none;font-weight:700"
+      ${blocked.length?"disabled":""} onclick="openReport()">Open the report</button>
+    <button style="width:100%;margin-top:7px" onclick="downloadReport()" ${blocked.length?"disabled":""}>Download as .html</button>
+    <button style="width:100%;margin-top:7px" onclick="document.getElementById('rptOverlay').remove()">Cancel</button>
+  </div>`;
+  document.body.appendChild(o);
+}
+function openReport(){
+  const w=window.open("","_blank");
+  if(!w){alert("Your browser blocked the new tab. Allow pop-ups for this page, or use \"Download as .html\".");return;}
+  w.document.write(clientReport()); w.document.close();
+  const ov=document.getElementById("rptOverlay"); if(ov)ov.remove();
+}
+function downloadReport(){
+  const b=new Blob([clientReport()],{type:"text/html"}),u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u; a.download=(S.meta.client||"client").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-ai-readiness.html";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+  const ov=document.getElementById("rptOverlay"); if(ov)ov.remove();
+}
+/* radar as standalone SVG for the report */
+function reportRadar(){
+  const D=activeDims(),t=TGT(),R=132,cx=210,cy=175,n=D.length;
+  const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n,r=R*(v/5);return[cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  const rings=[1,2,3,4,5].map(v=>`<polygon points="${D.map((_,i)=>pt(i,v).join(",")).join(" ")}" fill="none" stroke="#dcdcdc" stroke-width="1"/>`).join("");
+  const spokes=D.map((_,i)=>{const[x,y]=pt(i,5);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#dcdcdc" stroke-width="1"/>`;}).join("");
+  const cur=`<polygon points="${D.map((d,i)=>pt(i,orgDim(d.id).avg||0).join(",")).join(" ")}" fill="rgba(11,92,138,.20)" stroke="#0b5c8a" stroke-width="2.2"/>`;
+  const tgt=t?`<polygon points="${D.map((_,i)=>pt(i,t).join(",")).join(" ")}" fill="none" stroke="#1e7e44" stroke-width="1.6" stroke-dasharray="5 4"/>`:"";
+  const dots=D.map((d,i)=>{const v=orgDim(d.id).avg;return v?`<circle cx="${pt(i,v)[0]}" cy="${pt(i,v)[1]}" r="2.8" fill="#0b5c8a"/>`:"";}).join("");
+  const labels=D.map((d,i)=>{const[x,y]=pt(i,5.42);
+    return `<text x="${x}" y="${y+3}" text-anchor="${Math.abs(x-cx)<9?"middle":(x>cx?"start":"end")}" font-size="11" font-weight="700" fill="#5f6368">${d.n}</text>`;}).join("");
+  return `<svg viewBox="0 0 420 350" style="width:100%;max-width:400px;height:auto">${rings}${spokes}${tgt}${cur}${dots}${labels}</svg>`;
+}
+/* lowercase for mid-sentence use, without flattening acronyms */
+function lc(x){return String(x).toLowerCase().replace(/\bai\b/g,"AI").replace(/\bsre\b/g,"SRE");}
+function clientReport(){
+  const E=esc, ceil=ceiling(), pot=potential(), t=TGT(), D=activeDims();
+  const con=containment(), hi=riskDims("hi"), ph=phasedGaps();
+  const unscored=D.filter(d=>orgDim(d.id).stage===null);
+  const scan=S.cb&&S.cb.has==="yes"?cbScores():null;
+  const p=(s)=>s?`<p>${E(s)}</p>`:"";
+  const bar=(v)=>`<span class="bar">${[1,2,3,4,5].map(n=>`<i class="${v!==null&&n<=Math.floor(v)?"on":""}"></i>`).join("")}</span>`;
+
+  /* ---- executive summary sentence ---- */
+  const capNames=ceil.dims.map(d=>lc(d.name));
+  const capList=capNames.length>1?capNames.slice(0,-1).join(", ")+" and "+capNames.slice(-1):capNames[0];
+  const headline=ceil.stage>=t
+    ? `You are at Stage ${ceil.stage} against a Stage ${t} ambition. Nothing at organisational level is holding you back.`
+    : `You are at Stage ${ceil.stage} of 5 against a Stage ${t} ambition — and it is ${capNames.length>1?capList:capList} that puts you there.`;
+  const gapNote = ceil.stage>=t ? "" :
+    (pot&&pot>ceil.stage+0.7
+      ? `Weighted across all ${D.length} dimensions you score ${pot.toFixed(1)}. The distance between that and Stage ${ceil.stage} is the point of this report: most of the organisation is ready for more than ${capNames.length>1?"these dimensions allow":"this dimension allows"}. Lift the constraint and the rest is already there.`
+      : `Weighted across all ${D.length} dimensions you score ${pot.toFixed(1)}, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
+
+  /* ---- dimension sections ---- */
+  const dimHTML=["A","B","C","D"].map(g=>{
+    const ds=D.filter(d=>d.g===g); if(!ds.length)return"";
+    return `<h3 class="grp">${E(GROUPS[g])}</h3>`+ds.map(d=>{
+      const s=orgDim(d.id),n=S.dimNote[d.id]||{},isC=ceil.dims.some(x=>x.id===d.id);
+      const ctx=[qOf(d.id,"s"),qOf(d.id,"c")].map(q=>(S.orgEv[q.k]||{}).x).filter(Boolean);
+      const srcs=RPT.src?[qOf(d.id,"s"),qOf(d.id,"c")].map(q=>(S.orgEv[q.k]||{}).t).filter(Boolean):[];
+      return `<div class="dim${isC?" cap":""}">
+        <div class="dh"><h4>${d.n}. ${E(d.name)}</h4>
+          <span class="sc">${s.avg!==null?"Stage "+fmtS(s.avg):"not assessed"}${isC?' <b class="cap-tag">the constraint</b>':""}</span></div>
+        ${bar(s.avg)} <span class="wt">weighted ${wPct(d)}%${d.w>1?" — one of the four the research treats as an amplifier":""}</span>
+        ${s.avg===null?`<p class="miss">Not assessed in this engagement. It is excluded from your score rather than assumed.</p>`:""}
+        ${n.why?`<p class="why"><b>Why this matters to you.</b> ${E(n.why)}</p>`:""}
+        ${n.well?`<p><b>What is working.</b> ${E(n.well)}</p>`:""}
+        ${n.improve?`<p><b>What needs to change.</b> ${E(n.improve)}</p>`:""}
+        ${ctx.length?`<p class="ctx">${ctx.map(E).join(" ")}</p>`:""}
+        ${(n.riskNot||n.riskGo)?`<div class="risks">
+          ${n.riskNot?`<div><b>The risk of leaving it</b><span>${E(n.riskNot)}</span></div>`:""}
+          ${n.riskGo?`<div><b>The risk of pressing on anyway</b><span>${E(n.riskGo)}</span></div>`:""}</div>`:""}
+        ${s.flag?`<p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — ${s.flag.sp} against ${s.flag.co}. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>`:""}
+        ${srcs.length?`<p class="src">Sources: ${srcs.map(E).join(" · ")}</p>`:""}
+      </div>`;}).join("");}).join("");
+
+  /* ---- skills ---- */
+  const st=tsStats(),cs=cohSummary(),anyTs=TCAPS.some(c=>ts(c.id).lvl!==null&&ts(c.id).lvl!==undefined);
+  const skillHTML=!anyTs?"":`
+    <table class="tbl"><thead><tr><th>Capability</th><th>Needed</th><th>Today</th><th>How widely held</th></tr></thead><tbody>
+    ${TCAPS.map(c=>{const x=ts(c.id),req=tsReq(c);
+      if(x.lvl===null||x.lvl===undefined)return"";
+      const short=req!==null&&x.lvl<req;
+      return `<tr class="${short?"short":""}"><td>${E(c.name)}<span class="sub2">${E(c.hint)}</span></td>
+        <td>${req===null?"—":E(LVLS[req])}</td><td><b>${E(LVLS[x.lvl])}</b></td>
+        <td>${x.spread===null||x.spread===undefined?"—":E(SPREAD[x.spread])}</td></tr>`;}).join("")}
+    </tbody></table>
+    ${cs.some(x=>x.n)?`<h4 class="sub-h">Where the gap actually sits</h4>
+      <p>The same capability is rarely even across an organisation, and a single average hides the training decision. Yours breaks down as:</p>
+      <table class="tbl"><thead><tr><th>Group</th><th>Average level</th><th>Capabilities short of the level your ambition needs</th></tr></thead><tbody>
+      ${cs.filter(x=>x.n).map(x=>`<tr><td>${E(x.c.name)}<span class="sub2">${E(x.c.hint)}</span></td>
+        <td>${x.avg===null?"—":x.avg.toFixed(1)+" / 4"}</td>
+        <td>${x.gaps}${x.worst?` — starting with ${E(lc(x.worst.cap.name))}`:""}</td></tr>`).join("")}
+      </tbody></table>
+      <p class="ctx">Read across the rows rather than down: three different starting points usually means three different training tracks, not one programme.</p>`:""}
+    ${st.short.length?`<p><b>${st.short.length} capabilit${st.short.length>1?"ies fall":"y falls"} short</b> of the level a Stage ${t} ambition requires: ${st.short.map(x=>E(lc(x.c.name))).join(", ")}.</p>`:""}
+    ${st.narrow.length?`<p><b>Held too narrowly.</b> ${st.narrow.map(x=>E(x.c.name)).join(", ")} — strong enough, but concentrated in too few people to survive a resignation.</p>`:""}`;
+
+  /* ---- code audit ---- */
+  const codeHTML=!scan?"":`
+    <p>Rather than ask your engineers to rate their own codebase, we audited it. ${S.cb.repos&&S.cb.repos.length?`${S.cb.repos.length} repositor${S.cb.repos.length>1?"ies":"y"} were in scope`:"The repositories in scope were audited"} across ${GT_PARTS.length} dimensions, each scored out of 100. Every finding is marked according to whether it was measured by a tool or inferred, and any check that failed to complete is reported as incomplete rather than scored as clean.</p>
+    <div class="two">
+      <div class="stat"><span>${Math.round(scan.eng)}<small>/100</small></span>Engineering quality</div>
+      <div class="stat"><span>${Math.round(scan.ai)}<small>/100</small></span>Readiness for AI-assisted work</div>
+    </div>
+    <table class="tbl"><thead><tr><th>Dimension</th><th>Score</th><th>What we found</th></tr></thead><tbody>
+    ${GT_PARTS.filter(x=>S.cb.state&&S.cb.state[x.id]==="Planned"&&S.cb.gt[x.id]!==undefined&&S.cb.gt[x.id]!=="").map(x=>{
+      const v=Number(S.cb.gt[x.id]),b=bandOf(v);
+      return `<tr><td>${E(x.n)}</td><td class="b-${b}"><b>${v}</b></td><td>${E((S.cb.gtNotes||{})[x.id]||"")}</td></tr>`;}).join("")}
+    </tbody></table>
+    ${cbIncomplete().length?`<p class="flag"><b>Incomplete checks.</b> ${cbIncomplete().map(x=>E(lc(x.n))).join(", ")} could not be completed. We report these as incomplete rather than scoring them clean, because a check that did not run is not a pass.</p>`:""}
+    ${S.cb.secrets==="Yes"?`<p class="flag"><b>Credentials found in the repository.</b> The audit surfaced live secrets committed to source control. These should be rotated at source. The underlying report quotes them verbatim and is deliberately excluded from this document and from any circulation.</p>`:""}
+    ${S.cb.notes?`<p><b>In summary.</b> ${E(S.cb.notes)}</p>`:""}`;
+
+  /* ---- roadmap ---- */
+  const roadHTML=ph.filter(x=>!x.contain).map(x=>`
+    <div class="phase${x.contain?" now":""}${x.blocked?" later":""}">
+      <h4>${E(x.phase)}</h4>
+      ${x.contain?`<p class="lead">These are not maturity gaps — they are things already happening that carry exposure today. They sit outside the sequence below because they should not wait for anything else.</p>`:""}
+      ${x.blocked?`<p class="lead">Each of these needs something else on this list to land first. That is not our preference — it is the dependency. Doing them early tends to produce work that has to be redone.</p>`:""}
+      ${x.noLib?`<p class="lead">Our standard library has no move for you here because you are already beyond it. These need a recommendation written specifically for you.</p>`:""}
+      ${x.items.map(g=>`<div class="act">
+        <div class="ah"><b>${E(g.act.a)}</b>${g.act.id!=="NOW"&&g.act.id!=="—"?`<span class="aid">${E(g.act.id)}</span>`:""}</div>
+        <div class="meta">${E(g.dim.name)} · Stage ${g.current} → ${g.target}${g.note?" · "+E(g.note):""}</div>
+        ${g.act.why?`<p>${E(g.act.why)}</p>`:""}
+        <table class="mini"><tr><td>Sponsor</td><td>${E(g.act.sp)}</td></tr>
+          <tr><td>Owner</td><td>${E(g.act.ow)}</td></tr>
+          <tr><td>Effort</td><td>${E(g.act.h)}${g.act.e&&g.act.e!=="—"?", "+E(g.act.e):""}</td></tr>
+          ${g.act.ev?`<tr><td>Done when</td><td>${E(g.act.ev)}</td></tr>`:""}
+          ${(g.act.also||[]).length?`<tr><td>Also moves</td><td>${g.act.also.map(i=>{const d=ORG_DIMS.find(y=>y.id===i);return E(d?lc(d.name):i);}).join(", ")}</td></tr>`:""}
+          ${preMissing(g.act).length?`<tr><td>Needs first</td><td>${preMissing(g.act).map(m=>{const d=ORG_DIMS.find(y=>y.id===m[0]);return E((d?d.name:m[0])+" at Stage "+m[1]);}).join("; ")}</td></tr>`:""}
+        </table>
+      </div>`).join("")}
+    </div>`).join("");
+
+  const nInt=(S.ints||[]).length, ev=orgEvidence();
+  let __n=1; const N=()=>String(++__n).padStart(2,"0");
+  const secN=(()=>{let i=0;return()=>++i;})();
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>${E(S.meta.client||"Client")} — AI Readiness Assessment</title>
+<style>
+ @page{size:A4;margin:16mm 14mm}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font:15px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;background:#f4f4f5}
+ .page{max-width:820px;margin:0 auto;background:#fff;padding:46px 54px}
+ h1{font-size:31px;line-height:1.2;letter-spacing:-.4px}
+ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.2px}
+ h3.grp{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#e8112d;font-weight:800;margin:26px 0 10px;padding-bottom:5px;border-bottom:1px solid #eee}
+ h4{font-size:16px}
+ h4.sub-h{margin:20px 0 6px;font-size:15px}
+ p{margin:0 0 9px}
+ .sec{margin-top:34px;page-break-inside:auto}
+ .sec>.sh{display:flex;align-items:baseline;gap:10px;border-top:3px solid #e8112d;padding-top:9px;margin-bottom:12px}
+ .sec>.sh .num{font-size:12px;font-weight:800;color:#e8112d;letter-spacing:.1em}
+ .cover{border-bottom:3px solid #e8112d;padding-bottom:26px;margin-bottom:8px}
+ .cover .tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#e8112d;font-weight:800}
+ .cover .meta{color:#5f6368;font-size:13.5px;margin-top:14px}
+ .cover .amb{margin-top:16px;padding:13px 16px;background:#faf7f8;border-left:3px solid #e8112d;font-size:14.5px}
+ .lede{font-size:18.5px;line-height:1.5;margin:18px 0 10px;letter-spacing:-.2px}
+ .kpis{display:flex;gap:11px;margin:16px 0 6px;flex-wrap:wrap}
+ .kpi{flex:1 1 150px;border:1px solid #e3e3e3;border-radius:9px;padding:12px 14px}
+ .kpi b{display:block;font-size:26px;line-height:1.15;letter-spacing:-.6px}
+ .kpi span{font-size:11.5px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+ .kpi small{display:block;font-size:12px;color:#5f6368;font-weight:400;margin-top:2px;line-height:1.35}
+ .kpi.red b{color:#b3261e}
+ .scale{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}
+ .scale td{padding:6px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+ .scale td:first-child{white-space:nowrap;font-weight:700;width:1%}
+ .scale tr.you td{background:#fff6f7}
+ .scale tr.you td:first-child::after{content:" ← you";color:#e8112d;font-weight:800;font-size:11px}
+ .bar{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
+ .bar i{width:26px;height:8px;border-radius:2px;background:#e9e9ea;display:block}
+ .bar i.on{background:#0b5c8a}
+ .dim.cap .bar i.on{background:#e8112d}
+ .wt{font-size:11.5px;color:#5f6368}
+ .dim{border:1px solid #e8e8e8;border-radius:10px;padding:15px 17px;margin-bottom:11px;page-break-inside:avoid}
+ .dim.cap{border-color:#e8112d;border-width:1.5px;background:#fffafb}
+ .dh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px}
+ .dh .sc{font-size:13px;color:#5f6368;white-space:nowrap}
+ .cap-tag{background:#e8112d;color:#fff;font-size:10px;padding:2px 6px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
+ .dim p{font-size:14.2px;margin:7px 0 0}
+ .why{color:#1a1a1a}
+ .ctx{color:#5f6368;font-size:13.4px;font-style:italic;border-left:2px solid #e8e8e8;padding-left:11px}
+ .src{color:#8a8a8a;font-size:11.5px}
+ .miss{color:#8a8a8a;font-size:13.5px}
+ .risks{display:flex;gap:11px;margin-top:11px;flex-wrap:wrap}
+ .risks>div{flex:1 1 210px;background:#faf7f8;border-radius:7px;padding:9px 12px;font-size:13.4px}
+ .risks b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#b3261e;margin-bottom:3px}
+ .flag{background:#fff8e6;border-left:3px solid #b8860b;padding:9px 12px;font-size:13.6px;border-radius:0 6px 6px 0}
+ .expo{background:#fdeceb;border:1.5px solid #b3261e;border-radius:10px;padding:16px 18px;margin:14px 0}
+ .expo h4{color:#b3261e;font-size:15px;margin-bottom:7px}
+ .expo-item{padding:10px 0;border-top:1px solid #f2c9c6}
+ .expo-item:first-of-type{border-top:none;padding-top:2px}
+ .expo-item>b{font-size:14.5px}
+ .expo-item p{font-size:14.2px;margin:3px 0 0}
+ .expo-item .ex-why{color:#7a3b36;font-size:13.6px}
+ .tbl{width:100%;border-collapse:collapse;font-size:13.6px;margin:10px 0 14px}
+ .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#5f6368;border-bottom:1.5px solid #ddd;padding:6px 9px}
+ .tbl td{padding:7px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+ .tbl tr.short td{background:#fffaf9}
+ .sub2{display:block;font-size:11.8px;color:#8a8a8a;line-height:1.35}
+ .b-red{color:#b3261e;font-weight:800}.b-amber{color:#8a6d00;font-weight:800}.b-green{color:#1e7e44;font-weight:800}
+ .two{display:flex;gap:11px;margin:12px 0}
+ .stat{flex:1;border:1px solid #e3e3e3;border-radius:9px;padding:13px 15px;font-size:12px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em}
+ .stat span{display:block;font-size:29px;color:#1a1a1a;font-weight:700;letter-spacing:-.6px;text-transform:none}
+ .stat small{font-size:15px;color:#8a8a8a;font-weight:400}
+ .phase{margin-bottom:20px;page-break-inside:avoid}
+ .phase h4{border-left:4px solid #e8112d;padding-left:10px;margin-bottom:7px}
+ .phase.now h4{border-color:#b3261e;color:#b3261e}
+ .phase.later h4{border-color:#b0b0b0;color:#5f6368}
+ .phase .lead{font-size:13.6px;color:#5f6368;margin:0 0 10px 14px}
+ .act{border:1px solid #e8e8e8;border-radius:9px;padding:13px 15px;margin:0 0 9px 14px;page-break-inside:avoid}
+ .act .ah{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:15px}
+ .act .aid{font-size:11px;color:#a0a0a0;font-weight:700;letter-spacing:.05em}
+ .act .meta{font-size:11.8px;color:#5f6368;margin:2px 0 6px}
+ .act p{font-size:13.8px;margin:0 0 7px}
+ .mini{width:100%;border-collapse:collapse;font-size:12.8px}
+ .mini td{padding:3px 0;vertical-align:top}
+ .mini td:first-child{color:#8a8a8a;width:96px;white-space:nowrap;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em;padding-top:5px}
+ .radar{text-align:center;margin:8px 0}
+ .legend{font-size:12.5px;color:#5f6368;text-align:center;margin-top:-6px}
+ .method{font-size:13.4px;color:#4a4a4a}
+ .method li{margin:5px 0 0 18px}
+ .sell{border:1px solid #e3e3e3;border-radius:10px;padding:18px 20px;margin-top:14px;background:#fafafa}
+ .foot{margin-top:36px;padding-top:14px;border-top:1px solid #e8e8e8;font-size:11.8px;color:#8a8a8a}
+ .noprint{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:5}
+ .noprint button{font:inherit;font-size:13px;font-weight:700;padding:9px 15px;border:none;border-radius:8px;background:#e8112d;color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+ .noprint button.alt{background:#fff;color:#1a1a1a;border:1px solid #ddd}
+ @media print{
+   body{background:#fff}
+   .page{max-width:none;padding:0;margin:0}
+   .noprint{display:none!important}
+   .sec{page-break-inside:auto}
+   h2,h3.grp,h4{page-break-after:avoid}
+   .dim,.act,.phase,.expo,.kpi{page-break-inside:avoid}
+   .pb{page-break-before:always}
+ }
+</style></head><body>
+<div class="noprint"><button onclick="window.print()">Print / save as PDF</button><button class="alt" onclick="window.close()">Close</button></div>
+<div class="page">
+
+  <div class="cover">
+    <span class="tag">AI Readiness Assessment</span>
+    <h1>${E(S.meta.client||"Client")}</h1>
+    <div class="meta">Prepared by Enablis${S.meta.by?" · "+E(S.meta.by):""}${S.meta.date?" · "+E(S.meta.date):""}<br>Commercial in confidence</div>
+    ${S.meta.ambition?`<div class="amb"><b>What you told us you are trying to do</b><br>${E(S.meta.ambition)}</div>`:""}
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
+    <p class="lede">${E(headline)}</p>
+    ${gapNote?p(gapNote):""}
+    <div class="kpis">
+      <div class="kpi${ceil.stage<t?" red":""}"><span>Today</span><b>Stage ${ceil.stage}</b><small>${E(stageName(ceil.stage))}</small></div>
+      <div class="kpi"><span>Your 12-month ambition</span><b>Stage ${t}</b><small>${E(stageName(t))}</small></div>
+      <div class="kpi"><span>Weighted across all ${D.length}</span><b>${pot.toFixed(1)}</b><small>what you would score if the constraint were lifted</small></div>
+    </div>
+    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is ${ceil.stage}, set by ${E(capList)}, and the fastest route to a higher number is not broad improvement. It is that.</p>
+    ${unscored.length?`<p class="flag"><b>Scope note.</b> ${unscored.length} dimension${unscored.length>1?"s were":" was"} not assessed in this engagement — ${unscored.map(d=>E(lc(d.name))).join(", ")}. ${unscored.length>1?"They are":"It is"} excluded from your score rather than assumed, so the figures above describe only what we examined.</p>`:""}
+  </div>
+
+  ${con.length?`<div class="sec"><div class="sh"><span class="num">${N()}</span><h2>${con.length===1?"One thing":con.length===2?"Two things":con.length===3?"Three things":con.length+" things"} to deal with now</h2></div>
+    <p>Most of this report is about maturity — where you are and how to move. The following are different. They are things already happening in your organisation that carry exposure today, so they sit outside the plan and should not wait for it.</p>
+    <div class="expo"><h4>Before anything else on the roadmap</h4>
+      ${con.map(c=>{const n=S.dimNote[c.dim.id]||{};
+        return `<div class="expo-item"><b>${E(c.dim.name)}</b>
+          <p>${E(c.ca)}</p>
+          ${n.riskNot?`<p class="ex-why"><b>Why now.</b> ${E(n.riskNot)}</p>`:""}</div>`;}).join("")}
+    </div>
+    <p class="method">Each of these should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision. Leaving them open is not, and it is the state we found them in.</p>
+  </div>`:""}
+
+  <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How to read the scores</h2></div>
+    <p>Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.</p>
+    <table class="scale">
+      ${STAGES.map(s=>`<tr class="${s.n===ceil.stage?"you":""}"><td>${s.n} · ${E(s.name)}</td><td>${E(s.d)}</td></tr>`).join("")}
+    </table>
+    <p>Four dimensions carry half as much weight again as the others — data, the reach of AI into your own knowledge, the quality of your internal platforms, and how strongly your work is driven by real users. These are the ones the research finds everything else depends on. The weights are shown against each dimension.</p>
+    <p><b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.</p>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">${N()}</span><h2>The picture across all ${D.length} dimensions</h2></div>
+    <div class="radar">${reportRadar()}</div>
+    <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage ${t} ambition</p>
+    <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th></tr></thead><tbody>
+    ${D.map(d=>{const s=orgDim(d.id),isC=ceil.dims.some(x=>x.id===d.id);
+      return `<tr class="${isC?"short":""}"><td>${d.n}</td><td>${E(d.name)}${isC?' <b style="color:#e8112d">— the constraint</b>':""}</td>
+        <td>${wPct(d)}%</td><td><b>${s.avg!==null?"Stage "+fmtS(s.avg):"—"}</b></td></tr>`;}).join("")}
+    </tbody></table>
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Dimension by dimension</h2></div>
+    <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
+    ${dimHTML}
+  </div>
+
+  ${anyTs?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Your people</h2></div>
+    <p>Seven capabilities, scored on two axes: how deep the skill goes, and how widely it is held. Depth without reach is a key-person risk rather than a capability. The level each one needs rises with your ambition — these are measured against Stage ${t}.</p>
+    ${skillHTML}
+  </div>`:""}
+
+  ${scan?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Your codebase</h2></div>
+    ${codeHTML}
+  </div>`:""}
+
+  <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>What to do, in order</h2></div>
+    <p>Every item below carries a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these actions depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.</p>
+    ${con.length?`<p class="method">The ${con.length} item${con.length>1?"s":""} in section 02 come${con.length>1?"":"s"} before all of this and ${con.length>1?"are":"is"} not repeated here.</p>`:""}
+    ${roadHTML}
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How we assessed this</h2></div>
+    <div class="method">
+      <p>So that you can weigh the findings, and challenge them.</p>
+      <ul>
+        <li><b>${nInt||"Several"} interview${nInt===1?"":"s"}</b>${nInt?` across ${[...new Set((S.ints||[]).map(i=>i.coh))].map(c=>{const x=COHORTS.find(y=>y.id===c);return x?lc(x.name):c;}).filter(Boolean).join(", ")}`:""}, alongside direct observation of how work is done.</li>
+        <li><b>${orgAnswered()} of ${orgTotalQ()} questions</b> answered across ${D.length} dimensions${ev!==null?`, of which <b>${ev}%</b> were confirmed against something we could see rather than taken on description alone`:""}.</li>
+        ${scan?`<li><b>An automated audit of your source code</b> across ${GT_PARTS.length} dimensions, with findings marked measured or inferred, and an adversarial pass that attempts to disprove each finding before it is reported.</li>`:""}
+        <li><b>Nothing here is self-reported.</b> No survey was circulated for your teams to score themselves.</li>
+      </ul>
+      <p style="margin-top:10px"><b>What this assessment does not cover.</b> It examines your organisation's readiness. It does not price individual use cases, model return on a specific investment, or assess any workflow in depth${scan?"":", and no code was audited"}. Those are separate pieces of work and we would rather say so than imply otherwise.</p>
+      <p><b>Where the framework comes from.</b> The dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results. The scoring thresholds, the recommendations and the sequencing are ours.</p>
+    </div>
+  </div>
+
+  ${RPT.sell?`<div class="sec"><div class="sh"><span class="num">—</span><h2>How Enablis can help</h2></div>
+    <div class="sell">
+      <p style="font-size:13.4px;color:#5f6368"><b>This section is a proposal, not a finding.</b> Everything above is the assessment as we found it and stands whether or not you do any of the following with us.</p>
+      <p><b>The items marked for the first 90 days need no outside help.</b> They are documents, decisions and named owners. If you do only those, this assessment will have paid for itself.</p>
+      <p><b>Where we would add most.</b> ${ceil.stage<t?`Lifting ${E(capList)} is the unlock, and it is the part clients most often start and then stall on. We can run it as a short engagement with your people rather than instead of them.`:"You are at your target already. The next question is which workflows are worth building, which is a different piece of work."}</p>
+      <p><b>The obvious next step</b> is to take one workflow and three or four candidate use cases through to a costed business case — value, effort, payback, and which of the gaps above gates each one. That turns this readiness picture into a funded plan.</p>
+      <p style="margin-bottom:0"><b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.</p>
+    </div>
+  </div>`:""}
+
+  <div class="foot">
+    ${E(S.meta.client||"Client")} · AI Readiness Assessment · Enablis${S.meta.date?" · "+E(S.meta.date):""} · Commercial in confidence.
+    Scores reflect what could be observed and verified during the engagement.
+  </div>
+</div></body></html>`;
+}
+
 function copyText(t,msg){try{navigator.clipboard.writeText(t).then(()=>alert(msg),()=>alert("Copy failed — select the text and copy manually."));}catch(e){alert("Copy failed — select the text and copy manually.");}}
 
 /* ==================== NAV ==================== */
