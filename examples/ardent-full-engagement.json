@@ -353,27 +353,97 @@
    "area": "Broking — commercial lines",
    "owner": "L Moreau, Renewals Manager",
    "sig": {
-    "p1": "a",
-    "p2": "a",
-    "p3": "g",
-    "pe1": "g",
-    "pe2": "a",
-    "pe3": "r",
-    "t1": "r",
-    "t2": "a",
-    "t3": "a"
+    "p1": "A",
+    "p2": "A",
+    "p3": "G",
+    "pe1": "G",
+    "pe2": "A",
+    "pe3": "R",
+    "t1": "R",
+    "t2": "A",
+    "t3": "A"
    },
    "caps": {
-    "c_use": 2,
-    "c_watch": 1,
-    "c_escal": 2,
-    "c_judge": 3,
-    "c_risk": 2,
-    "c_content": 1,
-    "c_test": 1,
-    "c_data": 1,
-    "c_sec": 2,
-    "c_train": 0
+    "c_use": {
+     "req": null,
+     "cur": 2,
+     "who": "Account executives",
+     "backup": "Team-wide, no single holder",
+     "hrs": "",
+     "route": "Training at rollout"
+    },
+    "c_watch": {
+     "req": null,
+     "cur": 1,
+     "who": "Nobody named",
+     "backup": "",
+     "hrs": "",
+     "route": "Needs an owner before go-live"
+    },
+    "c_escal": {
+     "req": null,
+     "cur": 2,
+     "who": "L Moreau",
+     "backup": "",
+     "hrs": "2",
+     "route": "Existing referral route"
+    },
+    "c_judge": {
+     "req": null,
+     "cur": 3,
+     "who": "S Whitfield",
+     "backup": "A Ferreira",
+     "hrs": "3",
+     "route": "Already how technical review works"
+    },
+    "c_risk": {
+     "req": null,
+     "cur": 2,
+     "who": "P Ngata, Compliance",
+     "backup": "",
+     "hrs": "1",
+     "route": "Gate exists, never used for AI"
+    },
+    "c_content": {
+     "req": null,
+     "cur": 1,
+     "who": "Nobody named",
+     "backup": "",
+     "hrs": "",
+     "route": "This is the ownership gap"
+    },
+    "c_test": {
+     "req": null,
+     "cur": 1,
+     "who": "Outsourcer",
+     "backup": "",
+     "hrs": "",
+     "route": "Would sit with the managed provider"
+    },
+    "c_data": {
+     "req": null,
+     "cur": 1,
+     "who": "K Osei",
+     "backup": "",
+     "hrs": "",
+     "route": "Capacity, not capability"
+    },
+    "c_sec": {
+     "req": null,
+     "cur": 2,
+     "who": "Outsourcer",
+     "backup": "",
+     "hrs": "",
+     "route": "Contracted"
+    },
+    "c_train": {
+     "req": null,
+     "cur": 0,
+     "who": "Nobody named",
+     "backup": "",
+     "hrs": "",
+     "route": "No plan — the real test of ownership"
+    }
    },
    "gates": [
     {

@@ -65,7 +65,7 @@ Note also what the £ model does to the headline. Renewal drafting has a potenti
 
 ## Sample client reports
 
-`sample-report-ardent.html` and `sample-report-ridgeway.html` are the client-facing documents generated from these two engagements — what the client actually receives. Open either in a browser; print to PDF from there. They are produced by **Outputs → Client report** in the tool, so they regenerate whenever the assessment changes.
+`sample-report-ardent.html`, `sample-report-ridgeway.html` and `sample-report-ardent-full.html` are the client-facing documents generated from these engagements. The full-engagement one is the interesting comparison: same client, same readiness content, plus the workflow, the four costed candidates and the portfolio. They are the same documents — what the client actually receives. Open either in a browser; print to PDF from there. They are produced by **Outputs → Client report** in the tool, so they regenerate whenever the assessment changes.
 
 ## What's in each file
 
