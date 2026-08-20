@@ -77,6 +77,21 @@
     .detail{page-break-before:always}
     .colhead{cursor:default}
   }
+  td.fb{background:#f7fbfd;color:#33525f;font-size:12.4px;border-left:2px solid #cfe3ec}
+  th.fbh{color:#0b5c8a}
+  .primer{border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:10px;background:#fff;padding:0;margin:0 0 18px;overflow:hidden}
+  .primer>button{width:100%;text-align:left;background:#eef6fa;border:none;font:inherit;font-weight:700;font-size:14.5px;padding:12px 16px;cursor:pointer;color:#0b5c8a;display:flex;justify-content:space-between;align-items:center}
+  .primer>button:hover{background:#e4f0f6}
+  .primer .body{padding:4px 18px 16px;display:none}
+  .primer.open .body{display:block}
+  .primer h4{font-size:13.5px;margin:14px 0 4px;color:var(--ink)}
+  .primer p,.primer li{font-size:13.4px;line-height:1.55;color:#3a3a3a}
+  .primer ul{margin:2px 0 0 17px}
+  .primer .terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 18px;margin-top:4px}
+  .primer .terms div{font-size:13.2px;line-height:1.5}
+  .primer .terms b{color:#0b5c8a}
+  .primer .pick{background:#fafafa;border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin-top:6px;font-size:13.3px}
+  @media print{.primer>button{display:none}.primer .body{display:block}}
 </style>
 </head>
 <body>
@@ -95,6 +110,55 @@
 </header>
 
 <main>
+  <div class="primer" id="primer">
+    <button onclick="document.getElementById('primer').classList.toggle('open')">New to this? Start here <span>▾</span></button>
+    <div class="body">
+
+      <h4>What you are actually doing</h4>
+      <p>Finding out whether AI would work here, where it would be worth pointing, and what has to be true first. Not building anything. The output is a decision, and sometimes the decision is "not yet" — that is a successful engagement, not a failed one.</p>
+      <p>Three things make it go wrong, and they are all avoidable. Asking leadership what the team can do instead of asking the team. Believing a written policy over what people actually do. And quoting a value number without the discount that makes it realistic.</p>
+
+      <h4>Which of the three you are running</h4>
+      <div class="pick"><b>Ready?</b> — someone wants to know whether their organisation can take AI at all. No specific idea yet. Two weeks, and the output is a readiness picture plus a plan.</div>
+      <div class="pick"><b>Validate</b> — someone has one idea and wants to know if it is any good and what it is worth. About a week, and the output is a prototype and a costed case.</div>
+      <div class="pick"><b>Prioritise</b> — a department has lots of ideas and needs to know which ones and in what order. Two to four weeks, and the output is a ranked backlog.</div>
+      <p style="margin-top:8px">If you are unsure, run <b>Ready?</b>. Sizing a use case in an organisation that cannot approve, host or run it wastes everybody's time.</p>
+
+      <h4>The words this uses that you probably do not know yet</h4>
+      <div class="terms">
+        <div><b>Target stage</b> — where the client wants to be in twelve months, on a 1–5 scale. Agree it before scoring anything; it sets the bar everything else is measured against.</div>
+        <div><b>The ceiling</b> — the lowest-scoring dimension. It caps the whole assessment, because an organisation cannot run AI more maturely than its weakest foundation allows.</div>
+        <div><b>The capping dimension</b> — whichever one is setting that ceiling. Usually where the recommendation starts.</div>
+        <div><b>Cohorts</b> — leaders, practitioners, technical. Skills are scored separately for each, because the average hides the gap that matters.</div>
+        <div><b>Confirmed / told / guessed</b> — how you know each answer. Confirmed means you saw it. Told means someone said it. Guessed means you inferred it. The report prints the mix, so be honest.</div>
+        <div><b>Spine and checklist</b> — every dimension is scored twice: your judgement, and a list of things that either exist or do not. When they disagree, that gap is usually the finding.</div>
+        <div><b>Potential vs realistic value</b> — potential is what the time costs today. Realistic applies three discounts: adoption, effectiveness, integration. The gap is normally two to ten times.</div>
+        <div><b>The probe</b> — running ten real examples through the idea to see how many produce something credible. Include the awkward ones; clean examples prove nothing.</div>
+        <div><b>Run capability</b> — the ten things somebody has to be able to do the day after go-live. The question is not whether it can be built, but whether it survives you leaving.</div>
+        <div><b>The gates</b> — approvals a thing must pass to reach production. Ask who decides, what evidence they need, and whether anyone has actually spoken to them.</div>
+        <div><b>Overwatch</b> — the automated audit of a client's own code. Only relevant where they own code, and it needs read access granted in writing.</div>
+        <div><b>Exposure vs maturity gap</b> — a maturity gap is something not yet good enough. An exposure is something already happening that carries risk today. Exposures do not wait for the roadmap.</div>
+      </div>
+
+      <h4>If you work inside a bigger organisation</h4>
+      <p>These journeys are written as though you have an executive sponsor who can unblock things and summon anyone. Most people running this do not. If you are assessing your own team or department, three things change.</p>
+      <ul>
+        <li><b>Assess what you can see, and mark the rest N/A.</b> A dimension marked not assessed is excluded from the score and named in the report. That is honest. Inventing a number is not, and the weights renormalise around whatever you leave out.</li>
+        <li><b>A question you could not answer is a finding.</b> "Nobody could tell us who owns AI risk" is a real result, not a hole in your work — and it is often the most important sentence in the report.</li>
+        <li><b>The gaps become your ask.</b> The list of what you could not reach is the case for the access you need. Take it to leadership as the output rather than apologising for it.</li>
+      </ul>
+      <p>Every data row below has a fourth column — <b>if you can't get it</b> — with a proxy source or an honest way to record the gap. None of them require authority you do not have.</p>
+
+      <h4>Before you start</h4>
+      <ul>
+        <li>Open the tool and load a worked example first. Twenty minutes reading a completed assessment teaches more than any briefing.</li>
+        <li>Agree the target stage with whoever is sponsoring this, in writing, before you score anything.</li>
+        <li>Book the conversations now. Every overrun traces back to interviews not booked early.</li>
+        <li>Decide what you will do if the answer is "not yet", before you find out.</li>
+      </ul>
+    </div>
+  </div>
+
   <div class="card">
     <div class="chips" id="chips"></div>
     <div class="meta" id="meta"></div>
@@ -130,10 +194,10 @@ wedge:{
   act:["Agree the 12-month target stage with the sponsor — before anything is scored","Request repository read access in writing: named repos, named person","Stand up the Overwatch run environment","Book every interview slot for the fortnight","Agree the three cohorts"],
   pod:["Delivery Lead","FDE"],
   client:["Executive sponsor","Whoever controls repository access","Engineering lead","EA / PMO for scheduling"],
-  data:[["The 12-month ambition","Sponsor","“What do you want to be true in 12 months?” — sets every required skill level"],
-    ["Repository read access","Engineering lead / IT","In writing, named repos. Track Not requested → Requested → Granted in the tool"],
-    ["A run environment","Us","Overwatch installed, model access configured; security and AI-assisted-engineering need Opus"],
-    ["Repository list with owners and size","Engineering lead","Build it in this session; confirm afterwards"]],
+  data:[["The 12-month ambition","Sponsor","“What do you want to be true in 12 months?” — sets every required skill level","No sponsor to ask? Use whatever the department already committed to in a plan or an objective, and say in the report that the target is inferred. Never guess Stage 5 — an inflated target makes every skill look short and the whole assessment reads as alarmist."],
+    ["Repository read access","Engineering lead / IT","In writing, named repos. Track Not requested → Requested → Granted in the tool","If you can't get repo access, mark the code audit not applicable rather than half-running it. A partial scan scored as if complete is worse than no scan. Record who declined and why — that is itself a finding about how change gets approved here."],
+    ["A run environment","Us","Overwatch installed, model access configured; security and AI-assisted-engineering need Opus","No environment and no budget for one? Skip the audit and say so in the method section. Do not substitute an engineer's opinion of the codebase and present it as a scan."],
+    ["Repository list with owners and size","Engineering lead","Build it in this session; confirm afterwards","If nobody will produce the list, ask one developer for the three repos they touch most. Incomplete but honest beats an inventory nobody stands behind — mark it partial."]],
   tools:[["team","Engagement + target stage; codebase review: access and repo inventory"]],
   out:["Target stage agreed","Access requested and tracked","Diary locked for both weeks"],
   watch:"Access granted on day nine is a scan nobody had time to verify. If it hasn't landed by day three, escalate to the sponsor rather than absorbing it."},
@@ -141,13 +205,13 @@ wedge:{
   act:["45-minute conversations across every dimension owner","Log every conversation in the interview log as you go","Tag each answer confirmed / told / guessed","FDE runs Overwatch stages 1–3: recon, explore (architecture graph), plan"],
   pod:["Delivery Lead (interviews)","FDE (Data, Technology, and the scan)"],
   client:["Sponsor","Platform / architecture lead","Data owner","Risk / compliance / DPO","Change lead or PMO","HR / L&amp;D"],
-  data:[["How the last AI spend was approved","Sponsor","Gets past the strategy answer to the budget reality"],
-    ["Where AI could run today without new approval","Platform lead","Ask for the approved services list, not the aspiration"],
-    ["How long the last data access request took","Data owner","Start to finish, including the waiting"],
-    ["What staff may paste into a chatbot today","Risk / DPO","The hesitation is the finding"],
-    ["Is the last new system used as intended?","PMO","Two post-implementation reviews beat any adoption survey"],
-    ["Licence seats deployed vs seats active","IT / HR","Deployed is vanity; active is the finding"],
-    ["Repositories, languages, size, owners","Engineering lead","Fill the repository table; mark what's in scope"]],
+  data:[["How the last AI spend was approved","Sponsor","Gets past the strategy answer to the budget reality","Can't reach the sponsor? Ask your own manager how any software spend gets approved, and whether AI has ever gone through it. If the honest answer is 'nobody has tried', that is a Stage 1 or 2 answer and you can score it."],
+    ["Where AI could run today without new approval","Platform lead","Ask for the approved services list, not the aspiration","No platform lead available? The approved-software list is usually on the intranet or in the service catalogue. If you can't find one, ask your IT service desk what you'd have to do to get a new tool approved — the length of that answer is the score."],
+    ["How long the last data access request took","Data owner","Start to finish, including the waiting","Ask a colleague who has requested access recently rather than the data owner. Personal experience is a legitimate source — tag it 'told' and name the person in the evidence field."],
+    ["What staff may paste into a chatbot today","Risk / DPO","The hesitation is the finding","No access to Risk or the DPO? Ask three colleagues in different teams what they believe they're allowed to do. If they give three different answers, you have your score without ever reaching Risk — and that disagreement is the finding."],
+    ["Is the last new system used as intended?","PMO","Two post-implementation reviews beat any adoption survey","No PMO to ask? Pick the last system your own team had imposed on it and answer honestly about that. One real example you witnessed is stronger evidence than a review you were handed."],
+    ["Licence seats deployed vs seats active","IT / HR","Deployed is vanity; active is the finding","If IT won't share usage data, ask your own team how many of them have a licence and how many used it last week. A team-level sample is enough to distinguish 'deployed' from 'used'."],
+    ["Repositories, languages, size, owners","Engineering lead","Fill the repository table; mark what's in scope","Ask the engineer you know best rather than the engineering lead. Mark anything you couldn't confirm as out of scope rather than assuming."]],
   tools:[["team","18 readiness questions + interview log + Overwatch stages 1–3"]],
   out:["All 28 questions answered at least provisionally, each tagged for confidence","Repository inventory complete","Automated checks running"],
   watch:"The tool flags any cohort you haven't logged an interview with. A scan that never spoke to security or the data owner has a hole in it."},
@@ -155,11 +219,11 @@ wedge:{
   act:["Team skill scan — 7 capabilities: typical level, spread, named champion","Cohort breakdown — score each capability for leaders, practitioners and technical separately","FDE runs Overwatch stages 4–5: propose bespoke dimensions, then audit in parallel"],
   pod:["Delivery Lead (cohort sessions)","FDE (scan)"],
   client:["Leaders &amp; sponsors (60 min)","Practitioners (90 min — these matter most)","Technical &amp; engineering (90 min)"],
-  data:[["Real literacy, not claimed","Practitioners","“Show me what you did with it this week”"],
-    ["Ability to judge output","Practitioners","“How would you know if it gave you a wrong answer?”"],
-    ["Champion names","Any cohort","“Who do people ask when a tool misbehaves?”"],
-    ["Governance as understood on the floor","Practitioners","“What would you not be allowed to put into it?”"],
-    ["Whether capability survives turnover","Team lead","“Who taught the last person who joined?”"]],
+  data:[["Real literacy, not claimed","Practitioners","“Show me what you did with it this week”","This one needs no permission — it is your own team. Ask them to show you something they did with AI this week. If nobody can, that is the answer."],
+    ["Ability to judge output","Practitioners","“How would you know if it gave you a wrong answer?”","Also inside your control. Ask 'how would you know if it gave you a wrong answer?' If the room goes quiet, score it low and quote the silence."],
+    ["Champion names","Any cohort","“Who do people ask when a tool misbehaves?”","Ask who people go to when a tool misbehaves. You will know this already if you look — it rarely matches the org chart."],
+    ["Governance as understood on the floor","Practitioners","“What would you not be allowed to put into it?”","Deliberately does not need Risk. What people believe they're allowed to do is the point, and only they can tell you. Where it differs from the written policy, that gap is worth more than either answer alone."],
+    ["Whether capability survives turnover","Team lead","“Who taught the last person who joined?”","Ask who taught the last person who joined. If the answer is 'they worked it out', capability is not being transferred and the score follows."]],
   tools:[["team","Team skill scan + cohort breakdown; Overwatch stages 4–5"]],
   out:["Skills profile with a cohort shape, not just an average","Champions identified by name","Roughly half the codebase scan complete"],
   watch:"Don't let the sponsor answer for the practitioners. The gap between what leadership believes and what the floor can do is often the finding itself."},
@@ -167,10 +231,10 @@ wedge:{
   act:["DL re-confirms everything tagged guessed with the person who owns that dimension","FDE runs stages 6–8: verify (adversarial refutation), dedupe, synthesize","Transcribe the dimension scores — 0–100 with red/amber/green bands","Walk the findings with their principal engineer — to catch what's wrong, not to soften it","Check nothing is silently incomplete — Overwatch fails loud, and so must the report"],
   pod:["Delivery Lead (confirmation)","FDE (steps 6–7, scoring)"],
   client:["Dimension owners, revisited","Principal engineer (2 hrs)","CTO or engineering lead"],
-  data:[["Confirmation of every guessed answer","The dimension owner","Ambition is a sponsor question; access reality is a data-owner question. Nobody else's answer counts"],
-    ["Can AI attach to this codebase?","The code","Interfaces, data access, where guardrails could sit"],
-    ["Findings that don't survive scrutiny","Stage 6 + their engineer","Refuted findings leave the scores and land in refuted.json. An engineer who argued and lost is your best advocate at the readout"],
-    ["Dimension scores with evidence","report.json → dimension_scores","Each 0–100 with a band, plus the finding that drove it. Measured needs tool output; everything else is inferred"]],
+  data:[["Confirmation of every guessed answer","The dimension owner","Ambition is a sponsor question; access reality is a data-owner question. Nobody else's answer counts","If the owner is unreachable, leave the answer tagged 'guessed' rather than promoting it. The report prints the confirmed percentage — a low number is honest and tells the reader how much weight to put on it."],
+    ["Can AI attach to this codebase?","The code","Interfaces, data access, where guardrails could sit","Without code access this cannot be answered. Mark it not established. Do not infer it from the age of the systems."],
+    ["Findings that don't survive scrutiny","Stage 6 + their engineer","Refuted findings leave the scores and land in refuted.json. An engineer who argued and lost is your best advocate at the readout","No principal engineer available to argue with? Send the findings to whoever knows the systems best and ask them to try to knock them down in writing. Unchallenged findings are weaker and should be labelled as such."],
+    ["Dimension scores with evidence","report.json → dimension_scores","Each 0–100 with a band, plus the finding that drove it. Measured needs tool output; everything else is inferred","Only meaningful where the audit ran. Where it didn't, say so rather than leaving the section blank and letting the reader assume."]],
   tools:[["team","Overwatch stages 6–8; transcribe dimension scores"]],
   out:["Two report angles: engineering quality, and AI readiness of the codebase","Scores calibrated and defensible","Every red backed by a named source"],
   watch:"Never show a score before the verify stage. And if the scan found live secrets, rotate them at source that day — the report quotes them verbatim and must never be circulated."},
@@ -178,7 +242,7 @@ wedge:{
   act:["Generate the team report and the gap-closure roadmap","Challenge it internally before the client does","Pre-brief the sponsor — no surprises in the room","90-minute readout"],
   pod:["Delivery Lead","FDE for the codebase section"],
   client:["Sponsor (pre-brief)","Department head","CTO / engineering lead","HR / L&amp;D","Finance if budget is in play"],
-  data:[["Nothing new","—","If you're still collecting in week two, the scope was wrong"]],
+  data:[["Nothing new","—","If you're still collecting in week two, the scope was wrong","If you are still collecting at this stage, the scope was wrong. Stop, write up what you have, and name the gaps."]],
   tools:[["team","Outputs → team readiness & skills report + gap-closure roadmap"]],
   out:["Readiness scorecard with the ceiling named","Skills profile with cohort breakdown and champions","Codebase review in two angles","Gap-closure roadmap phased 90 days / 3–6 / 6–12","A named source list"],
   watch:"Lead with the ceiling. The skills-by-cohort slide is the one people argue about — have the interview log to hand. A Stage 4 ambition on a Stage 1 skills reality, or an AI roadmap on a codebase scoring 2 for release safety, is the finding."}
@@ -192,10 +256,10 @@ light:{
   act:["Download the problem: goals, users, constraints","Walk the workflow end to end on a whiteboard","Agree the 12-month target stage, then run the 18 readiness questions live on screen","Add the workflow, add one use case inside it, score its 16 questions","Agree what “worth it” means"],
   pod:["Delivery Lead","FDE"],
   client:["Executive sponsor","Workflow owner","1–2 people who do the task","IT/security for the last 30 min if possible"],
-  data:[["Nothing in advance","—","This session generates the first data"],
-    ["Strategy &amp; budget reality","Sponsor","Ask “how did the last AI spend get approved?”"],
-    ["Governance posture","Whoever's in the room","Ask “what are staff allowed to paste into ChatGPT today?” — the hesitation is the finding"],
-    ["Adoption track record","Sponsor","Ask “think of the last new system — is it used the way you intended?”"]],
+  data:[["Nothing in advance","—","This session generates the first data","Nothing needed. If a sponsor asks what to prepare, the honest answer is 'nothing — bring the people who do the work'."],
+    ["Strategy &amp; budget reality","Sponsor","Ask “how did the last AI spend get approved?”","No sponsor in the room? Ask the most senior person present what would have to be true for this to get funded. If nobody knows, that is your sponsorship score."],
+    ["Governance posture","Whoever's in the room","Ask “what are staff allowed to paste into ChatGPT today?” — the hesitation is the finding","Ask the room what they'd hesitate to paste into a chatbot. The hesitation is the finding and needs no compliance officer present."],
+    ["Adoption track record","Sponsor","Ask “think of the last new system — is it used the way you intended?”","Use the last change the team lived through, not a corporate example. Their experience is more predictive than a programme report."]],
   tools:[["team","28 questions + team skill scan, live"],["uc","Add workflow, then score one use case"]],
   out:["Readiness ceiling with the capping dimension named","First-cut value × readiness for the workflow","Go/no-go on the engagement itself"],
   watch:"A Stage 1 governance ceiling plus regulated data means Validate is the wrong sale. Saying so wins more trust than proceeding."},
@@ -203,13 +267,13 @@ light:{
   act:["Shadow 5–8 real cases with a stopwatch","Harvest 15–30 worked examples","Get the sponsor's success threshold as a number","FDE secures a sample data extract"],
   pod:["Delivery Lead","Commercial BA if available","FDE (with the data owner)"],
   client:["The people doing the task","Team lead","Finance (30 min)","Data owner (45 min)"],
-  data:[["Volume of cases","System export","Ask the team lead to run their standard report; if none, count a representative week"],
-    ["Time per case","Observation","Shadow 5–8 real cases. Don't ask — time it"],
-    ["% of the team's week","Team lead + shadowing","Cross-check the lead's estimate against what you saw"],
-    ["Fully-loaded cost per head","Finance or HR","Ask for the band; fall back to salary × 1.3 and say so"],
-    ["Error / rework rate","Quality log, complaints","If untracked, ask how often work comes back and what it costs to fix"],
-    ["15–30 worked examples","The team","A spread: typical, harder, genuinely awkward"],
-    ["Sample data extract","Data owner","Anonymised, non-integrated. Go synthetic if it'll take more than a day"]],
+  data:[["Volume of cases","System export","Ask the team lead to run their standard report; if none, count a representative week","No system export? Count a representative week by hand, or ask the team to keep a tally for five days. Note which method you used — an estimate you can explain beats a number you can't."],
+    ["Time per case","Observation","Shadow 5–8 real cases. Don't ask — time it","Can't shadow anyone? Ask three people to time themselves on their next three cases. Self-timed is weaker than observed, so tag it 'told' and widen the range you quote."],
+    ["% of the team's week","Team lead + shadowing","Cross-check the lead's estimate against what you saw","Ask two people independently and compare. If they disagree by more than half, use the lower figure and say why — optimistic time estimates are the most common source of an inflated business case."],
+    ["Fully-loaded cost per head","Finance or HR","Ask for the band; fall back to salary × 1.3 and say so","Finance unreachable? Use the published midpoint for the grade plus 30% for employer costs, and label it estimated in the report. Never quote a precise figure you cannot source."],
+    ["Error / rework rate","Quality log, complaints","If untracked, ask how often work comes back and what it costs to fix","If nothing is tracked, ask how often work comes back and what it costs to fix. If nobody can answer, set the error value to zero rather than guessing — an unprovable benefit does not belong in a business case."],
+    ["15–30 worked examples","The team","A spread: typical, harder, genuinely awkward","Needs no permission beyond your own team, but check nothing sensitive leaves the building. Redact names before anything goes into a tool that isn't approved."],
+    ["Sample data extract","Data owner","Anonymised, non-integrated. Go synthetic if it'll take more than a day","No extract available? Build a synthetic set by hand from cases you know. Slower, but it keeps the test honest and avoids a data-handling problem you'd have to explain later."]],
   tools:[["uc","Value model card — sizing basis + baseline"]],
   out:["A defensible baseline, tagged measured / estimated / none","The number that would make leadership call this a success"],
   watch:"If the baseline is “none”, you've found the most important gap in the engagement — improvement will be unprovable without it."},
@@ -217,12 +281,12 @@ light:{
   act:["FDE builds prototype v1 on the real examples","Demo to real users by end of day","Structured interviews on process, people, tech","Complete the run-capability scan with the team lead"],
   pod:["FDE (heads-down building)","Delivery Lead (interviews)"],
   client:["Change/release owner","Risk or compliance","IT security","Platform lead","Team lead + the individuals"],
-  data:[["The approval route to production","Change/release owner","“If this proved itself tomorrow, walk me through every approval, in order”"],
-    ["What evidence each approver needs","Each approver","Ask what the last system had to show them"],
-    ["Who could veto late","Security, legal, works council","Ask the sponsor who could stop this in month three"],
-    ["Systems touched + connector state","Platform lead","Which have APIs, and what did the last integration take?"],
-    ["Ten capabilities: who holds each, at what level","Team lead + individuals","Ask “who'd fix this if it broke on a Tuesday?” and “who checks the answer is right?”"],
-    ["Hours/week per capability","Team lead","Estimate together; refine during the build"]],
+  data:[["The approval route to production","Change/release owner","“If this proved itself tomorrow, walk me through every approval, in order”","Nobody will walk you through it? Ask what the last new system had to go through. If the answer is 'nothing has been through recently', the route is untested and should be scored as such."],
+    ["What evidence each approver needs","Each approver","Ask what the last system had to show them","If you can't reach the approvers, ask what the last project was asked to produce. An old checklist is a real artefact; an assumed one is not."],
+    ["Who could veto late","Security, legal, works council","Ask the sponsor who could stop this in month three","Ask the most experienced person in the team who has stopped something before. People remember being blocked far better than they remember approvals."],
+    ["Systems touched + connector state","Platform lead","Which have APIs, and what did the last integration take?","No platform lead? Ask the team which systems they open in a day, then check the vendor's public documentation for whether an API exists. Mark anything unconfirmed as unknown, not as available."],
+    ["Ten capabilities: who holds each, at what level","Team lead + individuals","Ask “who'd fix this if it broke on a Tuesday?” and “who checks the answer is right?”","This is your own team, so no access problem — but ask the individuals, not just the lead. Leads consistently overestimate what the team can do without them."],
+    ["Hours/week per capability","Team lead","Estimate together; refine during the build","Estimate it together in a room rather than collecting it individually. Ten minutes of collective argument produces a better number than a survey."]],
   tools:[["wf","Approvals, run-capability scan, systems, data, safeguards"]],
   out:["Prototype v1 demoed","Readiness-to-run signals rated","Ownership readiness verdict + key-person risks named"],
   watch:"The skill scan surfaces the single-expert problem on day 2 rather than at handover — and its hrs/week is the run cost the value case usually guesses."},
@@ -230,22 +294,22 @@ light:{
   act:["Complete the value model with finance","Ground the three discounts in what you saw","FDE iterates the prototype on user feedback"],
   pod:["Commercial BA (or DL)","FDE"],
   client:["Finance (45 min)","Users testing the prototype"],
-  data:[["Efficiency factor","The prototype's behaviour","Start from how it performed, not a benchmark"],
-    ["Adoption discount","Day 2 interviews","What the team said about trust and double-checking"],
-    ["Effectiveness discount","Probe / prototype","How it did on the awkward examples, not the clean ones"],
-    ["Integration discount","Platform lead","Connector answers from day 2"],
-    ["Licence &amp; platform cost","Vendor pricing / our estimate","Include the 12-month price-rise risk"],
-    ["Run cost","Run-capability scan","Take hrs/week straight from day 2 — the value model shows you the number"]],
+  data:[["Efficiency factor","The prototype's behaviour","Start from how it performed, not a benchmark","No prototype yet? Use the low end of what you saw in the probe and say it is provisional. A number the client later beats is far safer than one they can't reach."],
+    ["Adoption discount","Day 2 interviews","What the team said about trust and double-checking","If you couldn't interview users, assume the lower end. Adoption is the discount people over-estimate most, and the one that most often breaks a case."],
+    ["Effectiveness discount","Probe / prototype","How it did on the awkward examples, not the clean ones","Base it on how it handled the awkward examples, not the clean ones. If you only tested clean examples, say so — the discount is unproven."],
+    ["Integration discount","Platform lead","Connector answers from day 2","If nobody could tell you how the systems connect, use the lowest band and record integration as an open question rather than a solved one."],
+    ["Licence &amp; platform cost","Vendor pricing / our estimate","Include the 12-month price-rise risk","Use public list pricing where you can't get a quote, and add a note that enterprise pricing usually differs. Include the risk of a price rise inside twelve months."],
+    ["Run cost","Run-capability scan","Take hrs/week straight from day 2 — the value model shows you the number","If the capability scan wasn't completed, this is a guess — mark it so. The run cost is the number most business cases omit entirely, so an explicit estimate is still an improvement."]],
   tools:[["uc","Value model — potential, realistic, costs"]],
   out:["Potential vs realistic £, benefit:cost, payback, steady-state net","Assumption register showing what's still a guess"],
   watch:"If potential is less than 2× realistic, your discounts are probably optimistic — the evidence says 2–10× is normal."},
  {id:"d4",step:"Day 4",t:"Assemble &amp; cross-check",q:"Do the modules agree with each other?",
   act:["Generate all outputs","Run the four cross-checks","Rehearse the readout"],
   pod:["The pod, no client"],client:["None — this is our day"],
-  data:[["Run cost vs standing effort","Value model states it","The card shows the scan's hrs/week — confirm your cost reflects it"],
-    ["Run-capability scan vs verdict","Your judgement","A GO with four must-own capabilities missing is an ADJUST with a training plan"],
-    ["Readiness gates","Shown on each use case","⛔ appears automatically — explain it in the readout, don't discover it there"],
-    ["Sizing route A vs B","Value model","Fill both routes — the tool flags a &gt;2× disagreement for you"]],
+  data:[["Run cost vs standing effort","Value model states it","The card shows the scan's hrs/week — confirm your cost reflects it","Cross-check you can do alone. If the value case and the capability scan disagree about how much standing effort this needs, the value case is usually the optimistic one."],
+    ["Run-capability scan vs verdict","Your judgement","A GO with four must-own capabilities missing is an ADJUST with a training plan","Your judgement, no access needed. A 'do first' verdict with several must-own capabilities missing is really a 'do first, with a training plan attached'."],
+    ["Readiness gates","Shown on each use case","⛔ appears automatically — explain it in the readout, don't discover it there","The tool applies these automatically from the organisational scores. If those scores are thin, the gates are provisional — say so rather than presenting them as hard blockers."],
+    ["Sizing route A vs B","Value model","Fill both routes — the tool flags a &gt;2× disagreement for you","If you can only fill one route, fill it and say which. The cross-check is a bonus, not a requirement — but a single route means a single point of failure in the number."]],
   tools:[["team","Confirm the ceiling and skills profile"],["uc","Check the sizing cross-check"],["wf","Check run cost vs standing effort"]],
   out:["One consistent story across prototype, numbers and operating picture"],
   watch:"This is the day that stops a client finding the contradiction for you."},
@@ -253,7 +317,7 @@ light:{
   act:["Demo the prototype on their real examples","Walk the value case with the assumption register visible","Take the decision in the room","Hand over the action list"],
   pod:["Delivery Lead","FDE","BA if involved"],
   client:["Sponsor","Workflow owner","Finance","IT"],
-  data:[["Nothing new","—","If you're still collecting on day 5, the scope was wrong"]],
+  data:[["Nothing new","—","If you're still collecting on day 5, the scope was wrong","If you are still collecting at this stage, the scope was wrong. Stop, write up what you have, and name the gaps."]],
   tools:[["uc","Verdict recorded on the use case"],["wf","Outputs → value case + workflow blueprint"]],
   out:["Working prototype, demonstrated","£ value case a CFO can interrogate","Go / adjust / stop verdict with rationale","Workflow-sized op model + phased action list"],
   watch:"On GO the value case becomes the Build scope — that's what protects the fixed price from drift."}
@@ -267,9 +331,9 @@ deep:{
   act:["Agree department, workflow count, access list","Name the sponsor","Book every interview slot now","Send the advance data request","Run the free half-day workshop"],
   pod:["Delivery Lead","FDE"],
   client:["Sponsor","Department head","EA/PMO for scheduling"],
-  data:[["Advance data request sent","Email","Eleven items, each with a fallback so “we don't have that” doesn't stall you"],
-    ["Interview slots booked","PMO / EAs","Access is the single biggest schedule risk — lock it in week 0"],
-    ["Provisional org scores","Workshop","Treat as guessed; re-score with evidence in week 1"]],
+  data:[["Advance data request sent","Email","Eleven items, each with a fallback so “we don't have that” doesn't stall you","No authority to send a formal request? Send it as a list of questions to the people you do know, and mark anything unanswered as not established. The unanswered items become your ask to leadership at the readout."],
+    ["Interview slots booked","PMO / EAs","Access is the single biggest schedule risk — lock it in week 0","Without PMO support, book what you can and shrink the scope to match. Four workflows properly examined beats twelve half-covered — and say plainly which you left out."],
+    ["Provisional org scores","Workshop","Treat as guessed; re-score with evidence in week 1","Score what you can see from where you sit, tag it all 'guessed', and treat the first pass as a hypothesis. Marking a dimension N/A is better than inventing a score for it."]],
   tools:[["team","Light — provisional team scores"]],
   out:["Scope, sponsor, booked diary","Provisional readiness picture","Data request in flight"],
   watch:"Every week-1 overrun traces back to interviews not booked in week 0."},
@@ -277,14 +341,14 @@ deep:{
   act:["Sponsor session to set the 12-month target stage","Run the team skill scan with team leads and practitioners","8–12 structured interviews across the department","Longlist 6–12 candidates as workflows, one use case each"],
   pod:["DL (strategy, governance, adoption)","FDE (data, technology)","BA (anything with a number)"],
   client:["Sponsor","8–12 interviewees","Data owner","Platform lead","Security/risk","Change lead/PMO","HR/L&amp;D"],
-  data:[["The 12-month ambition","Sponsor","“What do you want to be true in 12 months?” — sets the target stage. Don't assume Stage 5"],
-    ["Pain points","Interviews","Ask what wastes their week; log verbatim and tag to candidates"],
-    ["Longlist of workflows","Interviews + team leads","Take what people complain about, not what leadership proposes"],
-    ["Approved AI services / cloud","Platform lead","Ask for the approved software list"],
-    ["Data landscape","Data owner","Where the top workflows' data lives, and who signs off access"],
-    ["AI policy, approval routes, past DPIAs","Risk / DPO","Ask for the last one completed"],
-    ["Post-implementation reviews","PMO","Two recent ones beat any adoption survey"],
-    ["Licence deployment vs active usage","IT / HR","Seats deployed is vanity; seats active is the finding"]],
+  data:[["The 12-month ambition","Sponsor","“What do you want to be true in 12 months?” — sets the target stage. Don't assume Stage 5","No sponsor to ask? Use whatever the department already committed to in a plan or an objective, and say in the report that the target is inferred. Never guess Stage 5 — an inflated target makes every skill look short and the whole assessment reads as alarmist."],
+    ["Pain points","Interviews","Ask what wastes their week; log verbatim and tag to candidates","Needs no access beyond your own colleagues. Ask what wastes their week and write it down verbatim — the exact wording is what makes the finding recognisable later."],
+    ["Longlist of workflows","Interviews + team leads","Take what people complain about, not what leadership proposes","Build it from what people complain about rather than what leadership proposes. You do not need permission to listen."],
+    ["Approved AI services / cloud","Platform lead","Ask for the approved software list","If there's no published list, ask the service desk what would happen if you requested a new tool. The answer tells you both the route and the appetite."],
+    ["Data landscape","Data owner","Where the top workflows' data lives, and who signs off access","No data owner reachable? Map only the data your own team already touches, and mark the rest unknown. A small confirmed map is more useful than a large speculative one."],
+    ["AI policy, approval routes, past DPIAs","Risk / DPO","Ask for the last one completed","Search the intranet before asking anyone. If nothing exists, that absence is the finding — and it is a legitimate, scoreable answer rather than a gap in your work."],
+    ["Post-implementation reviews","PMO","Two recent ones beat any adoption survey","If none exist or you can't get them, use the last change your own team lived through. First-hand beats second-hand here."],
+    ["Licence deployment vs active usage","IT / HR","Seats deployed is vanity; seats active is the finding","Ask your own team. A single team's usage is a legitimate sample as long as you say it is one."]],
   tools:[["team","Light — 28 questions + team skill scan"],["uc","One workflow + one use case per candidate; score Value only"]],
   out:["Readiness ceiling with evidence strength","Longlist cut to a shortlist of 5–6","Interview record that answers “why this one?”"],
   watch:"A Stage 1–2 ceiling on governance or adoption is a programme-level finding — it changes the shape of the whole recommendation."},
@@ -292,12 +356,12 @@ deep:{
   act:["Workflow immersion on each shortlisted candidate","BA baselines the top candidates","FDE runs a 2-hour feasibility probe per candidate","Build step maps with the people doing the work"],
   pod:["DL (immersion)","FDE (probes, data &amp; tech scoring)","BA (baselines)"],
   client:["The people doing each workflow (2–3 hrs each)","Team leads","Finance","Data owner again"],
-  data:[["4–8 workflow steps with % of time","Immersion","Whiteboard it with the people doing it; agree percentages out loud"],
-    ["Volume, time per case, headcount, cost","Exports + shadowing + finance","Get both sizing routes so the cross-check works"],
-    ["10 real cases per candidate","The team","Typical, harder, awkward — real material, not tidied"],
-    ["Data access reality","Data owner","Ask directly and note whether it's yes, slow, or no"],
-    ["Integration depth","Platform lead","Read-only extract vs write-back into core records changes everything"],
-    ["Champion, checker, owner","Team lead","Names, not roles"]],
+  data:[["4–8 workflow steps with % of time","Immersion","Whiteboard it with the people doing it; agree percentages out loud","This is a whiteboard session with the people doing the work — no permission needed. Agree the percentages out loud so nobody quietly disagrees later."],
+    ["Volume, time per case, headcount, cost","Exports + shadowing + finance","Get both sizing routes so the cross-check works","Get what you can and leave the rest blank rather than filled with guesses. The tool shows how much of the value case is estimated, and a reader can weigh it."],
+    ["10 real cases per candidate","The team","Typical, harder, awkward — real material, not tidied","Your own team's work. Take the awkward ones as well as the tidy ones — a probe that only saw clean cases proves nothing."],
+    ["Data access reality","Data owner","Ask directly and note whether it's yes, slow, or no","If you can't ask the owner, record whether your own team can currently reach it. 'We can't get it either' is a real and useful answer."],
+    ["Integration depth","Platform lead","Read-only extract vs write-back into core records changes everything","Read-only extract or write-back into a core record changes the whole picture. If nobody can tell you, assume write-back is not available and note the assumption."],
+    ["Champion, checker, owner","Team lead","Names, not roles","Names, not roles — and you can get these from inside your own team. If the same name appears in all three columns, you have found a key-person risk."]],
   tools:[["team","Switch to Deep; re-score with evidence tags"],["uc","48 checks, step maps, probes, both sizing routes"]],
   out:["Evidence-backed scores per candidate","Probe verdicts replacing the precedent guess","£ ranges with a stated basis","Portfolio view of programme-level weak spots"],
   watch:"The step map routinely halves an inflated number — and sometimes points at a better candidate one step over."},
@@ -305,12 +369,12 @@ deep:{
   act:["FDE prototypes the top 2–3 on real examples","BA runs the full value model on each","DL runs the op model + skill scan on the leading candidate","Make the build-vs-buy calls"],
   pod:["FDE (prototypes)","BA (value models)","DL (op model)"],
   client:["Finance (2×45 min)","Winning workflow's team lead + experts","Platform lead","Security"],
-  data:[["Confirmed baselines","Finance + team","Get finance to say the numbers are fair — that's what makes it defensible"],
-    ["Named tools that already do this","FDE desk research","Search the category properly; “none found” is a valid, useful answer"],
-    ["Competitive-edge call","Sponsor","“Is this something you do differently from competitors?”"],
-    ["Licence &amp; platform pricing","Vendors / our estimates","Include the 12-month price-rise risk"],
-    ["Skill scan for the leading candidate","Team lead + individuals","Ten capabilities, named holders and backups"],
-    ["Standing hours per capability","Team lead","Feeds the run cost, otherwise guessed"]],
+  data:[["Confirmed baselines","Finance + team","Get finance to say the numbers are fair — that's what makes it defensible","No finance sign-off available? Use your numbers, label them unconfirmed, and put the confirmation on the action list. An unconfirmed number that is flagged is defensible; one that is presented as fact is not."],
+    ["Named tools that already do this","FDE desk research","Search the category properly; “none found” is a valid, useful answer","Desk research needs nobody's permission. 'We searched the category and found nothing that fits' is a valid and useful finding — record what you searched."],
+    ["Competitive-edge call","Sponsor","“Is this something you do differently from competitors?”","No sponsor to ask? Note it as an open question for leadership rather than deciding it yourself. Build-versus-buy hinges on it, and it is not yours to answer."],
+    ["Licence &amp; platform pricing","Vendors / our estimates","Include the 12-month price-rise risk","Public pricing plus a note that enterprise terms differ. Include the twelve-month price-rise risk either way."],
+    ["Skill scan for the leading candidate","Team lead + individuals","Ten capabilities, named holders and backups","Your own team again — the one part of this that never needs permission, and often the most revealing."],
+    ["Standing hours per capability","Team lead","Feeds the run cost, otherwise guessed","Estimate with the team rather than for them. If they think it is more than you do, they are usually right."]],
   tools:[["uc","Value model on top 2–3 + build-vs-buy and its why"],["wf","Op model + run-capability scan on the winner"]],
   out:["Quantified business case per top candidate","Build-vs-buy calls with the why","Working prototypes","Ownership readiness + key-person risks"],
   watch:"Keep potential-vs-realistic inside 2–10×. Outside it, your discounts need re-examining before finance does it for you."},
@@ -318,7 +382,7 @@ deep:{
   act:["Generate the outputs","Reconcile them against each other","Pressure-test the ranking with the sponsor before the room","Rehearse, then play back to leadership"],
   pod:["Whole pod — three days heads-down, then present"],
   client:["Sponsor (pre-brief)","Leadership: department head, IT, finance, risk (2-hr playback)"],
-  data:[["Nothing new","—","If you're still collecting in week 4, the scope was too wide"]],
+  data:[["Nothing new","—","If you're still collecting in week 4, the scope was too wide","If you are still collecting at this stage, the scope was wrong. Stop, write up what you have, and name the gaps."]],
   tools:[["team","Outputs → readiness report + gap roadmap"],["uc","Portfolio → ranked backlog, waves, aggregate"],["wf","Outputs → workflow blueprint"]],
   out:["Ranked opportunity backlog, gated by org readiness","AI-readiness assessment — data, technology, skills scored","Build-vs-buy calls with rationale","Quantified business case","Working prototypes of the top workflows"],
   watch:"No surprises in the playback. Pressure-test the ranking with the sponsor first — if they'll disagree, disagree in private."}
@@ -372,9 +436,10 @@ function detailHTML(s){
     <h3>Who's needed</h3>
     <p style="font-size:13.5px;margin:2px 0"><b style="color:var(--blue)">Us:</b> ${s.pod.join(" · ")}</p>
     <p style="font-size:13.5px;margin:2px 0"><b>Client:</b> ${s.client.join(" · ")}</p>
-    <h3>Data needed, and how to get it</h3>
-    <table><thead><tr><th style="width:26%">What</th><th style="width:22%">Source</th><th>How to get it</th></tr></thead>
-      <tbody>${s.data.map(d=>`<tr><td>${d[0]}</td><td>${d[1]}</td><td>${d[2]}</td></tr>`).join("")}</tbody></table>
+    <h3>Data needed, how to get it, and what to do if you can't</h3>
+    <p class="hint" style="margin:0 0 6px">The fourth column is for anyone assessing a team inside a larger organisation, where Risk, Finance and the platform team may be out of reach. Nothing here requires you to have authority you don't have.</p>
+    <table><thead><tr><th style="width:19%">What</th><th style="width:16%">Source</th><th style="width:31%">How to get it</th><th style="width:34%" class="fbh">If you can't get it</th></tr></thead>
+      <tbody>${s.data.map(d=>`<tr><td>${d[0]}</td><td>${d[1]}</td><td>${d[2]}</td><td class="fb">${d[3]||"—"}</td></tr>`).join("")}</tbody></table>
     <h3>Tools</h3><div class="pillrow">${s.tools.map(t=>`<span class="tpill ${T[t[0]].c}">${T[t[0]].n} — ${t[1]}</span>`).join("")}</div>
     <div class="outbox"><b>Output:</b> ${s.out.join(" · ")}</div>
     <div class="watch"><b>Watch for:</b> ${s.watch}</div>
