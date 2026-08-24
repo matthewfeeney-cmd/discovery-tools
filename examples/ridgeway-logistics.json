@@ -6,7 +6,7 @@
   "ambition": "Get cost-to-serve down across the six depots and stop the B2C last-mile arm losing money on failed first-time deliveries, in time for a 2027 exit process that is already a year late."
  },
  "mode": "deep",
- "target": 4,
+ "target": 3,
  "org": {
   "q1s": 1,
   "q2s": 1,
@@ -438,5 +438,57 @@
  "num": {},
  "sv": 2,
  "curWf": 0,
- "curUc": 0
+ "curUc": 0,
+ "tgt": {},
+ "frame": {
+  "amb": [
+   "Cut failed first-time delivery on the B2C arm without adding head office people",
+   "Give depot planners a shift rota they trust, built somewhere other than a phone",
+   "Answer an operational question from the TMS without asking the data team"
+  ],
+  "spon3": [
+   "Write down what people are allowed to put into AI tools",
+   "Name someone who owns AI risk",
+   "Stop consignee addresses going into consumer tools"
+  ],
+  "tried": [
+   {
+    "what": "Copilot rollout to the engineering guild",
+    "when": "2025",
+    "end": "Landed and stuck",
+    "why": "One team with real discipline — the reason engineering scores well and nothing else does"
+   },
+   {
+    "what": "A depot-level chatbot pilot",
+    "when": "early 2026",
+    "end": "Abandoned after six weeks",
+    "why": "No runbooks or SOPs connected, so every answer was generic"
+   }
+  ],
+  "funded": [
+   {
+    "prog": "Portal replatform",
+    "owner": "Head of Engineering",
+    "covers": "The B2C tracking and booking stack",
+    "when": "H1 2027"
+   }
+  ],
+  "cap": [
+   {
+    "name": "Head of Engineering",
+    "role": "Engineering",
+    "days": "4"
+   },
+   {
+    "name": "Operations Director",
+    "role": "Operations",
+    "days": "2"
+   },
+   {
+    "name": "CFO",
+    "role": "Finance / sponsor",
+    "days": "1"
+   }
+  ]
+ }
 }

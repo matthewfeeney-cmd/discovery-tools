@@ -6,7 +6,7 @@
   "ambition": "Take 400bps out of the cost base before the 2027 exit, and have a credible AI story in the IM — without a Consumer Duty incident on the personal-lines book."
  },
  "mode": "deep",
- "target": 4,
+ "target": 3,
  "org": {
   "q1s": 2,
   "q2s": 3,
@@ -350,5 +350,67 @@
  "num": {},
  "sv": 2,
  "curWf": 0,
- "curUc": 0
+ "curUc": 0,
+ "tgt": {
+  "d6": 0,
+  "d7": 0,
+  "d8": 0
+ },
+ "frame": {
+  "amb": [
+   "Put a first-draft renewal report in front of a broker in an hour instead of half a day",
+   "Answer a policy-wording question without waiting on the technical claims team",
+   "Show the board a defensible AI position before the IM is written"
+  ],
+  "spon3": [
+   "Get the claims automation off a personal account",
+   "Publish something so people stop guessing what they are allowed to do",
+   "Work out whether the legacy platforms can be reached at all"
+  ],
+  "tried": [
+   {
+    "what": "An AI acceptable-use policy draft",
+    "when": "autumn 2025",
+    "end": "Never published",
+    "why": "Legal and IT disagreed on scope and nobody owned the decision"
+   },
+   {
+    "what": "Copilot licences for the broking team",
+    "when": "spring 2026",
+    "end": "Quietly lapsed",
+    "why": "No training, no use cases, and it could not see any of the systems brokers actually work in"
+   }
+  ],
+  "funded": [
+   {
+    "prog": "CRM consolidation onto Acturis",
+    "owner": "K Osei, Head of Data",
+    "covers": "The customer golden record for the two 2023 acquisitions",
+    "when": "Q2 2027"
+   },
+   {
+    "prog": "Consumer Duty remediation",
+    "owner": "S Whitfield",
+    "covers": "Personal-lines communications review",
+    "when": "ongoing"
+   }
+  ],
+  "cap": [
+   {
+    "name": "K Osei",
+    "role": "Head of Data",
+    "days": "3"
+   },
+   {
+    "name": "IT Director",
+    "role": "IT (outsourced supplier managed)",
+    "days": "2"
+   },
+   {
+    "name": "L Moreau",
+    "role": "Renewals Manager",
+    "days": "1"
+   }
+  ]
+ }
 }
