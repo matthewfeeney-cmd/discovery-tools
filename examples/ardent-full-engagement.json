@@ -695,7 +695,7 @@
       "cRun": "7000",
       "aggr": true
      },
-     "verdict": "go",
+     "verdict": "GO",
      "verdictWhy": "The strongest of the four and the only one where the value, the data and a willing champion line up. Gated on the legacy-platform access, which is already action A011 on the team roadmap — so it is not a new dependency, it is the same one.",
      "notes": "Probe: 8 of 10 credible. The two failures were both data reach, not model capability — which is the finding."
     },
@@ -836,7 +836,7 @@
       "cRun": "10000",
       "aggr": true
      },
-     "verdict": "adjust",
+     "verdict": "ADJUST",
      "verdictWhy": "Real value, but the readiness is not there. The constraint is the quality of what insurers send, which we do not control. Narrow it to the four insurers that account for 60% of the book and send structured responses, prove it there, then widen.",
      "notes": "The verdict the sponsor least wanted and the one most worth having."
     },
@@ -967,7 +967,7 @@
       "cRun": "2500",
       "aggr": true
      },
-     "verdict": "go",
+     "verdict": "GO",
      "verdictWhy": "Small, but genuinely easy and it touches no personal data — which makes it the natural first thing through the approval route nobody has ever used. Worth doing partly to prove the route works.",
      "notes": "The value case alone would not justify this. The governance case does: it is the cheapest way to walk one system through the gate."
     },
@@ -1108,7 +1108,7 @@
       "cRun": "4000",
       "aggr": true
      },
-     "verdict": "adjust",
+     "verdict": "ADJUST",
      "verdictWhy": "The value is modest and the readiness is poor — but this one is already live, which changes the question from 'should we build it' to 'it exists, on whose authority, and with what record'. Contain it first. Whether it is then worth keeping is a smaller decision than it looks.",
      "notes": "This is the same finding as the agentic-readiness flag at team level, arrived at from the other direction."
     }
