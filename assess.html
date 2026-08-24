@@ -1023,12 +1023,22 @@ function clientReport(){
   /* ---- executive summary sentence ---- */
   const capNames=ceil.dims.map(d=>lc(d.name));
   const capList=capNames.length>1?capNames.slice(0,-1).join(", ")+" and "+capNames.slice(-1):capNames[0];
+  /* Ceiling dimensions the client has chosen to park. This is the most important caveat in the
+     document: the ceiling cannot pass a dimension nobody is going to work on, so say it plainly
+     rather than presenting a projection that quietly assumes work that is not on the plan. */
+  const cPark=ceilParked(), cPlan=ceil.dims.filter(d=>DTGT(d.id)>0);
+  const cPlanNames=cPlan.map(d=>lc(d.name));
+  const cPlanList=cPlanNames.length>1?cPlanNames.slice(0,-1).join(", ")+" and "+cPlanNames.slice(-1):cPlanNames[0];
+  const cParkList=cPark.map(d=>lc(d.name)).join(cPark.length>2?", ":" and ");
   const headline=ceil.stage>=t
     ? `You are at Stage ${ceil.stage} against a Stage ${t} ambition. Nothing at organisational level is holding you back.`
-    : `You are at Stage ${ceil.stage} of 5 against a Stage ${t} ambition — and it is ${capNames.length>1?capList:capList} that puts you there.`;
+    : `You are at Stage ${ceil.stage} of 5 against a Stage ${t} ambition — and it is ${capList} that puts you there.`;
+  const parkNote = cPark.length ? (cPlan.length
+    ? `<b>One thing to be clear about before anything else.</b> Of the ${capNames.length} dimensions setting your ceiling, ${cPark.length===1?"one":cPark.length===capNames.length?"all":cPark.length} — ${cParkList} — ${cPark.length===1?"is":"are"} deliberately not on this year's plan. That is a legitimate decision and we have recorded it as one. It also means your ceiling cannot pass Stage ${reachableCeiling()} however well the rest of the plan goes. The work below lifts ${cPlanList}, which is worth doing on its own terms, but the constraint moves only when ${cPark.length===1?"that dimension does":"those dimensions do"}.`
+    : `<b>One thing to be clear about before anything else.</b> Every dimension setting your ceiling — ${cParkList} — is deliberately off this year's plan. That is a legitimate decision, but it means your readiness will not move this year. What follows is worth doing; it is not a route to a higher ceiling.`) : "";
   const gapNote = ceil.stage>=t ? "" :
     (pot&&pot>ceil.stage+0.7
-      ? `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today. The distance between that and Stage ${ceil.stage} is the point of this report: most of the organisation is already operating above what ${capNames.length>1?"these dimensions allow":"this dimension allows"}.${proj?` Bring ${capNames.length>1?"them":"it"} up to Stage ${t} and that average moves to ${proj.toFixed(1)} — but the ceiling moves further, which is what actually changes what you can do.`:""}`
+      ? `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today. The distance between that and Stage ${ceil.stage} is the point of this report: most of the organisation is already operating above what ${capNames.length>1?"these dimensions allow":"this dimension allows"}.${proj&&proj>pot+0.05?` Deliver the plan and that average moves to ${proj.toFixed(1)}${cPark.length?" — a real gain, though not one that moves the ceiling, for the reason above":" — but the ceiling moves further, which is what actually changes what you can do"}.`:""}`
       : `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
 
   /* ---- dimension sections ---- */
@@ -1100,7 +1110,11 @@ function clientReport(){
       ${x.blocked?`<p class="lead">Each of these needs something else on this list to land first. That is not our preference — it is the dependency. Doing them early tends to produce work that has to be redone.</p>`:""}
       ${x.parked?`<p class="lead">Assessed, scored, and agreed with you as not a priority for the next twelve months. They still count toward the ceiling, so they are listed here rather than left out — a gap you have decided not to close is a decision, and it should be a visible one.</p>`:""}
       ${x.noLib?`<p class="lead">Our standard library has no move for you here because you are already beyond it. These need a recommendation written specifically for you.</p>`:""}
-      ${x.items.map(g=>`<div class="act">
+      ${x.parked?x.items.map(g=>`<div class="act">
+        <div class="ah"><b>${E(g.dim.name)}</b><span class="aid">STAGE ${g.current}</span></div>
+        <div class="meta">${E((S.dimNote[g.dim.id]||{}).improve||g.dim.sub||"")}</div>
+        ${(S.dimNote[g.dim.id]||{}).riskNot?`<p><b>What living with it costs.</b> ${E(S.dimNote[g.dim.id].riskNot)}</p>`:""}
+      </div>`).join(""):x.items.map(g=>`<div class="act">
         <div class="ah"><b>${E(g.act.a)}</b>${g.act.id!=="NOW"&&g.act.id!=="—"?`<span class="aid">${E(g.act.id)}</span>`:""}</div>
         <div class="meta">${E(g.dim.name)} · Stage ${g.current} → ${g.target}${g.note?" · "+E(g.note):""}</div>
         ${g.act.why?`<p>${E(g.act.why)}</p>`:""}
@@ -1257,17 +1271,21 @@ function clientReport(){
   <div class="sec"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
     <p class="lede">${E(headline)}</p>
     ${gapNote?p(gapNote):""}
+    ${parkNote?`<p class="flag">${parkNote}</p>`:""}
     <div class="kpis">
       <div class="kpi${ceil.stage<t?" red":""}"><span>Today</span><b>Stage ${ceil.stage}</b><small>${E(stageName(ceil.stage))}</small></div>
       <div class="kpi"><span>Your 12-month ambition</span><b>Stage ${t}</b><small>${E(stageName(t))}</small></div>
       <div class="kpi"><span>Weighted average today</span><b>${pot.toFixed(1)}</b><small>across all ${D.length} dimensions as they stand — not a projection</small></div>
-      ${proj&&proj>pot+0.05?`<div class="kpi"><span>If the constraint were lifted</span><b>${proj.toFixed(1)}</b><small>the same average with ${capNames.length>1?"those dimensions":"that dimension"} at Stage ${t}</small></div>`:""}
+      ${proj&&proj>pot+0.05?`<div class="kpi"><span>If the plan is delivered</span><b>${proj.toFixed(1)}</b><small>${cPark.length?"the same average once the dimensions on the plan reach their targets — the parked ones are held where they are":"the same average with "+(capNames.length>1?"those dimensions":"that dimension")+" at Stage "+t}</small></div>`:""}
     </div>
-    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is ${ceil.stage}, set by ${E(capList)}, and the fastest route to a higher number is not broad improvement. It is that.</p>
+    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is ${ceil.stage}, set by ${E(capList)}, and the fastest route to a higher number is not broad improvement. It is ${cPark.length?`those specific dimensions — which is why the decision to park ${cPark.length===1?"one of them":"some of them"} is the most consequential choice in this plan`:"that"}.</p>
     ${unscored.length?`<p class="flag"><b>Scope note.</b> ${unscored.length} dimension${unscored.length>1?"s were":" was"} not assessed in this engagement — ${unscored.map(d=>E(lc(d.name))).join(", ")}. ${unscored.length>1?"They are":"It is"} excluded from your score rather than assumed, so the figures above describe only what we examined.</p>`:""}
     ${focus.length?`<div class="upfront"><h4>If you read nothing else — the next ninety days</h4>
       <ol>${focus.map(g=>`<li><b>${E(g.act.a)}</b><span>${E(g.dim.name)} · ${E(g.act.h)}, ${E(g.act.e)} effort · ${E(g.act.ow)}</span></li>`).join("")}</ol>
-      <p>${focus.length===1?"That one moves":"Those "+focus.length+" move"} the constraint. The rest of the plan — ${size} item${size===1?"":"s"} in total — is sequenced behind ${focus.length===1?"it":"them"} and is worth reading, but nothing else on it changes what you are capable of until ${focus.length===1?"this is":"these are"} done.${cap.days?` At the ${cap.days} day${cap.days===1?"":"s"} a month you told us ${cap.people===1?"is":"are"} available, ${size>cap.days*4?"the full list is a two-year programme rather than a one-year one — which is worth agreeing now rather than discovering in month eight":"the full list is achievable inside the year"}.`:""}</p>
+      <p>${cPark.length
+        ? `${focus.length===1?"That one is":"Those "+focus.length+" are"} the first ${focus.length===1?"move":"moves"} toward the constraint — each is either a constraint dimension itself or a prerequisite for one — and they are the right place to start. Subject to the caveat above: while ${cParkList} ${cPark.length===1?"stays":"stay"} off the plan, this work raises the average rather than the ceiling.`
+        : `${focus.length===1?"That one moves":"Those "+focus.length+" move"} the constraint — each is either a constraint dimension or a prerequisite for one. The rest of the plan is sequenced behind ${focus.length===1?"it":"them"} and nothing else on it changes what you are capable of until ${focus.length===1?"this is":"these are"} done.`}
+        The full plan is ${size} item${size===1?"":"s"}.${cap.days?` At the ${cap.days} day${cap.days===1?"":"s"} a month you told us ${cap.people===1?"is":"are"} available, ${size>cap.days*4?"that is a two-year programme rather than a one-year one — worth agreeing now rather than discovering in month eight":"that is achievable inside the year"}.`:""}</p>
     </div>`:""}
   </div>
 
@@ -1298,11 +1316,13 @@ function clientReport(){
   <div class="sec"><div class="sh"><span class="num">${N()}</span><h2>The picture across all ${D.length} dimensions</h2></div>
     <div class="radar">${reportRadar()}</div>
     <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage ${t} ambition</p>
-    <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th></tr></thead><tbody>
-    ${D.map(d=>{const s=orgDim(d.id),isC=ceil.dims.some(x=>x.id===d.id);
-      return `<tr class="${isC?"short":""}"><td>${d.n}</td><td>${E(d.name)}${isC?' <b style="color:#e8112d">— the constraint</b>':""}</td>
-        <td>${wPct(d)}%</td><td><b>${s.avg!==null?"Stage "+fmtS(s.avg):"—"}</b></td></tr>`;}).join("")}
+    <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th><th>Target</th></tr></thead><tbody>
+    ${D.map(d=>{const s=orgDim(d.id),isC=ceil.dims.some(x=>x.id===d.id),pk=DTGT(d.id)===0;
+      return `<tr class="${isC?"short":""}"><td>${d.n}</td><td>${E(d.name)}${isC?' <b style="color:#e8112d">— the constraint</b>':""}${pk?' <b style="color:#6b6b6b">— not this year</b>':""}</td>
+        <td>${wPct(d)}%</td><td><b>${s.avg!==null?"Stage "+fmtS(s.avg):"—"}</b></td>
+        <td>${pk?"—":"Stage "+DTGT(d.id)}</td></tr>`;}).join("")}
     </tbody></table>
+    ${parked().length?`<p class="method"><b>Not this year</b> means we assessed the dimension, scored it, and agreed with you that closing it is not a priority for the next twelve months. It still counts toward your ceiling. It is listed rather than hidden because a gap you have decided to live with is a decision, and decisions should be visible.</p>`:""}
   </div>
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Dimension by dimension</h2></div>
@@ -1320,7 +1340,7 @@ function clientReport(){
   </div>`:""}
 
   ${focus.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>The next ninety days</h2></div>
-    <p class="lead">${focus.length===1?"One thing":focus.length===2?"Two things":focus.length+" things"}. Not the full list — the part of it that moves the ceiling, which is the only thing that changes what you are capable of. Everything else waits behind ${focus.length===1?"it":"these"}, and the rest of the plan is in the next section.</p>
+    <p class="lead">${focus.length===1?"One thing":focus.length===2?"Two things":focus.length+" things"}. Not the full list — the part of it that sits on the path to your constraint, which is ${cPark.length?"where the leverage is even though the ceiling itself is held by a dimension you have parked":"the only thing that changes what you are capable of"}. Everything else waits behind ${focus.length===1?"it":"these"}, and the rest of the plan is in the next section.</p>
     ${focusHTML}
     ${cap.days?`<p class="why"><b>Against your capacity.</b> You told us ${cap.people} ${cap.people===1?"person has":"people have"} ${cap.days} ${cap.days===1?"day":"days"} a month for this. ${focus.length} item${focus.length===1?"":"s"} at that rate is ${focus.length/cap.days<=1?"comfortable":focus.length/cap.days<=2?"tight but real":"more than the time allows — pick two and say so"}. The full plan is ${size} items, which is ${(size/cap.days).toFixed(1)} per available day per month${size/cap.days>4?" — a two-year programme on current capacity, and better named as one now than discovered later":""}.</p>`:""}
     ${spon.length?`<p class="ctx"><b>You told us your own three were:</b> ${spon.map(E).join(" · ")}. Where that agrees with the list above, start there — a plan the sponsor already believes in is worth more than a better plan they do not.</p>`:""}
@@ -1451,10 +1471,20 @@ function potential(){const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x
   if(!sc.length)return null;const w=sc.reduce((a,x)=>a+x.d.w,0);
   return sc.reduce((a,x)=>a+x.s.avg*x.d.w,0)/w;}
 /* what they would actually score if the capping dimensions reached target — the real projection */
-function projected(){const t=TGT(),c=ceiling();if(t===null||!c)return null;
+/* Where the weighted average lands if the plan is delivered. Only lifts dimensions the plan actually
+   touches — a parked dimension is not going to move, so projecting it upward would overstate the case. */
+function projected(){const c=ceiling();if(TGT()===null||!c)return null;
   const sc=activeDims().map(d=>({d,s:orgDim(d.id)})).filter(x=>x.s.avg!==null);
   if(!sc.length)return null;const w=sc.reduce((a,x)=>a+x.d.w,0);
-  return sc.reduce((a,x)=>a+(c.dims.some(y=>y.id===x.d.id)?t:x.s.avg)*x.d.w,0)/w;}
+  return sc.reduce((a,x)=>{const t=DTGT(x.d.id);
+    const lift=c.dims.some(y=>y.id===x.d.id)&&t>0&&t>x.s.avg;
+    return a+(lift?t:x.s.avg)*x.d.w;},0)/w;}
+/* the ceiling dimensions the client has decided not to address — the most important caveat in the report */
+function ceilParked(){const c=ceiling();return c?c.dims.filter(d=>DTGT(d.id)===0):[];}
+/* the ceiling you can actually reach, given what is on the plan */
+function reachableCeiling(){const c=ceiling();if(!c)return null;
+  const cp=ceilParked(); if(!cp.length)return null;
+  return Math.min(...cp.map(d=>orgDim(d.id).stage).filter(v=>v!==null));}
 function orgTotalQ(){return activeDims().length*2;}
 function orgAnswered(){return activeDims().reduce((a,d)=>a+orgDim(d.id).answered,0);}
 /* exposure is contained, not sequenced — a live risk does not wait for a dependency chain */
