@@ -751,24 +751,31 @@ const KEY="enablis-assess-v1";
 /* Schema version. Bump when a stored index changes meaning, and add a migration step below.
    sv 2: d2 checklist went from 6 items to 8, so the synthetic "none of these" index moved 6 -> 8. */
 const SV=2;
+/* One place that both migrates an old file and fills in every default. It must be the only place:
+   S is replaced wholesale by loadExample() and importJSON(), and defaults that live anywhere else
+   get missed by exactly one of those call sites. That has bitten once already. */
 function migrate(o){
-  if(!o||typeof o!=="object")return o;
+  if(!o||typeof o!=="object")o={};
   const from=o.sv||1;
   if(from<2){ const a=o.orgC&&o.orgC.q2c;
     if(Array.isArray(a)&&a.includes(6)) o.orgC.q2c=[8]; }
-  o.sv=SV; return o;
+  o.sv=SV;
+  o.meta=o.meta||{}; o.mode=o.mode||"light"; if(!o.target)o.target=3;
+  o.org=o.org||{}; o.orgC=o.orgC||{}; o.dimOff=o.dimOff||{}; o.orgEv=o.orgEv||{};
+  o.dimNote=o.dimNote||{}; o.tskills=o.tskills||{}; o.coh=o.coh||{}; o.ints=o.ints||[];
+  o.cb=o.cb||{has:null,repoAccess:"",checkAccess:"",repos:[],ow:{},gt:{},gtNotes:{},notes:""};
+  o.wfs=o.wfs||[]; o.curWf=o.curWf||0; o.curUc=o.curUc||0; o.num=o.num||{};
+  /* per-dimension "good enough", and the frame — day-one answers that keep the roadmap short */
+  o.tgt=o.tgt||{};
+  o.frame=o.frame||{};
+  o.frame.amb=Array.isArray(o.frame.amb)?o.frame.amb:["","",""];
+  o.frame.spon3=Array.isArray(o.frame.spon3)?o.frame.spon3:["","",""];
+  o.frame.tried=Array.isArray(o.frame.tried)?o.frame.tried:[];
+  o.frame.funded=Array.isArray(o.frame.funded)?o.frame.funded:[];
+  o.frame.cap=Array.isArray(o.frame.cap)?o.frame.cap:[];
+  return o;
 }
 let S=migrate(JSON.parse(localStorage.getItem(KEY)||"{}"));
-S.meta=S.meta||{}; S.mode=S.mode||"light"; S.target=S.target||3;
-/* The frame. Not scored, asked on day one, and its only job is to keep the roadmap short and real.
-   Without it every dimension below target generates a chain and the client gets a backlog. */
-S.frame=S.frame||{}; S.frame.amb=S.frame.amb||["","",""]; S.frame.spon3=S.frame.spon3||["","",""];
-S.frame.tried=S.frame.tried||[]; S.frame.funded=S.frame.funded||[]; S.frame.cap=S.frame.cap||[];
-S.tgt=S.tgt||{};
-S.org=S.org||{}; S.orgC=S.orgC||{}; S.dimOff=S.dimOff||{}; S.orgEv=S.orgEv||{}; S.dimNote=S.dimNote||{}; S.tskills=S.tskills||{}; S.coh=S.coh||{}; S.ints=S.ints||[];
-S.cb=S.cb||{has:null,repoAccess:"",checkAccess:"",repos:[],ow:{},gt:{},gtNotes:{},notes:""};
-S.wfs=S.wfs||[]; S.curWf=S.curWf||0; S.curUc=S.curUc||0;
-if(S.target===undefined)S.target=null;
 function TGT(){return S.target||null;}
 /* Per-dimension "good enough". 3 = working, 4 = managed and measured, 0 = not this year.
    Almost nobody needs 4 everywhere and nobody goes 1 to 4 in a year, so the default is 3 and
@@ -776,16 +783,17 @@ function TGT(){return S.target||null;}
 const TGT_OPTS=[{v:3,n:"Working",d:"defined, documented, and it works"},
                 {v:4,n:"Managed",d:"measured and steered"},
                 {v:0,n:"Not this year",d:"a real gap, deliberately not now"}];
-function DTGT(id){const v=S.tgt[id];
-  if(v===0)return 0;
-  if(v===undefined||v===null)return TGT()||3;
-  return v;}
-function setDTgt(id,v){S.tgt[id]=(S.tgt[id]===v?undefined:v);save();renderAll();}
+function DTGT(id){const v=(S.tgt||{})[id];
+  if(v===0||v==="0")return 0;
+  const n=parseInt(v,10);
+  return isNaN(n)?(TGT()||3):n;}
+function setDTgt(id,v){S.tgt=S.tgt||{};S.tgt[id]=(S.tgt[id]===v?undefined:v);save();renderAll();}
 function parked(){return activeDims().filter(d=>DTGT(d.id)===0);}
 /* change capacity — the arithmetic that turns a gap list into a plan someone can commit to */
-function capDays(){return (S.frame.cap||[]).reduce((a,r)=>a+(parseFloat(r.days)||0),0);}
-function capPeople(){return (S.frame.cap||[]).filter(r=>r.name).length;}
-function ambList(){return (S.frame.amb||[]).filter(x=>x&&x.trim());}
+const FR=k=>((S.frame||{})[k])||[];
+function capDays(){return FR("cap").reduce((a,r)=>a+(parseFloat(r.days)||0),0);}
+function capPeople(){return FR("cap").filter(r=>r.name).length;}
+function ambList(){return FR("amb").filter(x=>x&&String(x).trim());}
 const QS=new URLSearchParams(location.search);
 const WEDGE=QS.get("m")==="team";
 function save(){localStorage.setItem(KEY,JSON.stringify(S));document.getElementById("saveNote").textContent="Saved "+new Date().toLocaleTimeString();}
@@ -830,10 +838,8 @@ function exampleMenu(){
 function loadExample(id){
   const x=EXAMPLES.find(e=>e.id===id); if(!x)return exampleMenu();
   const o=document.getElementById("exOverlay"); if(o)o.remove();
-  S=migrate(JSON.parse(JSON.stringify(x.data)));
-  S.meta=S.meta||{}; S.org=S.org||{}; S.orgC=S.orgC||{}; S.dimOff=S.dimOff||{}; S.orgEv=S.orgEv||{};
-  S.dimNote=S.dimNote||{}; S.tskills=S.tskills||{}; S.coh=S.coh||{}; S.ints=S.ints||[];
-  S.wfs=S.wfs||[]; S.cb=S.cb||{}; S.num=S.num||{}; S.curWf=0; S.curUc=0;
+  S=migrate(JSON.parse(JSON.stringify(x.data)));   /* migrate() fills every default — see its note */
+  S.curWf=0; S.curUc=0;
   save(); TAB="team"; renderAll();
   const c=ceiling();
   alert(x.name+" loaded.\n\nCeiling: Stage "+c.stage+" ("+stageName(c.stage)+"), set by "+
@@ -2659,8 +2665,9 @@ function exportJSON(){const b=new Blob([JSON.stringify(S,null,2)],{type:"applica
   const a=document.createElement("a");a.href=URL.createObjectURL(b);
   a.download=((S.meta&&S.meta.client)||"client").replace(/\s+/g,"-").toLowerCase()+"-assess.json";a.click();}
 function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{S=migrate(JSON.parse(r.result));S.meta=S.meta||{};S.org=S.org||{};S.orgC=S.orgC||{};S.dimOff=S.dimOff||{};S.orgEv=S.orgEv||{};S.dimNote=S.dimNote||{};S.tskills=S.tskills||{};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repoAccess:'',checkAccess:'',repos:[],ow:{},gt:{},gtNotes:{},notes:''};S.coh=S.coh||{};S.ints=S.ints||[];S.cb=S.cb||{has:null,repos:[],ow:{},gt:{},gtNotes:{}};
-    S.wfs=S.wfs||[];S.mode=S.mode||"light";S.target=S.target||4;S.curWf=0;S.curUc=0;save();renderAll();
+  r.onload=()=>{try{
+    S=migrate(JSON.parse(r.result));   /* migrate() fills every default — see its note */
+    S.curWf=0;S.curUc=0;save();renderAll();
   }catch(e){alert("Could not read that file.");}};r.readAsText(f);}
 
 function renderAll(){renderNav();renderSetup();renderTeam();renderWf();renderUc();renderPort();renderOut();}
