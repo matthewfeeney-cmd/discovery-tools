@@ -28,7 +28,7 @@
    4
   ],
   "q2c": [
-   6
+   8
   ],
   "q3c": [
    2
@@ -435,5 +435,8 @@
   "notes": "Better engineering than the leadership believes it has. The constraint is not capability — it is that agent-generated volume is outrunning test coverage, and one undocumented integration carries the whole TMS relationship. Neither is an AI problem; both get worse if AI volume increases before they are fixed."
  },
  "wfs": [],
- "num": {}
+ "num": {},
+ "sv": 2,
+ "curWf": 0,
+ "curUc": 0
 }

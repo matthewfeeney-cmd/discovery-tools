@@ -50,18 +50,20 @@ Ridgeway is the better demonstration of why the ceiling matters: a genuinely wel
 
 **Four use cases, three different verdicts.**
 
-| Use case | Value | Ease | Verdict | Year-1 REV | Payback |
-|---|---|---|---|---|---|
-| Renewal report first draft | 11/12 | 27/36 | **Do first** | £66k | 19 months |
-| Insurer quote comparison | 11/12 | 20/36 | **Big bet** | £19k | — |
-| Claims acknowledgement drafting | 7/12 | 27/36 | **Fill-in** | £11k | — |
-| Policy wording change detection | 4/12 | 32/36 | **Fill-in** | £9k | — |
+| Use case | Value | Ease | Verdict | Steady state | Year one | Payback |
+|---|---|---|---|---|---|---|
+| Renewal report first draft | 11/12 | 27/36 | **Do first** | £66k | £23k | 31 months |
+| Insurer quote comparison | 11/12 | 20/36 | **Big bet** | £19k | £7k | — |
+| Claims acknowledgement drafting | 7/12 | 27/36 | **Fill-in** | £11k | £4k | — |
+| Policy wording change detection | 4/12 | 32/36 | **Fill-in** | £9k | £3k | — |
+
+The year-one column is the J-curve. Ardent's ceiling is Stage 1, so the model assumes only 35% of steady-state value lands in the first year, and payback is walked across that curve rather than assumed flat — which is why renewal drafting reads 31 months rather than the 19 a flat model gives. That percentage is our assumption, not a measured figure, and it is the number to argue about in a readout.
 
 The instructive one is the claims acknowledgement. That is the automation the wedge found running unauthorised on a personal account — and by value it scores as a *fill-in*, not a priority. The reason to act on it is governance, not return. A portfolio that ranked purely on money would leave it running.
 
 The quote comparison is the other one worth walking through: strong value, poor readiness, and the constraint is the quality of what insurers send, which we do not control. The recommendation narrows it to the four insurers that send structured responses rather than attempting the whole book.
 
-Note also what the £ model does to the headline. Renewal drafting has a potential value of £158k and a realistic value of £66k once adoption, effectiveness and integration are applied. Most business cases quote the first number.
+Note also what the £ model does to the headline. Renewal drafting has a potential value of £158k, a steady-state value of £66k once adoption, effectiveness and integration are applied, and £23k actually landing in year one against a £95k year-one cost. Most business cases quote the first number.
 
 ## Sample client reports
 
@@ -79,4 +81,4 @@ The two wedge files carry no workflows or use cases — they match the two-week 
 
 - **Training a new delivery lead.** Load one, walk the Team tab top to bottom, and look at how the evidence and context fields are written. The context notes are what make a report read bespoke rather than templated — these are worth copying in style, not content.
 - **Showing the tool internally.** Ridgeway makes the sharper demo: the ceiling story lands in about thirty seconds.
-- **Regression testing.** If a change to the scoring breaks something, these will show it. Ardent should hold at ceiling Stage 1, potential 1.81; Ridgeway at ceiling Stage 1, potential 2.41.
+- **Regression testing.** If a change to the scoring breaks something, these will show it. Ardent should hold at ceiling Stage 1, potential 1.81; Ridgeway at ceiling Stage 1, potential 2.41. Ridgeway is also the schema-migration case: its governance checklist is answered "none of these", so it catches any change that shifts that stored index.
