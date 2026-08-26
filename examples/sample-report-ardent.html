@@ -72,12 +72,21 @@
  .phase.later h4{border-color:#b0b0b0;color:#5f6368}
  .phase .lead{font-size:13.6px;color:#5f6368;margin:0 0 10px 14px}
  .act{border:1px solid #e8e8e8;border-radius:9px;padding:13px 15px;margin:0 0 9px 14px;page-break-inside:avoid}
- .upfront{border:2px solid #1e7e44;border-radius:10px;padding:16px 20px;margin-top:16px;background:#fbfdfb;page-break-inside:avoid}
- .upfront h4{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#1e7e44;margin-bottom:9px}
- .upfront ol{margin:0 0 10px 19px}
- .upfront li{margin-bottom:7px;font-size:14.5px;line-height:1.45}
- .upfront li span{display:block;font-size:12px;color:#5f6368;margin-top:1px}
- .upfront p{font-size:13.3px;color:#3d3d3d;margin:0}
+ /* the urgency board — the one page a sponsor will actually act on */
+ .board{margin:4px 0 14px}
+ .ub{display:flex;gap:14px;align-items:stretch;margin-bottom:10px;page-break-inside:avoid}
+ .ubn{flex:0 0 40px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;
+      color:#fff;background:#8a8a8a;border-radius:9px 0 0 9px}
+ .ub.live .ubn{background:#b3261e} .ub.heavy .ubn{background:#0b5c8a} .ub.cheap .ubn{background:#1e7e44}
+ .ubb{flex:1;border:1px solid #e2e2e2;border-left:none;border-radius:0 9px 9px 0;padding:12px 16px}
+ .ub.live .ubb{background:#fdf6f5;border-color:#f0d4d1}
+ .ub.heavy .ubb{background:#f6fafc;border-color:#d3e3ec}
+ .ub.cheap .ubb{background:#f7fbf8;border-color:#d3e7da}
+ .ubtag{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#6b6b6b;margin-bottom:3px}
+ .ub.live .ubtag{color:#b3261e} .ub.heavy .ubtag{color:#0b5c8a} .ub.cheap .ubtag{color:#1e7e44}
+ .ubb h4{font-size:16px;line-height:1.35;margin-bottom:5px}
+ .ubb p{font-size:13.4px;line-height:1.5;margin:0 0 6px;color:#2e2e2e}
+ .ubm{font-size:11.6px;color:#5f6368}
  .act.big{margin-left:0;border:2px solid #1e7e44;border-radius:10px;padding:16px 18px;margin-bottom:12px;background:#fbfdfb}
  .act.big .ah{font-size:17.5px;line-height:1.35}
  .act.big .ah b{font-weight:700}
@@ -129,27 +138,74 @@
     </div>
     <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is 1, set by AI-accessible internal context, internal platform quality, skills, enablement &amp; champions and agentic readiness, and the fastest route to a higher number is not broad improvement. It is those specific dimensions — which is why the decision to park one of them is the most consequential choice in this plan.</p>
     
-    <div class="upfront"><h4>If you read nothing else — the next ninety days</h4>
-      <ol><li><b>Publish an AI stance that answers the four DORA sub-tests</b><span>AI stance &amp; policy clarity · 0-3m, low effort · Head of IT with People / HR co-signature</span></li><li><b>Publish a data catalogue with named stewards for the core domains</b><span>Data ecosystem health · 3-6m, medium effort · A named Head of Data or lead data steward</span></li><li><b>Appoint a named AI risk owner and publish data-handling rules per tool category</b><span>AI governance, risk &amp; assurance · 0-3m, low effort · A named executive (typically CISO or Head of Risk) with the AI risk remit in writing</span></li><li><b>Publish a role-based AI training pathway</b><span>Skills, enablement &amp; champions · 3-6m, medium effort · Head of Learning &amp; Development</span></li></ol>
-      <p>Those 4 are the first moves toward the constraint — each is either a constraint dimension itself or a prerequisite for one — and they are the right place to start. Subject to the caveat above: while internal platform quality stays off the plan, this work raises the average rather than the ceiling.
-        The full plan is 16 items. At the 6 days a month you told us are available, that is achievable inside the year.</p>
-    </div>
   </div>
 
-  <div class="sec"><div class="sh"><span class="num">02</span><h2>Three things to deal with now</h2></div>
-    <p>Most of this report is about maturity — where you are and how to move. The following are different. They are things already happening in your organisation that carry exposure today, so they sit outside the plan and should not wait for it.</p>
-    <div class="expo"><h4>Before anything else on the roadmap</h4>
-      <div class="expo-item"><b>AI governance, risk &amp; assurance</b>
-          <p>Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.</p>
-          <p class="ex-why"><b>Why now.</b> An FCA-regulated firm cannot evidence how an AI-assisted customer decision was reached. On the personal-lines book that is a Consumer Duty exposure, not a maturity gap.</p></div><div class="expo-item"><b>Data ecosystem health</b>
-          <p>Stop any AI work that depends on the unreconciled data until the first use case has a golden record. Reconcile one domain, not all of them.</p>
-          <p class="ex-why"><b>Why now.</b> Every AI use case will pay the integration cost again, and the first one will be quoted as if it were the last.</p></div><div class="expo-item"><b>Agentic readiness</b>
-          <p>Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list.</p>
-          <p class="ex-why"><b>Why now.</b> Nobody can reconstruct what has been sent to policyholders, or on whose authority. For an FCA-regulated firm that is an evidencing failure with a live customer population.</p></div>
+  <div class="sec pb"><div class="sh"><span class="num">02</span><h2>Fix these first</h2></div>
+    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on.</p>
+    <div class="board">
+      <div class="ub live">
+        <div class="ubn">1</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.</h4>
+          <p>An FCA-regulated firm cannot evidence how an AI-assisted customer decision was reached. On the personal-lines book that is a Consumer Duty exposure, not a maturity gap.</p>
+          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">2</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Stop any AI work that depends on the unreconciled data until the first use case has a golden record. Reconcile one domain, not all of them.</h4>
+          <p>Every AI use case will pay the integration cost again, and the first one will be quoted as if it were the last.</p>
+          <div class="ubm"><b>Data ecosystem health</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">3</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list.</h4>
+          <p>Nobody can reconstruct what has been sent to policyholders, or on whose authority. For an FCA-regulated firm that is an evidencing failure with a live customer population.</p>
+          <div class="ubm"><b>Agentic readiness</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub cheap">
+        <div class="ubn">4</div>
+        <div class="ubb">
+          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, low effort</div>
+          <h4>Publish an AI stance that answers the four DORA sub-tests</h4>
+          <p>A prohibition is not a position. Staff know they are not allowed to use ChatGPT and nothing else — not what is permitted, not what support exists, not whether it applies to their role. Three of the four acquired businesses never received even that.</p>
+          <div class="ubm"><b>AI stance &amp; policy clarity</b> · Head of IT with People / HR co-signature · prerequisite for skills, enablement &amp; champions</div>
+        </div>
+      </div><div class="ub cheap">
+        <div class="ubn">5</div>
+        <div class="ubb">
+          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, low effort</div>
+          <h4>Appoint a named AI risk owner and publish data-handling rules per tool category</h4>
+          <p>The controls do not match the confidence. The model-risk framework covers pricing models and predates generative AI. There is no approved-vendor list, no human-in-the-loop requirement for consequential actions, and no audit trail of AI-assisted decisions.</p>
+          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive (typically CISO or Head of Risk) with the AI risk remit in writing · after A001 · prerequisite for ai-accessible internal context</div>
+        </div>
+      </div><div class="ub heavy">
+        <div class="ubn">6</div>
+        <div class="ubb">
+          <div class="ubtag">Real work — nothing moves until it is done · 3–6 months, medium effort</div>
+          <h4>Publish a data catalogue with named stewards for the core domains</h4>
+          <p>Two legacy platforms from the 2023 and 2024 acquisitions still run in parallel. The same client exists three times with no golden record, so a cross-sold renewal is manual reconciliation.</p>
+          <div class="ubm"><b>Data ecosystem health</b> · A named Head of Data or lead data steward · prerequisite for ai-accessible internal context</div>
+        </div>
+      </div><div class="ub heavy">
+        <div class="ubn">7</div>
+        <div class="ubb">
+          <div class="ubtag">Real work — nothing moves until it is done · 3–6 months, medium effort</div>
+          <h4>Publish a role-based AI training pathway</h4>
+          <p>No training has been provided. Two self-taught people in claims are quietly doing other people's drafting for them.</p>
+          <div class="ubm"><b>Skills, enablement &amp; champions</b> · Head of Learning &amp; Development · after A001</div>
+        </div>
+      </div>
     </div>
-    <p class="method">Each of these should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision. Leaving them open is not, and it is the state we found them in.</p>
-    
+    <p class="method">The first 3 items are not maturity gaps — they are already happening in your organisation, so they do not wait for a plan. Each should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving them open is not, and that is the state we found them in. The rest are the highest-leverage moves available given that internal platform quality is off this year's plan. Behind these sits the full plan of 16 items, sequenced. At 6 days a month across 3 people, that is achievable inside the year.</p>
+    <p class="ctx"><b>You told us your own three were:</b> Get the claims automation off a personal account · Publish something so people stop guessing what they are allowed to do · Work out whether the legacy platforms can be reached at all. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.</p>
   </div>
+
+  
 
   <div class="sec pb"><div class="sh"><span class="num">03</span><h2>How to read the scores</h2></div>
     <p>Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.</p>
@@ -488,7 +544,7 @@
       <div class="act">
         <div class="ah"><b>Map the main value stream end-to-end and name the wait states</b><span class="aid">A027</span></div>
         <div class="meta">Value stream visibility &amp; flow · Stage 2 → 3</div>
-        <p>This is the earliest value-stream action and covers 1→2 and 2→3 in one move because the Level 2 shape (local segments, no end-to-end view) is not a stable state</p>
+        <p><b>Why here.</b> The renewals path is understood as a sequence but has never been measured. Our sample of 20 suggested 9 of 14 elapsed days are queue time — awaiting insurer response and internal referral.</p>
         <table class="mini"><tr><td>Sponsor</td><td>COO or Head of Delivery</td></tr>
           <tr><td>Owner</td><td>A named value-stream owner (typically Head of Delivery)</td></tr>
           <tr><td>Effort</td><td>0-3m, low</td></tr>
@@ -499,7 +555,7 @@
       </div><div class="act">
         <div class="ah"><b>Reframe an existing tool-adoption programme as an outcome-led ambition</b><span class="aid">A010</span></div>
         <div class="meta">Leadership sponsorship &amp; AI strategy · Stage 2 → 3</div>
-        <p>This is the Level 2-to-3 move for a specific — and common — Level 2 shape: the sponsored tool rollout</p>
+        <p><b>Why here.</b> The ambition is expressed as a tool rollout, not an outcome. Nobody has connected AI to the 400bps mandate, so there is no test for whether any of it worked.</p>
         <table class="mini"><tr><td>Sponsor</td><td>The current executive sponsor of the tool rollout (typically CIO or COO)</td></tr>
           <tr><td>Owner</td><td>The named executive who will now own the ambition (may be the same person)</td></tr>
           <tr><td>Effort</td><td>3-6m, low</td></tr>
@@ -510,7 +566,7 @@
       </div><div class="act">
         <div class="ah"><b>Write a funded, executive-owned AI ambition tied to business outcomes</b><span class="aid">A008</span></div>
         <div class="meta">Leadership sponsorship &amp; AI strategy · Stage 2 → 3 · prerequisite for ai adoption breadth &amp; measured value</div>
-        <p>This is the earliest sponsorship action and skips the intermediate Level 2 deliberately: an 'interested but unowned and unfunded' leadership posture is the failure…</p>
+        <p><b>Why here.</b> The ambition is expressed as a tool rollout, not an outcome. Nobody has connected AI to the 400bps mandate, so there is no test for whether any of it worked.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CEO</td></tr>
           <tr><td>Owner</td><td>A named executive (CIO, COO or business-line lead) with AI in their objectives</td></tr>
           <tr><td>Effort</td><td>3-6m, medium</td></tr>
@@ -521,7 +577,7 @@
       </div><div class="act">
         <div class="ah"><b>Classify AI tools into the three buckets and publish the middle-bucket guardrails</b><span class="aid">A002</span></div>
         <div class="meta">AI stance &amp; policy clarity · Stage 2 → 3 · after A001</div>
-        <p>This is the natural next step after A001</p>
+        <p><b>Why here.</b> A prohibition is not a position. Staff know they are not allowed to use ChatGPT and nothing else — not what is permitted, not what support exists, not whether it applies to their role. Three of the four acquired businesses never received even that.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO</td></tr>
           <tr><td>Owner</td><td>Head of IT (with input from Security and Legal)</td></tr>
           <tr><td>Effort</td><td>0-3m, low</td></tr>
@@ -532,7 +588,7 @@
       </div><div class="act">
         <div class="ah"><b>Retire the recurring definition arguments — agree the contested measures</b><span class="aid">A012</span></div>
         <div class="meta">Data ecosystem health · Stage 2 → 3 · after A011</div>
-        <p>Depends on A011 because the definitions need somewhere to live and someone to own them</p>
+        <p><b>Why here.</b> Two legacy platforms from the 2023 and 2024 acquisitions still run in parallel. The same client exists three times with no golden record, so a cross-sold renewal is manual reconciliation.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CFO or COO (whoever the recurring arguments end up in front of)</td></tr>
           <tr><td>Owner</td><td>Head of Data or the lead data steward</td></tr>
           <tr><td>Effort</td><td>3-6m, low</td></tr>
@@ -551,7 +607,7 @@
       <div class="act">
         <div class="ah"><b>Inventory agents in use and publish a written delegation policy</b><span class="aid">A034</span></div>
         <div class="meta">Agentic readiness · Stage 1 → 3 · after A005</div>
-        <p>The Level 1-to-3 move on Dimension 13, and the specific move that turns the Dimension 02 framework from documented to reflects reality</p>
+        <p><b>Why here.</b> A claims team leader has been running an unattended automation against the claims inbox for four months — drafting and sending acknowledgements to policyholders on her personal Microsoft account. IT and Risk did not know. There is no reviewable log.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CIO with the AI risk owner (A005)</td></tr>
           <tr><td>Owner</td><td>The AI risk owner</td></tr>
           <tr><td>Effort</td><td>3-6m, medium</td></tr>
@@ -562,7 +618,7 @@
       </div><div class="act">
         <div class="ah"><b>Add an AI-specific vendor and model approval gate to procurement</b><span class="aid">A006</span></div>
         <div class="meta">AI governance, risk &amp; assurance · Stage 2 → 3 · after A005</div>
-        <p>This is the second risk action and the one that closes the 'generic procurement is not AI procurement' gap the Level 2-vs-3 descriptor pivots on</p>
+        <p><b>Why here.</b> The controls do not match the confidence. The model-risk framework covers pricing models and predates generative AI. There is no approved-vendor list, no human-in-the-loop requirement for consequential actions, and no audit trail of AI-assisted decisions.</p>
         <table class="mini"><tr><td>Sponsor</td><td>COO or CFO (procurement authority)</td></tr>
           <tr><td>Owner</td><td>Head of Procurement, with Security and the AI risk owner from A005</td></tr>
           <tr><td>Effort</td><td>3-6m, medium</td></tr>
@@ -573,7 +629,7 @@
       </div><div class="act">
         <div class="ah"><b>Deliberately distribute AI champions across teams and seniority</b><span class="aid">A030</span></div>
         <div class="meta">Skills, enablement &amp; champions · Stage 1 → 3 · after A029 · prerequisite for ai adoption breadth &amp; measured value</div>
-        <p>The Level 2-to-3 move on Dimension 11, with a genuine nudge on Dimension 12 because distributed champions are the human vehicle by which AI adoption reaches BA, QA</p>
+        <p><b>Why here.</b> No training has been provided. Two self-taught people in claims are quietly doing other people's drafting for them.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CPO or the executive owner of the AI ambition (from A008)</td></tr>
           <tr><td>Owner</td><td>Head of L&amp;D with the executive owner</td></tr>
           <tr><td>Effort</td><td>3-6m, low</td></tr>
@@ -592,7 +648,7 @@
       <div class="act">
         <div class="ah"><b>Stand up an AI licence register and a defined procurement route</b><span class="aid">A036</span></div>
         <div class="meta">Cost &amp; licensing economics · Stage 2 → 3 · after A006</div>
-        <p>The Level 1-to-3 move on Dimension 14</p>
+        <p><b>Why here.</b> AI is the exception. No line item, and at least nine personal Copilot and ChatGPT subscriptions coming through expenses.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CFO or COO</td></tr>
           <tr><td>Owner</td><td>Head of Procurement with Finance</td></tr>
           <tr><td>Effort</td><td>3-6m, low</td></tr>
@@ -611,7 +667,7 @@
       <div class="act">
         <div class="ah"><b>Connect internal context to approved AI tools through supported routes</b><span class="aid">A014</span></div>
         <div class="meta">AI-accessible internal context · Stage 1 → 3 · after A005, A011</div>
-        <p>This is the canonical sequencing rule the library encodes. Connecting AI to internal context before access governance (Dimension 02) is at Level 3 produces a…</p>
+        <p><b>Why here.</b> Nothing internal is reachable. Eleven years of wordings, endorsements and claims correspondence — the thing that would make an answer Ardent's rather than generic — sits in a store nothing can query.</p>
         <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO with the AI risk owner (A005)</td></tr>
           <tr><td>Owner</td><td>An engineering / platform lead with the AI risk owner as accountable</td></tr>
           <tr><td>Effort</td><td>6-12m, high</td></tr>
