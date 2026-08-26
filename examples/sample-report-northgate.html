@@ -1,0 +1,737 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Northgate Water — Asset Management directorate — AI Readiness Assessment</title>
+<style>
+ @page{size:A4;margin:16mm 14mm}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font:15px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;background:#f4f4f5}
+ .page{max-width:820px;margin:0 auto;background:#fff;padding:46px 54px}
+ h1{font-size:31px;line-height:1.2;letter-spacing:-.4px}
+ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.2px}
+ h3.grp{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#e8112d;font-weight:800;margin:26px 0 10px;padding-bottom:5px;border-bottom:1px solid #eee}
+ h4{font-size:16px}
+ h4.sub-h{margin:20px 0 6px;font-size:15px}
+ p{margin:0 0 9px}
+ .sec{margin-top:34px;page-break-inside:auto}
+ .sec>.sh{display:flex;align-items:baseline;gap:10px;border-top:3px solid #e8112d;padding-top:9px;margin-bottom:12px}
+ .sec>.sh .num{font-size:12px;font-weight:800;color:#e8112d;letter-spacing:.1em}
+ .cover{border-bottom:3px solid #e8112d;padding-bottom:26px;margin-bottom:8px}
+ .cover .tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#e8112d;font-weight:800}
+ .cover .meta{color:#5f6368;font-size:13.5px;margin-top:14px}
+ .cover .amb{margin-top:16px;padding:13px 16px;background:#faf7f8;border-left:3px solid #e8112d;font-size:14.5px}
+ .lede{font-size:18.5px;line-height:1.5;margin:18px 0 10px;letter-spacing:-.2px}
+ .kpis{display:flex;gap:11px;margin:16px 0 6px;flex-wrap:wrap}
+ .kpi{flex:1 1 150px;border:1px solid #e3e3e3;border-radius:9px;padding:12px 14px}
+ .kpi b{display:block;font-size:26px;line-height:1.15;letter-spacing:-.6px}
+ .kpi span{font-size:11.5px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+ .kpi small{display:block;font-size:12px;color:#5f6368;font-weight:400;margin-top:2px;line-height:1.35}
+ .kpi.red b{color:#b3261e}
+ .scale{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}
+ .scale td{padding:6px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+ .scale td:first-child{white-space:nowrap;font-weight:700;width:1%}
+ .scale tr.you td{background:#fff6f7}
+ .scale tr.you td:first-child::after{content:" ← you";color:#e8112d;font-weight:800;font-size:11px}
+ .bar{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
+ .bar i{width:26px;height:8px;border-radius:2px;background:#e9e9ea;display:block}
+ .bar i.on{background:#0b5c8a}
+ .dim.cap .bar i.on{background:#e8112d}
+ .wt{font-size:11.5px;color:#5f6368}
+ .dim{border:1px solid #e8e8e8;border-radius:10px;padding:15px 17px;margin-bottom:11px;page-break-inside:avoid}
+ .dim.cap{border-color:#e8112d;border-width:1.5px;background:#fffafb}
+ .dh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px}
+ .dh .sc{font-size:13px;color:#5f6368;white-space:nowrap}
+ .cap-tag{background:#e8112d;color:#fff;font-size:10px;padding:2px 6px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
+ .dim p{font-size:14.2px;margin:7px 0 0}
+ .why{color:#1a1a1a}
+ .ctx{color:#5f6368;font-size:13.4px;font-style:italic;border-left:2px solid #e8e8e8;padding-left:11px}
+ .src{color:#8a8a8a;font-size:11.5px}
+ .miss{color:#8a8a8a;font-size:13.5px}
+ .risks{display:flex;gap:11px;margin-top:11px;flex-wrap:wrap}
+ .risks>div{flex:1 1 210px;background:#faf7f8;border-radius:7px;padding:9px 12px;font-size:13.4px}
+ .risks b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#b3261e;margin-bottom:3px}
+ .flag{background:#fff8e6;border-left:3px solid #b8860b;padding:9px 12px;font-size:13.6px;border-radius:0 6px 6px 0}
+ .expo{background:#fdeceb;border:1.5px solid #b3261e;border-radius:10px;padding:16px 18px;margin:14px 0}
+ .expo h4{color:#b3261e;font-size:15px;margin-bottom:7px}
+ .expo-item{padding:10px 0;border-top:1px solid #f2c9c6}
+ .expo-item:first-of-type{border-top:none;padding-top:2px}
+ .expo-item>b{font-size:14.5px}
+ .expo-item p{font-size:14.2px;margin:3px 0 0}
+ .expo-item .ex-why{color:#7a3b36;font-size:13.6px}
+ .tbl{width:100%;border-collapse:collapse;font-size:13.6px;margin:10px 0 14px}
+ .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#5f6368;border-bottom:1.5px solid #ddd;padding:6px 9px}
+ .tbl td{padding:7px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+ .tbl tr.short td{background:#fffaf9}
+ .sub2{display:block;font-size:11.8px;color:#8a8a8a;line-height:1.35}
+ .b-red{color:#b3261e;font-weight:800}.b-amber{color:#8a6d00;font-weight:800}.b-green{color:#1e7e44;font-weight:800}
+ .two{display:flex;gap:11px;margin:12px 0}
+ .stat{flex:1;border:1px solid #e3e3e3;border-radius:9px;padding:13px 15px;font-size:12px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em}
+ .stat span{display:block;font-size:29px;color:#1a1a1a;font-weight:700;letter-spacing:-.6px;text-transform:none}
+ .stat small{font-size:15px;color:#8a8a8a;font-weight:400}
+ .phase{margin-bottom:20px;page-break-inside:avoid}
+ .phase h4{border-left:4px solid #e8112d;padding-left:10px;margin-bottom:7px}
+ .phase.now h4{border-color:#b3261e;color:#b3261e}
+ .phase.later h4{border-color:#b0b0b0;color:#5f6368}
+ .phase .lead{font-size:13.6px;color:#5f6368;margin:0 0 10px 14px}
+ .act{border:1px solid #e8e8e8;border-radius:9px;padding:13px 15px;margin:0 0 9px 14px;page-break-inside:avoid}
+ /* the urgency board — the one page a sponsor will actually act on */
+ .board{margin:4px 0 14px}
+ .ub{display:flex;gap:14px;align-items:stretch;margin-bottom:10px;page-break-inside:avoid}
+ .ubn{flex:0 0 40px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;
+      color:#fff;background:#8a8a8a;border-radius:9px 0 0 9px}
+ .ub.live .ubn{background:#b3261e} .ub.heavy .ubn{background:#0b5c8a} .ub.cheap .ubn{background:#1e7e44}
+ .ubb{flex:1;border:1px solid #e2e2e2;border-left:none;border-radius:0 9px 9px 0;padding:12px 16px}
+ .ub.live .ubb{background:#fdf6f5;border-color:#f0d4d1}
+ .ub.heavy .ubb{background:#f6fafc;border-color:#d3e3ec}
+ .ub.cheap .ubb{background:#f7fbf8;border-color:#d3e7da}
+ .ubtag{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#6b6b6b;margin-bottom:3px}
+ .ub.live .ubtag{color:#b3261e} .ub.heavy .ubtag{color:#0b5c8a} .ub.cheap .ubtag{color:#1e7e44}
+ .ubb h4{font-size:16px;line-height:1.35;margin-bottom:5px}
+ .ubb p{font-size:13.4px;line-height:1.5;margin:0 0 6px;color:#2e2e2e}
+ .ubm{font-size:11.6px;color:#5f6368}
+ .cap-box{border:1px solid #d8e3ea;background:#f6fafc;border-radius:9px;padding:14px 18px;margin:14px 0;page-break-inside:avoid}
+ .cap-box h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#0b5c8a;margin-bottom:7px}
+ .cap-box p{font-size:13.6px;margin:0 0 8px}
+ .cap-bar{height:12px;background:#e4ecf1;border-radius:6px;overflow:hidden;margin:0 0 9px}
+ .cap-bar span{display:block;height:100%;background:#0b5c8a}
+ .cap-cav{font-size:11.6px!important;color:#5f6368;margin:0!important}
+ .act .rl{font-size:13.2px;background:#fdf8ec;border-left:3px solid #d8ccb0;padding:7px 11px;margin:0 0 8px;border-radius:0 5px 5px 0}
+ .act.big{margin-left:0;border:2px solid #1e7e44;border-radius:10px;padding:16px 18px;margin-bottom:12px;background:#fbfdfb}
+ .act.big .ah{font-size:17.5px;line-height:1.35}
+ .act.big .ah b{font-weight:700}
+ .act .ah{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:15px}
+ .act .aid{font-size:11px;color:#a0a0a0;font-weight:700;letter-spacing:.05em}
+ .act .meta{font-size:11.8px;color:#5f6368;margin:2px 0 6px}
+ .act p{font-size:13.8px;margin:0 0 7px}
+ .mini{width:100%;border-collapse:collapse;font-size:12.8px}
+ .mini td{padding:3px 0;vertical-align:top}
+ .mini td:first-child{color:#8a8a8a;width:96px;white-space:nowrap;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em;padding-top:5px}
+ .radar{text-align:center;margin:8px 0}
+ .legend{font-size:12.5px;color:#5f6368;text-align:center;margin-top:-6px}
+ .method{font-size:13.4px;color:#4a4a4a}
+ .method li{margin:5px 0 0 18px}
+ .sell{border:1px solid #e3e3e3;border-radius:10px;padding:18px 20px;margin-top:14px;background:#fafafa}
+ .foot{margin-top:36px;padding-top:14px;border-top:1px solid #e8e8e8;font-size:11.8px;color:#8a8a8a}
+ .noprint{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:5}
+ .noprint button{font:inherit;font-size:13px;font-weight:700;padding:9px 15px;border:none;border-radius:8px;background:#e8112d;color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+ .noprint button.alt{background:#fff;color:#1a1a1a;border:1px solid #ddd}
+ @media print{
+   body{background:#fff}
+   .page{max-width:none;padding:0;margin:0}
+   .noprint{display:none!important}
+   .sec{page-break-inside:auto}
+   h2,h3.grp,h4{page-break-after:avoid}
+   .dim,.act,.phase,.expo,.kpi{page-break-inside:avoid}
+   .pb{page-break-before:always}
+ }
+</style></head><body>
+<div class="noprint"><button onclick="window.print()">Print / save as PDF</button><button class="alt" onclick="window.close()">Close</button></div>
+<div class="page">
+
+  <div class="cover">
+    <span class="tag">AI Readiness Assessment</span>
+    <h1>Northgate Water — Asset Management directorate</h1>
+    <div class="meta">Prepared by Enablis · Delivery Lead + Forward Deployed Engineer · 2026-08-24<br>Commercial in confidence</div>
+    <div class="amb"><b>What you told us you are trying to do</b><br>Cut reactive mains repairs before the PR29 submission, and be able to show Ofwat that asset decisions are explainable. The directorate has its own data science team and its own budget; almost everything else sits with group.</div>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
+    <p class="lede">You are at Stage 1 of 5 against a Stage 3 ambition — and it is agentic readiness and third-party AI assurance that puts you there.</p>
+    <p>Weighted across all 17 dimensions you average 2.5 today. The distance between that and Stage 1 is the point of this report: most of the organisation is already operating above what these dimensions allow. Deliver the plan and that average moves to 2.7 — but the ceiling moves further, which is what actually changes what you can do.</p>
+    
+    <div class="kpis">
+      <div class="kpi red"><span>Today</span><b>Stage 1</b><small>Exploring</small></div>
+      <div class="kpi"><span>Your 12-month ambition</span><b>Stage 3</b><small>Operationalising</small></div>
+      <div class="kpi"><span>Weighted average today</span><b>2.5</b><small>across all 17 dimensions as they stand — not a projection</small></div>
+      <div class="kpi"><span>If the plan is delivered</span><b>2.7</b><small>the same average with those dimensions at Stage 3</small></div>
+    </div>
+    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is 1, set by agentic readiness and third-party AI assurance, and the fastest route to a higher number is not broad improvement. It is that.</p>
+    
+    <p class="flag"><b>4 questions we could not get an answer to.</b> We have reported them that way rather than scoring them low and moving on, because the two are different. A control that does not exist is a gap you can close. A control nobody in the organisation can confirm or deny is a gap plus an accountability problem, and the second is usually the more expensive.</p>
+      <ul class="method"><li><b>AI governance, risk &amp; assurance</b> — we asked the directorate director, who referred us to Group Risk; three requests, no meeting</li><li><b>Value stream visibility &amp; flow</b> — we asked the director, two asset planners and the works management lead</li><li><b>Cost &amp; licensing economics</b> — we asked the directorate finance business partner and Group Procurement; group did not respond</li><li><b>Third-party AI assurance</b> — we asked the data science lead and the directorate finance partner; referred to Group Procurement, who did not respond</li></ul>
+      <p class="method">4 of them is a pattern rather than an oversight, and in our experience the pattern is usually that the answers sit above the level being assessed. That is worth raising as an access question with your sponsor before it is treated as a capability question about your team.</p>
+    <p class="ctx"><b>Where you have deliberately not done something.</b> Agentic readiness scores low and stays on the plan, but does not appear on the list of things happening now — because nothing is happening. No agents, and deliberately so — the team's position is that autonomous action on the asset estate is not appropriate yet. That position is not written down anywhere, which is the gap, but the restraint itself is sound. Restraint is a legitimate position. What we have scored is the absence of a written one, not the absence of the activity, and those are worth keeping apart.</p>
+    <p class="method"><b>And what we did not look at.</b> user-centric focus — out of scope or out of access in a two-week engagement. That is a limit on this document, not a judgement about you, and we would rather mark it than let it read as a finding.</p>
+  </div>
+
+  
+
+  <div class="sec pb"><div class="sh"><span class="num">02</span><h2>Fix these first</h2></div>
+    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on. There are 2 more on the plan behind these; they are in the sequenced section and they are not urgent yet.</p>
+    <div class="board">
+      <div class="ub live">
+        <div class="ubn">1</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.</h4>
+          <p>A regulated utility is using a model to direct asset spend, with no confirmed governance route.</p>
+          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">2</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Establish, for the AI tools already in use, whether the vendor trains on your data and what happens to it. Ask in writing and keep the answer.</h4>
+          <p>Network and asset data may be leaving under terms nobody at this level has seen.</p>
+          <div class="ubm"><b>Third-party AI assurance</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">3</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Name who can switch each AI system off, and tell the people using it how to report a bad output. Both should take a day.</h4>
+          <p>A wrong prediction directs a crew and nobody has a route to say so.</p>
+          <div class="ubm"><b>Incident response &amp; reversibility</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub cheap">
+        <div class="ubn">4</div>
+        <div class="ubb">
+          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, low effort</div>
+          <h4>Ask every AI vendor in use, in writing, what they do with your data</h4>
+          <p>Nobody knows what the ML platform or the two hosted APIs do with submitted data. For a utility submitting asset and network data, that is a question worth an answer.</p>
+          <div class="ubm"><b>Third-party AI assurance</b> · Whoever owns each vendor relationship · lifts the ceiling</div>
+        </div>
+      </div><div class="ub cheap">
+        <div class="ubn">5</div>
+        <div class="ubb">
+          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, low effort</div>
+          <h4>3 questions had no answer inside the organisation — get them answered, and name who owns each</h4>
+          <p>On AI governance, risk &amp; assurance, value stream visibility &amp; flow, third-party AI assurance we asked and nobody could tell us. That is a different finding from a low score and we have not blurred the two: a control that does not exist is a gap you can close, and a control nobody can confirm or deny is a gap plus an accountability problem. 3 of them in one assessment is a pattern rather than an oversight, and the pattern is usually that the answers sit above the level being assessed.</p>
+          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · The sponsor — this is an escalation, not a work item · nobody could answer these</div>
+        </div>
+      </div><div class="ub cheap">
+        <div class="ubn">6</div>
+        <div class="ubb">
+          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, low effort</div>
+          <h4>Appoint a named AI risk owner and publish data-handling rules per tool category</h4>
+          <p>Whether it extends to an asset-failure model built inside a directorate is unresolved. We could not get an answer from group inside the engagement and nobody here could answer it either.</p>
+          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive (typically CISO or Head of Risk) with the AI risk remit in writing · after A001 · prerequisite for agentic readiness</div>
+        </div>
+      </div>
+    </div>
+    <p class="method">The first 3 items are not maturity gaps — they are already happening in your organisation, so they do not wait for a plan. Each should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving them open is not, and that is the state we found them in. The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done. Behind these sits the full plan of 10 items, sequenced.</p>
+    <div class="cap-box">
+      <h4>What fits in a year, on the people you have</h4>
+      <p>You told us <b>4 people have 9 days a month</b> for this — about <b>108 days</b> across the year. The 10 items on the plan need roughly <b>90 days</b> at our estimate.</p>
+      <div class="cap-bar"><span style="width:100%"></span></div>
+      <p><b>All 10 fit</b>, with about 18 days spare. That is a plan you can commit to rather than aspire to.</p>
+      <p class="cap-cav">Day costs are our estimate from the effort band on each action — low 4, medium 12, high 30 — not a quote. Replace them with your own numbers and the arithmetic still holds.</p>
+    </div>
+    <p class="ctx"><b>You told us your own three were:</b> Get group to tell us whether their AI policy covers models we build ourselves · Connect the models to the works management system. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.</p>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">03</span><h2>And one thing not to do yet</h2></div>
+      <p><b>User-centric focus — Stage 2.</b> Do not accelerate delivery until this is addressed. The research finding is that AI makes organisations at this level worse, not slower to improve — speed applied to the wrong work.</p><p class="method">The research finding is that AI makes teams without user contact measurably worse, and this is a team that cannot reach its users.</p>
+      <p class="method">This is not something already happening. It is a warning about sequence: applying AI here before this is addressed tends to make the outcome worse rather than merely leaving value unclaimed.</p>
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">04</span><h2>How to read the scores</h2></div>
+    <p>Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.</p>
+    <table class="scale">
+      <tr class="you"><td>1 · Exploring</td><td>curious, nothing running</td></tr><tr class=""><td>2 · Experimenting</td><td>pilots, no repeatable path</td></tr><tr class=""><td>3 · Operationalising</td><td>first things running for real</td></tr><tr class=""><td>4 · Scaling</td><td>repeatable, spreading, measured</td></tr><tr class=""><td>5 · AI-native</td><td>how the business works</td></tr>
+    </table>
+    <p>Four dimensions carry half as much weight again as the others — data, the reach of AI into your own knowledge, the quality of your internal platforms, and how strongly your work is driven by real users. These are the ones the research finds everything else depends on. The weights are shown against each dimension.</p>
+    <p><b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.</p>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">05</span><h2>The picture across all 17 dimensions</h2></div>
+    <div class="radar"><svg viewBox="0 0 420 350" style="width:100%;max-width:400px;height:auto"><polygon points="210,148.6 219.53677998734085,150.382733143725 227.78556499226912,155.4901645853746 233.63231089177364,163.23250740749938 236.2873822541889,172.56411531016883 235.39219697976242,182.224702937903 231.0676548001983,190.90955440041236 223.8978090999622,197.44573238326183 214.85098727035745,200.950489831655 205.14901272964255,200.950489831655 196.1021909000378,197.44573238326183 188.9323451998017,190.9095544004124 184.60780302023758,182.224702937903 183.7126177458111,172.5641153101688 186.36768910822636,163.2325074074994 192.21443500773088,155.4901645853746 200.46322001265915,150.382733143725" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,122.19999999999999 229.07355997468167,125.76546628745001 245.57112998453823,135.9803291707492 257.2646217835473,151.46501481499877 262.5747645083778,170.12823062033766 260.78439395952483,189.44940587580598 252.13530960039665,206.81910880082472 237.7956181999244,219.89146476652363 219.7019745407149,226.90097966331 200.2980254592851,226.90097966331 182.2043818000756,219.89146476652363 167.86469039960338,206.81910880082478 159.21560604047517,189.44940587580598 157.42523549162217,170.12823062033763 162.7353782164527,151.4650148149988 174.42887001546174,135.98032917074923 190.92644002531833,125.76546628745001" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 238.61033996202252,101.14819943117502 263.3566949768073,116.4704937561238 280.89693267532095,139.69752222249818 288.86214676256674,167.6923459305065 286.1765909392873,196.67410881370898 273.20296440059496,222.7286632012371 251.6934272998866,242.33719714978542 224.55296181107238,252.85146949496504 195.44703818892765,252.85146949496504 168.3065727001134,242.33719714978542 146.79703559940506,222.72866320123717 133.82340906071272,196.67410881370898 131.13785323743326,167.69234593050643 139.10306732467905,139.6975222224982 156.64330502319262,116.47049375612383 181.38966003797748,101.14819943117502" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,69.39999999999999 248.14711994936337,76.53093257490002 281.14225996907646,96.96065834149839 304.52924356709457,127.93002962999756 315.14952901675565,165.25646124067532 311.56878791904967,203.89881175161196 294.2706192007933,238.63821760164947 265.5912363998488,264.78292953304725 229.40394908142983,278.80195932662 190.5960509185702,278.80195932662 154.40876360015122,264.78292953304725 125.72938079920677,238.63821760164956 108.4312120809503,203.89881175161196 104.85047098324435,165.25646124067526 115.47075643290539,127.93002962999762 138.85774003092348,96.96065834149844 171.85288005063666,76.53093257490002" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,43 257.6838999367042,51.913665718625026 298.92782496134555,77.450822926873 328.16155445886824,116.16253703749695 341.43691127094456,162.82057655084415 336.9609848988121,211.12351468951493 315.33827400099165,254.54777200206183 279.489045499811,287.2286619163091 234.25493635178728,304.752449158275 185.74506364821275,304.752449158275 140.51095450018903,287.2286619163091 104.66172599900845,254.54777200206195 83.03901510118789,211.12351468951496 78.56308872905544,162.82057655084407 91.83844554113175,116.16253703749702 121.07217503865438,77.45082292687306 162.3161000632958,51.913665718625026" fill="none" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="210" y2="43" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="257.6838999367042" y2="51.913665718625026" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="298.92782496134555" y2="77.450822926873" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="328.16155445886824" y2="116.16253703749695" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="341.43691127094456" y2="162.82057655084415" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="336.9609848988121" y2="211.12351468951493" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="315.33827400099165" y2="254.54777200206183" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="279.489045499811" y2="287.2286619163091" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="234.25493635178728" y2="304.752449158275" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="185.74506364821275" y2="304.752449158275" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="140.51095450018903" y2="287.2286619163091" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="104.66172599900845" y2="254.54777200206195" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="83.03901510118789" y2="211.12351468951496" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="78.56308872905544" y2="162.82057655084407" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="91.83844554113175" y2="116.16253703749702" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="121.07217503865438" y2="77.45082292687306" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="162.3161000632958" y2="51.913665718625026" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 238.61033996202252,101.14819943117502 263.3566949768073,116.4704937561238 280.89693267532095,139.69752222249818 288.86214676256674,167.6923459305065 286.1765909392873,196.67410881370898 273.20296440059496,222.7286632012371 251.6934272998866,242.33719714978542 224.55296181107238,252.85146949496504 195.44703818892765,252.85146949496504 168.3065727001134,242.33719714978542 146.79703559940506,222.72866320123717 133.82340906071272,196.67410881370898 131.13785323743326,167.69234593050643 139.10306732467905,139.6975222224982 156.64330502319262,116.47049375612383 181.38966003797748,101.14819943117502" fill="none" stroke="#1e7e44" stroke-width="1.6" stroke-dasharray="5 4"/><polygon points="210,122.19999999999999 229.07355997468167,125.76546628745001 263.3566949768073,116.4704937561238 304.52924356709457,127.93002962999756 262.5747645083778,170.12823062033766 298.8726894291685,200.28646028266047 294.2706192007933,238.63821760164947 251.6934272998866,242.33719714978542 219.7019745407149,226.90097966331 200.2980254592851,226.90097966331 168.3065727001134,242.33719714978542 167.86469039960338,206.81910880082478 184.60780302023758,182.224702937903 157.42523549162217,170.12823062033763 127.28691187879222,133.8137759262479 192.21443500773088,155.4901645853746 190.92644002531833,125.76546628745001" fill="rgba(11,92,138,.20)" stroke="#0b5c8a" stroke-width="2.2"/><circle cx="210" cy="122.19999999999999" r="2.8" fill="#0b5c8a"/><circle cx="229.07355997468167" cy="125.76546628745001" r="2.8" fill="#0b5c8a"/><circle cx="263.3566949768073" cy="116.4704937561238" r="2.8" fill="#0b5c8a"/><circle cx="304.52924356709457" cy="127.93002962999756" r="2.8" fill="#0b5c8a"/><circle cx="262.5747645083778" cy="170.12823062033766" r="2.8" fill="#0b5c8a"/><circle cx="298.8726894291685" cy="200.28646028266047" r="2.8" fill="#0b5c8a"/><circle cx="294.2706192007933" cy="238.63821760164947" r="2.8" fill="#0b5c8a"/><circle cx="251.6934272998866" cy="242.33719714978542" r="2.8" fill="#0b5c8a"/><circle cx="219.7019745407149" cy="226.90097966331" r="2.8" fill="#0b5c8a"/><circle cx="200.2980254592851" cy="226.90097966331" r="2.8" fill="#0b5c8a"/><circle cx="168.3065727001134" cy="242.33719714978542" r="2.8" fill="#0b5c8a"/><circle cx="167.86469039960338" cy="206.81910880082478" r="2.8" fill="#0b5c8a"/><circle cx="184.60780302023758" cy="182.224702937903" r="2.8" fill="#0b5c8a"/><circle cx="157.42523549162217" cy="170.12823062033763" r="2.8" fill="#0b5c8a"/><circle cx="127.28691187879222" cy="133.8137759262479" r="2.8" fill="#0b5c8a"/><circle cx="192.21443500773088" cy="155.4901645853746" r="2.8" fill="#0b5c8a"/><circle cx="190.92644002531833" cy="125.76546628745001" r="2.8" fill="#0b5c8a"/><text x="210" y="34.91199999999998" text-anchor="middle" font-size="11" font-weight="700" fill="#5f6368">1</text><text x="261.68934753138734" y="44.57441363898951" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">2</text><text x="306.3977622580986" y="72.25669205273032" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">3</text><text x="338.08712503341314" y="114.22019014864668" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">4</text><text x="352.4776118177039" y="164.79750498111505" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">5</text><text x="347.6257076303124" y="217.1578899234342" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">6</text><text x="324.1866890170749" y="264.22978485023503" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">7</text><text x="285.32612532179513" y="299.65586951727903" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">8</text><text x="236.29235100533742" y="318.6516548875702" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">9</text><text x="183.7076489946626" y="318.6516548875702" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">10</text><text x="134.67387467820487" y="299.65586951727903" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">11</text><text x="95.81331098292516" y="264.22978485023515" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">12</text><text x="72.37429236968765" y="217.15788992343423" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">13</text><text x="67.52238818229608" y="164.79750498111497" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">14</text><text x="81.9128749665868" y="114.22019014864676" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">15</text><text x="113.60223774190133" y="72.25669205273037" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">16</text><text x="158.31065246861266" y="44.57441363898951" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">17</text></svg></div>
+    <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage 3 ambition</p>
+    <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th><th>Target</th></tr></thead><tbody>
+    <tr class=""><td>1</td><td>AI stance &amp; policy clarity</td>
+        <td>6%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>2</td><td>AI governance, risk &amp; assurance</td>
+        <td>6%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>3</td><td>Leadership sponsorship &amp; AI strategy</td>
+        <td>6%</td><td><b>Stage 3</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>4</td><td>Data ecosystem health</td>
+        <td>8%</td><td><b>Stage 4</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>5</td><td>AI-accessible internal context</td>
+        <td>8%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>6</td><td>Internal platform quality</td>
+        <td>8%</td><td><b>Stage 3.5</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>7</td><td>Version control &amp; change safety</td>
+        <td>5%</td><td><b>Stage 4</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>8</td><td>Working in small batches</td>
+        <td>5%</td><td><b>Stage 3</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>9</td><td>User-centric focus</td>
+        <td>8%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>10</td><td>Value stream visibility &amp; flow</td>
+        <td>5%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>11</td><td>Skills, enablement &amp; champions</td>
+        <td>5%</td><td><b>Stage 3</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>12</td><td>AI adoption breadth &amp; measured value <b style="color:#6b6b6b">— not this year</b></td>
+        <td>5%</td><td><b>Stage 2</b></td>
+        <td>—</td></tr><tr class="short"><td>13</td><td>Agentic readiness <b style="color:#e8112d">— the constraint</b></td>
+        <td>5%</td><td><b>Stage 1</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>14</td><td>Cost &amp; licensing economics <b style="color:#6b6b6b">— not this year</b></td>
+        <td>5%</td><td><b>Stage 2</b></td>
+        <td>—</td></tr><tr class=""><td>15</td><td>Evaluation &amp; monitoring</td>
+        <td>5%</td><td><b>Stage 3.5</b></td>
+        <td>Stage 3</td></tr><tr class="short"><td>16</td><td>Third-party AI assurance <b style="color:#e8112d">— the constraint</b></td>
+        <td>5%</td><td><b>Stage 1</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>17</td><td>Incident response &amp; reversibility</td>
+        <td>5%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr>
+    </tbody></table>
+    <p class="method"><b>Not this year</b> means we assessed the dimension, scored it, and agreed with you that closing it is not a priority for the next twelve months. It still counts toward your ceiling. It is listed rather than hidden because a gap you have decided to live with is a decision, and decisions should be visible.</p>
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">06</span><h2>Dimension by dimension</h2></div>
+    <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
+    <h3 class="grp">Intent and control</h3><div class="dim">
+        <div class="dh"><h4>1. AI stance &amp; policy clarity</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> This is a five-minute question to the right person at group, and nobody has asked it.</p>
+        <p><b>What is working.</b> The directorate has not invented its own rules, which is the right instinct in a large organisation.</p>
+        <p><b>What needs to change.</b> A group policy that nobody in a 600-person directorate can find is not a policy from where you sit. The data science team has been operating on the assumption that it does not cover models they build themselves, and nobody has confirmed or corrected that.</p>
+        <p class="ctx">Group published an AI policy in 2025. Nobody in this directorate has read it and nobody could tell us where it lives. Two of the four leads believed there wasn't one. Everyone knew there was 'something from group'. Nobody could say what it permitted. The data science team had assumed it did not apply to internally built models.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>The team building the models believes it is out of scope of the organisation's AI policy. If that is wrong, everything they have built is unassessed.</span></div>
+          <div><b>The risk of pressing on anyway</b><span>Building more on an assumption nobody has tested means the correction, when it comes, lands on more work.</span></div></div>
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>2. AI governance, risk &amp; assurance</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> Not a capability gap — an accountability gap that sits above you and needs escalating rather than building.</p>
+        <p><b>What is working.</b> Model risk governance exists and works — for finance models. The machinery is there.</p>
+        <p><b>What needs to change.</b> Whether it extends to an asset-failure model built inside a directorate is unresolved. We could not get an answer from group inside the engagement and nobody here could answer it either.</p>
+        <p class="ctx">Model risk governance demonstrably exists — the finance models go through it. Whether it covers an asset-failure model built inside a directorate is a question nobody here could answer, and group would not meet us inside the engagement.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>A regulated utility is using a model to direct asset spend, with no confirmed governance route.</span></div>
+          <div><b>The risk of pressing on anyway</b><span>Scaling before the question is answered risks a retrospective assessment of everything at once.</span></div></div>
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>3. Leadership sponsorship &amp; AI strategy</h4>
+          <span class="sc">Stage 3</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> You have the thing most clients lack. Use it on the two or three questions that need group to answer.</p>
+        <p><b>What is working.</b> Genuinely strong, and local. A named director with budget, an outcome tied to PR29, and a track record of defending the team. Sponsorship is usually the weakest link and here it is the strongest.</p>
+        <p><b>What needs to change.</b> It stops at the directorate boundary. Nothing here can move a group function, and several of the constraints below sit at group.</p>
+        <p class="ctx">Unusually clear. She has a budget line, a named outcome tied to PR29, and she has already defended the data science team's headcount twice. The sponsorship is real and it is local.</p>
+        
+        
+        
+      </div><div class="dim cap">
+        <div class="dh"><h4>13. Agentic readiness</h4>
+          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
+        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        <p class="ctx">No agents, and deliberately so — the team's position is that autonomous action on the asset estate is not appropriate yet. That position is not written down anywhere, which is the gap, but the restraint itself is sound.</p>
+        
+        
+        
+      </div><h3 class="grp">Data and technical foundations</h3><div class="dim">
+        <div class="dh"><h4>4. Data ecosystem health</h4>
+          <span class="sc">Stage 4</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
+        
+        <p class="why"><b>Why this matters to you.</b> This is your genuine advantage and it should be said out loud, because the assumption in the room was that data was the problem.</p>
+        <p><b>What is working.</b> The best data estate we have assessed. Stewarded, monitored, documented lineage, continuous telemetry. Twenty years of regulatory reporting has produced something most organisations would pay a lot for.</p>
+        <p><b>What needs to change.</b> Very little. The gap is not data quality, it is that the models can only reach one part of it.</p>
+        <p class="ctx">The strongest data estate we have assessed. Every asset has a record, telemetry is continuous and quality-monitored, lineage is documented because the regulator asks for it. This is what twenty years of regulatory reporting does to a data function.</p>
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>5. AI-accessible internal context</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
+        
+        <p class="why"><b>Why this matters to you.</b> This is the constraint. Your data is excellent and your models can only see a quarter of it.</p>
+        <p><b>What is working.</b> The connection to asset and telemetry data is clean and governed.</p>
+        <p><b>What needs to change.</b> The models cannot see the works management system, the contractor scheduling tool, or any operational documentation. A prediction that cannot see whether a job was already raised is a prediction that will be ignored the second time it duplicates one.</p>
+        <p class="ctx">The models reach asset and telemetry data cleanly. They reach nothing else — not the works management system, not the contractor scheduling tool, not any of the documentation. A model that can see the asset but not the job that was raised against it.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>Predictions get quietly disregarded because they conflict with things the model cannot see.</span></div>
+          <div><b>The risk of pressing on anyway</b><span>More models on the same narrow context multiplies the same failure.</span></div></div>
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>6. Internal platform quality</h4>
+          <span class="sc">Stage 3.5</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
+        
+        
+        
+        
+        
+        
+        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 4. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
+        
+      </div><div class="dim">
+        <div class="dh"><h4>7. Version control &amp; change safety</h4>
+          <span class="sc">Stage 4</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><h3 class="grp">How work flows</h3><div class="dim">
+        <div class="dh"><h4>8. Working in small batches</h4>
+          <span class="sc">Stage 3</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>9. User-centric focus</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
+        
+        <p class="why"><b>Why this matters to you.</b> The directorate boundary is the reason, which makes it a structural problem rather than an oversight.</p>
+        
+        <p><b>What needs to change.</b> Nobody has spoken to a field engineer about the predictions. The people who act on the output sit in another directorate and were not available to us either.</p>
+        <p class="ctx">Field operations sits under a different directorate. We could not get access to the people the predictions are for.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>A model optimised for a user nobody has met.</span></div>
+          <div><b>The risk of pressing on anyway</b><span>The research finding is that AI makes teams without user contact measurably worse, and this is a team that cannot reach its users.</span></div></div>
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>10. Value stream visibility &amp; flow</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        <p class="ctx">Nobody could describe what happens between a prediction being generated and a repair crew arriving. Each person knew their own segment. The handover into field operations crosses a directorate boundary and no one on this side could say what happens on the other.</p>
+        
+        
+        
+      </div><h3 class="grp">People and value</h3><div class="dim">
+        <div class="dh"><h4>11. Skills, enablement &amp; champions</h4>
+          <span class="sc">Stage 3</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>12. AI adoption breadth &amp; measured value</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>14. Cost &amp; licensing economics</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        
+        
+        
+        <p class="ctx">Directorate spend on compute and tooling is visible and controlled. What group pays for AI licences across the organisation, and whether this directorate is inside or outside that, nobody could tell us.</p>
+        
+        
+        
+      </div><h3 class="grp">Operating what you already have</h3><div class="dim">
+        <div class="dh"><h4>15. Evaluation &amp; monitoring</h4>
+          <span class="sc">Stage 3.5</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> You already do the hard part. Writing down what you already do is most of the work here.</p>
+        <p><b>What is working.</b> The strongest evaluation practice in any assessment we have run. Backtested against held-out years, precision and recall by asset class, monthly review with the people who use it.</p>
+        <p><b>What needs to change.</b> It covers the one model. Nothing says what happens when the second one arrives.</p>
+        <p class="ctx">Genuinely good. The failure model is backtested against held-out years, precision and recall are tracked by asset class, and performance is reviewed monthly with the asset planners. This is better evaluation practice than most organisations have anywhere.</p>
+        
+        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 4. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
+        
+      </div><div class="dim cap">
+        <div class="dh"><h4>16. Third-party AI assurance</h4>
+          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
+        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> This is the clearest example of the pattern in this assessment: the answer exists, it is just not here.</p>
+        <p><b>What is working.</b> Nothing to report — the question sits at group and group would not engage.</p>
+        <p><b>What needs to change.</b> Nobody knows what the ML platform or the two hosted APIs do with submitted data. For a utility submitting asset and network data, that is a question worth an answer.</p>
+        <p class="ctx">The team uses a commercial ML platform and two hosted APIs. Nobody at directorate level knows what the contracts say about training on submitted data, and procurement will not discuss contracts with a directorate.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>Network and asset data may be leaving under terms nobody at this level has seen.</span></div>
+          <div><b>The risk of pressing on anyway</b><span>Every additional tool compounds an exposure the directorate cannot itself assess.</span></div></div>
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>17. Incident response &amp; reversibility</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> A day's work, and it is the cheapest thing on this list.</p>
+        <p><b>What is working.</b> The team can stop their own model quickly, and they know they can.</p>
+        <p><b>What needs to change.</b> The asset planners who receive predictions have never been told what to do with one that looks wrong, and there is no record of a prediction ever having been challenged. That is not reassuring, it is quiet.</p>
+        <p class="ctx">They could stop the model in minutes; it is their model. Nobody has told the asset planners who receive the predictions what to do if one looks wrong, and there is no record of it ever having been questioned.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>A wrong prediction directs a crew and nobody has a route to say so.</span></div>
+          </div>
+        
+        
+      </div>
+  </div>
+
+  
+
+  
+
+  <div class="sec pb"><div class="sh"><span class="num">07</span><h2>The plan, in sequence</h2></div>
+    <p>The board above is the summary. This is every item in order, each with a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.</p>
+    <p class="method">The 3 items already happening are listed on the board above and do not appear again here — they sit outside the sequence by design.</p>
+    <p class="why"><b>What has already been tried here.</b> Asked Group Risk to confirm the governance route for directorate-built models — no response either time, because no route into group risk that a directorate can use. A works-management data feed into the model — started and abandoned, because group it would not open the integration without a business case the directorate could not write alone. We have kept those in view: an action that has stalled here once needs a different owner or a different sponsor, not a second run at the same plan.</p>
+    <p class="ctx"><b>Docking onto what you already have.</b> PR29 asset planning programme (R Adeyemi) covers the investment case the models feed, runs through 2027; Group data platform consolidation (Group IT) covers the integration layer the works management feed would sit on, 2028. Where these overlap the actions below, the action is to influence the existing programme rather than start a parallel one.</p>
+    
+    <div class="phase">
+      <h4>First 90 days — lift the ceiling</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Ask every AI vendor in use, in writing, what they do with your data</b><span class="aid">A043</span></div>
+        <div class="meta">Third-party AI assurance · Stage 1 → 3 · lifts the ceiling</div>
+        <p><b>Why here.</b> Nobody knows what the ML platform or the two hosted APIs do with submitted data. For a utility submitting asset and network data, that is a question worth an answer.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CFO or the procurement owner</td></tr>
+          <tr><td>Owner</td><td>Whoever owns each vendor relationship</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>For each AI tool in use there is a written vendor answer on training use, retention, processing location and sub-processors, held somewhere findable</td></tr>
+          <tr><td>Also moves</td><td>AI governance, risk &amp; assurance</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Appoint a named AI risk owner and publish data-handling rules per tool category</b><span class="aid">A005</span></div>
+        <div class="meta">AI governance, risk &amp; assurance · Stage 2 → 3 · after A001 · prerequisite for agentic readiness</div>
+        <p><b>Why here.</b> Whether it extends to an asset-failure model built inside a directorate is unresolved. We could not get an answer from group inside the engagement and nobody here could answer it either.</p>
+        <p class="rl"><b>This has been tried here before.</b> Asked Group Risk to confirm the governance route for directorate-built models, March and again in June — no response either time, because no route into group risk that a directorate can use. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.</p>
+        
+        <table class="mini"><tr><td>Sponsor</td><td><b>The CEO</b> — escalated, because nobody owned the last attempt and it went nowhere</td></tr>
+          <tr><td>Owner</td><td>A named executive (typically CISO or Head of Risk) with the AI risk remit in writing</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A single named executive owns AI risk in writing, with a route for staff to raise questions, and a named owner with a date, because last time there was neither</td></tr>
+          
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase">
+      <h4>3–6 months — the next constraints</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Map the main value stream end-to-end and name the wait states</b><span class="aid">A027</span></div>
+        <div class="meta">Value stream visibility &amp; flow · Stage 2 → 3</div>
+        <p><b>Why here.</b> Nobody could describe what happens between a prediction being generated and a repair crew arriving. Each person knew their own segment. The handover into field operations crosses a directorate boundary and no one on this side could say what happens on the other.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>COO or Head of Delivery</td></tr>
+          <tr><td>Owner</td><td>A named value-stream owner (typically Head of Delivery)</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A current value stream map for the main product or service, with a date and a named owner</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Name who can switch each AI system off, and tell people how to report a bad output</b><span class="aid">A041</span></div>
+        <div class="meta">Incident response &amp; reversibility · Stage 2 → 3</div>
+        <p><b>Why here.</b> The asset planners who receive predictions have never been told what to do with one that looks wrong, and there is no record of a prediction ever having been challenged. That is not reassuring, it is quiet.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>COO or the executive who owns the affected service</td></tr>
+          <tr><td>Owner</td><td>The service owner, with IT</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>Every AI system in use has a named person who can suspend it, and staff have been told in writing where to report a wrong or harmful output</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Publish an AI stance that answers the four DORA sub-tests</b><span class="aid">A001</span></div>
+        <div class="meta">AI stance &amp; policy clarity · Stage 2 → 3</div>
+        <p><b>Why here.</b> A group policy that nobody in a 600-person directorate can find is not a policy from where you sit. The data science team has been operating on the assumption that it does not cover models they build themselves, and nobody has confirmed or corrected that.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO</td></tr>
+          <tr><td>Owner</td><td>Head of IT with People / HR co-signature</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A published AI stance document with a date and a named owner, findable from the intranet home page</td></tr>
+          <tr><td>Also moves</td><td>AI governance, risk &amp; assurance</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Establish direct user contact and require user evidence in prioritisation</b><span class="aid">A025</span></div>
+        <div class="meta">User-centric focus · Stage 2 → 3</div>
+        <p><b>Why here.</b> Nobody has spoken to a field engineer about the predictions. The people who act on the output sit in another directorate and were not available to us either.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CEO or COO (the risk of AI making a low-user-focus organisation worse is a board-level issue)</td></tr>
+          <tr><td>Owner</td><td>Head of Product or Head of Delivery</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>Every delivery team can name its users and describe how it reaches them</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Classify AI tools into the three buckets and publish the middle-bucket guardrails</b><span class="aid">A002</span></div>
+        <div class="meta">AI stance &amp; policy clarity · Stage 2 → 3 · after A001</div>
+        <p><b>Why here.</b> A group policy that nobody in a 600-person directorate can find is not a policy from where you sit. The data science team has been operating on the assumption that it does not cover models they build themselves, and nobody has confirmed or corrected that.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO</td></tr>
+          <tr><td>Owner</td><td>Head of IT (with input from Security and Legal)</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A written classification of AI tools and use categories into prohibited, permitted-with-guardrails, allowed</td></tr>
+          
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase">
+      <h4>6–12 months — reach the target</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Inventory agents in use and publish a written delegation policy</b><span class="aid">A034</span></div>
+        <div class="meta">Agentic readiness · Stage 1 → 3 · after A005</div>
+        <p><b>Why here.</b> No agents, and deliberately so — the team's position is that autonomous action on the asset estate is not appropriate yet. That position is not written down anywhere, which is the gap, but the restraint itself is sound.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO with the AI risk owner (A005)</td></tr>
+          <tr><td>Owner</td><td>The AI risk owner</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A live inventory of agents in use — the coding agent, the triage bot, the workflow automation, the browser automations — with each agent's owner</td></tr>
+          <tr><td>Also moves</td><td>AI governance, risk &amp; assurance</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Add an AI-specific vendor and model approval gate to procurement</b><span class="aid">A006</span></div>
+        <div class="meta">AI governance, risk &amp; assurance · Stage 2 → 3 · after A005</div>
+        <p><b>Why here.</b> Whether it extends to an asset-failure model built inside a directorate is unresolved. We could not get an answer from group inside the engagement and nobody here could answer it either.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>COO or CFO (procurement authority)</td></tr>
+          <tr><td>Owner</td><td>Head of Procurement, with Security and the AI risk owner from A005</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A published procurement checklist for AI tools that asks about training use, retention, residency, sub-processors and human-in-the-loop expectations</td></tr>
+          <tr><td>Also moves</td><td>cost &amp; licensing economics</td></tr>
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase later">
+      <h4>Not yet — gated by a dimension that has to move first</h4>
+      
+      <p class="lead">Each of these needs something else on this list to land first. That is not our preference — it is the dependency. Doing them early tends to produce work that has to be redone.</p>
+      
+      
+      <div class="act">
+        <div class="ah"><b>Connect internal context to approved AI tools through supported routes</b><span class="aid">A014</span></div>
+        <div class="meta">AI-accessible internal context · Stage 2 → 3 · after A005</div>
+        <p><b>Why here.</b> The models cannot see the works management system, the contractor scheduling tool, or any operational documentation. A prediction that cannot see whether a job was already raised is a prediction that will be ignored the second time it duplicates one.</p>
+        <p class="rl"><b>This has been tried here before.</b> A works-management data feed into the model, late 2025 — started and abandoned, because group it would not open the integration without a business case the directorate could not write alone. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.</p>
+        <p class="rl"><b>Something already funded touches this.</b> Group data platform consolidation (Group IT) covers the integration layer the works management feed would sit on, landing 2028. That is after this plan's horizon, so this is a choice rather than a detail: pull a minimal version forward, or accept that everything downstream waits for it.</p>
+        <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO with the AI risk owner (A005)</td></tr>
+          <tr><td>Owner</td><td>An engineering / platform lead with the AI risk owner as accountable</td></tr>
+          <tr><td>Effort</td><td>6-12m, high</td></tr>
+          <tr><td>Done when</td><td>An inventory of connected sources exists with each source's owner and the approved tool it feeds, with the funding agreed before the work starts, not alongside it</td></tr>
+          
+          <tr><td>Needs first</td><td>AI governance, risk &amp; assurance at Stage 3</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="phase later">
+      <h4>Parked — real gaps, deliberately not this year</h4>
+      
+      
+      <p class="lead">Assessed, scored, and agreed with you as not a priority for the next twelve months. They still count toward the ceiling, so they are listed here rather than left out — a gap you have decided not to close is a decision, and it should be a visible one.</p>
+      
+      <div class="act">
+        <div class="ah"><b>AI adoption breadth &amp; measured value</b><span class="aid">STAGE 2</span></div>
+        <div class="meta">has it spread past engineering — and is anyone measuring the value?</div>
+        
+      </div><div class="act">
+        <div class="ah"><b>Cost &amp; licensing economics</b><span class="aid">STAGE 2</span></div>
+        <div class="meta">do they know what AI costs them, and what a unit of it buys?</div>
+        
+      </div>
+    </div>
+  </div>
+
+  
+
+  
+
+  
+
+  <div class="sec pb"><div class="sh"><span class="num">08</span><h2>Where this goes next</h2></div>
+    <p>Readiness is not the destination. It is what determines whether anything you build on top of it works. Below are the candidates this assessment surfaced for the next piece of work, and — the useful part — which of them your own findings least stand in the way of.</p>
+      <table class="tbl"><thead><tr><th>What you said you want to be able to do</th><th style="width:34%">What stands in the way today</th></tr></thead><tbody>
+      <tr class=""><td>Predict a main likely to fail before it does, and have the repair already scheduled</td>
+        <td>AI-accessible internal context (Stage 2); value stream visibility &amp; flow (Stage 2); user-centric focus (Stage 2)</td></tr><tr class="short"><td>Show Ofwat how an asset investment decision was reached, in a way that survives challenge <b style="color:#1e7e44">— least blocked</b></td>
+        <td>AI governance, risk &amp; assurance (Stage 2)</td></tr>
+      </tbody></table>
+      <p class="why"><b>Our recommendation on where to start.</b> Show Ofwat how an asset investment decision was reached, in a way that survives challenge — it runs through AI governance, risk &amp; assurance, which is also on the plan above, so the two pieces of work reinforce each other rather than queue behind one another. That is a judgement about sequence, not about value — the most valuable one is usually the most gated, and choosing between those two is the conversation to have.</p>
+    
+    <p class="method">What the next engagement does with these: takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed case with a go, adjust or stop against each. The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point.</p>
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">09</span><h2>How we assessed this</h2></div>
+    <div class="method">
+      <p>So that you can weigh the findings, and challenge them.</p>
+      <ul>
+        <li><b>7 interviews</b> across leaders & sponsors, technical & engineering, practitioners, alongside direct observation of how work is done.</li>
+        <li><b>34 of 34 questions</b> answered across 17 dimensions, of which <b>21%</b> were confirmed against something we could see rather than taken on description alone.</li>
+        
+        <li><b>Nothing here is self-reported.</b> No survey was circulated for your teams to score themselves.</li>
+      
+      </ul>
+      <p style="margin-top:10px"><b>What this assessment does not cover.</b> It examines your organisation's readiness. It does not price individual use cases, model return on a specific investment, or assess any workflow in depth, and no code was audited. We would rather say so than imply otherwise.</p>
+      <p><b>Where the framework comes from.</b> Seven of the 17 dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.</p>
+    </div>
+  </div>
+
+
+  <div class="sec"><div class="sh"><span class="num">—</span><h2>How Enablis can help</h2></div>
+    <div class="sell">
+      <p style="font-size:13.4px;color:#5f6368"><b>This section is a proposal, not a finding.</b> Everything above is the assessment as we found it and stands whether or not you do any of the following with us.</p>
+      <p><b>The items marked for the first 90 days need no outside help.</b> They are documents, decisions and named owners. If you do only those, this assessment will have paid for itself.</p>
+      <p><b>Where we would add most.</b> Lifting agentic readiness and third-party AI assurance is the unlock, and it is the part clients most often start and then stall on. We can run it as a short engagement with your people rather than instead of them.</p>
+      <p><b>The obvious next step</b> is to take one workflow and three or four candidate use cases through to a costed business case — value, effort, payback, and which of the gaps above gates each one. That turns this readiness picture into a funded plan.</p>
+      <p style="margin-bottom:0"><b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    Northgate Water — Asset Management directorate · AI Readiness Assessment · Enablis · 2026-08-24 · Commercial in confidence.
+    Scores reflect what could be observed and verified during the engagement.
+  </div>
+</div></body></html>

@@ -1,18 +1,18 @@
 # Worked examples
 
-Three worked engagements across two fictional PE-backed mid-market clients. Two show the AI Readiness wedge; the third carries one of them through all three levels of the full toolkit.
+Four worked engagements across three fictional clients. Two are PE-backed mid-market companies assessed whole; the third is a **department inside a large regulated business**, which is the shape most real assessments take. A fourth file carries one of them through all three levels of the full toolkit.
 
-**Easiest way to read them:** open `assess.html` and click **Worked examples** in the header. Both are built into the tool — pick one and it loads. No downloading, no importing.
+**Easiest way to read them:** open `assess.html` and click **Worked examples** in the header. All four are built into the tool — pick one and it loads. No downloading, no importing.
 
-These `.json` files are the same two engagements as portable files, for editing, diffing, or loading via **Import**. Either route replaces whatever is currently in the tool, so export first if you have live work in there.
+These `.json` files are the same engagements as portable files, for editing, diffing, or loading via **Import**. Either route replaces whatever is currently in the tool, so export first if you have live work in there.
 
-Neither company exists. Any resemblance to a real client is accidental, and nothing here should be shared outside Enablis as a case study.
+None of these companies exist. Any resemblance to a real client is accidental, and nothing here should be shared outside Enablis as a case study.
 
 ---
 
-## Why two
+## Why three
 
-They fail differently, and the contrast is the point.
+They fail differently, and the contrast is the point. Northgate is the one to read if you only read one — it is the realistic shape, and it is the one that exposed three bugs the tidier examples never would.
 
 | | **Ardent Risk Group** | **Ridgeway Logistics Group** |
 |---|---|---|
@@ -25,6 +25,27 @@ They fail differently, and the contrast is the point.
 | The story | Weak more or less everywhere. The ceiling is systemic and the roadmap is long | Strong operations, strong engineering, no AI stance and no AI governance. Almost everything is ready for more than those two allow |
 
 Ridgeway is the better demonstration of why the ceiling matters: a genuinely well-run business, excellent at flow measurement, held at Stage 1 by two documents that don't exist. Ardent is the more common shape — nothing is badly wrong, nothing is ready either.
+
+---
+
+## The third client — Northgate Water, Asset Management directorate
+
+A 600-person directorate inside a 4,000-person regulated utility. Structurally unlike the other two in every way that matters, and deliberately so:
+
+| | |
+|---|---|
+| Unit of assessment | A **department**, not a company — group functions are out of reach |
+| Builds or buys | **Builds its own models**; the only example where that is true |
+| Maturity | **Genuinely mixed**: weighted average 2.5 against a Stage 1 ceiling |
+| Regulator | Ofwat, not the FCA |
+| Access | **Four dimensions could not be established at all** — Group Risk and Group Procurement would not meet the team inside the engagement |
+| Capacity | 9 days a month, and the plan actually fits inside the year |
+
+**What it teaches.** The strongest data estate in any of the examples sits next to the weakest vendor assurance, because twenty years of regulatory reporting produces excellent data and nothing about AI contracts. The sponsor is the best of the three and can still do nothing about the constraint, because the constraint sits at group. Four unanswerable questions get reported as *"nobody could tell us"* rather than scored low and forgotten — and the report says outright that four of them in one assessment is a pattern, and that the pattern is usually that the answers sit above the level being assessed.
+
+It is also the example where the client has **deliberately** not done something: no agents, on a reasoned view that autonomous action on an asset estate is not appropriate yet. Before this example existed, that produced a containment item instructing them to inventory the agents they do not have. Now it reports the restraint, scores the absence of a *written* position, and keeps the two apart.
+
+**Three bugs it found**, none of which the tidy examples would ever have surfaced: containment firing on deliberate absence; "get an answer on…" repeated once per unanswerable dimension instead of consolidated; and chase-the-answer work being generated for dimensions the client had already parked.
 
 ---
 
@@ -42,9 +63,9 @@ Ridgeway is the better demonstration of why the ceiling matters: a genuinely wel
 
 ---
 
-## The third one — Ardent, full engagement
+## The fourth file — Ardent, full engagement
 
-`ardent-full-engagement.json` is the same Ardent assessment carried into the Workflow and Use cases tabs, so you can see the whole chain rather than just the wedge. It is deliberately the *same client* rather than a third company, because that is how a real engagement progresses — Runway, then the business case.
+`ardent-full-engagement.json` is the same Ardent assessment carried into the Workflow and Use cases tabs, so you can see the whole chain rather than just the wedge. It is deliberately the *same client* rather than a fourth company, because that is how a real engagement progresses — Runway, then the business case.
 
 **Workflow: commercial renewals.** Nine readiness signals, the ten-capability run scan ("could they run this without us?" — they could not), three approval gates, four system connections, five data sources and three guardrails. The workflow note carries the finding that matters: the team-level work measured 9 of 14 elapsed renewal days as queue time, so the prize is the wait between steps, not broker typing speed. Two of the four use cases attack drafting and neither touches the queue — worth saying out loud at a readout where the sponsor assumed brokers were the bottleneck.
 
@@ -67,7 +88,7 @@ Note also what the £ model does to the headline. Renewal drafting has a potenti
 
 ## Sample client reports
 
-`sample-report-ardent.html`, `sample-report-ridgeway.html` and `sample-report-ardent-full.html` are the client-facing documents generated from these engagements. The full-engagement one is the interesting comparison: same client, same readiness content, plus the workflow, the four costed candidates and the portfolio. They are the same documents — what the client actually receives. Open either in a browser; print to PDF from there. They are produced by **Outputs → Client report** in the tool, so they regenerate whenever the assessment changes.
+`sample-report-ardent.html`, `sample-report-ridgeway.html`, `sample-report-northgate.html` and `sample-report-ardent-full.html` are the client-facing documents generated from these engagements. The full-engagement one is the interesting comparison: same client, same readiness content, plus the workflow, the four costed candidates and the portfolio. They are the same documents — what the client actually receives. Open either in a browser; print to PDF from there. They are produced by **Outputs → Client report** in the tool, so they regenerate whenever the assessment changes.
 
 ## What's in each file
 
@@ -80,5 +101,5 @@ The two wedge files carry no workflows or use cases — they match the two-week 
 ## Using them
 
 - **Training a new delivery lead.** Load one, walk the Team tab top to bottom, and look at how the evidence and context fields are written. The context notes are what make a report read bespoke rather than templated — these are worth copying in style, not content.
-- **Showing the tool internally.** Ridgeway makes the sharper demo: the ceiling story lands in about thirty seconds.
-- **Regression testing.** If a change to the scoring breaks something, these will show it. Ardent should hold at ceiling Stage 1, potential 1.65; Ridgeway at ceiling Stage 1, potential 2.32. Ridgeway is also the schema-migration case: its governance checklist is answered "none of these", so it catches any change that shifts that stored index.
+- **Showing the tool internally.** Ridgeway makes the sharper demo: the ceiling story lands in about thirty seconds. Northgate makes the more honest one, because it is what a real fortnight actually produces.
+- **Regression testing.** If a change to the scoring breaks something, these will show it. Ardent should hold at ceiling Stage 1, potential 1.65; Ridgeway at ceiling Stage 1, potential 2.32; Northgate at ceiling Stage 1, potential 2.51. Ridgeway is also the schema-migration case: its governance checklist is answered "none of these", so it catches any change that shifts that stored index.

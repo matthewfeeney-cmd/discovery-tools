@@ -1,0 +1,465 @@
+{
+ "sv": 3,
+ "meta": {
+  "client": "Northgate Water — Asset Management directorate",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-24",
+  "ambition": "Cut reactive mains repairs before the PR29 submission, and be able to show Ofwat that asset decisions are explainable. The directorate has its own data science team and its own budget; almost everything else sits with group."
+ },
+ "mode": "deep",
+ "target": 3,
+ "shape": {
+  "builds": "Yes",
+  "outsourced": "No",
+  "inprod": "Yes — and we can name it",
+  "role": "Build models",
+  "entities": "More than five",
+  "regulated": "Other regulator"
+ },
+ "screen": {
+  "juris": "No",
+  "art22c": "Could not establish",
+  "dpia": "Could not establish",
+  "smf": "",
+  "duty": ""
+ },
+ "tgt": {
+  "d12": 0,
+  "d14": 0
+ },
+ "dimOff": {
+  "d15": false,
+  "d16": false,
+  "d17": false
+ },
+ "org": {
+  "q1s": 2,
+  "q2s": 2,
+  "q3s": 3,
+  "q4s": 4,
+  "q5s": 2,
+  "q6s": 3,
+  "q7s": 4,
+  "q8s": 3,
+  "q9s": 2,
+  "q10s": 2,
+  "q11s": 3,
+  "q12s": 2,
+  "q13s": 1,
+  "q14s": 2,
+  "q15s": 3,
+  "q16s": 1,
+  "q17s": 2
+ },
+ "orgC": {
+  "q1c": [
+   0,
+   3
+  ],
+  "q2c": [
+   2,
+   5
+  ],
+  "q3c": [
+   0,
+   1,
+   2
+  ],
+  "q4c": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "q5c": [
+   3
+  ],
+  "q6c": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "q7c": [
+   0,
+   1,
+   2,
+   4
+  ],
+  "q8c": [
+   0,
+   1,
+   3
+  ],
+  "q9c": [
+   2
+  ],
+  "q10c": [
+   0
+  ],
+  "q11c": [
+   0,
+   1,
+   3
+  ],
+  "q12c": [
+   0,
+   4
+  ],
+  "q13c": [
+   5
+  ],
+  "q14c": [
+   0,
+   1
+  ],
+  "q15c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q16c": [
+   6
+  ],
+  "q17c": [
+   1,
+   2
+  ]
+ },
+ "orgEv": {
+  "q1s": {
+   "t": "Directorate leadership team, 12 Aug",
+   "c": "confirmed",
+   "x": "Group published an AI policy in 2025. Nobody in this directorate has read it and nobody could tell us where it lives. Two of the four leads believed there wasn't one."
+  },
+  "q1c": {
+   "t": "Asked nine people across asset planning, field ops and the data science team",
+   "c": "confirmed",
+   "x": "Everyone knew there was 'something from group'. Nobody could say what it permitted. The data science team had assumed it did not apply to internally built models."
+  },
+  "q2s": {
+   "t": "Asked the directorate director, who referred us to Group Risk; three requests, no meeting",
+   "c": "unknown",
+   "x": "Model risk governance demonstrably exists — the finance models go through it. Whether it covers an asset-failure model built inside a directorate is a question nobody here could answer, and group would not meet us inside the engagement."
+  },
+  "q3s": {
+   "t": "Directorate Director, 12 Aug",
+   "c": "confirmed",
+   "x": "Unusually clear. She has a budget line, a named outcome tied to PR29, and she has already defended the data science team's headcount twice. The sponsorship is real and it is local."
+  },
+  "q4s": {
+   "t": "Head of Asset Data + walked the telemetry pipeline, 13 Aug",
+   "c": "confirmed",
+   "x": "The strongest data estate we have assessed. Every asset has a record, telemetry is continuous and quality-monitored, lineage is documented because the regulator asks for it. This is what twenty years of regulatory reporting does to a data function."
+  },
+  "q5s": {
+   "t": "Data science lead, 13 Aug",
+   "c": "confirmed",
+   "x": "The models reach asset and telemetry data cleanly. They reach nothing else — not the works management system, not the contractor scheduling tool, not any of the documentation. A model that can see the asset but not the job that was raised against it."
+  },
+  "q9s": {
+   "t": "Asked to speak to field engineers; not arranged within the engagement",
+   "c": "notasked",
+   "x": "Field operations sits under a different directorate. We could not get access to the people the predictions are for."
+  },
+  "q10s": {
+   "t": "Asked the director, two asset planners and the works management lead",
+   "c": "unknown",
+   "x": "Nobody could describe what happens between a prediction being generated and a repair crew arriving. Each person knew their own segment. The handover into field operations crosses a directorate boundary and no one on this side could say what happens on the other."
+  },
+  "q13s": {
+   "t": "Data science lead and directorate director",
+   "c": "absent",
+   "x": "No agents, and deliberately so — the team's position is that autonomous action on the asset estate is not appropriate yet. That position is not written down anywhere, which is the gap, but the restraint itself is sound."
+  },
+  "q14s": {
+   "t": "Asked the directorate finance business partner and Group Procurement; group did not respond",
+   "c": "unknown",
+   "x": "Directorate spend on compute and tooling is visible and controlled. What group pays for AI licences across the organisation, and whether this directorate is inside or outside that, nobody could tell us."
+  },
+  "q15s": {
+   "t": "Data science lead, walked the model evaluation notebook, 13 Aug",
+   "c": "confirmed",
+   "x": "Genuinely good. The failure model is backtested against held-out years, precision and recall are tracked by asset class, and performance is reviewed monthly with the asset planners. This is better evaluation practice than most organisations have anywhere."
+  },
+  "q16s": {
+   "t": "Asked the data science lead and the directorate finance partner; referred to Group Procurement, who did not respond",
+   "c": "unknown",
+   "x": "The team uses a commercial ML platform and two hosted APIs. Nobody at directorate level knows what the contracts say about training on submitted data, and procurement will not discuss contracts with a directorate."
+  },
+  "q17s": {
+   "t": "Data science lead, 13 Aug",
+   "c": "confirmed",
+   "x": "They could stop the model in minutes; it is their model. Nobody has told the asset planners who receive the predictions what to do if one looks wrong, and there is no record of it ever having been questioned."
+  }
+ },
+ "dimNote": {
+  "d1": {
+   "well": "The directorate has not invented its own rules, which is the right instinct in a large organisation.",
+   "improve": "A group policy that nobody in a 600-person directorate can find is not a policy from where you sit. The data science team has been operating on the assumption that it does not cover models they build themselves, and nobody has confirmed or corrected that.",
+   "riskNot": "The team building the models believes it is out of scope of the organisation's AI policy. If that is wrong, everything they have built is unassessed.",
+   "riskGo": "Building more on an assumption nobody has tested means the correction, when it comes, lands on more work.",
+   "why": "This is a five-minute question to the right person at group, and nobody has asked it."
+  },
+  "d2": {
+   "well": "Model risk governance exists and works — for finance models. The machinery is there.",
+   "improve": "Whether it extends to an asset-failure model built inside a directorate is unresolved. We could not get an answer from group inside the engagement and nobody here could answer it either.",
+   "riskNot": "A regulated utility is using a model to direct asset spend, with no confirmed governance route.",
+   "riskGo": "Scaling before the question is answered risks a retrospective assessment of everything at once.",
+   "why": "Not a capability gap — an accountability gap that sits above you and needs escalating rather than building."
+  },
+  "d3": {
+   "well": "Genuinely strong, and local. A named director with budget, an outcome tied to PR29, and a track record of defending the team. Sponsorship is usually the weakest link and here it is the strongest.",
+   "improve": "It stops at the directorate boundary. Nothing here can move a group function, and several of the constraints below sit at group.",
+   "riskNot": "",
+   "riskGo": "",
+   "why": "You have the thing most clients lack. Use it on the two or three questions that need group to answer."
+  },
+  "d4": {
+   "well": "The best data estate we have assessed. Stewarded, monitored, documented lineage, continuous telemetry. Twenty years of regulatory reporting has produced something most organisations would pay a lot for.",
+   "improve": "Very little. The gap is not data quality, it is that the models can only reach one part of it.",
+   "riskNot": "",
+   "riskGo": "",
+   "why": "This is your genuine advantage and it should be said out loud, because the assumption in the room was that data was the problem."
+  },
+  "d5": {
+   "well": "The connection to asset and telemetry data is clean and governed.",
+   "improve": "The models cannot see the works management system, the contractor scheduling tool, or any operational documentation. A prediction that cannot see whether a job was already raised is a prediction that will be ignored the second time it duplicates one.",
+   "riskNot": "Predictions get quietly disregarded because they conflict with things the model cannot see.",
+   "riskGo": "More models on the same narrow context multiplies the same failure.",
+   "why": "This is the constraint. Your data is excellent and your models can only see a quarter of it."
+  },
+  "d9": {
+   "well": "",
+   "improve": "Nobody has spoken to a field engineer about the predictions. The people who act on the output sit in another directorate and were not available to us either.",
+   "riskNot": "A model optimised for a user nobody has met.",
+   "riskGo": "The research finding is that AI makes teams without user contact measurably worse, and this is a team that cannot reach its users.",
+   "why": "The directorate boundary is the reason, which makes it a structural problem rather than an oversight."
+  },
+  "d15": {
+   "well": "The strongest evaluation practice in any assessment we have run. Backtested against held-out years, precision and recall by asset class, monthly review with the people who use it.",
+   "improve": "It covers the one model. Nothing says what happens when the second one arrives.",
+   "riskNot": "",
+   "riskGo": "",
+   "why": "You already do the hard part. Writing down what you already do is most of the work here."
+  },
+  "d16": {
+   "well": "Nothing to report — the question sits at group and group would not engage.",
+   "improve": "Nobody knows what the ML platform or the two hosted APIs do with submitted data. For a utility submitting asset and network data, that is a question worth an answer.",
+   "riskNot": "Network and asset data may be leaving under terms nobody at this level has seen.",
+   "riskGo": "Every additional tool compounds an exposure the directorate cannot itself assess.",
+   "why": "This is the clearest example of the pattern in this assessment: the answer exists, it is just not here."
+  },
+  "d17": {
+   "well": "The team can stop their own model quickly, and they know they can.",
+   "improve": "The asset planners who receive predictions have never been told what to do with one that looks wrong, and there is no record of a prediction ever having been challenged. That is not reassuring, it is quiet.",
+   "riskNot": "A wrong prediction directs a crew and nobody has a route to say so.",
+   "riskGo": "",
+   "why": "A day's work, and it is the cheapest thing on this list."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lead": 2,
+   "prac": 2,
+   "tech": 3
+  },
+  "ts_task": {
+   "lead": 1,
+   "prac": 2,
+   "tech": 3
+  },
+  "ts_judge": {
+   "lead": 2,
+   "prac": 2,
+   "tech": 4
+  },
+  "ts_data": {
+   "lead": 2,
+   "prac": 3,
+   "tech": 4
+  },
+  "ts_redesign": {
+   "lead": 2,
+   "prac": 1,
+   "tech": 2
+  },
+  "ts_gov": {
+   "lead": 1,
+   "prac": 1,
+   "tech": 1
+  },
+  "ts_coach": {
+   "lead": 1,
+   "prac": 1,
+   "tech": 2
+  }
+ },
+ "coh": {
+  "lead": "About half",
+  "prac": "A few",
+  "tech": "Most"
+ },
+ "ints": [
+  {
+   "name": "R Adeyemi",
+   "role": "Directorate Director",
+   "date": "2026-08-12",
+   "coh": "lead",
+   "note": "I can fund it. What I cannot do is make group answer a question."
+  },
+  {
+   "name": "T Okonkwo",
+   "role": "Head of Asset Data",
+   "date": "2026-08-13",
+   "coh": "tech",
+   "note": "Our data is the one thing I would not change."
+  },
+  {
+   "name": "M Lindqvist",
+   "role": "Data science lead",
+   "date": "2026-08-13",
+   "coh": "tech",
+   "note": "We backtest properly. We just cannot see the works management system."
+  },
+  {
+   "name": "J Beattie",
+   "role": "Asset planning lead",
+   "date": "2026-08-14",
+   "coh": "prac",
+   "note": "If a prediction looks odd I just ignore it. I have never told anyone."
+  },
+  {
+   "name": "S Cartwright",
+   "role": "Works management lead",
+   "date": "2026-08-14",
+   "coh": "prac",
+   "note": "What happens after it leaves us is another directorate's business."
+  },
+  {
+   "name": "Group Risk",
+   "role": "requested three times, no meeting",
+   "date": "",
+   "coh": "lead",
+   "note": "Not made available within the engagement."
+  },
+  {
+   "name": "Group Procurement",
+   "role": "requested, no response",
+   "date": "",
+   "coh": "lead",
+   "note": "Not made available within the engagement."
+  }
+ ],
+ "cb": {
+  "has": null,
+  "repoAccess": "",
+  "checkAccess": "",
+  "repos": [],
+  "ow": {},
+  "gt": {},
+  "gtNotes": {},
+  "notes": ""
+ },
+ "frame": {
+  "amb": [
+   "Predict a main likely to fail before it does, and have the repair already scheduled",
+   "Show Ofwat how an asset investment decision was reached, in a way that survives challenge",
+   ""
+  ],
+  "ambDims": [
+   [
+    "d5",
+    "d10",
+    "d9"
+   ],
+   [
+    "d2",
+    "d15",
+    "d4"
+   ],
+   []
+  ],
+  "spon3": [
+   "Get group to tell us whether their AI policy covers models we build ourselves",
+   "Connect the models to the works management system",
+   ""
+  ],
+  "tried": [
+   {
+    "what": "Asked Group Risk to confirm the governance route for directorate-built models",
+    "when": "March and again in June",
+    "end": "No response either time",
+    "why": "No route into group risk that a directorate can use",
+    "dims": [
+     "d2"
+    ],
+    "mode": "noowner"
+   },
+   {
+    "what": "A works-management data feed into the model",
+    "when": "late 2025",
+    "end": "Started and abandoned",
+    "why": "Group IT would not open the integration without a business case the directorate could not write alone",
+    "dims": [
+     "d5"
+    ],
+    "mode": "nobudget"
+   }
+  ],
+  "funded": [
+   {
+    "prog": "PR29 asset planning programme",
+    "owner": "R Adeyemi",
+    "covers": "The investment case the models feed",
+    "when": "runs through 2027",
+    "dims": [
+     "d3",
+     "d4"
+    ],
+    "late": false
+   },
+   {
+    "prog": "Group data platform consolidation",
+    "owner": "Group IT",
+    "covers": "The integration layer the works management feed would sit on",
+    "when": "2028",
+    "dims": [
+     "d5"
+    ],
+    "late": true
+   }
+  ],
+  "cap": [
+   {
+    "name": "M Lindqvist",
+    "role": "Data science lead",
+    "days": "4"
+   },
+   {
+    "name": "T Okonkwo",
+    "role": "Head of Asset Data",
+    "days": "2"
+   },
+   {
+    "name": "J Beattie",
+    "role": "Asset planning lead",
+    "days": "2"
+   },
+   {
+    "name": "R Adeyemi",
+    "role": "Directorate Director (sponsor time)",
+    "days": "1"
+   }
+  ]
+ },
+ "wfs": [],
+ "curWf": 0,
+ "curUc": 0,
+ "num": {},
+ "actNote": {},
+ "actOwn": {}
+}
