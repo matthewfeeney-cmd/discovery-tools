@@ -1,0 +1,830 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Halloran &amp; Finch Architects — AI Readiness Assessment</title>
+<style>
+ @page{size:A4;margin:16mm 14mm}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font:15px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;background:#f4f4f5}
+ .page{max-width:820px;margin:0 auto;background:#fff;padding:46px 54px}
+ h1{font-size:31px;line-height:1.2;letter-spacing:-.4px}
+ h2{font-size:21px;margin:0 0 4px;letter-spacing:-.2px}
+ h3.grp{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#e8112d;font-weight:800;margin:26px 0 10px;padding-bottom:5px;border-bottom:1px solid #eee}
+ h4{font-size:16px}
+ h4.sub-h{margin:20px 0 6px;font-size:15px}
+ p{margin:0 0 9px}
+ .sec{margin-top:34px;page-break-inside:auto}
+ .sec>.sh{display:flex;align-items:baseline;gap:10px;border-top:3px solid #e8112d;padding-top:9px;margin-bottom:12px}
+ .sec>.sh .num{font-size:12px;font-weight:800;color:#e8112d;letter-spacing:.1em}
+ .cover{border-bottom:3px solid #e8112d;padding-bottom:26px;margin-bottom:8px}
+ .cover .tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#e8112d;font-weight:800}
+ .cover .meta{color:#5f6368;font-size:13.5px;margin-top:14px}
+ .cover .amb{margin-top:16px;padding:13px 16px;background:#faf7f8;border-left:3px solid #e8112d;font-size:14.5px}
+ .lede{font-size:18.5px;line-height:1.5;margin:18px 0 10px;letter-spacing:-.2px}
+ .kpis{display:flex;gap:11px;margin:16px 0 6px;flex-wrap:wrap}
+ .kpi{flex:1 1 150px;border:1px solid #e3e3e3;border-radius:9px;padding:12px 14px}
+ .kpi b{display:block;font-size:26px;line-height:1.15;letter-spacing:-.6px}
+ .kpi span{font-size:11.5px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+ .kpi small{display:block;font-size:12px;color:#5f6368;font-weight:400;margin-top:2px;line-height:1.35}
+ .kpi.red b{color:#b3261e}
+ .scale{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}
+ .scale td{padding:6px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+ .scale td:first-child{white-space:nowrap;font-weight:700;width:1%}
+ .scale tr.you td{background:#fff6f7}
+ .scale tr.you td:first-child::after{content:" ← you";color:#e8112d;font-weight:800;font-size:11px}
+ .bar{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
+ .bar i{width:26px;height:8px;border-radius:2px;background:#e9e9ea;display:block}
+ .bar i.on{background:#0b5c8a}
+ .dim.cap .bar i.on{background:#e8112d}
+ .wt{font-size:11.5px;color:#5f6368}
+ .dim{border:1px solid #e8e8e8;border-radius:10px;padding:15px 17px;margin-bottom:11px;page-break-inside:avoid}
+ .dim.cap{border-color:#e8112d;border-width:1.5px;background:#fffafb}
+ .dh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px}
+ .dh .sc{font-size:13px;color:#5f6368;white-space:nowrap}
+ .cap-tag{background:#e8112d;color:#fff;font-size:10px;padding:2px 6px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
+ .dim p{font-size:14.2px;margin:7px 0 0}
+ .why{color:#1a1a1a}
+ .ctx{color:#5f6368;font-size:13.4px;font-style:italic;border-left:2px solid #e8e8e8;padding-left:11px}
+ .src{color:#8a8a8a;font-size:11.5px}
+ .miss{color:#8a8a8a;font-size:13.5px}
+ .risks{display:flex;gap:11px;margin-top:11px;flex-wrap:wrap}
+ .risks>div{flex:1 1 210px;background:#faf7f8;border-radius:7px;padding:9px 12px;font-size:13.4px}
+ .risks b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#b3261e;margin-bottom:3px}
+ .flag{background:#fff8e6;border-left:3px solid #b8860b;padding:9px 12px;font-size:13.6px;border-radius:0 6px 6px 0}
+ .expo{background:#fdeceb;border:1.5px solid #b3261e;border-radius:10px;padding:16px 18px;margin:14px 0}
+ .expo h4{color:#b3261e;font-size:15px;margin-bottom:7px}
+ .expo-item{padding:10px 0;border-top:1px solid #f2c9c6}
+ .expo-item:first-of-type{border-top:none;padding-top:2px}
+ .expo-item>b{font-size:14.5px}
+ .expo-item p{font-size:14.2px;margin:3px 0 0}
+ .expo-item .ex-why{color:#7a3b36;font-size:13.6px}
+ .tbl{width:100%;border-collapse:collapse;font-size:13.6px;margin:10px 0 14px}
+ .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#5f6368;border-bottom:1.5px solid #ddd;padding:6px 9px}
+ .tbl td{padding:7px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+ .tbl tr.short td{background:#fffaf9}
+ .sub2{display:block;font-size:11.8px;color:#8a8a8a;line-height:1.35}
+ .b-red{color:#b3261e;font-weight:800}.b-amber{color:#8a6d00;font-weight:800}.b-green{color:#1e7e44;font-weight:800}
+ .two{display:flex;gap:11px;margin:12px 0}
+ .stat{flex:1;border:1px solid #e3e3e3;border-radius:9px;padding:13px 15px;font-size:12px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em}
+ .stat span{display:block;font-size:29px;color:#1a1a1a;font-weight:700;letter-spacing:-.6px;text-transform:none}
+ .stat small{font-size:15px;color:#8a8a8a;font-weight:400}
+ .phase{margin-bottom:20px;page-break-inside:avoid}
+ .phase h4{border-left:4px solid #e8112d;padding-left:10px;margin-bottom:7px}
+ .phase.now h4{border-color:#b3261e;color:#b3261e}
+ .phase.later h4{border-color:#b0b0b0;color:#5f6368}
+ .phase .lead{font-size:13.6px;color:#5f6368;margin:0 0 10px 14px}
+ .act{border:1px solid #e8e8e8;border-radius:9px;padding:13px 15px;margin:0 0 9px 14px;page-break-inside:avoid}
+ /* the urgency board — the one page a sponsor will actually act on */
+ .board{margin:4px 0 14px}
+ .ub{display:flex;gap:14px;align-items:stretch;margin-bottom:10px;page-break-inside:avoid}
+ .ubn{flex:0 0 40px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;
+      color:#fff;background:#8a8a8a;border-radius:9px 0 0 9px}
+ .ub.live .ubn{background:#b3261e} .ub.heavy .ubn{background:#0b5c8a} .ub.cheap .ubn{background:#1e7e44}
+ .ubb{flex:1;border:1px solid #e2e2e2;border-left:none;border-radius:0 9px 9px 0;padding:12px 16px}
+ .ub.live .ubb{background:#fdf6f5;border-color:#f0d4d1}
+ .ub.heavy .ubb{background:#f6fafc;border-color:#d3e3ec}
+ .ub.cheap .ubb{background:#f7fbf8;border-color:#d3e7da}
+ .ubtag{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#6b6b6b;margin-bottom:3px}
+ .ub.live .ubtag{color:#b3261e} .ub.heavy .ubtag{color:#0b5c8a} .ub.cheap .ubtag{color:#1e7e44}
+ .ubb h4{font-size:16px;line-height:1.35;margin-bottom:5px}
+ .ubb p{font-size:13.4px;line-height:1.5;margin:0 0 6px;color:#2e2e2e}
+ .ubm{font-size:11.6px;color:#5f6368}
+ .cap-box{border:1px solid #d8e3ea;background:#f6fafc;border-radius:9px;padding:14px 18px;margin:14px 0;page-break-inside:avoid}
+ .cap-box h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#0b5c8a;margin-bottom:7px}
+ .cap-box p{font-size:13.6px;margin:0 0 8px}
+ .cap-bar{height:12px;background:#e4ecf1;border-radius:6px;overflow:hidden;margin:0 0 9px}
+ .cap-bar span{display:block;height:100%;background:#0b5c8a}
+ .cap-cav{font-size:11.6px!important;color:#5f6368;margin:0!important}
+ .act .rl{font-size:13.2px;background:#fdf8ec;border-left:3px solid #d8ccb0;padding:7px 11px;margin:0 0 8px;border-radius:0 5px 5px 0}
+ .act.big{margin-left:0;border:2px solid #1e7e44;border-radius:10px;padding:16px 18px;margin-bottom:12px;background:#fbfdfb}
+ .act.big .ah{font-size:17.5px;line-height:1.35}
+ .act.big .ah b{font-weight:700}
+ .act .ah{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:15px}
+ .act .aid{font-size:11px;color:#a0a0a0;font-weight:700;letter-spacing:.05em}
+ .act .meta{font-size:11.8px;color:#5f6368;margin:2px 0 6px}
+ .act p{font-size:13.8px;margin:0 0 7px}
+ .mini{width:100%;border-collapse:collapse;font-size:12.8px}
+ .mini td{padding:3px 0;vertical-align:top}
+ .mini td:first-child{color:#8a8a8a;width:96px;white-space:nowrap;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em;padding-top:5px}
+ .radar{text-align:center;margin:8px 0}
+ .legend{font-size:12.5px;color:#5f6368;text-align:center;margin-top:-6px}
+ .method{font-size:13.4px;color:#4a4a4a}
+ .method li{margin:5px 0 0 18px}
+ .sell{border:1px solid #e3e3e3;border-radius:10px;padding:18px 20px;margin-top:14px;background:#fafafa}
+ .foot{margin-top:36px;padding-top:14px;border-top:1px solid #e8e8e8;font-size:11.8px;color:#8a8a8a}
+ .noprint{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:5}
+ .noprint button{font:inherit;font-size:13px;font-weight:700;padding:9px 15px;border:none;border-radius:8px;background:#e8112d;color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+ .noprint button.alt{background:#fff;color:#1a1a1a;border:1px solid #ddd}
+ @media print{
+   body{background:#fff}
+   .page{max-width:none;padding:0;margin:0}
+   .noprint{display:none!important}
+   .sec{page-break-inside:auto}
+   h2,h3.grp,h4{page-break-after:avoid}
+   .dim,.act,.phase,.expo,.kpi{page-break-inside:avoid}
+   .pb{page-break-before:always}
+ }
+</style></head><body>
+<div class="noprint"><button onclick="window.print()">Print / save as PDF</button><button class="alt" onclick="window.close()">Close</button></div>
+<div class="page">
+
+  <div class="cover">
+    <span class="tag">AI Readiness Assessment</span>
+    <h1>Halloran &amp; Finch Architects</h1>
+    <div class="meta">Prepared by Enablis · Delivery Lead + Forward Deployed Engineer · 2026-08-18<br>Commercial in confidence</div>
+    <div class="amb"><b>What you told us you are trying to do</b><br>Stop losing competitive fee bids on turnaround time. Every studio has been experimenting for eighteen months and the partners cannot tell whether any of it has changed a single fee proposal.</div>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
+    <p class="lede">You are at Stage 1 of 5 against a Stage 3 ambition — and it is evaluation &amp; monitoring and third-party AI assurance that puts you there.</p>
+    <p>Weighted across all 14 dimensions you average 2.0 today. The distance between that and Stage 1 is the point of this report: most of the organisation is already operating above what these dimensions allow. Deliver the plan and that average moves to 2.2 — but the ceiling moves further, which is what actually changes what you can do.</p>
+    
+    <div class="kpis">
+      <div class="kpi red"><span>Today</span><b>Stage 1</b><small>Exploring</small></div>
+      <div class="kpi"><span>Your 12-month ambition</span><b>Stage 3</b><small>Operationalising</small></div>
+      <div class="kpi"><span>Weighted average today</span><b>2.0</b><small>across all 14 dimensions as they stand — not a projection</small></div>
+      <div class="kpi"><span>If the plan is delivered</span><b>2.2</b><small>the same average with those dimensions at Stage 3</small></div>
+    </div>
+    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. So your readiness is 1, set by evaluation &amp; monitoring and third-party AI assurance, and the fastest route to a higher number is not broad improvement. It is that.</p>
+    
+    
+    
+    
+    
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">02</span><h2>Obligations, before anything about maturity</h2></div>
+    <p class="lede">These are not scores and they are not our opinion. Each is something in force today that we found is not in place. They sit above the rest of this document because they are not aspirations.</p>
+    <div class="expo-item"><b>UK GDPR Art 22C — in force 5 Feb 2026 (Data (Use and Access) Act 2025 s.80)</b>
+      <p>For any significant decision made without meaningful human involvement: are the four safeguards documented — inform, representations, human intervention, contest — <b>no</b>.</p>
+      <p class="ex-why">Article 22 was replaced in February. The regime moved from prohibition-with-exceptions to permitted-with-documented-safeguards, so the burden is now evidencing the four. Test whether the human reviewer can actually overturn — the ICO's March 2026 recruitment report found rubber-stamping presented as oversight.</p></div><div class="expo-item"><b>UK GDPR — in force</b>
+      <p>Is there a current DPIA for each AI use touching personal data — <b>no</b>.</p>
+      <p class="ex-why">Unchanged by the reforms, and the ICO can compel production of them.</p></div>
+    <p class="method">We are not lawyers and this is not legal advice. It is a screen against what is currently in force, run so that these are on the table rather than discovered later. Anything deferred by the Digital Omnibus to December 2027 or August 2028 is deliberately excluded — a readiness report that scores you against obligations that do not yet apply is one your own risk function will pull apart.</p>
+  </div>
+
+  
+
+  <div class="sec pb"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
+    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on.</p>
+    <div class="board">
+      <div class="ub live">
+        <div class="ubn">1</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.</h4>
+          <p>AI is in use with nobody accountable for the risk. The exposure is live, not theoretical.</p>
+          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">2</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Stop any AI work that depends on the unreconciled data until the first use case has a golden record. Reconcile one domain, not all of them.</h4>
+          <p>AI on this data won't just underperform — it will produce confident, plausible, wrong answers.</p>
+          <div class="ubm"><b>Data ecosystem health</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">3</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list.</h4>
+          <p>Agents are acting on their behalf, often on personal credentials, with no inventory, no agreed limits and no reviewable record. That is unbounded exposure, not a maturity gap.</p>
+          <div class="ubm"><b>Agentic readiness</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">4</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Establish, for the AI tools already in use, whether the vendor trains on your data and what happens to it. Ask in writing and keep the answer.</h4>
+          <p>Client specifications and drawings are in third-party tools under terms nobody has seen. For a practice carrying professional indemnity, that is a live problem.</p>
+          <div class="ubm"><b>Third-party AI assurance</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub live">
+        <div class="ubn">5</div>
+        <div class="ubb">
+          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+          <h4>Name who can switch each AI system off, and tell the people using it how to report a bad output. Both should take a day.</h4>
+          <p>Something is running that nobody has a route to stop, and no one has been told how to report it going wrong.</p>
+          <div class="ubm"><b>Incident response &amp; reversibility</b> · A named executive, on the day</div>
+        </div>
+      </div><div class="ub cheap">
+        <div class="ubn">6</div>
+        <div class="ubb">
+          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, low effort</div>
+          <h4>Ask every AI vendor in use, in writing, what they do with your data</h4>
+          <p>Tools bought on personal cards, terms unread, client drawings in consumer products.</p>
+          <div class="ubm"><b>Third-party AI assurance</b> · Whoever owns each vendor relationship · lifts the ceiling</div>
+        </div>
+      </div><div class="ub heavy">
+        <div class="ubn">7</div>
+        <div class="ubb">
+          <div class="ubtag">Real work — nothing moves until it is done · 3–6 months, medium effort</div>
+          <h4>Define what a good answer looks like for one live system, and have someone check it weekly</h4>
+          <p>Not one of the nine pilots was assessed. The bid assistant one studio swears by is the same product another abandoned, and nobody has asked why.</p>
+          <div class="ubm"><b>Evaluation &amp; monitoring</b> · The owner of the first system in production · lifts the ceiling</div>
+        </div>
+      </div>
+    </div>
+    <p class="method">The first 5 items are not maturity gaps — they are already happening in your organisation, so they do not wait for a plan. Each should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving them open is not, and that is the state we found them in. The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done. Behind these sits the full plan of 20 items, sequenced.</p>
+    <div class="cap-box">
+      <h4>What fits in a year, on the people you have</h4>
+      <p>You told us <b>2 people have 4 days a month</b> for this — about <b>48 days</b> across the year. The 20 items on the plan need roughly <b>178 days</b> at our estimate.</p>
+      <div class="cap-bar"><span style="width:27%"></span></div>
+      <p><b>8 of the 20 fit.</b> The other 12 do not, and we would rather draw that line than hand you a list and let you find out in month eight. On these numbers the full plan is a <b>3.7-year</b> programme. Three honest options: fund more capacity, park more dimensions, or accept the longer horizon and say so at the board. What does not work is agreeing all 20 and hoping.</p>
+      <p class="cap-cav">Day costs are our estimate from the effort band on each action — low 4, medium 12, high 30 — not a quote. Replace them with your own numbers and the arithmetic still holds.</p>
+    </div>
+    <p class="ctx"><b>You told us your own three were:</b> Work out which pilots to keep · Get the client drawings out of the consumer tools. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.</p>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">04</span><h2>And one thing not to do yet</h2></div>
+      <p><b>User-centric focus — Stage 2.</b> Do not accelerate delivery until this is addressed. The research finding is that AI makes organisations at this level worse, not slower to improve — speed applied to the wrong work.</p>
+      <p class="method">This is not something already happening. It is a warning about sequence: applying AI here before this is addressed tends to make the outcome worse rather than merely leaving value unclaimed.</p>
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">05</span><h2>How to read the scores</h2></div>
+    <p>Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.</p>
+    <table class="scale">
+      <tr class="you"><td>1 · Exploring</td><td>curious, nothing running</td></tr><tr class=""><td>2 · Experimenting</td><td>pilots, no repeatable path</td></tr><tr class=""><td>3 · Operationalising</td><td>first things running for real</td></tr><tr class=""><td>4 · Scaling</td><td>repeatable, spreading, measured</td></tr><tr class=""><td>5 · AI-native</td><td>how the business works</td></tr>
+    </table>
+    <p>Four dimensions carry half as much weight again as the others — data, the reach of AI into your own knowledge, the quality of your internal platforms, and how strongly your work is driven by real users. These are the ones the research finds everything else depends on. The weights are shown against each dimension.</p>
+    <p><b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.</p>
+  </div>
+
+  <div class="sec"><div class="sh"><span class="num">06</span><h2>The picture across all 14 dimensions</h2></div>
+    <div class="radar"><svg viewBox="0 0 420 350" style="width:100%;max-width:400px;height:auto"><polygon points="210,148.6 221.45453071270353,151.21442188737615 230.640351137156,158.53986923092944 235.73809688160014,169.1254473435533 235.73809688160014,180.8745526564467 230.640351137156,191.46013076907056 221.45453071270353,198.78557811262385 210,201.4 198.54546928729647,198.78557811262385 189.359648862844,191.46013076907056 184.26190311839986,180.8745526564467 184.26190311839986,169.12544734355333 189.359648862844,158.53986923092944 198.54546928729647,151.21442188737612" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,122.19999999999999 232.90906142540706,127.42884377475227 251.28070227431198,142.07973846185888 261.4761937632003,163.2508946871066 261.4761937632003,186.7491053128934 251.28070227431198,207.92026153814112 232.90906142540706,222.57115622524773 210,227.8 187.09093857459294,222.57115622524773 168.71929772568802,207.92026153814112 158.52380623679971,186.74910531289342 158.52380623679971,163.25089468710664 168.71929772568802,142.07973846185888 187.09093857459297,127.42884377475224" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 244.36359213811062,103.6432656621284 271.92105341146794,125.6196076927883 287.2142906448004,157.37634203065988 287.2142906448004,192.62365796934012 271.92105341146794,224.3803923072117 244.36359213811062,246.35673433787161 210,254.2 175.6364078618894,246.35673433787161 148.07894658853206,224.3803923072117 132.78570935519957,192.62365796934012 132.78570935519954,157.37634203065997 148.07894658853203,125.61960769278832 175.63640786188944,103.64326566212837" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,69.39999999999999 255.81812285081415,79.85768754950453 292.56140454862395,109.15947692371773 312.95238752640057,151.5017893742132 312.95238752640057,198.4982106257868 292.56140454862395,240.84052307628227 255.81812285081415,270.14231245049547 210,280.6 164.18187714918588,270.14231245049547 127.43859545137606,240.84052307628227 107.04761247359941,198.4982106257868 107.0476124735994,151.5017893742133 127.43859545137603,109.15947692371775 164.18187714918594,79.85768754950449" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,43 267.2726535635177,56.072109436880666 313.2017556857799,92.69934615464717 338.6904844080007,145.6272367177665 338.6904844080007,204.3727632822335 313.2017556857799,257.3006538453528 267.2726535635177,293.9278905631193 210,307 152.72734643648232,293.9278905631193 106.79824431422009,257.3006538453528 81.30951559199929,204.3727632822335 81.30951559199926,145.62723671776664 106.79824431422006,92.6993461546472 152.7273464364824,56.07210943688062" fill="none" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="210" y2="43" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="267.2726535635177" y2="56.072109436880666" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="313.2017556857799" y2="92.69934615464717" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="338.6904844080007" y2="145.6272367177665" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="338.6904844080007" y2="204.3727632822335" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="313.2017556857799" y2="257.3006538453528" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="267.2726535635177" y2="293.9278905631193" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="210" y2="307" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="152.72734643648232" y2="293.9278905631193" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="106.79824431422009" y2="257.3006538453528" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="81.30951559199929" y2="204.3727632822335" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="81.30951559199926" y2="145.62723671776664" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="106.79824431422006" y2="92.6993461546472" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="152.7273464364824" y2="56.07210943688062" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 244.36359213811062,103.6432656621284 271.92105341146794,125.6196076927883 287.2142906448004,157.37634203065988 287.2142906448004,192.62365796934012 271.92105341146794,224.3803923072117 244.36359213811062,246.35673433787161 210,254.2 175.6364078618894,246.35673433787161 148.07894658853206,224.3803923072117 132.78570935519957,192.62365796934012 132.78570935519954,157.37634203065997 148.07894658853203,125.61960769278832 175.63640786188944,103.64326566212837" fill="none" stroke="#1e7e44" stroke-width="1.6" stroke-dasharray="5 4"/><polygon points="210,122.19999999999999 232.90906142540706,127.42884377475227 251.28070227431198,142.07973846185888 261.4761937632003,163.2508946871066 261.4761937632003,186.7491053128934 261.60087784289,216.1503269226764 232.90906142540706,222.57115622524773 210,227.8 181.36367321824116,234.46394528155966 168.71929772568802,207.92026153814112 158.52380623679971,186.74910531289342 184.26190311839986,169.12544734355333 189.359648862844,158.53986923092944 187.09093857459297,127.42884377475224" fill="rgba(11,92,138,.20)" stroke="#0b5c8a" stroke-width="2.2"/><circle cx="210" cy="122.19999999999999" r="2.8" fill="#0b5c8a"/><circle cx="232.90906142540706" cy="127.42884377475227" r="2.8" fill="#0b5c8a"/><circle cx="251.28070227431198" cy="142.07973846185888" r="2.8" fill="#0b5c8a"/><circle cx="261.4761937632003" cy="163.2508946871066" r="2.8" fill="#0b5c8a"/><circle cx="261.4761937632003" cy="186.7491053128934" r="2.8" fill="#0b5c8a"/><circle cx="261.60087784289" cy="216.1503269226764" r="2.8" fill="#0b5c8a"/><circle cx="232.90906142540706" cy="222.57115622524773" r="2.8" fill="#0b5c8a"/><circle cx="210" cy="227.8" r="2.8" fill="#0b5c8a"/><circle cx="181.36367321824116" cy="234.46394528155966" r="2.8" fill="#0b5c8a"/><circle cx="168.71929772568802" cy="207.92026153814112" r="2.8" fill="#0b5c8a"/><circle cx="158.52380623679971" cy="186.74910531289342" r="2.8" fill="#0b5c8a"/><circle cx="184.26190311839986" cy="169.12544734355333" r="2.8" fill="#0b5c8a"/><circle cx="189.359648862844" cy="158.53986923092944" r="2.8" fill="#0b5c8a"/><circle cx="187.09093857459297" cy="127.42884377475224" r="2.8" fill="#0b5c8a"/><text x="210" y="34.91199999999998" text-anchor="middle" font-size="11" font-weight="700" fill="#5f6368">1</text><text x="272.08355646285315" y="49.08216662957864" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">2</text><text x="321.8707031633855" y="88.78609123163753" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">3</text><text x="349.5004850982728" y="146.15992460205888" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">4</text><text x="349.5004850982728" y="209.84007539794112" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">5</text><text x="321.8707031633855" y="267.21390876836244" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">9</text><text x="272.08355646285315" y="306.91783337042136" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">10</text><text x="210" y="321.088" text-anchor="middle" font-size="11" font-weight="700" fill="#5f6368">11</text><text x="147.91644353714685" y="306.91783337042136" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">12</text><text x="98.12929683661454" y="267.2139087683625" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">13</text><text x="70.4995149017272" y="209.84007539794112" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">14</text><text x="70.49951490172717" y="146.15992460205902" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">15</text><text x="98.12929683661451" y="88.78609123163754" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">16</text><text x="147.91644353714693" y="49.08216662957858" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">17</text></svg></div>
+    <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage 3 ambition</p>
+    <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th><th>Target</th></tr></thead><tbody>
+    <tr class=""><td>1</td><td>AI stance &amp; policy clarity</td>
+        <td>7%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>2</td><td>AI governance, risk &amp; assurance</td>
+        <td>7%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>3</td><td>Leadership sponsorship &amp; AI strategy</td>
+        <td>7%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>4</td><td>Data ecosystem health</td>
+        <td>10%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>5</td><td>AI-accessible internal context</td>
+        <td>10%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>9</td><td>User-centric focus</td>
+        <td>10%</td><td><b>Stage 2.5</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>10</td><td>Value stream visibility &amp; flow</td>
+        <td>7%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>11</td><td>Skills, enablement &amp; champions</td>
+        <td>6%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>12</td><td>AI adoption breadth &amp; measured value</td>
+        <td>6%</td><td><b>Stage 2.5</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>13</td><td>Agentic readiness</td>
+        <td>6%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>14</td><td>Cost &amp; licensing economics</td>
+        <td>6%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr><tr class="short"><td>15</td><td>Evaluation &amp; monitoring <b style="color:#e8112d">— the constraint</b></td>
+        <td>6%</td><td><b>Stage 1</b></td>
+        <td>Stage 3</td></tr><tr class="short"><td>16</td><td>Third-party AI assurance <b style="color:#e8112d">— the constraint</b></td>
+        <td>6%</td><td><b>Stage 1</b></td>
+        <td>Stage 3</td></tr><tr class=""><td>17</td><td>Incident response &amp; reversibility</td>
+        <td>6%</td><td><b>Stage 2</b></td>
+        <td>Stage 3</td></tr>
+    </tbody></table>
+    
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">07</span><h2>Dimension by dimension</h2></div>
+    <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
+    <h3 class="grp">Intent and control</h3><div class="dim">
+        <div class="dh"><h4>1. AI stance &amp; policy clarity</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 7%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>2. AI governance, risk &amp; assurance</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 7%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>3. Leadership sponsorship &amp; AI strategy</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 7%</span>
+        
+        
+        
+        
+        <p class="ctx">Three partners are enthusiastic and one is openly sceptical. There is no budget line — every pilot has been paid for out of a studio's own project overhead, which is why nobody can total what has been spent.</p>
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>13. Agentic readiness</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><h3 class="grp">Data and technical foundations</h3><div class="dim">
+        <div class="dh"><h4>4. Data ecosystem health</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 10% — one of the four the research treats as an amplifier</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>5. AI-accessible internal context</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 10% — one of the four the research treats as an amplifier</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><h3 class="grp">How work flows</h3><div class="dim">
+        <div class="dh"><h4>9. User-centric focus</h4>
+          <span class="sc">Stage 2.5</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 10% — one of the four the research treats as an amplifier</span>
+        
+        
+        
+        
+        
+        
+        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
+        
+      </div><div class="dim">
+        <div class="dh"><h4>10. Value stream visibility &amp; flow</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 7%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><h3 class="grp">People and value</h3><div class="dim">
+        <div class="dh"><h4>11. Skills, enablement &amp; champions</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>12. AI adoption breadth &amp; measured value</h4>
+          <span class="sc">Stage 2.5</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> You do not have an adoption problem. You have a learning problem, and it is cheaper to fix.</p>
+        <p><b>What is working.</b> There is genuine appetite and it is spread across studios rather than stuck in one enthusiast.</p>
+        <p><b>What needs to change.</b> Nine pilots, no evaluation, no shared learning and duplicate spend. The activity is not the problem — the absence of any mechanism to tell a good pilot from a bad one is.</p>
+        <p class="ctx">Nine separate pilots across five studios in eighteen months. Image generation for concept work, a bid-writing assistant, two different transcription tools, a specification checker. Not one has been evaluated, and two studios are paying for the same product on different cards.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>Eighteen more months of the same, and the sceptical partner will be right.</span></div>
+          <div><b>The risk of pressing on anyway</b><span>Adding a tenth pilot to nine unevaluated ones does not make a programme.</span></div></div>
+        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
+        
+      </div><div class="dim">
+        <div class="dh"><h4>14. Cost &amp; licensing economics</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div><h3 class="grp">Operating what you already have</h3><div class="dim cap">
+        <div class="dh"><h4>15. Evaluation &amp; monitoring</h4>
+          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
+        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> This is the single cheapest thing on the list and it unlocks the rest of the picture.</p>
+        <p><b>What is working.</b> Nothing to report — and this is the finding that explains most of the others.</p>
+        <p><b>What needs to change.</b> Not one of the nine pilots was assessed. The bid assistant one studio swears by is the same product another abandoned, and nobody has asked why.</p>
+        <p class="ctx">Nobody has assessed whether any pilot worked. The bid-writing assistant is used daily by one studio and was abandoned by another, and neither can say why.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>You will keep buying and abandoning tools without ever learning anything from either.</span></div>
+          </div>
+        
+        
+      </div><div class="dim cap">
+        <div class="dh"><h4>16. Third-party AI assurance</h4>
+          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
+        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        <p class="why"><b>Why this matters to you.</b> Your clients' drawings are your professional risk, not just your data.</p>
+        
+        <p><b>What needs to change.</b> Tools bought on personal cards, terms unread, client drawings in consumer products.</p>
+        <p class="ctx">Tools were bought on partner credit cards. Nobody read terms. Client drawings and specifications have gone into at least three consumer tools.</p>
+        <div class="risks">
+          <div><b>The risk of leaving it</b><span>Client specifications and drawings are in third-party tools under terms nobody has seen. For a practice carrying professional indemnity, that is a live problem.</span></div>
+          </div>
+        
+        
+      </div><div class="dim">
+        <div class="dh"><h4>17. Incident response &amp; reversibility</h4>
+          <span class="sc">Stage 2</span></div>
+        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+        
+        
+        
+        
+        
+        
+        
+        
+      </div>
+  </div>
+
+  
+
+  
+
+  <div class="sec pb"><div class="sh"><span class="num">08</span><h2>The plan, in sequence</h2></div>
+    <p>The board above is the summary. This is every item in order, each with a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.</p>
+    <p class="method">The 5 items already happening are listed on the board above and do not appear again here — they sit outside the sequence by design.</p>
+    
+    <p class="why"><b>What has already been tried here.</b> A bid-writing assistant, rolled out to two studios — kept by one studio, abandoned by the other, because nobody compared the two or asked why. A firm-wide AI policy drafted by the practice manager — circulated once, never adopted, because no partner sponsored it and studios ignored it. We have kept those in view: an action that has stalled here once needs a different owner or a different sponsor, not a second run at the same plan.</p>
+    
+    
+    <div class="phase">
+      <h4>First 90 days — lift the ceiling</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Ask every AI vendor in use, in writing, what they do with your data</b><span class="aid">A043</span></div>
+        <div class="meta">Third-party AI assurance · Stage 1 → 3 · lifts the ceiling</div>
+        <p><b>Why here.</b> Tools bought on personal cards, terms unread, client drawings in consumer products.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CFO or the procurement owner</td></tr>
+          <tr><td>Owner</td><td>Whoever owns each vendor relationship</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>For each AI tool in use there is a written vendor answer on training use, retention, processing location and sub-processors, held somewhere findable</td></tr>
+          <tr><td>Also moves</td><td>AI governance, risk &amp; assurance</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Define what a good answer looks like for one live system, and have someone check it weekly</b><span class="aid">A042</span></div>
+        <div class="meta">Evaluation &amp; monitoring · Stage 1 → 3 · lifts the ceiling</div>
+        <p><b>Why here.</b> Not one of the nine pilots was assessed. The bid assistant one studio swears by is the same product another abandoned, and nobody has asked why.</p>
+        <p class="rl"><b>This has been tried here before.</b> A bid-writing assistant, rolled out to two studios, early 2025 — kept by one studio, abandoned by the other, because nobody compared the two or asked why. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.</p>
+        
+        <table class="mini"><tr><td>Sponsor</td><td>The executive owner of the AI ambition</td></tr>
+          <tr><td>Owner</td><td>The owner of the first system in production</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>For at least one production system there is a written definition of an acceptable output, a set of real examples it is tested against, and a named person reviewing a sample on a stated cadence, with a review date in the diary and a named person who owns the review</td></tr>
+          <tr><td>Also moves</td><td>incident response &amp; reversibility</td></tr>
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase">
+      <h4>3–6 months — the next constraints</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Map the main value stream end-to-end and name the wait states</b><span class="aid">A027</span></div>
+        <div class="meta">Value stream visibility &amp; flow · Stage 2 → 3</div>
+        <p>This is the earliest value-stream action and covers 1→2 and 2→3 in one move because the Level 2 shape (local segments, no end-to-end view) is not a stable state</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>COO or Head of Delivery</td></tr>
+          <tr><td>Owner</td><td>A named value-stream owner (typically Head of Delivery)</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A current value stream map for the main product or service, with a date and a named owner</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Name who can switch each AI system off, and tell people how to report a bad output</b><span class="aid">A041</span></div>
+        <div class="meta">Incident response &amp; reversibility · Stage 2 → 3</div>
+        <p>The cheapest possible containment for anything already running</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>COO or the executive who owns the affected service</td></tr>
+          <tr><td>Owner</td><td>The service owner, with IT</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>Every AI system in use has a named person who can suspend it, and staff have been told in writing where to report a wrong or harmful output</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Publish an AI stance that answers the four DORA sub-tests</b><span class="aid">A001</span></div>
+        <div class="meta">AI stance &amp; policy clarity · Stage 2 → 3</div>
+        <p>This is the earliest action on the stance-and-governance track and unblocks almost everything downstream</p>
+        <p class="rl"><b>This has been tried here before.</b> A firm-wide AI policy drafted by the practice manager, late 2025 — circulated once, never adopted, because no partner sponsored it and studios ignored it. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.</p>
+        
+        <table class="mini"><tr><td>Sponsor</td><td><b>The CEO</b> — escalated, because nobody owned the last attempt and it went nowhere</td></tr>
+          <tr><td>Owner</td><td>Head of IT with People / HR co-signature</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A published AI stance document with a date and a named owner, findable from the intranet home page, and a named owner with a date, because last time there was neither</td></tr>
+          <tr><td>Also moves</td><td>AI governance, risk &amp; assurance</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Establish direct user contact and require user evidence in prioritisation</b><span class="aid">A025</span></div>
+        <div class="meta">User-centric focus · Stage 2 → 3</div>
+        <p>This is the risk-remediation action of the whole library. DORA found that AI adoption makes weak-user-focus teams worse, not better</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CEO or COO (the risk of AI making a low-user-focus organisation worse is a board-level issue)</td></tr>
+          <tr><td>Owner</td><td>Head of Product or Head of Delivery</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>Every delivery team can name its users and describe how it reaches them</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Publish a data catalogue with named stewards for the core domains</b><span class="aid">A011</span></div>
+        <div class="meta">Data ecosystem health · Stage 2 → 3</div>
+        <p>This is the earliest data-ecosystem action and a prerequisite for almost anything AI-adjacent that follows</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CDO, CIO or the Chief Data Officer equivalent</td></tr>
+          <tr><td>Owner</td><td>A named Head of Data or lead data steward</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A catalogue or inventory covers the core data domains with named owners and dates</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Reframe an existing tool-adoption programme as an outcome-led ambition</b><span class="aid">A010</span></div>
+        <div class="meta">Leadership sponsorship &amp; AI strategy · Stage 2 → 3</div>
+        <p><b>Why here.</b> Three partners are enthusiastic and one is openly sceptical. There is no budget line — every pilot has been paid for out of a studio's own project overhead, which is why nobody can total what has been spent.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>The current executive sponsor of the tool rollout (typically CIO or COO)</td></tr>
+          <tr><td>Owner</td><td>The named executive who will now own the ambition (may be the same person)</td></tr>
+          <tr><td>Effort</td><td>3-6m, low</td></tr>
+          <tr><td>Done when</td><td>The existing tool rollout is re-anchored to a written statement of business outcomes it should move</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Write a funded, executive-owned AI ambition tied to business outcomes</b><span class="aid">A008</span></div>
+        <div class="meta">Leadership sponsorship &amp; AI strategy · Stage 2 → 3 · prerequisite for ai adoption breadth &amp; measured value</div>
+        <p><b>Why here.</b> Three partners are enthusiastic and one is openly sceptical. There is no budget line — every pilot has been paid for out of a studio's own project overhead, which is why nobody can total what has been spent.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CEO</td></tr>
+          <tr><td>Owner</td><td>A named executive (CIO, COO or business-line lead) with AI in their objectives</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A written AI ambition document, dated, with a named executive owner and a budget line</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Appoint a named AI risk owner and publish data-handling rules per tool category</b><span class="aid">A005</span></div>
+        <div class="meta">AI governance, risk &amp; assurance · Stage 2 → 3 · after A001 · prerequisite for ai-accessible internal context</div>
+        <p>This is the earliest risk action and the one Level 3 on Dimension 02 demands most literally</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO, CISO or COO</td></tr>
+          <tr><td>Owner</td><td>A named executive (typically CISO or Head of Risk) with the AI risk remit in writing</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A single named executive owns AI risk in writing, with a route for staff to raise questions</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Classify AI tools into the three buckets and publish the middle-bucket guardrails</b><span class="aid">A002</span></div>
+        <div class="meta">AI stance &amp; policy clarity · Stage 2 → 3 · after A001</div>
+        <p>This is the natural next step after A001</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO</td></tr>
+          <tr><td>Owner</td><td>Head of IT (with input from Security and Legal)</td></tr>
+          <tr><td>Effort</td><td>0-3m, low</td></tr>
+          <tr><td>Done when</td><td>A written classification of AI tools and use categories into prohibited, permitted-with-guardrails, allowed</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Retire the recurring definition arguments — agree the contested measures</b><span class="aid">A012</span></div>
+        <div class="meta">Data ecosystem health · Stage 2 → 3 · after A011</div>
+        <p>Depends on A011 because the definitions need somewhere to live and someone to own them</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CFO or COO (whoever the recurring arguments end up in front of)</td></tr>
+          <tr><td>Owner</td><td>Head of Data or the lead data steward</td></tr>
+          <tr><td>Effort</td><td>3-6m, low</td></tr>
+          <tr><td>Done when</td><td>A written business glossary or agreed definitions for the two or three measures the organisation currently argues about</td></tr>
+          
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Publish a role-based AI training pathway</b><span class="aid">A029</span></div>
+        <div class="meta">Skills, enablement &amp; champions · Stage 2 → 3 · after A001</div>
+        <p>Skips Level 2 deliberately (informal ad-hoc training, uneven distribution) because that state is not a stable one that this action would extend</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CPO or Head of People</td></tr>
+          <tr><td>Owner</td><td>Head of Learning &amp; Development</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A published training pathway covers the approved tools (from A002) and identifies role-appropriate content for the main functions</td></tr>
+          
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase">
+      <h4>6–12 months — reach the target</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Add an AI-specific vendor and model approval gate to procurement</b><span class="aid">A006</span></div>
+        <div class="meta">AI governance, risk &amp; assurance · Stage 2 → 3 · after A005</div>
+        <p>This is the second risk action and the one that closes the 'generic procurement is not AI procurement' gap the Level 2-vs-3 descriptor pivots on</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>COO or CFO (procurement authority)</td></tr>
+          <tr><td>Owner</td><td>Head of Procurement, with Security and the AI risk owner from A005</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A published procurement checklist for AI tools that asks about training use, retention, residency, sub-processors and human-in-the-loop expectations</td></tr>
+          <tr><td>Also moves</td><td>cost &amp; licensing economics</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Deliberately distribute AI champions across teams and seniority</b><span class="aid">A030</span></div>
+        <div class="meta">Skills, enablement &amp; champions · Stage 2 → 3 · after A029</div>
+        <p>The Level 2-to-3 move on Dimension 11, with a genuine nudge on Dimension 12 because distributed champions are the human vehicle by which AI adoption reaches BA, QA</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CPO or the executive owner of the AI ambition (from A008)</td></tr>
+          <tr><td>Owner</td><td>Head of L&amp;D with the executive owner</td></tr>
+          <tr><td>Effort</td><td>3-6m, low</td></tr>
+          <tr><td>Done when</td><td>A named champion list covers more than one team and more than one seniority level — not just enthusiastic engineers</td></tr>
+          <tr><td>Also moves</td><td>AI adoption breadth &amp; measured value</td></tr>
+          
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Inventory agents in use and publish a written delegation policy</b><span class="aid">A034</span></div>
+        <div class="meta">Agentic readiness · Stage 2 → 3 · after A005</div>
+        <p>The Level 1-to-3 move on Dimension 13, and the specific move that turns the Dimension 02 framework from documented to reflects reality</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO with the AI risk owner (A005)</td></tr>
+          <tr><td>Owner</td><td>The AI risk owner</td></tr>
+          <tr><td>Effort</td><td>3-6m, medium</td></tr>
+          <tr><td>Done when</td><td>A live inventory of agents in use — the coding agent, the triage bot, the workflow automation, the browser automations — with each agent's owner</td></tr>
+          <tr><td>Also moves</td><td>AI governance, risk &amp; assurance</td></tr>
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase">
+      <h4>12 months+ — only once the foundations hold</h4>
+      
+      
+      
+      
+      <div class="act">
+        <div class="ah"><b>Stand up an AI licence register and a defined procurement route</b><span class="aid">A036</span></div>
+        <div class="meta">Cost &amp; licensing economics · Stage 2 → 3 · after A006</div>
+        <p>The Level 1-to-3 move on Dimension 14</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CFO or COO</td></tr>
+          <tr><td>Owner</td><td>Head of Procurement with Finance</td></tr>
+          <tr><td>Effort</td><td>3-6m, low</td></tr>
+          <tr><td>Done when</td><td>A live register of AI licences and subscriptions records owner, cost, renewal date and cost centre</td></tr>
+          
+          
+        </table>
+      </div>
+    </div>
+    <div class="phase later">
+      <h4>Not yet — gated by a dimension that has to move first</h4>
+      
+      <p class="lead">Each of these needs something else on this list to land first. That is not our preference — it is the dependency. Doing them early tends to produce work that has to be redone.</p>
+      
+      
+      <div class="act">
+        <div class="ah"><b>Connect internal context to approved AI tools through supported routes</b><span class="aid">A014</span></div>
+        <div class="meta">AI-accessible internal context · Stage 2 → 3 · after A005, A011</div>
+        <p>This is the canonical sequencing rule the library encodes. Connecting AI to internal context before access governance (Dimension 02) is at Level 3 produces a…</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CIO or CTO with the AI risk owner (A005)</td></tr>
+          <tr><td>Owner</td><td>An engineering / platform lead with the AI risk owner as accountable</td></tr>
+          <tr><td>Effort</td><td>6-12m, high</td></tr>
+          <tr><td>Done when</td><td>An inventory of connected sources exists with each source's owner and the approved tool it feeds</td></tr>
+          
+          <tr><td>Needs first</td><td>AI governance, risk &amp; assurance at Stage 3</td></tr>
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Extend AI beyond engineering with named use cases per function</b><span class="aid">A032</span></div>
+        <div class="meta">AI adoption breadth &amp; measured value · Stage 2 → 3 · after A008, A030</div>
+        <p><b>Why here.</b> Nine pilots, no evaluation, no shared learning and duplicate spend. The activity is not the problem — the absence of any mechanism to tell a good pilot from a bad one is.</p>
+        <p class="rl"><b>This has been tried here before.</b> A bid-writing assistant, rolled out to two studios, early 2025 — kept by one studio, abandoned by the other, because nobody compared the two or asked why. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.</p>
+        
+        <table class="mini"><tr><td>Sponsor</td><td>The executive owner of the AI ambition (from A008)</td></tr>
+          <tr><td>Owner</td><td>The champion group lead (A030) with each function's leadership</td></tr>
+          <tr><td>Effort</td><td>6-12m, medium</td></tr>
+          <tr><td>Done when</td><td>Named AI use cases exist for at least three functions beyond software engineering — typically some of BA, QA, delivery, PM, ops, support, with a review date in the diary and a named person who owns the review</td></tr>
+          
+          <tr><td>Needs first</td><td>AI stance &amp; policy clarity at Stage 3</td></tr>
+        </table>
+      </div><div class="act">
+        <div class="ah"><b>Establish a value measurement framework with a baseline</b><span class="aid">A033</span></div>
+        <div class="meta">AI adoption breadth &amp; measured value · Stage 2 → 3 · after A032</div>
+        <p><b>Why here.</b> Nine pilots, no evaluation, no shared learning and duplicate spend. The activity is not the problem — the absence of any mechanism to tell a good pilot from a bad one is.</p>
+        
+        
+        <table class="mini"><tr><td>Sponsor</td><td>CFO or the executive owner (from A008)</td></tr>
+          <tr><td>Owner</td><td>Head of Finance with the executive owner</td></tr>
+          <tr><td>Effort</td><td>6-12m, medium</td></tr>
+          <tr><td>Done when</td><td>A written value measurement framework names the measures (time saved, cycle time, quality signals, adoption) per use case</td></tr>
+          <tr><td>Also moves</td><td>cost &amp; licensing economics</td></tr>
+          
+        </table>
+      </div>
+    </div>
+  </div>
+
+  
+
+  
+
+  
+
+  <div class="sec pb"><div class="sh"><span class="num">09</span><h2>Where this goes next</h2></div>
+    <p>Readiness is not the destination. It is what determines whether anything you build on top of it works. Below are the candidates this assessment surfaced for the next piece of work, and — the useful part — which of them your own findings least stand in the way of.</p>
+      <table class="tbl"><thead><tr><th>What you said you want to be able to do</th><th style="width:34%">What stands in the way today</th></tr></thead><tbody>
+      <tr class=""><td>Turn a fee proposal round in two days instead of five</td>
+        <td>data ecosystem health (Stage 2); AI-accessible internal context (Stage 2); value stream visibility &amp; flow (Stage 2)</td></tr><tr class="short"><td>Know which of the nine pilots is actually worth keeping <b style="color:#1e7e44">— least blocked</b></td>
+        <td>evaluation &amp; monitoring (Stage 1); AI adoption breadth &amp; measured value (Stage 2)</td></tr>
+      </tbody></table>
+      <p class="why"><b>Our recommendation on where to start.</b> Know which of the nine pilots is actually worth keeping — it runs through evaluation &amp; monitoring and AI adoption breadth &amp; measured value, which are also on the plan above, so the two pieces of work reinforce each other rather than queue behind one another. That is a judgement about sequence, not about value — the most valuable one is usually the most gated, and choosing between those two is the conversation to have.</p>
+    <h4 class="sub-h">Already running, whether or not anyone planned it</h4>
+      <p><b>Agentic readiness.</b> Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list. This is a use case. It has a cost, a benefit and a risk profile like any other, and the only difference is that nobody has sized it. It belongs in the next piece of work at the top of the list, not because the value is large but because it is the one currently running without a business case.</p>
+    <p class="method">What the next engagement does with these: takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed case with a go, adjust or stop against each. The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point.</p>
+  </div>
+
+  <div class="sec pb"><div class="sh"><span class="num">10</span><h2>How we assessed this</h2></div>
+    <div class="method">
+      <p>So that you can weigh the findings, and challenge them.</p>
+      <ul>
+        <li><b>4 interviews</b> across leaders & sponsors, practitioners, alongside direct observation of how work is done.</li>
+        <li><b>28 of 28 questions</b> answered across 14 dimensions, of which <b>11%</b> were confirmed against something we could see rather than taken on description alone.</li>
+        
+        <li><b>Nothing here is self-reported.</b> No survey was circulated for your teams to score themselves.</li>
+      
+      </ul>
+      <p style="margin-top:10px"><b>What this assessment does not cover.</b> It examines your organisation's readiness. It does not price individual use cases, model return on a specific investment, or assess any workflow in depth, and no code was audited. We would rather say so than imply otherwise.</p>
+      <p><b>Where the framework comes from.</b> Seven of the 14 dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.</p>
+    </div>
+  </div>
+
+
+  <div class="sec"><div class="sh"><span class="num">—</span><h2>How Enablis can help</h2></div>
+    <div class="sell">
+      <p style="font-size:13.4px;color:#5f6368"><b>This section is a proposal, not a finding.</b> Everything above is the assessment as we found it and stands whether or not you do any of the following with us.</p>
+      <p><b>The items marked for the first 90 days need no outside help.</b> They are documents, decisions and named owners. If you do only those, this assessment will have paid for itself.</p>
+      <p><b>Where we would add most.</b> Lifting evaluation &amp; monitoring and third-party AI assurance is the unlock, and it is the part clients most often start and then stall on. We can run it as a short engagement with your people rather than instead of them.</p>
+      <p><b>The obvious next step</b> is to take one workflow and three or four candidate use cases through to a costed business case — value, effort, payback, and which of the gaps above gates each one. That turns this readiness picture into a funded plan.</p>
+      <p style="margin-bottom:0"><b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    Halloran &amp; Finch Architects · AI Readiness Assessment · Enablis · 2026-08-18 · Commercial in confidence.
+    Scores reflect what could be observed and verified during the engagement.
+  </div>
+</div></body></html>

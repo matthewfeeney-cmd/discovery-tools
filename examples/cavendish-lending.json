@@ -1,0 +1,316 @@
+{
+ "sv": 3,
+ "meta": {
+  "client": "Cavendish Lending",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-21",
+  "ambition": "Move from AI that supports a credit decision to AI that makes the routine ones, without losing the explainability the FCA has already accepted."
+ },
+ "mode": "deep",
+ "target": 4,
+ "shape": {
+  "builds": "Yes",
+  "outsourced": "No",
+  "inprod": "Yes — and we can name it",
+  "role": "Build models",
+  "entities": "One",
+  "regulated": "FCA"
+ },
+ "screen": {
+  "juris": "No",
+  "art22c": "Yes",
+  "dpia": "Yes",
+  "smf": "Yes",
+  "duty": "Yes"
+ },
+ "tgt": {},
+ "dimOff": {},
+ "org": {
+  "q1s": 4,
+  "q2s": 4,
+  "q3s": 4,
+  "q4s": 4,
+  "q5s": 4,
+  "q6s": 4,
+  "q7s": 4,
+  "q8s": 4,
+  "q9s": 4,
+  "q10s": 4,
+  "q11s": 4,
+  "q12s": 4,
+  "q13s": 3,
+  "q14s": 4,
+  "q15s": 4,
+  "q16s": 3,
+  "q17s": 4
+ },
+ "orgC": {
+  "q1c": [
+   0,
+   1,
+   2
+  ],
+  "q2c": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "q3c": [
+   0,
+   1,
+   2
+  ],
+  "q4c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q5c": [
+   0,
+   1,
+   2
+  ],
+  "q6c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q7c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q8c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q9c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q10c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q11c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q12c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q13c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q14c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q15c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q16c": [
+   0,
+   1,
+   2
+  ],
+  "q17c": [
+   0,
+   1,
+   2,
+   3
+  ]
+ },
+ "orgEv": {
+  "q13s": {
+   "t": "Chief Risk Officer and Head of Decision Science, 21 Aug",
+   "c": "confirmed",
+   "x": "Agentic collections workflows run with human review at defined thresholds and full audit. What is missing is a decision on where the thresholds should move as confidence grows — currently they are where they were set eighteen months ago."
+  },
+  "q16s": {
+   "t": "Procurement and the model risk team",
+   "c": "confirmed",
+   "x": "The two foundation model providers are assessed annually and contractually covered. Concentration is the gap: both routine and complex decisioning now depend on one provider, and there is no tested second source."
+  }
+ },
+ "dimNote": {
+  "d13": {
+   "well": "Agentic collections run under enforced thresholds with human review and full audit. That is further than most regulated lenders have got, and it is defensible.",
+   "improve": "The thresholds have not moved since they were set. Autonomy should widen on evidence and there is no mechanism that does that.",
+   "riskNot": "You carry the cost of human review on decisions your own data says do not need it.",
+   "riskGo": "Widening autonomy without a mechanism is how a good programme becomes an incident.",
+   "why": "This is the difference between AI that is safe and AI that is safe and improving."
+  },
+  "d16": {
+   "well": "Both providers assessed annually, contractually covered, model risk involved.",
+   "improve": "Concentration. Routine and complex decisioning both sit on one provider with no tested alternative. That is an operational resilience question as much as an AI one.",
+   "riskNot": "A provider outage or a pricing change lands on the whole book at once.",
+   "riskGo": "",
+   "why": "You have done the assurance work. What is left is the dependency it revealed."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_task": {
+   "lead": 3,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_judge": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_data": {
+   "lead": 3,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_redesign": {
+   "lead": 4,
+   "prac": 3,
+   "tech": 4
+  },
+  "ts_gov": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_coach": {
+   "lead": 3,
+   "prac": 3,
+   "tech": 4
+  }
+ },
+ "coh": {
+  "lead": "Most",
+  "prac": "Most",
+  "tech": "Everyone"
+ },
+ "ints": [
+  {
+   "name": "V Ashworth",
+   "role": "Chief Risk Officer",
+   "date": "2026-08-21",
+   "coh": "lead",
+   "note": "We can explain every decision. What I cannot explain is why the thresholds have not moved."
+  },
+  {
+   "name": "N Iqbal",
+   "role": "Head of Decision Science",
+   "date": "2026-08-21",
+   "coh": "tech",
+   "note": "Everything runs on one provider. That keeps me awake more than the models do."
+  }
+ ],
+ "cb": {
+  "has": null,
+  "repoAccess": "",
+  "checkAccess": "",
+  "repos": [],
+  "ow": {},
+  "gt": {},
+  "gtNotes": {},
+  "notes": ""
+ },
+ "frame": {
+  "amb": [
+   "Let the model decide routine applications without a human in the middle",
+   "Survive losing our main model provider for a week",
+   ""
+  ],
+  "ambDims": [
+   [
+    "d13",
+    "d15",
+    "d2"
+   ],
+   [
+    "d16",
+    "d6"
+   ],
+   []
+  ],
+  "spon3": [
+   "Move the autonomy thresholds on evidence",
+   "Get a second provider tested",
+   ""
+  ],
+  "tried": [
+   {
+    "what": "A second-provider failover test",
+    "when": "2025",
+    "end": "Descoped",
+    "why": "The programme ran out of budget before the test and nobody re-raised it",
+    "dims": [
+     "d16"
+    ],
+    "mode": "nobudget"
+   }
+  ],
+  "funded": [
+   {
+    "prog": "Operational resilience programme",
+    "owner": "COO",
+    "covers": "Critical third-party dependencies including model providers",
+    "when": "H1 2027",
+    "dims": [
+     "d16"
+    ],
+    "late": false
+   }
+  ],
+  "cap": [
+   {
+    "name": "N Iqbal",
+    "role": "Head of Decision Science",
+    "days": "6"
+   },
+   {
+    "name": "Model risk lead",
+    "role": "Risk",
+    "days": "4"
+   },
+   {
+    "name": "Platform lead",
+    "role": "Engineering",
+    "days": "5"
+   }
+  ]
+ },
+ "wfs": [],
+ "curWf": 0,
+ "curUc": 0,
+ "num": {},
+ "actNote": {},
+ "actOwn": {}
+}

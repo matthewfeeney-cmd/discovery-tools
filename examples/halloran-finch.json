@@ -1,0 +1,288 @@
+{
+ "sv": 3,
+ "meta": {
+  "client": "Halloran & Finch Architects",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-18",
+  "ambition": "Stop losing competitive fee bids on turnaround time. Every studio has been experimenting for eighteen months and the partners cannot tell whether any of it has changed a single fee proposal."
+ },
+ "mode": "deep",
+ "target": 3,
+ "shape": {
+  "builds": "No — bought and outsourced",
+  "outsourced": "Yes",
+  "inprod": "Yes — and we can name it",
+  "role": "Deploy only",
+  "entities": "Two to five",
+  "regulated": "Other regulator"
+ },
+ "screen": {
+  "juris": "No",
+  "art22c": "No",
+  "dpia": "No"
+ },
+ "tgt": {},
+ "dimOff": {
+  "d6": true,
+  "d7": true,
+  "d8": true
+ },
+ "org": {
+  "q1s": 2,
+  "q2s": 2,
+  "q3s": 2,
+  "q4s": 2,
+  "q5s": 2,
+  "q9s": 3,
+  "q10s": 2,
+  "q11s": 2,
+  "q12s": 3,
+  "q13s": 2,
+  "q14s": 2,
+  "q15s": 1,
+  "q16s": 1,
+  "q17s": 2
+ },
+ "orgC": {
+  "q1c": [
+   0
+  ],
+  "q2c": [
+   0,
+   1
+  ],
+  "q3c": [
+   0
+  ],
+  "q4c": [
+   0,
+   1
+  ],
+  "q5c": [
+   0
+  ],
+  "q9c": [
+   0,
+   1
+  ],
+  "q10c": [
+   0
+  ],
+  "q11c": [
+   0
+  ],
+  "q12c": [
+   0,
+   1
+  ],
+  "q13c": [
+   0
+  ],
+  "q14c": [
+   0,
+   1
+  ],
+  "q15c": [
+   5
+  ],
+  "q16c": [
+   6
+  ],
+  "q17c": [
+   0
+  ]
+ },
+ "orgEv": {
+  "q3s": {
+   "t": "Managing Partner and two studio heads, 17 Aug",
+   "c": "confirmed",
+   "x": "Three partners are enthusiastic and one is openly sceptical. There is no budget line — every pilot has been paid for out of a studio's own project overhead, which is why nobody can total what has been spent."
+  },
+  "q12s": {
+   "t": "Asked every studio head",
+   "c": "confirmed",
+   "x": "Nine separate pilots across five studios in eighteen months. Image generation for concept work, a bid-writing assistant, two different transcription tools, a specification checker. Not one has been evaluated, and two studios are paying for the same product on different cards."
+  },
+  "q15s": {
+   "t": "Asked all five studio heads and the practice manager",
+   "c": "absent",
+   "x": "Nobody has assessed whether any pilot worked. The bid-writing assistant is used daily by one studio and was abandoned by another, and neither can say why."
+  },
+  "q16s": {
+   "t": "Practice manager, 18 Aug",
+   "c": "confirmed",
+   "x": "Tools were bought on partner credit cards. Nobody read terms. Client drawings and specifications have gone into at least three consumer tools."
+  }
+ },
+ "dimNote": {
+  "d12": {
+   "well": "There is genuine appetite and it is spread across studios rather than stuck in one enthusiast.",
+   "improve": "Nine pilots, no evaluation, no shared learning and duplicate spend. The activity is not the problem — the absence of any mechanism to tell a good pilot from a bad one is.",
+   "riskNot": "Eighteen more months of the same, and the sceptical partner will be right.",
+   "riskGo": "Adding a tenth pilot to nine unevaluated ones does not make a programme.",
+   "why": "You do not have an adoption problem. You have a learning problem, and it is cheaper to fix."
+  },
+  "d15": {
+   "well": "Nothing to report — and this is the finding that explains most of the others.",
+   "improve": "Not one of the nine pilots was assessed. The bid assistant one studio swears by is the same product another abandoned, and nobody has asked why.",
+   "riskNot": "You will keep buying and abandoning tools without ever learning anything from either.",
+   "riskGo": "",
+   "why": "This is the single cheapest thing on the list and it unlocks the rest of the picture."
+  },
+  "d16": {
+   "well": "",
+   "improve": "Tools bought on personal cards, terms unread, client drawings in consumer products.",
+   "riskNot": "Client specifications and drawings are in third-party tools under terms nobody has seen. For a practice carrying professional indemnity, that is a live problem.",
+   "riskGo": "",
+   "why": "Your clients' drawings are your professional risk, not just your data."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lead": 2,
+   "prac": 3,
+   "tech": 2
+  },
+  "ts_task": {
+   "lead": 1,
+   "prac": 2,
+   "tech": 2
+  },
+  "ts_judge": {
+   "lead": 2,
+   "prac": 2,
+   "tech": 2
+  },
+  "ts_data": {
+   "lead": 1,
+   "prac": 1,
+   "tech": 2
+  },
+  "ts_redesign": {
+   "lead": 1,
+   "prac": 1,
+   "tech": 1
+  },
+  "ts_gov": {
+   "lead": 1,
+   "prac": 1,
+   "tech": 1
+  },
+  "ts_coach": {
+   "lead": 1,
+   "prac": 2,
+   "tech": 1
+  }
+ },
+ "coh": {
+  "lead": "About half",
+  "prac": "Most",
+  "tech": "A few"
+ },
+ "ints": [
+  {
+   "name": "D Halloran",
+   "role": "Managing Partner",
+   "date": "2026-08-17",
+   "coh": "lead",
+   "note": "I cannot tell you whether any of it has worked. That is why you are here."
+  },
+  {
+   "name": "P Achebe",
+   "role": "Studio head, Education",
+   "date": "2026-08-17",
+   "coh": "prac",
+   "note": "We use the bid assistant every day. I would not give it up."
+  },
+  {
+   "name": "L Farrow",
+   "role": "Studio head, Healthcare",
+   "date": "2026-08-18",
+   "coh": "prac",
+   "note": "We tried the same thing and it was useless. Different sort of bid, maybe."
+  },
+  {
+   "name": "S Nkemelu",
+   "role": "Practice manager",
+   "date": "2026-08-18",
+   "coh": "lead",
+   "note": "I find out what we are paying for when the statement arrives."
+  }
+ ],
+ "cb": {
+  "has": null,
+  "repoAccess": "",
+  "checkAccess": "",
+  "repos": [],
+  "ow": {},
+  "gt": {},
+  "gtNotes": {},
+  "notes": ""
+ },
+ "frame": {
+  "amb": [
+   "Turn a fee proposal round in two days instead of five",
+   "Know which of the nine pilots is actually worth keeping",
+   ""
+  ],
+  "ambDims": [
+   [
+    "d4",
+    "d5",
+    "d10"
+   ],
+   [
+    "d15",
+    "d12"
+   ],
+   []
+  ],
+  "spon3": [
+   "Work out which pilots to keep",
+   "Get the client drawings out of the consumer tools",
+   ""
+  ],
+  "tried": [
+   {
+    "what": "A bid-writing assistant, rolled out to two studios",
+    "when": "early 2025",
+    "end": "Kept by one studio, abandoned by the other",
+    "why": "Nobody compared the two or asked why",
+    "dims": [
+     "d12",
+     "d15"
+    ],
+    "mode": "nofollow"
+   },
+   {
+    "what": "A firm-wide AI policy drafted by the practice manager",
+    "when": "late 2025",
+    "end": "Circulated once, never adopted",
+    "why": "No partner sponsored it and studios ignored it",
+    "dims": [
+     "d1"
+    ],
+    "mode": "noowner"
+   }
+  ],
+  "funded": [],
+  "cap": [
+   {
+    "name": "S Nkemelu",
+    "role": "Practice manager",
+    "days": "3"
+   },
+   {
+    "name": "P Achebe",
+    "role": "Studio head",
+    "days": "1"
+   }
+  ]
+ },
+ "wfs": [],
+ "curWf": 0,
+ "curUc": 0,
+ "num": {},
+ "actNote": {},
+ "actOwn": {}
+}

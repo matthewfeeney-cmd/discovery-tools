@@ -1,0 +1,327 @@
+{
+ "sv": 3,
+ "meta": {
+  "client": "Brightside Retail Group",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-20",
+  "ambition": "Take the customer-service assistant that works and get the same result in three more places, without the eighteen months it took the first time."
+ },
+ "mode": "deep",
+ "target": 4,
+ "shape": {
+  "builds": "Yes",
+  "outsourced": "No",
+  "inprod": "Yes — and we can name it",
+  "role": "Fine-tune or wrap",
+  "entities": "Two to five",
+  "regulated": "No"
+ },
+ "screen": {
+  "juris": "Yes",
+  "art5": "No",
+  "art50": "Yes",
+  "art4": "Yes",
+  "art22c": "Yes",
+  "dpia": "Yes"
+ },
+ "tgt": {},
+ "dimOff": {},
+ "org": {
+  "q1s": 4,
+  "q2s": 3,
+  "q3s": 4,
+  "q4s": 3,
+  "q5s": 3,
+  "q6s": 3,
+  "q7s": 4,
+  "q8s": 4,
+  "q9s": 4,
+  "q10s": 3,
+  "q11s": 3,
+  "q12s": 3,
+  "q13s": 2,
+  "q14s": 3,
+  "q15s": 4,
+  "q16s": 3,
+  "q17s": 3
+ },
+ "orgC": {
+  "q1c": [
+   0,
+   1,
+   2
+  ],
+  "q2c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q3c": [
+   0,
+   1,
+   2
+  ],
+  "q4c": [
+   0,
+   1,
+   2
+  ],
+  "q5c": [
+   0,
+   1
+  ],
+  "q6c": [
+   0,
+   1
+  ],
+  "q7c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q8c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q9c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q10c": [
+   0,
+   1
+  ],
+  "q11c": [
+   0,
+   1
+  ],
+  "q12c": [
+   0,
+   1
+  ],
+  "q13c": [
+   0
+  ],
+  "q14c": [
+   0,
+   1,
+   2
+  ],
+  "q15c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q16c": [
+   0,
+   1,
+   2
+  ],
+  "q17c": [
+   0,
+   1
+  ]
+ },
+ "orgEv": {
+  "q15s": {
+   "t": "Head of CX and the platform team, 19 Aug",
+   "c": "confirmed",
+   "x": "The service assistant is evaluated properly: containment rate, escalation quality and CSAT tracked weekly against a held-back set, with a named owner. It took them a year to get here and they know it."
+  },
+  "q13s": {
+   "t": "Head of Engineering, 20 Aug",
+   "c": "confirmed",
+   "x": "Two agentic workflows are being piloted in fulfilment. The governance that covers the service assistant does not mention agents at all, and nobody has decided whether it should."
+  },
+  "q12s": {
+   "t": "Asked across CX, merchandising, supply chain and finance",
+   "c": "confirmed",
+   "x": "Real in customer service, experimental in merchandising, nothing anywhere else. The pattern is that AI has spread where the CX director has personally pushed it and nowhere she has not."
+  }
+ },
+ "dimNote": {
+  "d15": {
+   "well": "Genuinely strong, and the best thing in this assessment. Weekly evaluation against a held-back set, tracked by a named owner, with escalation quality measured rather than assumed. Most organisations claim this; you can show it.",
+   "improve": "It exists for one system. Nothing says how the second one gets the same treatment, and the fulfilment agents currently have none of it.",
+   "riskNot": "The second system will be evaluated by whoever happens to care, which is how the first one nearly failed.",
+   "riskGo": "",
+   "why": "You have the practice. What you do not have is a way to make it the default, and that is the difference between one success and four."
+  },
+  "d13": {
+   "well": "The restraint on the customer-facing side is deliberate and correct.",
+   "improve": "Two agentic workflows are in pilot in fulfilment and the governance that covers your assistant does not mention agents. Nobody has decided whether it should — that decision is now overdue rather than premature.",
+   "riskNot": "Agents reach production under governance written for something else.",
+   "riskGo": "This is the one thing that would undo an otherwise well-run programme.",
+   "why": "You are about to repeat, in fulfilment, the mistake you spent a year fixing in customer service."
+  },
+  "d12": {
+   "well": "Customer service is genuinely operational and the value is measured.",
+   "improve": "Spread has tracked one director's personal energy rather than any mechanism. Merchandising is experimenting; supply chain and finance have nothing.",
+   "riskNot": "When she moves on, so does the programme.",
+   "riskGo": "",
+   "why": "The ceiling on this is not capability, it is that nothing makes it spread except one person."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lead": 3,
+   "prac": 3,
+   "tech": 4
+  },
+  "ts_task": {
+   "lead": 2,
+   "prac": 3,
+   "tech": 4
+  },
+  "ts_judge": {
+   "lead": 3,
+   "prac": 3,
+   "tech": 4
+  },
+  "ts_data": {
+   "lead": 2,
+   "prac": 3,
+   "tech": 4
+  },
+  "ts_redesign": {
+   "lead": 3,
+   "prac": 2,
+   "tech": 3
+  },
+  "ts_gov": {
+   "lead": 3,
+   "prac": 2,
+   "tech": 3
+  },
+  "ts_coach": {
+   "lead": 2,
+   "prac": 2,
+   "tech": 3
+  }
+ },
+ "coh": {
+  "lead": "Most",
+  "prac": "About half",
+  "tech": "Most"
+ },
+ "ints": [
+  {
+   "name": "K Mbeki",
+   "role": "CX Director",
+   "date": "2026-08-19",
+   "coh": "lead",
+   "note": "It took a year. I do not want the next one to take a year."
+  },
+  {
+   "name": "A Rutherford",
+   "role": "Head of Engineering",
+   "date": "2026-08-20",
+   "coh": "tech",
+   "note": "The fulfilment agents are running under governance that does not mention agents."
+  },
+  {
+   "name": "J Oduya",
+   "role": "Merchandising lead",
+   "date": "2026-08-20",
+   "coh": "prac",
+   "note": "We are doing our own thing because nobody told us there was a way to do it."
+  }
+ ],
+ "cb": {
+  "has": null,
+  "repoAccess": "",
+  "checkAccess": "",
+  "repos": [],
+  "ow": {},
+  "gt": {},
+  "gtNotes": {},
+  "notes": ""
+ },
+ "frame": {
+  "amb": [
+   "Stand up a second AI service in a quarter rather than a year",
+   "Let merchandising use what customer service already proved",
+   "Decide whether agents are allowed in fulfilment before they ship"
+  ],
+  "ambDims": [
+   [
+    "d6",
+    "d15",
+    "d11"
+   ],
+   [
+    "d12",
+    "d11"
+   ],
+   [
+    "d13",
+    "d2"
+   ]
+  ],
+  "spon3": [
+   "Get a decision on the fulfilment agents",
+   "Write down how we did customer service",
+   "Stop merchandising reinventing it"
+  ],
+  "tried": [
+   {
+    "what": "A reusable pattern document from the CX build",
+    "when": "early 2026",
+    "end": "Written, never used",
+    "why": "Nobody owned keeping it current and it went stale in a quarter",
+    "dims": [
+     "d6",
+     "d11"
+    ],
+    "mode": "nofollow"
+   }
+  ],
+  "funded": [
+   {
+    "prog": "Platform team expansion",
+    "owner": "A Rutherford",
+    "covers": "The shared services a second AI build would sit on",
+    "when": "Q1 2027",
+    "dims": [
+     "d6"
+    ],
+    "late": false
+   }
+  ],
+  "cap": [
+   {
+    "name": "A Rutherford",
+    "role": "Head of Engineering",
+    "days": "5"
+   },
+   {
+    "name": "K Mbeki",
+    "role": "CX Director",
+    "days": "3"
+   },
+   {
+    "name": "Platform lead",
+    "role": "Platform",
+    "days": "6"
+   },
+   {
+    "name": "J Oduya",
+    "role": "Merchandising",
+    "days": "2"
+   }
+  ]
+ },
+ "wfs": [],
+ "curWf": 0,
+ "curUc": 0,
+ "num": {},
+ "actNote": {},
+ "actOwn": {}
+}

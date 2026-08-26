@@ -1,0 +1,285 @@
+{
+ "sv": 3,
+ "meta": {
+  "client": "Loom Systems",
+  "by": "Delivery Lead + Forward Deployed Engineer",
+  "date": "2026-08-22",
+  "ambition": "We think we are at the top of this model and we would like that tested by someone outside. If we are wrong, we would rather know now."
+ },
+ "mode": "deep",
+ "target": 5,
+ "shape": {
+  "builds": "Yes",
+  "outsourced": "No",
+  "inprod": "Yes — and we can name it",
+  "role": "Build models",
+  "entities": "One",
+  "regulated": "No"
+ },
+ "screen": {
+  "juris": "Yes",
+  "art5": "No",
+  "art50": "Yes",
+  "art4": "Yes",
+  "art22c": "Yes",
+  "dpia": "Yes"
+ },
+ "tgt": {},
+ "dimOff": {},
+ "org": {
+  "q1s": 5,
+  "q2s": 5,
+  "q3s": 5,
+  "q4s": 5,
+  "q5s": 5,
+  "q6s": 5,
+  "q7s": 5,
+  "q8s": 5,
+  "q9s": 5,
+  "q10s": 5,
+  "q11s": 5,
+  "q12s": 5,
+  "q13s": 5,
+  "q14s": 5,
+  "q15s": 5,
+  "q16s": 5,
+  "q17s": 5
+ },
+ "orgC": {
+  "q1c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q2c": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "q3c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q4c": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "q5c": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "q6c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q7c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q8c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q9c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q10c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q11c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q12c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q13c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q14c": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "q15c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "q16c": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "q17c": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "orgEv": {
+  "q1s": {
+   "t": "Reviewed the stance, its change log and three months of usage telemetry",
+   "c": "confirmed",
+   "x": "The stance is versioned, and we could trace two amendments back to specific usage patterns that triggered them. That is the level 5 descriptor working as written rather than claimed."
+  }
+ },
+ "dimNote": {
+  "d15": {
+   "well": "Continuous evaluation against held-back sets, with the evaluation criteria themselves reviewed quarterly as the product changes.",
+   "improve": "Nothing we found. The honest answer is that this instrument has run out of range here.",
+   "riskNot": "",
+   "riskGo": "",
+   "why": "At this level our library has nothing to offer you, and saying so is more useful than inventing something."
+  }
+ },
+ "tskills": {
+  "ts_lit": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_task": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_judge": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_data": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_redesign": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_gov": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  },
+  "ts_coach": {
+   "lead": 4,
+   "prac": 4,
+   "tech": 4
+  }
+ },
+ "coh": {
+  "lead": "Everyone",
+  "prac": "Everyone",
+  "tech": "Everyone"
+ },
+ "ints": [
+  {
+   "name": "E Sandoval",
+   "role": "CTO",
+   "date": "2026-08-22",
+   "coh": "tech",
+   "note": "Tell us where we are wrong. That is what we are paying for."
+  }
+ ],
+ "cb": {
+  "has": null,
+  "repoAccess": "",
+  "checkAccess": "",
+  "repos": [],
+  "ow": {},
+  "gt": {},
+  "gtNotes": {},
+  "notes": ""
+ },
+ "frame": {
+  "amb": [
+   "Stay ahead of the model providers rather than being commoditised by them",
+   "",
+   ""
+  ],
+  "ambDims": [
+   [
+    "d5",
+    "d6",
+    "d15"
+   ],
+   [],
+   []
+  ],
+  "spon3": [
+   "Find out what we cannot see about ourselves",
+   "",
+   ""
+  ],
+  "tried": [],
+  "funded": [],
+  "cap": [
+   {
+    "name": "E Sandoval",
+    "role": "CTO",
+    "days": "4"
+   }
+  ]
+ },
+ "wfs": [],
+ "curWf": 0,
+ "curUc": 0,
+ "num": {},
+ "actNote": {},
+ "actOwn": {}
+}
