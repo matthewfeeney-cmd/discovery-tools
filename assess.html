@@ -1835,23 +1835,30 @@ function reachableCeiling(){const c=ceiling();if(!c)return null;
 function orgTotalQ(){return activeDims().length*2;}
 function orgAnswered(){return activeDims().reduce((a,d)=>a+orgDim(d.id).answered,0);}
 /* exposure is contained, not sequenced — a live risk does not wait for a dependency chain */
-/* Containment is for things ALREADY HAPPENING. A dimension can score 1 because the client has
-   deliberately not done the thing — a written "no agents yet" position, say — and telling them to
-   "inventory every agent already running" is then a false finding. If the spine evidence is tagged
-   as checked-and-nothing-there, the maturity gap stands and still caps the ceiling, but there is no
-   live exposure to contain. Found by running a client who had genuinely, sensibly, done nothing. */
-function containment(){return riskDims("hi").filter(d=>{
-    if(!d.ca)return false;
-    const sq=qOf(d.id,"s");
-    return !(sq&&evOf(sq.k)==="absent");
-  }).map(d=>({dim:d,stage:orgDim(d.id).stage,ca:d.ca}));}
-/* dimensions where the gap is real but nothing is running — reported, but not as exposure */
-function abstained(){return riskDims("hi").filter(d=>{const sq=qOf(d.id,"s");
-  return sq&&evOf(sq.k)==="absent";}).map(d=>({dim:d,stage:orgDim(d.id).stage,
-    note:(S.orgEv[qOf(d.id,"s").k]||{}).x||""}));}
+/* Containment deliberately IGNORES parking. You cannot decide that something already harming you
+   is not a priority this year — those two statements do not fit together, and the useful thing the
+   tool can do is say so rather than quietly honour the parking. Found by generating clients that
+   parked a dimension with live exposure, which no hand-written example ever did. */
+function containment(){return riskDims("hi").filter(d=>d.ca).map(d=>({dim:d,stage:orgDim(d.id).stage,ca:d.ca,
+  parkedAnyway:DTGT(d.id)===0}));}
+/* Dimensions where the gap is real but nothing is running — the client has deliberately not done
+   the thing. Reported, and still on the plan, but never as exposure. */
+function abstained(){return activeDims().filter(d=>{const s=orgDim(d.id),sq=qOf(d.id,"s");
+    return d.rf&&d.rl==="hi"&&s.stage!==null&&s.stage<=2&&sq&&evOf(sq.k)==="absent";
+  }).map(d=>({dim:d,stage:orgDim(d.id).stage,note:(S.orgEv[qOf(d.id,"s").k]||{}).x||""}));}
 /* distinct from exposure: nothing is happening yet, but proceeding would make it worse */
 function stopFlags(){return riskDims("stop").filter(d=>d.ca).map(d=>({dim:d,stage:orgDim(d.id).stage,ca:d.ca}));}
-function riskDims(lv){return activeDims().filter(d=>d.rf&&d.rl===lv&&orgDim(d.id).stage!==null&&orgDim(d.id).stage<=2);}
+/* A low score does not mean the same thing regardless of why. "Agents are running on personal
+   credentials" and "we deliberately have no agents and have not written that down" both score 1,
+   and only the first is a risk to flag. Excluding confirmed-absent here rather than at each call
+   site fixes it once for containment, the risk flags, the say-out-loud block and the dimension
+   cards — the previous fix patched containment only, and left the other three telling a client
+   with no agents that their agents were out of control. */
+function riskDims(lv){return activeDims().filter(d=>{
+  if(!d.rf||d.rl!==lv)return false;
+  const s=orgDim(d.id); if(s.stage===null||s.stage>2)return false;
+  const sq=qOf(d.id,"s");
+  return !(sq&&evOf(sq.k)==="absent");});}
 function answeredKeys(){const k=[];activeDims().forEach(d=>{const sq=qOf(d.id,"s"),cq=qOf(d.id,"c");
   if(S.org[sq.k])k.push(sq.k);if(corrLvl(cq)!==null)k.push(cq.k);});return k;}
 function orgEvidence(){const k=answeredKeys();if(!k.length)return null;
@@ -2122,7 +2129,9 @@ function renderTeam(){
       ${s.flag?`<div class="info">⚖ <b>The two questions disagree</b> — the spine says Stage ${s.flag.sp}, the checklist evidences ${s.flag.co}. Scored at ${fmtS(s.avg)} and worth resolving before the readout: usually one of them was answered on what they say rather than what you saw.</div>`:""}
       ${s.scanFlag?`<div class="info">⚖ The team skill scan reads ${fmtS(s.scanFlag)} against ${fmtS(s.avg)} here. The scan measures depth and spread of skill; this measures whether the organisation builds and keeps it.</div>`:""}
       ${s.fromScan?`<div class="info">Scored from the team skill scan below (${fmtS(s.avg)}) because the questions here aren't answered yet.</div>`:""}
-      ${d.rf&&s.stage!==null&&s.stage<=2?`<div class="stop">⚠ <b>Risk flag:</b> ${esc(d.rf)}</div>`:""}
+      ${d.rf&&s.stage!==null&&s.stage<=2?(evOf(sq.k)==="absent"
+        ? `<div class="info">Scores low, but the evidence says you checked and there is nothing there — so this is a gap to close, not a risk to raise. The risk flag is suppressed and the report says the restraint is deliberate.</div>`
+        : `<div class="stop">⚠ <b>Risk flag:</b> ${esc(d.rf)}</div>`):""}
       <div class="gd"><span class="gdl">Good enough here is</span>
         ${TGT_OPTS.map(o=>`<span class="gdo ${DTGT(d.id)===o.v?"sel":""}${o.v===0?" park":""}" onclick="setDTgt('${d.id}',${o.v})" title="${esc(o.d)}">${o.n}</span>`).join("")}
         <span class="gdn">${DTGT(d.id)===0
@@ -2895,9 +2904,14 @@ function phasedGaps(){const sel=selectActions();const con=containment();
       if((x.act.dep||[]).some(d=>stuck.has(d))){stuck.add(x.act.id);grew=true;}});}
   const ready=sel.filter(x=>!stuck.has(x.act.id)),blocked=sel.filter(x=>stuck.has(x.act.id));
   const mk=x=>{const own=ORG_DIMS.find(d=>d.id===x.act.dim)||x.g.dim,os=orgDim(x.act.dim);
-    return {...x.g,dim:own,current:os.stage!==null?os.stage:x.g.current,act:x.act,depth:x.depth,
+    /* An action can belong to a dimension the client parked and still be on the plan, because
+       something they did NOT park depends on it. That is correct — but it looks like the tool
+       ignoring their decision unless it says so. The fuzzer generated this; no worked example did. */
+    const viaDep=DTGT(own.id)===0;
+    return {...x.g,dim:own,current:os.stage!==null?os.stage:x.g.current,act:x.act,depth:x.depth,viaDep,
     note:[x.depth?"after "+(x.act.dep||[]).filter(i=>sel.some(y=>y.act.id===i)).join(", "):"",
       own.id!==x.g.dim.id?"prerequisite for "+x.g.dim.name.toLowerCase():"",
+      viaDep?"on a dimension you parked — here only because "+(x.g.dim.id!==own.id?x.g.dim.name.toLowerCase():"something else on the plan")+" needs it first":"",
       x.g.isCeil&&own.id===x.g.dim.id&&!x.depth?"lifts the ceiling":""].filter(Boolean).join(" · ")};};
   const ph=[["First 90 days — lift the ceiling",x=>x.g.isCeil&&slot(x)<=1,"focus"],
     ["3–6 months — the next constraints",x=>!x.g.isCeil&&slot(x)<=1,"rest"],
@@ -2949,8 +2963,10 @@ function urgentList(){
   const out=[];
   containment().forEach(c=>{const n=S.dimNote[c.dim.id]||{};
     out.push({band:"live",dim:c.dim,what:c.ca,
-      why:n.riskNot||n.improve||c.dim.rf||"",
-      who:"A named executive, on the day",when:"This week",id:"NOW"});});
+      why:(c.parkedAnyway?"You have marked this dimension as not a priority this year. It is on this list anyway, because what we found is already happening — and a decision to defer something that is currently causing harm is a different decision from deferring a gap. Worth making that one deliberately. ":"")
+         +(n.riskNot||n.improve||c.dim.rf||""),
+      who:"A named executive, on the day",when:"This week",id:"NOW",
+      note:c.parkedAnyway?"parked, but happening now":""});});
   /* A question with no answer inside the organisation is a finding, not a blank, and the
      work is to get the answer — not to assume the worst and put a maturity action against it. */
   /* Parked dimensions do not generate work, and that includes the work of chasing an answer.
@@ -3136,7 +3152,7 @@ function copyTeam(){
     if(n.improve)L.push(`  To improve: ${n.improve}`);
     if(n.riskNot)L.push(`  Risk if not fixed: ${n.riskNot}`);
     if(n.riskGo)L.push(`  Risk if they proceed anyway: ${n.riskGo}`);
-    if(d.rf&&s.stage!==null&&s.stage<=2)L.push(`  RISK FLAG: ${d.rf}`);
+    if(d.rf&&s.stage!==null&&s.stage<=2&&evOf(qOf(d.id,"s").k)!=="absent")L.push(`  RISK FLAG: ${d.rf}`);
     if(s.flag)L.push(`  Note: the spine answer and the evidence checklist disagreed (${s.flag.sp} vs ${s.flag.co}) — scored at ${fmtS(s.avg)}.`);
     const ctx=ORG_QS.filter(q=>q.dim===d.id).map(q=>(S.orgEv[q.k]||{}).x).filter(Boolean);
     if(ctx.length)L.push(`  Context: ${ctx.join(" · ")}`);});
