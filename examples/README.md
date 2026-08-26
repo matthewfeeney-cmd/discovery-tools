@@ -20,8 +20,8 @@ They fail differently, and the contrast is the point.
 | Shape | £31m revenue, 340 staff, 4 acquisitions since 2022 | £145m revenue, 890 staff, 6 depots |
 | Sponsor position | Entry 2022, exit target 2027, 400bps mandate | Entry 2021, exit already a year late |
 | Own engineering? | No — IT outsourced, so no code audit | Yes — 12 developers, so Overwatch runs |
-| Ceiling | Stage 1, capped by **four** dimensions | Stage 1, capped by **two** |
-| Weighted potential | 1.81 | 2.41 |
+| Ceiling | Stage 1, capped by **six** dimensions | Stage 1, capped by **three** |
+| Weighted potential | 1.65 | 2.32 |
 | The story | Weak more or less everywhere. The ceiling is systemic and the roadmap is long | Strong operations, strong engineering, no AI stance and no AI governance. Almost everything is ready for more than those two allow |
 
 Ridgeway is the better demonstration of why the ceiling matters: a genuinely well-run business, excellent at flow measurement, held at Stage 1 by two documents that don't exist. Ardent is the more common shape — nothing is badly wrong, nothing is ready either.
@@ -71,7 +71,7 @@ Note also what the £ model does to the headline. Renewal drafting has a potenti
 
 ## What's in each file
 
-Everything the wedge captures: all 28 scored questions, the evidence and context notes behind them, the per-dimension narrative including both risk framings, the seven-capability skill scan with the cohort breakdown, and the interview log. Ridgeway additionally carries a full Overwatch record — three repositories, all nine stages, twelve audit dimensions scored, with three reds.
+Everything the wedge captures: the scored questions across every dimension the census left active (30 for Ardent, 34 for Ridgeway), the evidence and context notes behind them, the per-dimension narrative including both risk framings, the seven-capability skill scan with the cohort breakdown, and the interview log. Ridgeway additionally carries a full Overwatch record — three repositories, all nine stages, twelve audit dimensions scored, with three reds.
 
 The two wedge files carry no workflows or use cases — they match the two-week engagement as scoped. `ardent-full-engagement.json` adds them.
 
@@ -81,4 +81,4 @@ The two wedge files carry no workflows or use cases — they match the two-week 
 
 - **Training a new delivery lead.** Load one, walk the Team tab top to bottom, and look at how the evidence and context fields are written. The context notes are what make a report read bespoke rather than templated — these are worth copying in style, not content.
 - **Showing the tool internally.** Ridgeway makes the sharper demo: the ceiling story lands in about thirty seconds.
-- **Regression testing.** If a change to the scoring breaks something, these will show it. Ardent should hold at ceiling Stage 1, potential 1.81; Ridgeway at ceiling Stage 1, potential 2.41. Ridgeway is also the schema-migration case: its governance checklist is answered "none of these", so it catches any change that shifts that stored index.
+- **Regression testing.** If a change to the scoring breaks something, these will show it. Ardent should hold at ceiling Stage 1, potential 1.65; Ridgeway at ceiling Stage 1, potential 2.32. Ridgeway is also the schema-migration case: its governance checklist is answered "none of these", so it catches any change that shifts that stored index.

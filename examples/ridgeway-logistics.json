@@ -21,7 +21,10 @@
   "q11s": 2,
   "q12s": 2,
   "q13s": 2,
-  "q14s": 3
+  "q14s": 3,
+  "q15s": 2,
+  "q16s": 1,
+  "q17s": 2
  },
  "orgC": {
   "q1c": [
@@ -87,9 +90,22 @@
    1,
    2,
    3
+  ],
+  "q15c": [
+   1
+  ],
+  "q16c": [
+   5
+  ],
+  "q17c": [
+   1
   ]
  },
- "dimOff": {},
+ "dimOff": {
+  "d15": false,
+  "d16": false,
+  "d17": false
+ },
  "orgEv": {
   "q1s": {
    "t": "COO and HR Director, 4 Aug",
@@ -145,6 +161,26 @@
    "t": "CFO, 4 Aug",
    "c": "confirmed",
    "x": "Cost-to-serve per drop, per route, per depot, reviewed monthly. AI spend sits inside the IT licence line and is visible. What has never been modelled is licences-for-everyone against building one thing for the planning workflow."
+  },
+  "q12c": {
+   "t": "Asked HR and the three depot managers; no one could say which functions are actually using AI",
+   "c": "unknown",
+   "x": ""
+  },
+  "q15s": {
+   "t": "Head of Engineering, 6 Aug",
+   "c": "confirmed",
+   "x": "Agent-raised pull requests are reviewed by a human, which is a real check — but it is the only one, it covers only the portal repos, and nothing measures whether the output is getting better or worse over time."
+  },
+  "q16s": {
+   "t": "CFO and IT, 5 Aug",
+   "c": "confirmed",
+   "x": "Copilot was bought through the standard IT route with no AI-specific questions asked. Nobody has established whether consignee data entered into consumer tools is retained or used for training."
+  },
+  "q17s": {
+   "t": "Head of Engineering + Operations Director",
+   "c": "confirmed",
+   "x": "Engineering could stop their own agents in minutes. Nobody could stop a planner using ChatGPT on a phone, and no depot has been told how to report a bad AI output."
   }
  },
  "dimNote": {
@@ -213,6 +249,27 @@
    "well": "Cost-to-serve per drop, per route, per depot, reviewed monthly. AI spend is visible inside the IT licence line. This is a genuinely well-run cost base.",
    "improve": "The one thing never modelled is licences-for-everyone against building a single thing for the planning workflow. They are two different bets and only the first has been priced.",
    "why": "The discipline is already here. It has simply never been pointed at this decision."
+  },
+  "d15": {
+   "well": "Human review of every agent-raised PR is a genuine control, and it is enforced.",
+   "improve": "That review is the only evaluation anywhere, and it covers one team's repositories. Nothing measures quality over time and nothing at all covers the Power Platform automations.",
+   "riskNot": "Quality drift in the planning automations would not be noticed until it showed up in a depot.",
+   "riskGo": "The engineering standard does not extend itself to the rest of the business just because it exists.",
+   "why": "You already have the habit in one team. Making it an organisational expectation is a much smaller step than starting from nothing."
+  },
+  "d16": {
+   "well": "Procurement is disciplined generally; the gap is AI-specific questions, not process.",
+   "improve": "No vendor has been asked the AI-specific questions. For a business putting consignee names and addresses into tools, retention and training use are the two that matter.",
+   "riskNot": "Consignee personal data may be retained or used for training under terms nobody has checked.",
+   "riskGo": "Connecting the operational estate to third-party models before this is established would move a contained problem into the core.",
+   "why": "You deploy rather than build, so your AI risk is largely your vendors' behaviour."
+  },
+  "d17": {
+   "well": "Engineering could stop what engineering runs, quickly.",
+   "improve": "Nobody can stop what the rest of the business runs, and no depot has a route to report a bad output. The asymmetry between engineering and operations shows up here as it does everywhere else.",
+   "riskNot": "A wrong AI-generated rota or address correction reaches a driver with no way for anyone to flag it.",
+   "riskGo": "Rolling out to depots without a reporting route means the first incident is discovered by a customer.",
+   "why": "This is the cheapest of the three and it removes the argument against moving faster elsewhere."
   }
  },
  "tskills": {
@@ -436,7 +493,7 @@
  },
  "wfs": [],
  "num": {},
- "sv": 2,
+ "sv": 3,
  "curWf": 0,
  "curUc": 0,
  "tgt": {},
@@ -456,13 +513,21 @@
     "what": "Copilot rollout to the engineering guild",
     "when": "2025",
     "end": "Landed and stuck",
-    "why": "One team with real discipline — the reason engineering scores well and nothing else does"
+    "why": "One team with real discipline — the reason engineering scores well and nothing else does",
+    "dims": [
+     "d11"
+    ],
+    "mode": "worked"
    },
    {
     "what": "A depot-level chatbot pilot",
     "when": "early 2026",
     "end": "Abandoned after six weeks",
-    "why": "No runbooks or SOPs connected, so every answer was generic"
+    "why": "No runbooks or SOPs connected, so every answer was generic",
+    "dims": [
+     "d5"
+    ],
+    "mode": "ignored"
    }
   ],
   "funded": [
@@ -470,7 +535,11 @@
     "prog": "Portal replatform",
     "owner": "Head of Engineering",
     "covers": "The B2C tracking and booking stack",
-    "when": "H1 2027"
+    "when": "H1 2027",
+    "dims": [
+     "d6"
+    ],
+    "late": true
    }
   ],
   "cap": [
@@ -489,8 +558,36 @@
     "role": "Finance / sponsor",
     "days": "1"
    }
+  ],
+  "ambDims": [
+   [
+    "d4",
+    "d9",
+    "d10"
+   ],
+   [
+    "d5",
+    "d1"
+   ],
+   [
+    "d5",
+    "d4"
+   ]
   ]
  },
  "actNote": {},
- "actOwn": {}
+ "actOwn": {},
+ "shape": {
+  "builds": "Yes",
+  "outsourced": "No",
+  "inprod": "Yes — and we can name it",
+  "role": "Deploy only",
+  "entities": "One",
+  "regulated": "No"
+ },
+ "screen": {
+  "juris": "No",
+  "art22c": "No",
+  "dpia": "No"
+ }
 }
