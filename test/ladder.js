@@ -2,7 +2,7 @@
    ceiling Stage 1; these assert that the output stays sensible all the way up, and that the
    things which SHOULD change with maturity actually do. */
 const fs=require("fs");const {T,ctx}=require("./t.js");
-const EX="/sessions/gifted-gracious-gates/mnt/Assess Tools/discovery-tools/examples/";
+const EX=require("path").join(__dirname,"..","examples")+"/";
 let fail=0,pass=0; const ok=(c,m)=>{c?pass++:(fail++,console.log("  FAIL: "+m))};
 const L=[["ardent-risk-group.json","S1"],["halloran-finch.json","S2"],["brightside-retail.json","S3"],
          ["cavendish-lending.json","S4"],["loom-systems.json","S5"]];

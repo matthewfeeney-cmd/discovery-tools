@@ -1,0 +1,11 @@
+{
+  "name": "discovery-tools",
+  "version": "1.14.0",
+  "private": true,
+  "description": "Enablis AI Readiness assessment tool. assess.html is the whole application.",
+  "scripts": {
+    "test": "node test/checks.js && node test/checks2.js && node test/ladder.js && node test/fuzz.js 3000 && node test/stale.js",
+    "test:quick": "node test/checks.js && node test/checks2.js && node test/ladder.js",
+    "fuzz": "node test/fuzz.js 3000"
+  }
+}
