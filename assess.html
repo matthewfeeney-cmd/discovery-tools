@@ -434,6 +434,43 @@ const RC={
   roadmapFunded({prog,owner,covers,when,late}){
     return `<b>Something already funded touches this.</b> ${esc(prog)}${owner?" ("+esc(owner)+")":""}${covers?" covers "+esc(lc(covers)):""}${when?", landing "+esc(lc(when)):""}. ${late?"That is after this plan's horizon, so this is a choice rather than a detail: pull a minimal version forward, or accept that everything downstream waits for it.":"Influence that programme rather than starting a parallel one — the owner above is who to talk to."}`;
   },
+  /* --- method: how to read the scores --- */
+  methodScaleIntro(){
+    return "Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.";
+  },
+  methodWeights(){
+    return "Four dimensions carry half as much weight again as the others — data, the reach of AI into your own knowledge, the quality of your internal platforms, and how strongly your work is driven by real users. These are the ones the research finds everything else depends on. The weights are shown against each dimension.";
+  },
+  methodTwiceScored(){
+    return "<b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.";
+  },
+  /* --- method: how we assessed this --- */
+  methodAssessIntro(){
+    return "So that you can weigh the findings, and challenge them.";
+  },
+  methodInterviews({nInt,cohortList}){
+    return `<b>${nInt||"Several"} interview${nInt===1?"":"s"}</b>${nInt?` across ${cohortList}`:""}, alongside direct observation of how work is done.`;
+  },
+  methodQuestions({answered,total,nDims,ev}){
+    return `<b>${answered} of ${total} questions</b> answered across ${nDims} dimensions${ev!==null?`, of which <b>${ev}%</b> were confirmed against something we could see rather than taken on description alone`:""}.`;
+  },
+  methodCodeAuditItem({nDims}){
+    return `<b>An automated audit of your source code</b> across ${nDims} dimensions, with findings marked measured or inferred, and an adversarial pass that attempts to disprove each finding before it is reported.`;
+  },
+  methodNotSelfReported(){
+    return `<b>Nothing here is self-reported.</b> No survey was circulated for your teams to score themselves.`;
+  },
+  methodWorkflowExamined({nUC}){
+    return `<b>One workflow examined in detail</b>, and ${nUC} candidate use cases scored, costed and ranked against your own numbers.`;
+  },
+  methodNotCovered({hasUC,nUC,scan}){
+    return `<b>What this assessment does not cover.</b> ${hasUC
+      ? `It examines your organisation, one workflow and ${nUC} candidates inside it. It does not assess your other workflows, and the figures are a business case rather than an audited saving — they rest on the baseline your own people gave us${scan?"":", and no code was audited"}.`
+      : `It examines your organisation's readiness. It does not price individual use cases, model return on a specific investment, or assess any workflow in depth${scan?"":", and no code was audited"}.`} We would rather say so than imply otherwise.`;
+  },
+  methodFramework({nDims}){
+    return `<b>Where the framework comes from.</b> Seven of the ${nDims} dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.`;
+  },
 };
 </script>
 
@@ -1626,12 +1663,12 @@ function clientReport(){
   </div>`:""}
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How to read the scores</h2></div>
-    <p>Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.</p>
+    <p>${RC.methodScaleIntro()}</p>
     <table class="scale">
       ${STAGES.map(s=>`<tr class="${s.n===ceil.stage?"you":""}"><td>${s.n} · ${E(s.name)}</td><td>${E(s.d)}</td></tr>`).join("")}
     </table>
-    <p>Four dimensions carry half as much weight again as the others — data, the reach of AI into your own knowledge, the quality of your internal platforms, and how strongly your work is driven by real users. These are the ones the research finds everything else depends on. The weights are shown against each dimension.</p>
-    <p><b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.</p>
+    <p>${RC.methodWeights()}</p>
+    <p>${RC.methodTwiceScored()}</p>
   </div>
 
   <div class="sec"><div class="sh"><span class="num">${N()}</span><h2>The picture across all ${D.length} dimensions</h2></div>
@@ -1708,18 +1745,16 @@ function clientReport(){
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How we assessed this</h2></div>
     <div class="method">
-      <p>So that you can weigh the findings, and challenge them.</p>
+      <p>${RC.methodAssessIntro()}</p>
       <ul>
-        <li><b>${nInt||"Several"} interview${nInt===1?"":"s"}</b>${nInt?` across ${[...new Set((S.ints||[]).map(i=>i.coh))].map(c=>{const x=COHORTS.find(y=>y.id===c);return x?lc(x.name):c;}).filter(Boolean).join(", ")}`:""}, alongside direct observation of how work is done.</li>
-        <li><b>${orgAnswered()} of ${orgTotalQ()} questions</b> answered across ${D.length} dimensions${ev!==null?`, of which <b>${ev}%</b> were confirmed against something we could see rather than taken on description alone`:""}.</li>
-        ${scan?`<li><b>An automated audit of your source code</b> across ${GT_PARTS.length} dimensions, with findings marked measured or inferred, and an adversarial pass that attempts to disprove each finding before it is reported.</li>`:""}
-        <li><b>Nothing here is self-reported.</b> No survey was circulated for your teams to score themselves.</li>
-      ${hasUC?`<li><b>One workflow examined in detail</b>, and ${ranked().length} candidate use cases scored, costed and ranked against your own numbers.</li>`:""}
+        <li>${RC.methodInterviews({nInt,cohortList:[...new Set((S.ints||[]).map(i=>i.coh))].map(c=>{const x=COHORTS.find(y=>y.id===c);return x?lc(x.name):c;}).filter(Boolean).join(", ")})}</li>
+        <li>${RC.methodQuestions({answered:orgAnswered(),total:orgTotalQ(),nDims:D.length,ev})}</li>
+        ${scan?`<li>${RC.methodCodeAuditItem({nDims:GT_PARTS.length})}</li>`:""}
+        <li>${RC.methodNotSelfReported()}</li>
+      ${hasUC?`<li>${RC.methodWorkflowExamined({nUC:ranked().length})}</li>`:""}
       </ul>
-      <p style="margin-top:10px"><b>What this assessment does not cover.</b> ${hasUC
-        ? `It examines your organisation, one workflow and ${ranked().length} candidates inside it. It does not assess your other workflows, and the figures are a business case rather than an audited saving — they rest on the baseline your own people gave us${scan?"":", and no code was audited"}.`
-        : `It examines your organisation's readiness. It does not price individual use cases, model return on a specific investment, or assess any workflow in depth${scan?"":", and no code was audited"}.`} We would rather say so than imply otherwise.</p>
-      <p><b>Where the framework comes from.</b> Seven of the ${D.length} dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.</p>
+      <p style="margin-top:10px">${RC.methodNotCovered({hasUC,nUC:ranked().length,scan})}</p>
+      <p>${RC.methodFramework({nDims:D.length})}</p>
     </div>
   </div>
 
