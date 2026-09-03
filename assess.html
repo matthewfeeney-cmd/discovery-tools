@@ -517,6 +517,30 @@ const RC={
   sellTwelveMonths(){
     return `<b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.`;
   },
+  /* --- where you are (the picture) --- */
+  whyOneNumber({flat,flatAll,stage,capList,nPark}){
+    return `<b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. ${flat
+      ? `In your case that rule bites differently: ${flatAll?"every dimension":"most dimensions"} sits at Stage ${stage}, so there is no weak one hiding behind a strong one and no single move that lifts the number. Broad, even improvement is genuinely the answer here, which is the opposite of the advice we give most clients.`
+      : `So your readiness is ${stage}, set by ${esc(capList)}, and the fastest route to a higher number is not broad improvement. It is ${nPark?`those specific dimensions — which is why the decision to park ${nPark===1?"one of them":"some of them"} is the most consequential choice in this plan`:"that"}.`}`;
+  },
+  stage5Note(){
+    return `<b>A note on a Stage 5 target.</b> The evidence checklist behind each dimension caps at Stage 4 by design — a checklist can show that something exists, not that it is continuously improving from evidence, which is what Stage 5 describes. So an organisation genuinely operating at Stage 5 will still read as Stage 4 here, and the residual gap you see against a Stage 5 target is partly an artefact of the instrument rather than a finding about you. We would rather say that than let you chase it.`;
+  },
+  scopeNote({n,names}){
+    return `<b>Scope note.</b> ${n} dimension${n>1?"s were":" was"} not assessed in this engagement — ${names}. ${n>1?"They are":"It is"} excluded from your score rather than assumed, so the figures above describe only what we examined.`;
+  },
+  unestNote({n}){
+    return `<b>${n===1?"One question":n+" questions"} we could not get an answer to.</b> We have reported ${n===1?"it":"them"} that way rather than scoring ${n===1?"it":"them"} low and moving on, because the two are different. A control that does not exist is a gap you can close. A control nobody in the organisation can confirm or deny is a gap plus an accountability problem, and the second is usually the more expensive.`;
+  },
+  unestPattern({n}){
+    return `${n} of them is a pattern rather than an oversight, and in our experience the pattern is usually that the answers sit above the level being assessed. That is worth raising as an access question with your sponsor before it is treated as a capability question about your team.`;
+  },
+  abstainedNote({names,notes,n}){
+    return `<b>Where you have deliberately not done something.</b> ${names} ${n===1?"scores":"score"} low and ${n===1?"stays":"stay"} on the plan, but ${n===1?"does":"do"} not appear on the list of things happening now — because nothing is happening. ${notes} Restraint is a legitimate position. What we have scored is the absence of a written one, not the absence of the activity, and those are worth keeping apart.`;
+  },
+  notLookedAt({names}){
+    return `<b>And what we did not look at.</b> ${names} — out of scope or out of access in a two-week engagement. That is a limit on this document, not a judgement about you, and we would rather mark it than let it read as a finding.`;
+  },
 };
 </script>
 
@@ -1648,16 +1672,14 @@ function clientReport(){
       <div class="kpi"><span>Weighted average today</span><b>${pot.toFixed(1)}</b><small>across all ${D.length} dimensions as they stand — not a projection</small></div>
       ${proj&&proj>pot+0.05?`<div class="kpi"><span>If the plan is delivered</span><b>${proj.toFixed(1)}</b><small>${cPark.length?"the same average once the dimensions on the plan reach their targets — the parked ones are held where they are":"the same average with "+(capNames.length>1?"those dimensions":"that dimension")+" at Stage "+t}</small></div>`:""}
     </div>
-    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. ${flat
-      ? `In your case that rule bites differently: ${flatAll?"every dimension":"most dimensions"} sits at Stage ${ceil.stage}, so there is no weak one hiding behind a strong one and no single move that lifts the number. Broad, even improvement is genuinely the answer here, which is the opposite of the advice we give most clients.`
-      : `So your readiness is ${ceil.stage}, set by ${E(capList)}, and the fastest route to a higher number is not broad improvement. It is ${cPark.length?`those specific dimensions — which is why the decision to park ${cPark.length===1?"one of them":"some of them"} is the most consequential choice in this plan`:"that"}.`}</p>
-    ${t>=5?`<p class="method"><b>A note on a Stage 5 target.</b> The evidence checklist behind each dimension caps at Stage 4 by design — a checklist can show that something exists, not that it is continuously improving from evidence, which is what Stage 5 describes. So an organisation genuinely operating at Stage 5 will still read as Stage 4 here, and the residual gap you see against a Stage 5 target is partly an artefact of the instrument rather than a finding about you. We would rather say that than let you chase it.</p>`:""}
-    ${unscored.length?`<p class="flag"><b>Scope note.</b> ${unscored.length} dimension${unscored.length>1?"s were":" was"} not assessed in this engagement — ${unscored.map(d=>E(lc(d.name))).join(", ")}. ${unscored.length>1?"They are":"It is"} excluded from your score rather than assumed, so the figures above describe only what we examined.</p>`:""}
-    ${unEst.length?`<p class="flag"><b>${unEst.length===1?"One question":unEst.length+" questions"} we could not get an answer to.</b> We have reported ${unEst.length===1?"it":"them"} that way rather than scoring ${unEst.length===1?"it":"them"} low and moving on, because the two are different. A control that does not exist is a gap you can close. A control nobody in the organisation can confirm or deny is a gap plus an accountability problem, and the second is usually the more expensive.</p>
+    <p>${RC.whyOneNumber({flat,flatAll,stage:ceil.stage,capList,nPark:cPark.length})}</p>
+    ${t>=5?`<p class="method">${RC.stage5Note()}</p>`:""}
+    ${unscored.length?`<p class="flag">${RC.scopeNote({n:unscored.length,names:unscored.map(d=>E(lc(d.name))).join(", ")})}</p>`:""}
+    ${unEst.length?`<p class="flag">${RC.unestNote({n:unEst.length})}</p>
       <ul class="method">${unEst.map(x=>`<li><b>${E(x.dim.name)}</b>${x.who?` — ${E(x.who.replace(/^Asked\s+/i,"we asked "))}`:""}</li>`).join("")}</ul>
-      ${unEst.length>2?`<p class="method">${unEst.length} of them is a pattern rather than an oversight, and in our experience the pattern is usually that the answers sit above the level being assessed. That is worth raising as an access question with your sponsor before it is treated as a capability question about your team.</p>`:""}`:""}
-    ${abst.length?`<p class="ctx"><b>Where you have deliberately not done something.</b> ${abst.map(x=>E(x.dim.name)).join(" and ")} ${abst.length===1?"scores":"score"} low and ${abst.length===1?"stays":"stay"} on the plan, but ${abst.length===1?"does":"do"} not appear on the list of things happening now — because nothing is happening. ${abst.map(x=>E(x.note)).filter(Boolean).join(" ")} Restraint is a legitimate position. What we have scored is the absence of a written one, not the absence of the activity, and those are worth keeping apart.</p>`:""}
-    ${unAsk.length?`<p class="method"><b>And what we did not look at.</b> ${unAsk.map(x=>E(lc(x.dim.name))).join(", ")} — out of scope or out of access in a two-week engagement. That is a limit on this document, not a judgement about you, and we would rather mark it than let it read as a finding.</p>`:""}
+      ${unEst.length>2?`<p class="method">${RC.unestPattern({n:unEst.length})}</p>`:""}`:""}
+    ${abst.length?`<p class="ctx">${RC.abstainedNote({names:abst.map(x=>E(x.dim.name)).join(" and "),notes:abst.map(x=>E(x.note)).filter(Boolean).join(" "),n:abst.length})}</p>`:""}
+    ${unAsk.length?`<p class="method">${RC.notLookedAt({names:unAsk.map(x=>E(lc(x.dim.name))).join(", ")})}</p>`:""}
   </div>
 
   ${hits.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Obligations, before anything about maturity</h2></div>
