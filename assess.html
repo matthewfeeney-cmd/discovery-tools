@@ -478,6 +478,10 @@ const RC={
   wfNoControl({n}){
     return `${n} action${n>1?"s have":" has"} no control set. That is a decision nobody has made yet, not a detail.`;
   },
+  /* --- use cases --- */
+  ucProbe({scored,cr,cases}){
+    return `<b>Tested on ${scored} real examples.</b> ${cr} produced a credible result.${cr<=3?" That is a warning, not a detail — reshape the task before committing.":""}${cases.length?" What we learned: "+cases.map(w=>esc(w.toLowerCase())).join("; ")+".":""}`;
+  },
 };
 </script>
 
@@ -1279,7 +1283,7 @@ function rptUseCases(E,lc){
       ${u.verdictWhy?`<p class="why"><b>Our view.</b> ${E(u.verdictWhy)}</p>`:""}
       ${g.length?`<p class="ctx"><b>Gated by:</b> ${g.map(x=>E(lc(x.dim.name))+" (Stage "+x.stage+", "+E(x.why)+")").join("; ")}.</p>`:""}
       ${u.bvb?`<p><b>Build or buy.</b> ${E(u.bvb)}${u.bvbTools?" "+E(u.bvbTools):""}</p>`:""}
-      ${p&&p.scored>=5?`<p class="${p.cr<=3?"flag":"ctx"}"><b>Tested on ${p.scored} real examples.</b> ${p.cr} produced a credible result.${p.cr<=3?" That is a warning, not a detail — reshape the task before committing.":""}${(u.probe.cases||[]).filter(c=>c.w).length?" What we learned: "+(u.probe.cases||[]).filter(c=>c.w).map(c=>E(c.w.toLowerCase())).join("; ")+".":""}</p>`:""}
+      ${p&&p.scored>=5?`<p class="${p.cr<=3?"flag":"ctx"}">${RC.ucProbe({scored:p.scored,cr:p.cr,cases:(u.probe.cases||[]).filter(c=>c.w).map(c=>c.w)})}</p>`:""}
     </div>`;}).join("");
 }
 function rptPortfolio(E){
