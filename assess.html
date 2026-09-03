@@ -353,6 +353,41 @@
 </main>
 <footer>Enablis · Assess Toolkit · data stays in this browser · <a href="index.html" style="color:var(--grey)">back to launcher</a></footer>
 
+<!-- ============================================================================
+     REPORT COPY DECK
+     The words the client report says, moved out of the layout code and kept here
+     on their own. Every function takes numbers already calculated by the report
+     and returns the sentence(s) — no DOM, no calculation, no layout. The layout
+     code (in the main script below) computes the figures and asks this deck what
+     to say about them, so wording can be read and edited in one place without
+     touching the code that positions it on the page. Extracted one report section
+     at a time; RC.exec* is the executive-summary section.
+     ============================================================================ -->
+<script>
+"use strict";
+const RC={
+  /* --- executive summary --- */
+  execHeadline({stage,t,flat,flatAll,capList,nCap,nDims}){
+    return stage>=t
+      ? `You are at Stage ${stage} against a Stage ${t} ambition. Nothing at organisational level is holding you back.`
+      : flat
+        ? `You are at Stage ${stage} of 5 against a Stage ${t} ambition, and the picture is flat rather than spiky — ${flatAll?"every one of the":nCap+" of the "+nDims} dimension${flatAll?"s sits":"s sit"} at the same level. There is no single unlock here.`
+        : `You are at Stage ${stage} of 5 against a Stage ${t} ambition — and it is ${capList} that puts you there.`;
+  },
+  execParkNote({nPark,nPlan,nCap,cParkList,cPlanList,reachable}){
+    return nPark ? (nPlan
+      ? `<b>One thing to be clear about before anything else.</b> Of the ${nCap} dimensions setting your ceiling, ${nPark===1?"one":nPark===nCap?"all":nPark} — ${cParkList} — ${nPark===1?"is":"are"} deliberately not on this year's plan. That is a legitimate decision and we have recorded it as one. It also means your ceiling cannot pass Stage ${reachable} however well the rest of the plan goes. The work below lifts ${cPlanList}, which is worth doing on its own terms, but the constraint moves only when ${nPark===1?"that dimension does":"those dimensions do"}.`
+      : `<b>One thing to be clear about before anything else.</b> Every dimension setting your ceiling — ${cParkList} — is deliberately off this year's plan. That is a legitimate decision, but it means your readiness will not move this year. What follows is worth doing; it is not a route to a higher ceiling.`) : "";
+  },
+  execGapNote({stage,t,pot,proj,nDims,nCap,nPark}){
+    return stage>=t ? "" :
+      (pot&&pot>stage+0.7
+        ? `Weighted across all ${nDims} dimensions you average ${pot.toFixed(1)} today. The distance between that and Stage ${stage} is the point of this report: most of the organisation is already operating above what ${nCap>1?"these dimensions allow":"this dimension allows"}.${proj&&proj>pot+0.05?` Deliver the plan and that average moves to ${proj.toFixed(1)}${nPark?" — a real gain, though not one that moves the ceiling, for the reason above":" — but the ceiling moves further, which is what actually changes what you can do"}.`:""}`
+        : `Weighted across all ${nDims} dimensions you average ${pot.toFixed(1)} today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
+  },
+};
+</script>
+
 <script>
 "use strict";
 /* ==================== REFERENCE DATA ==================== */
@@ -1208,18 +1243,9 @@ function clientReport(){
      as "the constraint" is not a finding at all. Above four, name the shape instead of the members.
      Found by assessing a client who scored the same on everything. */
   const flat=capNames.length>4, flatAll=capNames.length>=D.length;
-  const headline=ceil.stage>=t
-    ? `You are at Stage ${ceil.stage} against a Stage ${t} ambition. Nothing at organisational level is holding you back.`
-    : flat
-      ? `You are at Stage ${ceil.stage} of 5 against a Stage ${t} ambition, and the picture is flat rather than spiky — ${flatAll?"every one of the":capNames.length+" of the "+D.length} dimension${flatAll?"s sits":"s sit"} at the same level. There is no single unlock here.`
-      : `You are at Stage ${ceil.stage} of 5 against a Stage ${t} ambition — and it is ${capList} that puts you there.`;
-  const parkNote = cPark.length ? (cPlan.length
-    ? `<b>One thing to be clear about before anything else.</b> Of the ${capNames.length} dimensions setting your ceiling, ${cPark.length===1?"one":cPark.length===capNames.length?"all":cPark.length} — ${cParkList} — ${cPark.length===1?"is":"are"} deliberately not on this year's plan. That is a legitimate decision and we have recorded it as one. It also means your ceiling cannot pass Stage ${reachableCeiling()} however well the rest of the plan goes. The work below lifts ${cPlanList}, which is worth doing on its own terms, but the constraint moves only when ${cPark.length===1?"that dimension does":"those dimensions do"}.`
-    : `<b>One thing to be clear about before anything else.</b> Every dimension setting your ceiling — ${cParkList} — is deliberately off this year's plan. That is a legitimate decision, but it means your readiness will not move this year. What follows is worth doing; it is not a route to a higher ceiling.`) : "";
-  const gapNote = ceil.stage>=t ? "" :
-    (pot&&pot>ceil.stage+0.7
-      ? `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today. The distance between that and Stage ${ceil.stage} is the point of this report: most of the organisation is already operating above what ${capNames.length>1?"these dimensions allow":"this dimension allows"}.${proj&&proj>pot+0.05?` Deliver the plan and that average moves to ${proj.toFixed(1)}${cPark.length?" — a real gain, though not one that moves the ceiling, for the reason above":" — but the ceiling moves further, which is what actually changes what you can do"}.`:""}`
-      : `Weighted across all ${D.length} dimensions you average ${pot.toFixed(1)} today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
+  const headline=RC.execHeadline({stage:ceil.stage,t,flat,flatAll,capList,nCap:capNames.length,nDims:D.length});
+  const parkNote=RC.execParkNote({nPark:cPark.length,nPlan:cPlan.length,nCap:capNames.length,cParkList,cPlanList,reachable:cPark.length?reachableCeiling():null});
+  const gapNote=RC.execGapNote({stage:ceil.stage,t,pot,proj,nDims:D.length,nCap:capNames.length,nPark:cPark.length});
 
   /* ---- dimension sections ---- */
   const dimHTML=GKEYS.map(g=>{
