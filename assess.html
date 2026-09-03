@@ -541,6 +541,31 @@ const RC={
   notLookedAt({names}){
     return `<b>And what we did not look at.</b> ${names} — out of scope or out of access in a two-week engagement. That is a limit on this document, not a judgement about you, and we would rather mark it than let it read as a finding.`;
   },
+  /* --- obligations --- */
+  obligationsLede(){
+    return "These are not scores and they are not our opinion. Each is something in force today that we found is not in place. They sit above the rest of this document because they are not aspirations.";
+  },
+  obligationsDisclaimer(){
+    return "We are not lawyers and this is not legal advice. It is a screen against what is currently in force, run so that these are on the table rather than discovered later. Anything deferred by the Digital Omnibus to December 2027 or August 2028 is deliberately excluded — a readiness report that scores you against obligations that do not yet apply is one your own risk function will pull apart.";
+  },
+  /* --- urgent list --- */
+  urgentNoneLede(){
+    return "This is a finding, not an omission. We look for two things here: anything already happening that carries exposure today, and the moves that would lift your ceiling in the next ninety days. We found neither.";
+  },
+  urgentNoneBody({atTarget}){
+    return atTarget
+      ? `You are at your target. There is no organisational constraint left for us to name, which means the next question is not "are we ready" but "which workflows are worth building" — a different piece of work, and the section on where this goes next is the relevant one.`
+      : `Your constraint is real but none of the work against it is urgent: nothing is happening today that needs containing, and nothing on the plan is both cheap and unblocking. That is an unusual and rather good position — it means the plan can be sequenced on merit rather than on pressure.`;
+  },
+  urgentNoneClosing(){
+    return "Treat the absence of an urgent list as the finding it is. Most organisations we assess have between three and nine items here.";
+  },
+  fixFirstLede({over,nUrg}){
+    return `In order. The rest of this document explains how we got here — this is the part to act on.${over?` There are ${over} more on the plan behind ${nUrg===1?"this":"these"}; they are in the sequenced section and they are not urgent yet.`:""}`;
+  },
+  fixFirstFooter({liveN,nPark,cParkList,nUrg,size}){
+    return `${liveN?`The first ${liveN===1?"item is":liveN+" items are"} not ${liveN===1?"a maturity gap":"maturity gaps"} — ${liveN===1?"it is":"they are"} already happening in your organisation, so ${liveN===1?"it does":"they do"} not wait for a plan. ${liveN===1?"It":"Each"} should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving ${liveN===1?"it":"them"} open is not, and that is the state we found ${liveN===1?"it":"them"} in. `:""}${nPark?`The rest are the highest-leverage moves available given that ${esc(cParkList)} ${nPark===1?"is":"are"} off this year's plan.`:`The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done.`} Behind ${nUrg===1?"this":"these"} sits the full plan of ${size} item${size===1?"":"s"}, sequenced.`;
+  },
 };
 </script>
 
@@ -1683,23 +1708,21 @@ function clientReport(){
   </div>
 
   ${hits.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Obligations, before anything about maturity</h2></div>
-    <p class="lede">These are not scores and they are not our opinion. Each is something in force today that we found is not in place. They sit above the rest of this document because they are not aspirations.</p>
+    <p class="lede">${RC.obligationsLede()}</p>
     ${hits.map(x=>`<div class="expo-item"><b>${E(x.law)}</b>
       <p>${E(x.q.replace(/\?$/,""))} — <b>no</b>.</p>
       <p class="ex-why">${E(x.hit)}</p></div>`).join("")}
-    <p class="method">We are not lawyers and this is not legal advice. It is a screen against what is currently in force, run so that these are on the table rather than discovered later. Anything deferred by the Digital Omnibus to December 2027 or August 2028 is deliberately excluded — a readiness report that scores you against obligations that do not yet apply is one your own risk function will pull apart.</p>
+    <p class="method">${RC.obligationsDisclaimer()}</p>
   </div>`:""}
 
   ${!urg.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Nothing on the urgent list</h2></div>
-    <p class="lede">This is a finding, not an omission. We look for two things here: anything already happening that carries exposure today, and the moves that would lift your ceiling in the next ninety days. We found neither.</p>
-    <p>${ceil.stage>=t
-      ? `You are at your target. There is no organisational constraint left for us to name, which means the next question is not "are we ready" but "which workflows are worth building" — a different piece of work, and the section on where this goes next is the relevant one.`
-      : `Your constraint is real but none of the work against it is urgent: nothing is happening today that needs containing, and nothing on the plan is both cheap and unblocking. That is an unusual and rather good position — it means the plan can be sequenced on merit rather than on pressure.`}</p>
-    <p class="method">Treat the absence of an urgent list as the finding it is. Most organisations we assess have between three and nine items here.</p>
+    <p class="lede">${RC.urgentNoneLede()}</p>
+    <p>${RC.urgentNoneBody({atTarget:ceil.stage>=t})}</p>
+    <p class="method">${RC.urgentNoneClosing()}</p>
   </div>`:""}
 
   ${urg.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Fix these first</h2></div>
-    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on.${over?` There are ${over} more on the plan behind ${urg.length===1?"this":"these"}; they are in the sequenced section and they are not urgent yet.`:""}</p>
+    <p class="lede">${RC.fixFirstLede({over,nUrg:urg.length})}</p>
     <div class="board">
       ${urg.map((u,i)=>`<div class="ub ${u.band}">
         <div class="ubn">${i+1}</div>
@@ -1711,7 +1734,7 @@ function clientReport(){
         </div>
       </div>`).join("")}
     </div>
-    <p class="method">${liveN?`The first ${liveN===1?"item is":liveN+" items are"} not ${liveN===1?"a maturity gap":"maturity gaps"} — ${liveN===1?"it is":"they are"} already happening in your organisation, so ${liveN===1?"it does":"they do"} not wait for a plan. ${liveN===1?"It":"Each"} should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving ${liveN===1?"it":"them"} open is not, and that is the state we found ${liveN===1?"it":"them"} in. `:""}${cPark.length?`The rest are the highest-leverage moves available given that ${E(cParkList)} ${cPark.length===1?"is":"are"} off this year's plan.`:`The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done.`} Behind ${urg.length===1?"this":"these"} sits the full plan of ${size} item${size===1?"":"s"}, sequenced.</p>
+    <p class="method">${RC.fixFirstFooter({liveN,nPark:cPark.length,cParkList,nUrg:urg.length,size})}</p>
     ${fit?`<div class="cap-box">
       <h4>What fits in a year, on the people you have</h4>
       <p>You told us <b>${cap.people} ${cap.people===1?"person has":"people have"} ${cap.days} day${cap.days===1?"":"s"} a month</b> for this — about <b>${fit.perYear} days</b> across the year. The ${size} items on the plan need roughly <b>${fit.demand} days</b> at our estimate.</p>
