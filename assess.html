@@ -405,6 +405,16 @@ const RC={
   skillsNarrow({names}){
     return `<b>Held too narrowly.</b> ${names} — strong enough, but concentrated in too few people to survive a resignation.`;
   },
+  /* --- code audit --- */
+  codeAuditIntro({nRepos,nDims}){
+    return `Rather than ask your engineers to rate their own codebase, we audited it. ${nRepos?`${nRepos} repositor${nRepos>1?"ies":"y"} were in scope`:"The repositories in scope were audited"} across ${nDims} dimensions, each scored out of 100. Every finding is marked according to whether it was measured by a tool or inferred, and any check that failed to complete is reported as incomplete rather than scored as clean.`;
+  },
+  codeIncomplete({names}){
+    return `<b>Incomplete checks.</b> ${names} could not be completed. We report these as incomplete rather than scoring them clean, because a check that did not run is not a pass.`;
+  },
+  codeSecrets(){
+    return `<b>Credentials found in the repository.</b> The audit surfaced live secrets committed to source control. These should be rotated at source. The underlying report quotes them verbatim and is deliberately excluded from this document and from any circulation.`;
+  },
 };
 </script>
 
@@ -1314,7 +1324,7 @@ function clientReport(){
 
   /* ---- code audit ---- */
   const codeHTML=!scan?"":`
-    <p>Rather than ask your engineers to rate their own codebase, we audited it. ${S.cb.repos&&S.cb.repos.length?`${S.cb.repos.length} repositor${S.cb.repos.length>1?"ies":"y"} were in scope`:"The repositories in scope were audited"} across ${GT_PARTS.length} dimensions, each scored out of 100. Every finding is marked according to whether it was measured by a tool or inferred, and any check that failed to complete is reported as incomplete rather than scored as clean.</p>
+    <p>${RC.codeAuditIntro({nRepos:(S.cb.repos&&S.cb.repos.length)||0,nDims:GT_PARTS.length})}</p>
     <div class="two">
       <div class="stat"><span>${Math.round(scan.eng)}<small>/100</small></span>Engineering quality</div>
       <div class="stat"><span>${Math.round(scan.ai)}<small>/100</small></span>Readiness for AI-assisted work</div>
@@ -1324,8 +1334,8 @@ function clientReport(){
       const v=Number(S.cb.gt[x.id]),b=bandOf(v);
       return `<tr><td>${E(x.n)}</td><td class="b-${b}"><b>${v}</b></td><td>${E((S.cb.gtNotes||{})[x.id]||"")}</td></tr>`;}).join("")}
     </tbody></table>
-    ${cbIncomplete().length?`<p class="flag"><b>Incomplete checks.</b> ${cbIncomplete().map(x=>E(lc(x.n))).join(", ")} could not be completed. We report these as incomplete rather than scoring them clean, because a check that did not run is not a pass.</p>`:""}
-    ${S.cb.secrets==="Yes"?`<p class="flag"><b>Credentials found in the repository.</b> The audit surfaced live secrets committed to source control. These should be rotated at source. The underlying report quotes them verbatim and is deliberately excluded from this document and from any circulation.</p>`:""}
+    ${cbIncomplete().length?`<p class="flag">${RC.codeIncomplete({names:cbIncomplete().map(x=>E(lc(x.n))).join(", ")})}</p>`:""}
+    ${S.cb.secrets==="Yes"?`<p class="flag">${RC.codeSecrets()}</p>`:""}
     ${S.cb.notes?`<p><b>In summary.</b> ${E(S.cb.notes)}</p>`:""}`;
 
   /* ---- roadmap ---- */
