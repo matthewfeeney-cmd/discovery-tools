@@ -501,6 +501,22 @@ const RC={
   portfolioWaveSub({wv}){
     return wv==="NOW"?"Value and readiness both there.":wv==="NEXT"?"Either the value or the readiness needs work first.":"Neither is there today. Recorded so the decision is deliberate.";
   },
+  /* --- how Enablis can help (proposal) --- */
+  sellProposal(){
+    return `<b>This section is a proposal, not a finding.</b> Everything above is the assessment as we found it and stands whether or not you do any of the following with us.`;
+  },
+  sellFirst90(){
+    return `<b>The items marked for the first 90 days need no outside help.</b> They are documents, decisions and named owners. If you do only those, this assessment will have paid for itself.`;
+  },
+  sellAddMost({atTarget,capList}){
+    return `<b>Where we would add most.</b> ${atTarget?"You are at your target already. The next question is which workflows are worth building, which is a different piece of work.":`Lifting ${esc(capList)} is the unlock, and it is the part clients most often start and then stall on. We can run it as a short engagement with your people rather than instead of them.`}`;
+  },
+  sellNextStep(){
+    return `<b>The obvious next step</b> is to take one workflow and three or four candidate use cases through to a costed business case — value, effort, payback, and which of the gaps above gates each one. That turns this readiness picture into a funded plan.`;
+  },
+  sellTwelveMonths(){
+    return `<b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.`;
+  },
 };
 </script>
 
@@ -1791,11 +1807,11 @@ function clientReport(){
 
   ${RPT.sell?`<div class="sec"><div class="sh"><span class="num">—</span><h2>How Enablis can help</h2></div>
     <div class="sell">
-      <p style="font-size:13.4px;color:#5f6368"><b>This section is a proposal, not a finding.</b> Everything above is the assessment as we found it and stands whether or not you do any of the following with us.</p>
-      <p><b>The items marked for the first 90 days need no outside help.</b> They are documents, decisions and named owners. If you do only those, this assessment will have paid for itself.</p>
-      <p><b>Where we would add most.</b> ${ceil.stage<t?`Lifting ${E(capList)} is the unlock, and it is the part clients most often start and then stall on. We can run it as a short engagement with your people rather than instead of them.`:"You are at your target already. The next question is which workflows are worth building, which is a different piece of work."}</p>
-      <p><b>The obvious next step</b> is to take one workflow and three or four candidate use cases through to a costed business case — value, effort, payback, and which of the gaps above gates each one. That turns this readiness picture into a funded plan.</p>
-      <p style="margin-bottom:0"><b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.</p>
+      <p style="font-size:13.4px;color:#5f6368">${RC.sellProposal()}</p>
+      <p>${RC.sellFirst90()}</p>
+      <p>${RC.sellAddMost({atTarget:ceil.stage>=t,capList})}</p>
+      <p>${RC.sellNextStep()}</p>
+      <p style="margin-bottom:0">${RC.sellTwelveMonths()}</p>
     </div>
   </div>`:""}
 
