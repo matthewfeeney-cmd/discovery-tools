@@ -482,6 +482,25 @@ const RC={
   ucProbe({scored,cr,cases}){
     return `<b>Tested on ${scored} real examples.</b> ${cr} produced a credible result.${cr<=3?" That is a warning, not a detail — reshape the task before committing.":""}${cases.length?" What we learned: "+cases.map(w=>esc(w.toLowerCase())).join("; ")+".":""}`;
   },
+  /* --- portfolio / business case --- */
+  portfolioIntro({n}){
+    return `All ${n} candidates, ranked on value first and readiness second. The order is a recommendation, not an instruction — but the reasoning behind each position is above.`;
+  },
+  portfolioWhyTwoNumbers(){
+    return `<b>Why those two numbers differ, and why we show both.</b> The first is what the time actually costs you today, if AI removed all of it and everybody used it. The second applies three discounts: how many people will really adopt it, how much of the task it will really do, and how cleanly it will really connect. The evidence is that the first number overstates by somewhere between two and ten times. Most business cases quote it anyway.`;
+  },
+  portfolioFirstYear({rampPct,y1,cost}){
+    return `<b>And neither of them is your first year.</b> Value arrives on a curve, not a step. There is a period where people are learning to work differently, where output has to be checked more carefully than it eventually will be, and where testing and approval are absorbing more change than they were built for. Published research finds this dip consistent enough to plan around. Our working assumption — and we want to be clear it is an assumption rather than a measurement — is that the dip runs deeper and longer where the foundations are weaker, which is what the first half of this document assesses. On that basis we have modelled roughly <b>${rampPct}%</b> of steady-state value in year one, or ${y1} against a year-one cost of ${cost}. Change that percentage and the case changes with it; it is the single assumption most worth arguing about.`;
+  },
+  portfolioTwoThings(){
+    return `Two things follow. The return is a second-year story and should be funded as one. And the common failure is not that the value never arrives — it is that the dip is read as failure and the funding is pulled while the return is still coming. One further cost is not in these numbers at all: the same research finds change failure rate tends to rise as more change moves faster through pipelines and review gates built for less of it. We have not modelled it because we have not measured your current failure rate, but it should be budgeted rather than discovered.`;
+  },
+  portfolioWaveLabel({wv}){
+    return wv==="NOW"?"Start with":wv==="NEXT"?"Then":"Not yet";
+  },
+  portfolioWaveSub({wv}){
+    return wv==="NOW"?"Value and readiness both there.":wv==="NEXT"?"Either the value or the readiness needs work first.":"Neither is there today. Recorded so the decision is deliberate.";
+  },
 };
 </script>
 
@@ -1295,7 +1314,7 @@ function rptPortfolio(E){
   const ramp=tREV?tY1/tREV:0;
   const waves=["NOW","NEXT","LATER"];
   return `
-    <p>All ${rows.length} candidates, ranked on value first and readiness second. The order is a recommendation, not an instruction — but the reasoning behind each position is above.</p>
+    <p>${RC.portfolioIntro({n:rows.length})}</p>
     <table class="tbl"><thead><tr><th>#</th><th>Use case</th><th>Verdict</th><th>Value</th><th>Readiness</th><th>Steady state</th><th>Year one</th></tr></thead><tbody>
     ${rows.map((r,i)=>{const m=calcVal(r.u);return `<tr class="${i===0?"short":""}"><td>${i+1}</td><td>${E(r.u.name)}</td>
       <td><b class="${r.vd.cls==="g"?"b-green":r.vd.cls==="r"?"b-red":"b-amber"}">${E(r.vd.label)}</b></td>
@@ -1305,12 +1324,12 @@ function rptPortfolio(E){
       <div class="stat"><span>${money(tPEV)}</span>If everything worked perfectly</div>
       <div class="stat"><span>${money(tREV)}</span>Steady state, once bedded in</div>
     </div>
-    <p><b>Why those two numbers differ, and why we show both.</b> The first is what the time actually costs you today, if AI removed all of it and everybody used it. The second applies three discounts: how many people will really adopt it, how much of the task it will really do, and how cleanly it will really connect. The evidence is that the first number overstates by somewhere between two and ten times. Most business cases quote it anyway.</p>
-    <p><b>And neither of them is your first year.</b> Value arrives on a curve, not a step. There is a period where people are learning to work differently, where output has to be checked more carefully than it eventually will be, and where testing and approval are absorbing more change than they were built for. Published research finds this dip consistent enough to plan around. Our working assumption — and we want to be clear it is an assumption rather than a measurement — is that the dip runs deeper and longer where the foundations are weaker, which is what the first half of this document assesses. On that basis we have modelled roughly <b>${Math.round(ramp*100)}%</b> of steady-state value in year one, or ${money(tY1)} against a year-one cost of ${money(tCost)}. Change that percentage and the case changes with it; it is the single assumption most worth arguing about.</p>
-    <p>Two things follow. The return is a second-year story and should be funded as one. And the common failure is not that the value never arrives — it is that the dip is read as failure and the funding is pulled while the return is still coming. One further cost is not in these numbers at all: the same research finds change failure rate tends to rise as more change moves faster through pipelines and review gates built for less of it. We have not modelled it because we have not measured your current failure rate, but it should be budgeted rather than discovered.</p>
+    <p>${RC.portfolioWhyTwoNumbers()}</p>
+    <p>${RC.portfolioFirstYear({rampPct:Math.round(ramp*100),y1:money(tY1),cost:money(tCost)})}</p>
+    <p>${RC.portfolioTwoThings()}</p>
     ${waves.map(wv=>{const ws=rows.filter(r=>waveOf(r.vd)===wv); if(!ws.length)return"";
-      const lab=wv==="NOW"?"Start with":wv==="NEXT"?"Then":"Not yet";
-      const sub=wv==="NOW"?"Value and readiness both there.":wv==="NEXT"?"Either the value or the readiness needs work first.":"Neither is there today. Recorded so the decision is deliberate.";
+      const lab=RC.portfolioWaveLabel({wv});
+      const sub=RC.portfolioWaveSub({wv});
       return `<h4 class="sub-h">${lab}</h4><p class="method">${sub}</p><ul class="method">${ws.map(r=>`<li><b>${E(r.u.name)}</b> — ${E(r.vd.head)}</li>`).join("")}</ul>`;}).join("")}`;
 }
 
