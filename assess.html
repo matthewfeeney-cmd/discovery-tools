@@ -471,6 +471,13 @@ const RC={
   methodFramework({nDims}){
     return `<b>Where the framework comes from.</b> Seven of the ${nDims} dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.`;
   },
+  /* --- workflow --- */
+  wfRunWithoutUs(){
+    return "Ten things somebody has to be able to do the day after go-live. The question is not whether we can build it — it is whether it survives us leaving.";
+  },
+  wfNoControl({n}){
+    return `${n} action${n>1?"s have":" has"} no control set. That is a decision nobody has made yet, not a detail.`;
+  },
 };
 </script>
 
@@ -1229,7 +1236,7 @@ function rptWorkflow(E,lc){
       <td class="${x.v==="R"?"b-red":x.v==="A"?"b-amber":x.v==="G"?"b-green":""}">${E(x.txt)}</td></tr>`).join("")}
     </tbody></table>
     <h4 class="sub-h">Could you run this without us?</h4>
-    <p>Ten things somebody has to be able to do the day after go-live. The question is not whether we can build it — it is whether it survives us leaving.</p>
+    <p>${RC.wfRunWithoutUs()}</p>
     <table class="tbl"><thead><tr><th>Capability</th><th>Needed</th><th>Today</th><th>Who</th></tr></thead><tbody>
     ${RCAPS.map(c=>{const s=rcap(w,c.id),req=rReq(w,c);
       if(s.cur===null||s.cur===undefined)return"";
@@ -1248,7 +1255,7 @@ function rptWorkflow(E,lc){
     <table class="tbl"><thead><tr><th>What the AI does</th><th>Worst case if it is wrong</th><th>Control</th></tr></thead><tbody>
     ${w.guards.filter(g=>g.act).map(g=>`<tr class="${!g.control?"short":""}"><td>${E(g.act)}</td><td>${E(g.worst)}</td>
       <td>${g.control?E(g.control):'<b class="b-red">none set</b>'}${g.trigger?`<span class="sub2">escalates on: ${E(g.trigger)}</span>`:""}</td></tr>`).join("")}
-    </tbody></table>${nogo.length?`<p class="flag">${nogo.length} action${nogo.length>1?"s have":" has"} no control set. That is a decision nobody has made yet, not a detail.</p>`:""}`:""}`;
+    </tbody></table>${nogo.length?`<p class="flag">${RC.wfNoControl({n:nogo.length})}</p>`:""}`:""}`;
   }).join("");
 }
 function rptUseCases(E,lc){
