@@ -110,6 +110,30 @@ for(let i=0;i<N;i++){
     cands.filter(x=>x.kind==="ambition"&&ctx.ambDimsOf(x.i).length).forEach(x=>{
       if(x.gates.length<best.gates.length&&x.blocked<=best.blocked)
         bad(i,"seam recommended a more-blocked candidate");});}
+  /* One action, one story — on shapes no worked example covers. The client report, the on-screen
+     roadmap and the text export all resolve an action through actView(); a surface that slips back
+     to raw library text stops carrying the resolved value. Check every library action on every
+     generated client. (The eight examples get an exact field-by-field version in actions.js.) */
+  let screen="";
+  {const road={},orig=ctx.document.getElementById;
+   ctx.document.getElementById=id=>id==="roadOut"?road:{};
+   try{ctx.renderOut();screen=road.innerHTML||"";}
+   catch(e){bad(i,"screen (renderOut) threw: "+e.message);}
+   finally{ctx.document.getElementById=orig;}}
+  const esc=ctx.esc;
+  ph.filter(p=>!p.parked).forEach(p=>p.items.forEach(g=>{
+    if(!/^A\d+$/.test(g.act.id))return;
+    const R=ctx.actView(g),x=ctx.actLine(g).join("\n"),id=g.act.id;
+    if(R.why.t){ if(!x.includes("Why: "+R.why.t))bad(i,"export reason not from actView "+id);
+      if(!html.includes(esc(R.why.t)))bad(i,"report reason not from actView "+id);
+      if(!screen.includes(esc(R.why.t.slice(0,150))))bad(i,"screen reason not from actView "+id);}
+    if(R.owner.t){ if(!x.includes("Owner: "+R.owner.t))bad(i,"export owner not from actView "+id);
+      if(!html.includes(esc(R.owner.t)))bad(i,"report owner not from actView "+id);}
+    if(R.done){ if(!x.includes("Done when: "+R.done))bad(i,"export done not from actView "+id);
+      if(!html.includes(esc(R.done)))bad(i,"report done not from actView "+id);
+      if(!screen.includes(esc(R.done)))bad(i,"screen done not from actView "+id);}
+    if(R.sponsor.t&&!screen.includes(esc(R.sponsor.t)))bad(i,"screen sponsor not from actView "+id);
+  }));
   const reg=[ceil?ceil.stage:"-",Object.keys(s.dimOff).length,parked.length,urg.length];
   seen[reg.join("/")]=(seen[reg.join("/")]||0)+1;
 }
