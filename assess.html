@@ -592,6 +592,31 @@ const RC={
   dimByDimIntro(){
     return `For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.`;
   },
+  /* --- section intros --- */
+  peopleIntro({t}){
+    return `Seven capabilities, scored on two axes: how deep the skill goes, and how widely it is held. Depth without reach is a key-person risk rather than a capability. The level each one needs rises with your ambition — these are measured against Stage ${t}.`;
+  },
+  planIntro(){
+    return `The board above is the summary. This is every item in order, each with a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.`;
+  },
+  planContainNote({n}){
+    return `The ${n} item${n>1?"s":""} already happening ${n>1?"are":"is"} listed on the board above and ${n>1?"do":"does"} not appear again here — ${n>1?"they sit":"it sits"} outside the sequence by design.`;
+  },
+  planNoLib({names,n}){
+    return `<b>On ${n} dimension${n===1?"":"s"} we have nothing to offer you.</b> ${names} — you are past the point our standard recommendations reach, and the honest position is to say so rather than invent something. What those dimensions need is a recommendation written specifically for you, and that is a conversation rather than a library item. It is also worth noting as a strength: most organisations we assess are nowhere near the end of this list.`;
+  },
+  planTried({rows,n}){
+    return `<b>What has already been tried here.</b> ${rows.map(t=>esc(t.what)+(t.end?" — "+esc(lc(t.end)):"")+(t.why?", because "+esc(lc(t.why)):"")).join(". ")}. We have kept ${n===1?"that":"those"} in view: an action that has stalled here once needs a different owner or a different sponsor, not a second run at the same plan.`;
+  },
+  planFunded({rows}){
+    return `<b>Docking onto what you already have.</b> ${rows.map(f=>esc(f.prog)+(f.owner?" ("+esc(f.owner)+")":"")+(f.covers?" covers "+esc(lc(f.covers)):"")+(f.when?", "+esc(lc(f.when)):"")).join("; ")}. Where these overlap the actions below, the action is to influence the existing programme rather than start a parallel one.`;
+  },
+  workflowIntro(){
+    return `Everything above is about your organisation. This section is about one piece of work inside it, examined in detail — because readiness only becomes real when it meets a specific process.`;
+  },
+  candidatesIntro(){
+    return `Each scored on two axes that are deliberately kept apart: how much it is worth, and how ready you are to do it. A high score on one and a low score on the other is the most useful result, because it tells you what to fix rather than what to abandon.`;
+  },
 };
 </script>
 
@@ -1804,7 +1829,7 @@ function clientReport(){
   </div>
 
   ${anyTs?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Your people</h2></div>
-    <p>Seven capabilities, scored on two axes: how deep the skill goes, and how widely it is held. Depth without reach is a key-person risk rather than a capability. The level each one needs rises with your ambition — these are measured against Stage ${t}.</p>
+    <p>${RC.peopleIntro({t})}</p>
     ${skillHTML}
   </div>`:""}
 
@@ -1813,21 +1838,21 @@ function clientReport(){
   </div>`:""}
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>The plan, in sequence</h2></div>
-    <p>The board above is the summary. This is every item in order, each with a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.</p>
-    ${con.length?`<p class="method">The ${con.length} item${con.length>1?"s":""} already happening ${con.length>1?"are":"is"} listed on the board above and ${con.length>1?"do":"does"} not appear again here — ${con.length>1?"they sit":"it sits"} outside the sequence by design.</p>`:""}
-    ${noLib?`<p class="flag"><b>On ${noLib.items.length} dimension${noLib.items.length===1?"":"s"} we have nothing to offer you.</b> ${noLib.items.map(g=>E(lc(g.dim.name))).join(", ")} — you are past the point our standard recommendations reach, and the honest position is to say so rather than invent something. What those dimensions need is a recommendation written specifically for you, and that is a conversation rather than a library item. It is also worth noting as a strength: most organisations we assess are nowhere near the end of this list.</p>`:""}
-    ${tried.length?`<p class="why"><b>What has already been tried here.</b> ${tried.map(t=>E(t.what)+(t.end?" — "+E(lc(t.end)):"")+(t.why?", because "+E(lc(t.why)):"")).join(". ")}. We have kept ${tried.length===1?"that":"those"} in view: an action that has stalled here once needs a different owner or a different sponsor, not a second run at the same plan.</p>`:""}
-    ${funded.length?`<p class="ctx"><b>Docking onto what you already have.</b> ${funded.map(f=>E(f.prog)+(f.owner?" ("+E(f.owner)+")":"")+(f.covers?" covers "+E(lc(f.covers)):"")+(f.when?", "+E(lc(f.when)):"")).join("; ")}. Where these overlap the actions below, the action is to influence the existing programme rather than start a parallel one.</p>`:""}
+    <p>${RC.planIntro()}</p>
+    ${con.length?`<p class="method">${RC.planContainNote({n:con.length})}</p>`:""}
+    ${noLib?`<p class="flag">${RC.planNoLib({names:noLib.items.map(g=>E(lc(g.dim.name))).join(", "),n:noLib.items.length})}</p>`:""}
+    ${tried.length?`<p class="why">${RC.planTried({rows:tried,n:tried.length})}</p>`:""}
+    ${funded.length?`<p class="ctx">${RC.planFunded({rows:funded})}</p>`:""}
     ${roadHTML}
   </div>
 
   ${wfHTML?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>The workflow we went into</h2></div>
-    <p>Everything above is about your organisation. This section is about one piece of work inside it, examined in detail — because readiness only becomes real when it meets a specific process.</p>
+    <p>${RC.workflowIntro()}</p>
     ${wfHTML}
   </div>`:""}
 
   ${ucHTML?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>The candidates, one by one</h2></div>
-    <p>Each scored on two axes that are deliberately kept apart: how much it is worth, and how ready you are to do it. A high score on one and a low score on the other is the most useful result, because it tells you what to fix rather than what to abandon.</p>
+    <p>${RC.candidatesIntro()}</p>
     ${ucHTML}
   </div>`:""}
 
