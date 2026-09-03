@@ -566,6 +566,32 @@ const RC={
   fixFirstFooter({liveN,nPark,cParkList,nUrg,size}){
     return `${liveN?`The first ${liveN===1?"item is":liveN+" items are"} not ${liveN===1?"a maturity gap":"maturity gaps"} — ${liveN===1?"it is":"they are"} already happening in your organisation, so ${liveN===1?"it does":"they do"} not wait for a plan. ${liveN===1?"It":"Each"} should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving ${liveN===1?"it":"them"} open is not, and that is the state we found ${liveN===1?"it":"them"} in. `:""}${nPark?`The rest are the highest-leverage moves available given that ${esc(cParkList)} ${nPark===1?"is":"are"} off this year's plan.`:`The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done.`} Behind ${nUrg===1?"this":"these"} sits the full plan of ${size} item${size===1?"":"s"}, sequenced.`;
   },
+  /* --- plan capacity --- */
+  capacitySupply({people,days,perYear,size,demand}){
+    return `You told us <b>${people} ${people===1?"person has":"people have"} ${days} day${days===1?"":"s"} a month</b> for this — about <b>${perYear} days</b> across the year. The ${size} items on the plan need roughly <b>${demand} days</b> at our estimate.`;
+  },
+  capacityFit({beyondN,inYearN,size,years,spare}){
+    return beyondN
+      ? `<b>${inYearN} of the ${size} fit.</b> The other ${beyondN} do not, and we would rather draw that line than hand you a list and let you find out in month eight. On these numbers the full plan is a <b>${years}-year</b> programme. Three honest options: fund more capacity, park more dimensions, or accept the longer horizon and say so at the board. What does not work is agreeing all ${size} and hoping.`
+      : `<b>All ${size} fit</b>, with about ${spare} days spare. That is a plan you can commit to rather than aspire to.`;
+  },
+  capacityCaveat({low,medium,high}){
+    return `Day costs are our estimate from the effort band on each action — low ${low}, medium ${medium}, high ${high} — not a quote. Replace them with your own numbers and the arithmetic still holds.`;
+  },
+  sponsorThree({list}){
+    return `<b>You told us your own three were:</b> ${list}. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.`;
+  },
+  /* --- and one thing not to do yet --- */
+  notToDoNote(){
+    return `This is not something already happening. It is a warning about sequence: applying AI here before this is addressed tends to make the outcome worse rather than merely leaving value unclaimed.`;
+  },
+  /* --- the picture table / dimension by dimension --- */
+  notThisYearNote(){
+    return `<b>Not this year</b> means we assessed the dimension, scored it, and agreed with you that closing it is not a priority for the next twelve months. It still counts toward your ceiling. It is listed rather than hidden because a gap you have decided to live with is a decision, and decisions should be visible.`;
+  },
+  dimByDimIntro(){
+    return `For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.`;
+  },
 };
 </script>
 
@@ -1737,20 +1763,18 @@ function clientReport(){
     <p class="method">${RC.fixFirstFooter({liveN,nPark:cPark.length,cParkList,nUrg:urg.length,size})}</p>
     ${fit?`<div class="cap-box">
       <h4>What fits in a year, on the people you have</h4>
-      <p>You told us <b>${cap.people} ${cap.people===1?"person has":"people have"} ${cap.days} day${cap.days===1?"":"s"} a month</b> for this — about <b>${fit.perYear} days</b> across the year. The ${size} items on the plan need roughly <b>${fit.demand} days</b> at our estimate.</p>
+      <p>${RC.capacitySupply({people:cap.people,days:cap.days,perYear:fit.perYear,size,demand:fit.demand})}</p>
       <div class="cap-bar"><span style="width:${Math.min(100,Math.round(fit.perYear/Math.max(fit.demand,1)*100))}%"></span></div>
-      <p>${fit.beyond.length
-        ? `<b>${fit.inYear.length} of the ${size} fit.</b> The other ${fit.beyond.length} do not, and we would rather draw that line than hand you a list and let you find out in month eight. On these numbers the full plan is a <b>${fit.years.toFixed(1)}-year</b> programme. Three honest options: fund more capacity, park more dimensions, or accept the longer horizon and say so at the board. What does not work is agreeing all ${size} and hoping.`
-        : `<b>All ${size} fit</b>, with about ${fit.perYear-fit.spent} days spare. That is a plan you can commit to rather than aspire to.`}</p>
-      <p class="cap-cav">Day costs are our estimate from the effort band on each action — low ${EFFORT_DAYS.low}, medium ${EFFORT_DAYS.medium}, high ${EFFORT_DAYS.high} — not a quote. Replace them with your own numbers and the arithmetic still holds.</p>
+      <p>${RC.capacityFit({beyondN:fit.beyond.length,inYearN:fit.inYear.length,size,years:fit.years.toFixed(1),spare:fit.perYear-fit.spent})}</p>
+      <p class="cap-cav">${RC.capacityCaveat({low:EFFORT_DAYS.low,medium:EFFORT_DAYS.medium,high:EFFORT_DAYS.high})}</p>
     </div>`:""}
-    ${spon.length?`<p class="ctx"><b>You told us your own three were:</b> ${spon.map(E).join(" · ")}. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.</p>`:""}
+    ${spon.length?`<p class="ctx">${RC.sponsorThree({list:spon.map(E).join(" · ")})}</p>`:""}
   </div>`:""}
 
   ${stop.length?`<div class="sec"><div class="sh"><span class="num">${N()}</span><h2>And one thing not to do yet</h2></div>
       ${stop.map(c=>{const n=S.dimNote[c.dim.id]||{};
         return `<p><b>${E(c.dim.name)} — Stage ${c.stage}.</b> ${E(c.ca)}</p>${n.riskGo?`<p class="method">${E(n.riskGo)}</p>`:""}`;}).join("")}
-      <p class="method">This is not something already happening. It is a warning about sequence: applying AI here before this is addressed tends to make the outcome worse rather than merely leaving value unclaimed.</p>
+      <p class="method">${RC.notToDoNote()}</p>
   </div>`:""}
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How to read the scores</h2></div>
@@ -1771,11 +1795,11 @@ function clientReport(){
         <td>${wPct(d)}%</td><td><b>${s.avg!==null?"Stage "+fmtS(s.avg):"—"}</b></td>
         <td>${pk?"—":"Stage "+DTGT(d.id)}</td></tr>`;}).join("")}
     </tbody></table>
-    ${parked().length?`<p class="method"><b>Not this year</b> means we assessed the dimension, scored it, and agreed with you that closing it is not a priority for the next twelve months. It still counts toward your ceiling. It is listed rather than hidden because a gap you have decided to live with is a decision, and decisions should be visible.</p>`:""}
+    ${parked().length?`<p class="method">${RC.notThisYearNote()}</p>`:""}
   </div>
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Dimension by dimension</h2></div>
-    <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
+    <p>${RC.dimByDimIntro()}</p>
     ${dimHTML}
   </div>
 
