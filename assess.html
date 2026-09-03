@@ -617,6 +617,29 @@ const RC={
   candidatesIntro(){
     return `Each scored on two axes that are deliberately kept apart: how much it is worth, and how ready you are to do it. A high score on one and a low score on the other is the most useful result, because it tells you what to fix rather than what to abandon.`;
   },
+  /* --- the seam: where this goes next --- */
+  seamNoAmbitions(){
+    return `<b>Nobody could name three things you want to be able to do.</b> We asked, on day one, for up to three capabilities you do not have today and would want in twelve months. We did not get them. We are reporting that as a finding rather than leaving it out, because it is one: an organisation whose leadership cannot name what it wants AI to change is not ready for a use-case engagement whatever the fourteen dimensions say — and the fix is a conversation, not a project. Everything in this report still stands. What it cannot tell you is where to point the capability once you have it.`;
+  },
+  seamIntro(){
+    return `Readiness is not the destination. It is what determines whether anything you build on top of it works. Below are the candidates this assessment surfaced for the next piece of work, and — the useful part — which of them your own findings least stand in the way of.`;
+  },
+  seamRecommendation({name,gates}){
+    return `<b>Our recommendation on where to start.</b> ${esc(name)} — ${gates.length
+      ? "it runs through "+esc(gates.map(x=>lc(x.dim.name)).join(" and "))+", which "+(gates.length===1?"is":"are")+" also on the plan above, so the two pieces of work reinforce each other rather than queue behind one another."
+      : "nothing this assessment scored below Stage 3 stands in its way, which makes it the cheapest place to prove the approach while the foundations are still being laid."} That is a judgement about sequence, not about value — the most valuable one is usually the most gated, and choosing between those two is the conversation to have.`;
+  },
+  seamNoSequencing(){
+    return `<b>We have no sequencing advice to give you, and that is the finding.</b> None of these is blocked by anything this assessment scored below Stage 3. At most maturity levels the readiness picture picks the starting point for you; at yours it does not, which means the choice is a commercial one rather than a technical one. Pick on value, on who will sponsor it, and on which one you can measure — and that is what the next piece of work is for.`;
+  },
+  seamRunning({name,note}){
+    return `<b>${esc(name)}.</b> ${esc(note)} This is a use case. It has a cost, a benefit and a risk profile like any other, and the only difference is that nobody has sized it. It belongs in the next piece of work at the top of the list, not because the value is large but because it is the one currently running without a business case.`;
+  },
+  seamNextEngagement({lowMaturity}){
+    return `What the next engagement does with these: takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed case with a go, adjust or stop against each. ${lowMaturity
+      ? "The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point."
+      : "At your level the gating is no longer the interesting part; the numbers are. Expect that work to be about value, effort and payback rather than about whether the foundations will hold."}`;
+  },
 };
 </script>
 
@@ -1862,25 +1885,21 @@ function clientReport(){
 
   ${(cands.length||!ambList().length)?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Where this goes next</h2></div>
     ${!ambList().length
-      ? `<p class="flag"><b>Nobody could name three things you want to be able to do.</b> We asked, on day one, for up to three capabilities you do not have today and would want in twelve months. We did not get them. We are reporting that as a finding rather than leaving it out, because it is one: an organisation whose leadership cannot name what it wants AI to change is not ready for a use-case engagement whatever the fourteen dimensions say — and the fix is a conversation, not a project. Everything in this report still stands. What it cannot tell you is where to point the capability once you have it.</p>`
-      : `<p>Readiness is not the destination. It is what determines whether anything you build on top of it works. Below are the candidates this assessment surfaced for the next piece of work, and — the useful part — which of them your own findings least stand in the way of.</p>
+      ? `<p class="flag">${RC.seamNoAmbitions()}</p>`
+      : `<p>${RC.seamIntro()}</p>
       <table class="tbl"><thead><tr><th>What you said you want to be able to do</th><th style="width:34%">What stands in the way today</th></tr></thead><tbody>
       ${cands.filter(c=>c.kind==="ambition").map(c=>`<tr class="${c===lg?"short":""}"><td>${E(c.t)}${c===lg?' <b style="color:#1e7e44">— least blocked</b>':""}</td>
         <td>${c.gates.length
           ? c.gates.map(x=>E(lc(x.dim.name))+" (Stage "+x.stage+(x.parked?", not on this year's plan":"")+")").join("; ")
           : ambDimsOf(c.i).length?"<b>Nothing you scored below Stage 3</b>":"<i>not tagged, so we cannot say</i>"}</td></tr>`).join("")}
       </tbody></table>
-      ${lg?`<p class="why"><b>Our recommendation on where to start.</b> ${E(lg.t)} — ${lg.gates.length
-        ? "it runs through "+E(lg.gates.map(x=>lc(x.dim.name)).join(" and "))+", which "+(lg.gates.length===1?"is":"are")+" also on the plan above, so the two pieces of work reinforce each other rather than queue behind one another."
-        : "nothing this assessment scored below Stage 3 stands in its way, which makes it the cheapest place to prove the approach while the foundations are still being laid."} That is a judgement about sequence, not about value — the most valuable one is usually the most gated, and choosing between those two is the conversation to have.</p>`
+      ${lg?`<p class="why">${RC.seamRecommendation({name:lg.t,gates:lg.gates})}</p>`
       : cands.filter(c=>c.kind==="ambition"&&ambDimsOf(c.i).length&&!c.gates.length).length>1
-        ? `<p class="why"><b>We have no sequencing advice to give you, and that is the finding.</b> None of these is blocked by anything this assessment scored below Stage 3. At most maturity levels the readiness picture picks the starting point for you; at yours it does not, which means the choice is a commercial one rather than a technical one. Pick on value, on who will sponsor it, and on which one you can measure — and that is what the next piece of work is for.</p>`
+        ? `<p class="why">${RC.seamNoSequencing()}</p>`
         : ""}`}
     ${cands.filter(c=>c.kind==="running").length?`<h4 class="sub-h">Already running, whether or not anyone planned it</h4>
-      ${cands.filter(c=>c.kind==="running").map(c=>`<p><b>${E(c.dim.name)}.</b> ${E(c.note)} This is a use case. It has a cost, a benefit and a risk profile like any other, and the only difference is that nobody has sized it. It belongs in the next piece of work at the top of the list, not because the value is large but because it is the one currently running without a business case.</p>`).join("")}`:""}
-    <p class="method">What the next engagement does with these: takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed case with a go, adjust or stop against each. ${ceil.stage<=2
-      ? "The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point."
-      : "At your level the gating is no longer the interesting part; the numbers are. Expect that work to be about value, effort and payback rather than about whether the foundations will hold."}</p>
+      ${cands.filter(c=>c.kind==="running").map(c=>`<p>${RC.seamRunning({name:c.dim.name,note:c.note})}</p>`).join("")}`:""}
+    <p class="method">${RC.seamNextEngagement({lowMaturity:ceil.stage<=2})}</p>
   </div>`:""}
 
   <div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>How we assessed this</h2></div>
