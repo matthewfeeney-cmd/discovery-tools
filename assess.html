@@ -392,6 +392,19 @@ const RC={
   dimScoreFlag({sp,co}){
     return `<b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — ${sp} against ${co}. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.`;
   },
+  /* --- team skills --- */
+  skillsGapIntro(){
+    return "The same capability is rarely even across an organisation, and a single average hides the training decision. Yours breaks down as:";
+  },
+  skillsReadAcross(){
+    return "Read across the rows rather than down: three different starting points usually means three different training tracks, not one programme.";
+  },
+  skillsShort({n,t,names}){
+    return `<b>${n} capabilit${n>1?"ies fall":"y falls"} short</b> of the level a Stage ${t} ambition requires: ${names}.`;
+  },
+  skillsNarrow({names}){
+    return `<b>Held too narrowly.</b> ${names} — strong enough, but concentrated in too few people to survive a resignation.`;
+  },
 };
 </script>
 
@@ -1289,15 +1302,15 @@ function clientReport(){
         <td>${x.spread===null||x.spread===undefined?"—":E(SPREAD[x.spread])}</td></tr>`;}).join("")}
     </tbody></table>
     ${cs.some(x=>x.n)?`<h4 class="sub-h">Where the gap actually sits</h4>
-      <p>The same capability is rarely even across an organisation, and a single average hides the training decision. Yours breaks down as:</p>
+      <p>${RC.skillsGapIntro()}</p>
       <table class="tbl"><thead><tr><th>Group</th><th>Average level</th><th>Capabilities short of the level your ambition needs</th></tr></thead><tbody>
       ${cs.filter(x=>x.n).map(x=>`<tr><td>${E(x.c.name)}<span class="sub2">${E(x.c.hint)}</span></td>
         <td>${x.avg===null?"—":x.avg.toFixed(1)+" / 4"}</td>
         <td>${x.gaps}${x.worst?` — starting with ${E(lc(x.worst.cap.name))}`:""}</td></tr>`).join("")}
       </tbody></table>
-      <p class="ctx">Read across the rows rather than down: three different starting points usually means three different training tracks, not one programme.</p>`:""}
-    ${st.short.length?`<p><b>${st.short.length} capabilit${st.short.length>1?"ies fall":"y falls"} short</b> of the level a Stage ${t} ambition requires: ${st.short.map(x=>E(lc(x.c.name))).join(", ")}.</p>`:""}
-    ${st.narrow.length?`<p><b>Held too narrowly.</b> ${st.narrow.map(x=>E(x.c.name)).join(", ")} — strong enough, but concentrated in too few people to survive a resignation.</p>`:""}`;
+      <p class="ctx">${RC.skillsReadAcross()}</p>`:""}
+    ${st.short.length?`<p>${RC.skillsShort({n:st.short.length,t,names:st.short.map(x=>E(lc(x.c.name))).join(", ")})}</p>`:""}
+    ${st.narrow.length?`<p>${RC.skillsNarrow({names:st.narrow.map(x=>E(x.c.name)).join(", ")})}</p>`:""}`;
 
   /* ---- code audit ---- */
   const codeHTML=!scan?"":`
