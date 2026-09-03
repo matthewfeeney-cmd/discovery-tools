@@ -415,6 +415,25 @@ const RC={
   codeSecrets(){
     return `<b>Credentials found in the repository.</b> The audit surfaced live secrets committed to source control. These should be rotated at source. The underlying report quotes them verbatim and is deliberately excluded from this document and from any circulation.`;
   },
+  /* --- roadmap (phase intros + rule notes; esc/lc are the global text helpers) --- */
+  roadmapContainLead(){
+    return "These are not maturity gaps — they are things already happening that carry exposure today. They sit outside the sequence below because they should not wait for anything else.";
+  },
+  roadmapBlockedLead(){
+    return "Each of these needs something else on this list to land first. That is not our preference — it is the dependency. Doing them early tends to produce work that has to be redone.";
+  },
+  roadmapParkedLead(){
+    return "Assessed, scored, and agreed with you as not a priority for the next twelve months. They still count toward the ceiling, so they are listed here rather than left out — a gap you have decided not to close is a decision, and it should be a visible one.";
+  },
+  roadmapNoLibLead(){
+    return "Our standard library has no move for you here because you are already beyond it. These need a recommendation written specifically for you.";
+  },
+  roadmapTried({what,when,end,why}){
+    return `<b>This has been tried here before.</b> ${esc(what)}${when?", "+esc(when):""} — ${esc(lc(end||"it did not land"))}${why?", because "+esc(lc(why)):""}. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.`;
+  },
+  roadmapFunded({prog,owner,covers,when,late}){
+    return `<b>Something already funded touches this.</b> ${esc(prog)}${owner?" ("+esc(owner)+")":""}${covers?" covers "+esc(lc(covers)):""}${when?", landing "+esc(lc(when)):""}. ${late?"That is after this plan's horizon, so this is a choice rather than a detail: pull a minimal version forward, or accept that everything downstream waits for it.":"Influence that programme rather than starting a parallel one — the owner above is who to talk to."}`;
+  },
 };
 </script>
 
@@ -1349,10 +1368,10 @@ function clientReport(){
   const roadHTML=ph.filter(x=>!x.contain&&!x.noLib).map(x=>`
     <div class="phase${x.contain?" now":""}${x.blocked?" later":""}${x.parked?" later":""}">
       <h4>${E(x.phase)}</h4>
-      ${x.contain?`<p class="lead">These are not maturity gaps — they are things already happening that carry exposure today. They sit outside the sequence below because they should not wait for anything else.</p>`:""}
-      ${x.blocked?`<p class="lead">Each of these needs something else on this list to land first. That is not our preference — it is the dependency. Doing them early tends to produce work that has to be redone.</p>`:""}
-      ${x.parked?`<p class="lead">Assessed, scored, and agreed with you as not a priority for the next twelve months. They still count toward the ceiling, so they are listed here rather than left out — a gap you have decided not to close is a decision, and it should be a visible one.</p>`:""}
-      ${x.noLib?`<p class="lead">Our standard library has no move for you here because you are already beyond it. These need a recommendation written specifically for you.</p>`:""}
+      ${x.contain?`<p class="lead">${RC.roadmapContainLead()}</p>`:""}
+      ${x.blocked?`<p class="lead">${RC.roadmapBlockedLead()}</p>`:""}
+      ${x.parked?`<p class="lead">${RC.roadmapParkedLead()}</p>`:""}
+      ${x.noLib?`<p class="lead">${RC.roadmapNoLibLead()}</p>`:""}
       ${x.parked?x.items.map(g=>`<div class="act">
         <div class="ah"><b>${E(g.dim.name)}</b><span class="aid">STAGE ${g.current}</span></div>
         <div class="meta">${E((S.dimNote[g.dim.id]||{}).improve||g.dim.sub||"")}</div>
@@ -1363,8 +1382,8 @@ function clientReport(){
         <div class="ah"><b>${E(V.title)}</b>${g.act.id!=="NOW"&&g.act.id!=="—"?`<span class="aid">${E(g.act.id)}</span>`:""}</div>
         <div class="meta">${E(g.dim.name)} · Stage ${g.current} → ${g.target}${g.note?" · "+E(g.note):""}</div>
         ${w.t?`<p>${w.src==="lib"?"":"<b>Why here.</b> "}${E(w.t)}</p>`:""}
-        ${tr?`<p class="rl"><b>This has been tried here before.</b> ${E(tr.row.what)}${tr.row.when?", "+E(tr.row.when):""} — ${E(lc(tr.row.end||"it did not land"))}${tr.row.why?", because "+E(lc(tr.row.why)):""}. Reissuing it unchanged is the most reliable way to repeat that, so the sponsor and the definition of done below have both moved to account for it.</p>`:""}
-        ${fd?`<p class="rl"><b>Something already funded touches this.</b> ${E(fd.row.prog)}${fd.row.owner?" ("+E(fd.row.owner)+")":""}${fd.row.covers?" covers "+E(lc(fd.row.covers)):""}${fd.row.when?", landing "+E(lc(fd.row.when)):""}. ${fd.late?"That is after this plan's horizon, so this is a choice rather than a detail: pull a minimal version forward, or accept that everything downstream waits for it.":"Influence that programme rather than starting a parallel one — the owner above is who to talk to."}</p>`:""}
+        ${tr?`<p class="rl">${RC.roadmapTried({what:tr.row.what,when:tr.row.when,end:tr.row.end,why:tr.row.why})}</p>`:""}
+        ${fd?`<p class="rl">${RC.roadmapFunded({prog:fd.row.prog,owner:fd.row.owner,covers:fd.row.covers,when:fd.row.when,late:fd.late})}</p>`:""}
         <table class="mini"><tr><td>Sponsor</td><td>${sp.up?`<b>${E(sp.t)}</b> — ${E(sp.because)}`:E(sp.t)}</td></tr>
           <tr><td>Owner</td><td>${E(o.t)}</td></tr>
           <tr><td>Effort</td><td>${E(g.act.h)}${g.act.e&&g.act.e!=="—"?", "+E(g.act.e):""}</td></tr>
