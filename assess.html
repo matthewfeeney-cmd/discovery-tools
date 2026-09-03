@@ -385,6 +385,13 @@ const RC={
         ? `Weighted across all ${nDims} dimensions you average ${pot.toFixed(1)} today. The distance between that and Stage ${stage} is the point of this report: most of the organisation is already operating above what ${nCap>1?"these dimensions allow":"this dimension allows"}.${proj&&proj>pot+0.05?` Deliver the plan and that average moves to ${proj.toFixed(1)}${nPark?" — a real gain, though not one that moves the ceiling, for the reason above":" — but the ceiling moves further, which is what actually changes what you can do"}.`:""}`
         : `Weighted across all ${nDims} dimensions you average ${pot.toFixed(1)} today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.`);
   },
+  /* --- dimension sections --- */
+  dimNotAssessed(){
+    return "Not assessed in this engagement. It is excluded from your score rather than assumed.";
+  },
+  dimScoreFlag({sp,co}){
+    return `<b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — ${sp} against ${co}. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.`;
+  },
 };
 </script>
 
@@ -1258,7 +1265,7 @@ function clientReport(){
         <div class="dh"><h4>${d.n}. ${E(d.name)}</h4>
           <span class="sc">${s.avg!==null?"Stage "+fmtS(s.avg):"not assessed"}${isC?' <b class="cap-tag">the constraint</b>':""}</span></div>
         ${bar(s.avg)} <span class="wt">weighted ${wPct(d)}%${d.w>1?" — one of the four the research treats as an amplifier":""}</span>
-        ${s.avg===null?`<p class="miss">Not assessed in this engagement. It is excluded from your score rather than assumed.</p>`:""}
+        ${s.avg===null?`<p class="miss">${RC.dimNotAssessed()}</p>`:""}
         ${n.why?`<p class="why"><b>Why this matters to you.</b> ${E(n.why)}</p>`:""}
         ${n.well?`<p><b>What is working.</b> ${E(n.well)}</p>`:""}
         ${n.improve?`<p><b>What needs to change.</b> ${E(n.improve)}</p>`:""}
@@ -1266,7 +1273,7 @@ function clientReport(){
         ${(n.riskNot||n.riskGo)?`<div class="risks">
           ${n.riskNot?`<div><b>The risk of leaving it</b><span>${E(n.riskNot)}</span></div>`:""}
           ${n.riskGo?`<div><b>The risk of pressing on anyway</b><span>${E(n.riskGo)}</span></div>`:""}</div>`:""}
-        ${s.flag?`<p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — ${s.flag.sp} against ${s.flag.co}. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>`:""}
+        ${s.flag?`<p class="flag">${RC.dimScoreFlag({sp:s.flag.sp,co:s.flag.co})}</p>`:""}
         ${srcs.length?`<p class="src">Sources: ${srcs.map(E).join(" · ")}</p>`:""}
       </div>`;}).join("");}).join("");
 
