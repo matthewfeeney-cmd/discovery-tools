@@ -102,8 +102,12 @@ for(let i=0;i<N;i++){
   /* the board must stay a board */
   if(urg.length>14) bad(i,"board ballooned to "+urg.length);
   /* capacity arithmetic must be sane */
-  if(fit){ if(fit.inYear.length+fit.beyond.length!==ctx.roadmapSize()) bad(i,"capacity split loses items");
-    if(fit.years<0||!isFinite(fit.years)) bad(i,"capacity years not finite"); }
+  if(fit){
+    if(!isFinite(fit.avail)||!isFinite(fit.demand)||fit.avail<0||fit.demand<0) bad(i,"capacity numbers not finite");
+    if(fit.fits!==(fit.demand<=fit.avail)) bad(i,"capacity fits flag inconsistent");
+    if(fit.gap<0||fit.spare<0) bad(i,"capacity gap/spare negative");
+    if(fit.fits&&fit.gap!==0) bad(i,"capacity: fits but a gap remains");
+    if(!fit.fits&&fit.spare!==0) bad(i,"capacity: shortfall but spare remains"); }
   /* the seam must not recommend a candidate that is more blocked than another */
   const cands=ctx.candidates(), lgi=ctx.leastGatedIdx(cands);
   if(lgi>=0){ const best=cands[lgi];

@@ -471,6 +471,9 @@ const RC={
   methodFramework({nDims}){
     return `<b>Where the framework comes from.</b> Seven of the ${nDims} dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.`;
   },
+  methodPlanHorizon(){
+    return `<b>What the plan covers.</b> The plan covers the next six months, with the first 90 days in detail; the 12-month ambition is the bar each gap is measured against, and the Beyond items are listed for a re-plan rather than scheduled.`;
+  },
   /* --- workflow --- */
   wfRunWithoutUs(){
     return "Ten things somebody has to be able to do the day after go-live. The question is not whether we can build it — it is whether it survives us leaving.";
@@ -515,7 +518,7 @@ const RC={
     return `<b>The obvious next step</b> is to take one workflow and three or four candidate use cases through to a costed business case — value, effort, payback, and which of the gaps above gates each one. That turns this readiness picture into a funded plan.`;
   },
   sellTwelveMonths(){
-    return `<b>And in twelve months</b> we would re-run this assessment against the same definitions of done, so you can see what actually moved. We are content to be measured on it.`;
+    return `<b>At six months we re-plan the next six with you</b> — the Beyond items above are listed for that conversation, not scheduled now, and get re-sequenced against what has actually moved. <b>At twelve months we re-run the assessment</b> against the same definitions of done, so you can see what changed. We are content to be measured on it.`;
   },
   /* --- where you are (the picture) --- */
   whyOneNumber({flat,flatAll,stage,capList,nPark}){
@@ -567,17 +570,22 @@ const RC={
     return `${liveN?`The first ${liveN===1?"item is":liveN+" items are"} not ${liveN===1?"a maturity gap":"maturity gaps"} — ${liveN===1?"it is":"they are"} already happening in your organisation, so ${liveN===1?"it does":"they do"} not wait for a plan. ${liveN===1?"It":"Each"} should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving ${liveN===1?"it":"them"} open is not, and that is the state we found ${liveN===1?"it":"them"} in. `:""}${nPark?`The rest are the highest-leverage moves available given that ${esc(cParkList)} ${nPark===1?"is":"are"} off this year's plan.`:`The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done.`} Behind ${nUrg===1?"this":"these"} sits the full plan of ${size} item${size===1?"":"s"}, sequenced.`;
   },
   /* --- plan capacity --- */
-  capacitySupply({people,days,perYear,size,demand}){
-    return `You told us <b>${people} ${people===1?"person has":"people have"} ${days} day${days===1?"":"s"} a month</b> for this — about <b>${perYear} days</b> across the year. The ${size} items on the plan need roughly <b>${demand} days</b> at our estimate.`;
+  capacityHeading(){ return "What fits in the first 90 days, on the people you have"; },
+  capacitySupply({people,days,avail}){
+    return `You told us <b>${people} ${people===1?"person has":"people have"} ${days} day${days===1?"":"s"} a month</b> for this — about <b>${avail} days</b> across the first 90.`;
   },
-  capacityFit({beyondN,inYearN,size,years,spare}){
-    return beyondN
-      ? `<b>${inYearN} of the ${size} fit.</b> The other ${beyondN} do not, and we would rather draw that line than hand you a list and let you find out in month eight. On these numbers the full plan is a <b>${years}-year</b> programme. Three honest options: fund more capacity, park more dimensions, or accept the longer horizon and say so at the board. What does not work is agreeing all ${size} and hoping.`
-      : `<b>All ${size} fit</b>, with about ${spare} days spare. That is a plan you can commit to rather than aspire to.`;
+  capacityFit({fits,hasSlack}){
+    return !fits
+      ? `<b>The containment and first-90-day work needs more than that window holds.</b> That gap is the honest measure of how much of this you can carry alone, and it is the case for support: holding the sequence and starting the first value work is where outside help earns its place.`
+      : hasSlack
+        ? `<b>The containment and first-90-day work fits inside that, with room to spare.</b> That is a first 90 days you can commit to rather than aspire to.`
+        : `<b>The containment and first-90-day work fits, but only just — nothing spare for running it while you do it.</b> That is a first 90 days you can commit to, though not one with slack.`;
   },
-  capacityCaveat({low,medium,high}){
-    return `Day costs are our estimate from the effort band on each action — low ${low}, medium ${medium}, high ${high} — not a quote. Replace them with your own numbers and the arithmetic still holds.`;
+  capacityCaveat(){
+    return `The days available are your own figure; whether the work fits inside them is our judgement from the effort on each action, not a precise count. Only containment and the first-90-day work are set against them — everything in Beyond is sequenced by dependency and re-planned at the six-month review, not weighed here.`;
   },
+  /* client-facing effort word — the low/medium/high band shown as a plain word, never in days */
+  effortWord(band){ return {low:"Light",medium:"Moderate",high:"Major"}[band]||""; },
   sponsorThree({list}){
     return `<b>You told us your own three were:</b> ${list}. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.`;
   },
@@ -636,10 +644,28 @@ const RC={
     return `<b>${esc(name)}.</b> ${esc(note)} This is a use case. It has a cost, a benefit and a risk profile like any other, and the only difference is that nobody has sized it. It belongs in the next piece of work at the top of the list, not because the value is large but because it is the one currently running without a business case.`;
   },
   seamNextEngagement({lowMaturity}){
-    return `What the next engagement does with these: takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed case with a go, adjust or stop against each. ${lowMaturity
+    return `The first piece of value work belongs inside the first 90 days: the foundations and the first candidate move together, not one after the other. The only things that come before it are the containment items and any do-not-accelerate stop-flag above — those close first. It takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed go, adjust or stop against each. ${lowMaturity
       ? "The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point."
       : "At your level the gating is no longer the interesting part; the numbers are. Expect that work to be about value, effort and payback rather than about whether the foundations will hold."}`;
   },
+  /* --- Full AI Discovery seam item — a finding (the pitch stays in "How Enablis can help") --- */
+  discoveryTitle({name}){ return `Take ${name} through Full AI Discovery to a costed case.`; },
+  discoveryMeta(){ return "The first piece of value work — the foundations and the first candidate, together"; },
+  discoverySponsor(){ return "The executive owner of the AI ambition"; },
+  discoveryDone(){ return "a costed go / adjust / stop against three or four use cases, plus a prototype on your real examples"; },
+  discoveryWhy({name,ranked}){
+    return ranked
+      ? `${name} is the candidate your own findings least stand in the way of. Sizing it now — one workflow end to end, against your own numbers — is the cheapest way to turn this assessment into a costed decision, and it belongs alongside the first-90-day foundations rather than after them.`
+      : `Sizing ${name} now — one workflow end to end, against your own numbers — is the cheapest way to turn this assessment into a costed decision, and it belongs alongside the first-90-day foundations rather than after them.`;
+  },
+  discoveryAfterContain(){ return "after the containment items — with AI on personal data in a regulated setting and governance still at Stage 1, the live exposures close before the value work starts"; },
+  /* --- roadmap phase headings (set in phasedGaps, shown in the report and the on-screen roadmap) --- */
+  phaseContainNow(){ return "Before the roadmap — contain these now"; },
+  phaseFirst90(){ return "First 90 days — the priority window"; },
+  phaseBeyond(){ return "Beyond — sequenced by dependency, re-planned at the six-month review, not scheduled now"; },
+  phaseGated(){ return "Not yet — gated by a dimension that has to move first"; },
+  phaseNoLib(){ return "No library action — needs a bespoke recommendation"; },
+  phaseParked(){ return "Parked — real gaps, deliberately not this year"; },
 };
 </script>
 
@@ -1585,14 +1611,14 @@ function clientReport(){
       </div>`).join(""):x.items.map(g=>{const V=actView(g),w=V.why,o=V.owner,sp=V.sponsor,rl=rulesFor(g);
         const tr=rl.find(r=>r.kind!=="funded"), fd=rl.find(r=>r.kind==="funded");
         return `<div class="act">
-        <div class="ah"><b>${E(V.title)}</b>${g.act.id!=="NOW"&&g.act.id!=="—"?`<span class="aid">${E(g.act.id)}</span>`:""}</div>
-        <div class="meta">${E(g.dim.name)} · Stage ${g.current} → ${g.target}${g.note?" · "+E(g.note):""}</div>
+        <div class="ah"><b>${E(V.title)}</b>${g.discovery?`<span class="aid">▶ Discovery</span>`:g.act.id!=="NOW"&&g.act.id!=="—"?`<span class="aid">${E(g.act.id)}</span>`:""}</div>
+        <div class="meta">${g.discovery?E(g.metaLabel):`${E(g.dim.name)} · Stage ${g.current} → ${g.target}`}${g.note?" · "+E(g.note):""}</div>
         ${w.t?`<p>${w.src==="lib"?"":"<b>Why here.</b> "}${E(w.t)}</p>`:""}
         ${tr?`<p class="rl">${RC.roadmapTried({what:tr.row.what,when:tr.row.when,end:tr.row.end,why:tr.row.why})}</p>`:""}
         ${fd?`<p class="rl">${RC.roadmapFunded({prog:fd.row.prog,owner:fd.row.owner,covers:fd.row.covers,when:fd.row.when,late:fd.late})}</p>`:""}
         <table class="mini"><tr><td>Sponsor</td><td>${sp.up?`<b>${E(sp.t)}</b> — ${E(sp.because)}`:E(sp.t)}</td></tr>
           <tr><td>Owner</td><td>${E(o.t)}</td></tr>
-          <tr><td>Effort</td><td>${E(g.act.h)}${g.act.e&&g.act.e!=="—"?", "+E(g.act.e):""}</td></tr>
+          <tr><td>Effort</td><td>${E(RC.effortWord(g.act.e))}</td></tr>
           ${V.done?`<tr><td>Done when</td><td>${E(V.done)}</td></tr>`:""}
           ${(g.act.also||[]).length?`<tr><td>Also moves</td><td>${g.act.also.map(i=>{const d=ORG_DIMS.find(y=>y.id===i);return E(d?lc(d.name):i);}).join(", ")}</td></tr>`:""}
           ${preMissing(g.act).length?`<tr><td>Needs first</td><td>${preMissing(g.act).map(m=>{const d=ORG_DIMS.find(y=>y.id===m[0]);return E((d?d.name:m[0])+" at Stage "+m[1]);}).join("; ")}</td></tr>`:""}
@@ -1617,7 +1643,7 @@ function clientReport(){
     ${V.why.t?`<p>${E(V.why.t)}</p>`:""}
     <table class="mini"><tr><td>Sponsor</td><td>${sp.up?`<b>${E(sp.t)}</b> — ${E(sp.because)}`:E(sp.t)}</td></tr>
       <tr><td>Owner</td><td>${E(V.owner.t)}</td></tr>
-      <tr><td>Effort</td><td>${E(g.act.h)}${g.act.e&&g.act.e!=="—"?", "+E(g.act.e):""}</td></tr>
+      <tr><td>Effort</td><td>${E(RC.effortWord(g.act.e))}</td></tr>
       ${V.done?`<tr><td>Done when</td><td>${E(V.done)}</td></tr>`:""}
       ${(g.act.also||[]).length?`<tr><td>Also moves</td><td>${g.act.also.map(i=>{const d=ORG_DIMS.find(y=>y.id===i);return E(d?lc(d.name):i);}).join(", ")}</td></tr>`:""}
     </table></div>`;}).join("");
@@ -1801,7 +1827,7 @@ function clientReport(){
       ${urg.map((u,i)=>`<div class="ub ${u.band}">
         <div class="ubn">${i+1}</div>
         <div class="ubb">
-          <div class="ubtag">${E(BAND_LABEL[u.band])}${u.when&&u.when!=="—"?` · ${E(u.when==="0-3m"?"first 3 months":u.when==="3-6m"?"3–6 months":u.when==="6-12m"?"6–12 months":u.when)}`:""}${u.effort?`, ${E(u.effort)} effort`:""}</div>
+          <div class="ubtag">${E(BAND_LABEL[u.band])}${u.when&&u.when!=="—"?` · ${E(u.when==="0-3m"?"first 3 months":u.when==="3-6m"?"3–6 months":u.when==="6-12m"?"6–12 months":u.when)}`:""}${u.effort?`, ${E(RC.effortWord(u.effort))} effort`:""}</div>
           <h4>${E(u.what)}</h4>
           ${u.why?`<p>${E(u.why)}</p>`:""}
           <div class="ubm"><b>${E(u.dim.name)}</b>${u.who?` · ${E(u.who)}`:""}${u.note?` · ${E(u.note)}`:""}</div>
@@ -1810,11 +1836,11 @@ function clientReport(){
     </div>
     <p class="method">${RC.fixFirstFooter({liveN,nPark:cPark.length,cParkList,nUrg:urg.length,size})}</p>
     ${fit?`<div class="cap-box">
-      <h4>What fits in a year, on the people you have</h4>
-      <p>${RC.capacitySupply({people:cap.people,days:cap.days,perYear:fit.perYear,size,demand:fit.demand})}</p>
-      <div class="cap-bar"><span style="width:${Math.min(100,Math.round(fit.perYear/Math.max(fit.demand,1)*100))}%"></span></div>
-      <p>${RC.capacityFit({beyondN:fit.beyond.length,inYearN:fit.inYear.length,size,years:fit.years.toFixed(1),spare:fit.perYear-fit.spent})}</p>
-      <p class="cap-cav">${RC.capacityCaveat({low:EFFORT_DAYS.low,medium:EFFORT_DAYS.medium,high:EFFORT_DAYS.high})}</p>
+      <h4>${RC.capacityHeading()}</h4>
+      <p>${RC.capacitySupply({people:cap.people,days:cap.days,avail:fit.avail})}</p>
+      <div class="cap-bar"><span style="width:${Math.min(100,Math.round(fit.avail/Math.max(fit.demand,1)*100))}%"></span></div>
+      <p>${RC.capacityFit({fits:fit.fits,hasSlack:fit.spare>0})}</p>
+      <p class="cap-cav">${RC.capacityCaveat()}</p>
     </div>`:""}
     ${spon.length?`<p class="ctx">${RC.sponsorThree({list:spon.map(E).join(" · ")})}</p>`:""}
   </div>`:""}
@@ -1913,6 +1939,7 @@ function clientReport(){
       ${hasUC?`<li>${RC.methodWorkflowExamined({nUC:ranked().length})}</li>`:""}
       </ul>
       <p style="margin-top:10px">${RC.methodNotCovered({hasUC,nUC:ranked().length,scan})}</p>
+      <p>${RC.methodPlanHorizon()}</p>
       <p>${RC.methodFramework({nDims:D.length})}</p>
     </div>
   </div>
@@ -3237,7 +3264,7 @@ function selectActions(){if(TGT()===null)return[];
     .sort((x,y)=>x.depth-y.depth||HRZ(x.act.h)-HRZ(y.act.h)||y.g.leverage-x.g.leverage);}
 function phasedGaps(){const sel=selectActions();const con=containment();
   if(!sel.length&&!con.length)return[];
-  const pre=con.length?[{phase:"Before the roadmap — contain these now",contain:true,
+  const pre=con.length?[{phase:RC.phaseContainNow(),contain:true,
     items:con.map(c=>({dim:c.dim,current:c.stage,target:TGT(),isCeil:false,unblocks:0,note:"",
       act:{id:"NOW",a:c.ca,why:"Scored "+c.stage+" on a dimension that flags as exposure rather than a maturity gap.",
         sp:"Client executive sponsor",ow:"Named on the day",h:"immediate",e:"low",
@@ -3261,42 +3288,77 @@ function phasedGaps(){const sel=selectActions();const con=containment();
       own.id!==x.g.dim.id?"prerequisite for "+x.g.dim.name.toLowerCase():"",
       viaDep?"on a dimension you parked — here only because "+(x.g.dim.id!==own.id?x.g.dim.name.toLowerCase():"something else on the plan")+" needs it first":"",
       x.g.isCeil&&own.id===x.g.dim.id&&!x.depth?"lifts the ceiling":""].filter(Boolean).join(" · ")};};
-  const ph=[["First 90 days — lift the ceiling",x=>x.g.isCeil&&slot(x)<=1,"focus"],
-    ["3–6 months — the next constraints",x=>!x.g.isCeil&&slot(x)<=1,"rest"],
-    ["6–12 months — reach the target",x=>slot(x)===2,"rest"],
-    ["12 months+ — only once the foundations hold",x=>slot(x)>=3,"rest"]];
+  /* Three horizons collapsed to two: everything near-term (ceiling-lifting and quick foundations
+     alike) is the priority window; everything slot 2+ becomes one dependency-sequenced "Beyond"
+     bucket, re-planned at the six-month review rather than dated now. The board still draws only
+     the ceiling-lifting near-term items — see focusItems(), which filters this focus phase. */
+  const ph=[[RC.phaseFirst90(),x=>slot(x)<=1,"focus"],
+    [RC.phaseBeyond(),x=>slot(x)>=2,"rest"]];
   const out=pre.concat(ph.map(([n,f,k])=>({phase:n,items:ready.filter(f).map(mk),focus:k==="focus",rest:k==="rest"}))
     .filter(x=>x.items.length));
-  if(blocked.length)out.push({phase:"Not yet — gated by a dimension that has to move first",items:blocked.map(mk),blocked:true,rest:true});
+  if(blocked.length)out.push({phase:RC.phaseGated(),items:blocked.map(mk),blocked:true,rest:true});
   const orphan=gaps().filter(g=>g.noAction);
-  if(orphan.length)out.push({phase:"No library action — needs a bespoke recommendation",noLib:true,rest:true,
+  if(orphan.length)out.push({phase:RC.phaseNoLib(),noLib:true,rest:true,
     items:orphan.map(g=>({...g,act:{id:"—",a:"Nothing in the action library covers Stage "+g.current+"→"+g.target+" on this dimension. Write the recommendation, then add it to the library.",
       why:"",sp:"Delivery Lead",ow:"Delivery Lead",h:"—",e:"—",ev:"",also:[],pre:[]}}))});
   /* what we deliberately are not doing. Saying so is part of the plan, not an omission from it. */
   const pk=parked().map(d=>({dim:d,current:orgDim(d.id).stage})).filter(x=>x.current!==null);
-  if(pk.length)out.push({phase:"Parked — real gaps, deliberately not this year",parked:true,rest:true,
+  if(pk.length)out.push({phase:RC.phaseParked(),parked:true,rest:true,
     items:pk.map(x=>({...x,target:0,isCeil:false,unblocks:0,note:"",
       act:{id:"—",a:"Agreed as not a priority for the next twelve months.",why:"",sp:"",ow:"",h:"—",e:"—",ev:"",also:[],pre:[],dep:[]}}))});
+  /* The seam's least-blocked candidate becomes a real first-90 item: size the first piece of
+     value work now, alongside the foundations. It reads as a finding — the pitch stays in the
+     sell. Where governance is the Stage-1 ceiling AND the client is regulated AND the screen
+     flags personal data, it carries the reason that the exposures close before value work starts. */
+  const dcands=candidates();
+  if(dcands.length){
+    const dlgi=leastGatedIdx(dcands), dlg=dlgi>=0?dcands[dlgi]:null;
+    const dpick=dlg||dcands.find(c=>c.kind==="ambition")||dcands[0];
+    if(dpick){
+      const dname=dpick.t||(dpick.dim&&dpick.dim.name)||"the first candidate";
+      const dceil=ceiling();
+      const govCeil=!!(dceil&&dceil.stage===1&&dceil.dims.some(d=>d.id==="d2"));
+      const regd=!!(shapeVal("regulated")&&shapeVal("regulated")!=="No");
+      const pdFlag=screenVal("dpia")==="No";
+      const wfOwner=(S.wfs||[]).map(w=>w.owner).find(Boolean)||"named on the day";
+      const disc={discovery:true,dim:{id:"DISCOVERY",n:"▶",name:"Full AI Discovery"},
+        current:null,target:null,isCeil:false,unblocks:0,
+        note:(govCeil&&regd&&pdFlag)?RC.discoveryAfterContain():"",
+        metaLabel:RC.discoveryMeta(),
+        act:{id:"DISC",a:RC.discoveryTitle({name:dname}),why:RC.discoveryWhy({name:dname,ranked:!!dlg}),
+          sp:RC.discoverySponsor(),ow:wfOwner,h:"0-3m",e:"low",
+          ev:RC.discoveryDone(),also:[],pre:[],dep:[]}};
+      let dfocus=out.find(p=>p.focus);
+      if(!dfocus){ dfocus={phase:RC.phaseFirst90(),items:[],focus:true,rest:false};
+        const at=out.findIndex(p=>!p.contain); out.splice(at<0?out.length:at,0,dfocus); }
+      dfocus.items.unshift(disc);
+    }
+  }
   return out;}
 /* the focused list — what the roadmap actually is, before the backlog behind it */
-function focusItems(){const p=phasedGaps().find(x=>x.focus);return p?p.items:[];}
+/* The board draws only the ceiling-lifting near-term items. The focus phase now also carries the
+   quick foundations (the priority window merged near-term and 3–6 month work), so filter back to
+   the ceiling items here — this keeps the board exactly what it was before the horizon merge. */
+function focusItems(){const p=phasedGaps().find(x=>x.focus);return p?p.items.filter(g=>g.isCeil):[];}
 /* ---- capacity as a constraint -------------------------------------------------
-   Building a plan and then announcing it will not fit is the wrong order. Give each
-   action a rough day cost, walk the sequence, and stop where the year's days run out.
-   Everything past the line is named and dated rather than implied. The day costs are
-   a judgement, not a measurement, and the report says so. */
+   Building a plan and then announcing it will not fit is the wrong order. Cost only the
+   work that has to land in the first 90 days — containment plus the priority window — against
+   the days the client actually has in that window, and say whether it fits. Beyond is not
+   costed here: it is sequenced by dependency and re-planned at the six-month review. The day
+   costs are a judgement, not a measurement, and the report says so. */
 const EFFORT_DAYS={low:4,medium:12,high:30};
 const actDays=a=>EFFORT_DAYS[a.e]||8;
 function capacityFit(){
-  const perYear=capDays()*12;
-  if(!perYear)return null;
-  const seq=[]; phasedGaps().forEach(p=>{if(p.parked||p.contain||p.noLib)return;p.items.forEach(g=>seq.push(g));});
-  let spent=0; const inYear=[],beyond=[];
-  seq.forEach(g=>{const d=actDays(g.act);
-    if(spent+d<=perYear){spent+=d;inYear.push(g);}else beyond.push(g);});
-  return{perYear,spent,inYear,beyond,
-    demand:seq.reduce((a,g)=>a+actDays(g.act),0),
-    years:perYear?seq.reduce((a,g)=>a+actDays(g.act),0)/perYear:null};}
+  const perMonth=capDays();                          /* the client's own stated days a month */
+  if(!perMonth)return null;
+  const avail=perMonth*3;                             /* days available across the first 90 */
+  /* Only what must land in the first 90 is costed: containment plus the priority window.
+     Beyond is not costed against capacity — re-planned at the six-month review instead. */
+  /* the Discovery item is the supported value work, not client solo load — leave it out of "what you can carry alone" */
+  const items=[]; phasedGaps().forEach(p=>{if(p.contain||p.focus)p.items.forEach(g=>{if(!g.discovery)items.push(g);});});
+  const demand=items.reduce((a,g)=>a+actDays(g.act),0);
+  return{perMonth,avail,demand,count:items.length,
+    fits:demand<=avail, spare:Math.max(0,avail-demand), gap:Math.max(0,demand-avail)};}
 /* ---- "what is most urgent" -----------------------------------------------------
    The question every client arrives with, and the one a phased roadmap answers only
    indirectly. Urgency is not the same as sequence: something can be urgent and blocked.
@@ -3445,7 +3507,7 @@ function renderOut(){
       ${p.noLib?`<p class="hint">The shared action library stops at Stage 4 on these dimensions. Write the recommendation yourself, then contribute it back so the next engagement has it.</p>`:""}
       ${p.items.map(g=>{const V=p.parked?null:actView(g),w=V&&V.why,o=V&&V.owner,sp=V&&V.sponsor,k=p.parked?"":actKey(g);
         return `<div class="act">
-        <b>${g.dim.n}. ${g.dim.name}</b> — Stage ${g.current} → ${g.target} <span class="who">${g.note?"· "+esc(g.note):""}${g.isCeil?"· sets the ceiling":""}${g.unblocks?` · unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}`:""}</span>
+        <b>${g.dim.n}. ${g.dim.name}</b>${g.discovery?` — ${esc(g.metaLabel)}`:` — Stage ${g.current} → ${g.target}`} <span class="who">${g.note?"· "+esc(g.note):""}${g.isCeil?"· sets the ceiling":""}${g.unblocks?` · unblocks ${g.unblocks} use case${g.unblocks>1?"s":""}`:""}</span>
         <div style="margin-top:3px"><span class="who" style="font-weight:700">${g.act.id}</span> ${esc(V?V.title:g.act.a)}</div>
         ${w?`<div class="tailor ${w.src==="lib"?"gen":""}">
           <label>Why this matters here <small>${w.src==="note"?"written for this client":w.src==="dim"?"from your dimension narrative — edit to sharpen":w.src==="ev"?"from your evidence note — edit to sharpen":"⚠ library text, not about this client — write one line and it stops reading like a template"}</small></label>
