@@ -1784,6 +1784,16 @@ function clientReport(){
   const urg=urgentList(), board=urg.filter(u=>u.band==="live"), liveN=board.length;
   const unEst=unestKind("unknown"), unAsk=unestKind("notasked"), fit=capacityFit(), abst=abstained();
   const cands=candidates(), lgi=leastGatedIdx(cands), lg=lgi>=0?cands[lgi]:null;
+  /* each named ambition as a chip for the seam card: the least-blocked one highlighted,
+     every other tagged with what stands in its way (same information the old table carried) */
+  const gateChip=g=>{const p=g.map(x=>lc(x.dim.name)+(x.parked?" (parked)":""));
+    return p.length<=2?p.join(", "):p.slice(0,2).join(", ")+", +"+(p.length-2)+" more";};
+  const ambChip=c=>c===lg
+    ? `<span class="schip least">${E(c.t)} — least blocked</span>`
+    : `<span class="schip block">${E(c.t)} — ${c.gates.length?"blocked by "+E(gateChip(c.gates)):ambDimsOf(c.i).length?"nothing scored below Stage 3":"not tagged"}</span>`;
+  /* least-blocked chip first (the recommendation), then the rest in the order named */
+  const ambCands=cands.filter(c=>c.kind==="ambition");
+  const ambChips=[...(lg?[lg]:[]),...ambCands.filter(c=>c!==lg)].map(ambChip).join("");
   /* ---- executive-summary apex (Exhibit 1) — driven from the data ---- */
   const apAtTarget=ceil.stage>=t, apFlatAll=ceil.dims.length>=D.length, apControlGap=pot!==null&&pot>ceil.stage+0.7;
   const apCeil=ceil.dims.map(d=>lc(d.name));
@@ -2022,6 +2032,20 @@ function clientReport(){
   .rlegend i{width:14px;height:10px;border-radius:3px;border-top:3px solid;display:inline-block}
   .rlegend .dia2{width:10px;height:10px;transform:rotate(45deg);background:var(--ink);border-radius:0}
   @media screen and (max-width:820px){.rgrid{grid-template-columns:1fr}.rgl,.rrail{display:none}.rphase{clip-path:none;border-radius:9px;margin-top:6px}}
+  /* the seam: where this goes next — the recommendation card from the mockup */
+  .seam{border:2px solid var(--go);border-radius:14px;padding:17px 21px;background:#fbfdfb;margin:12px 0;page-break-inside:avoid;break-inside:avoid}
+  .seam .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--go);font-weight:800}
+  .seam h3{font-size:18px;margin:5px 0 8px;letter-spacing:-.2px;color:var(--ink)}
+  .seam>p{font-size:13.8px;line-height:1.55;margin:0 0 8px}
+  .seam>p:last-child{margin-bottom:0}
+  .seam .schips{margin:11px 0 3px}
+  .schip{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;margin:2px 5px 2px 0;line-height:1.4}
+  .schip.least{background:var(--go);color:#fff}
+  .schip.block{background:#fff;border:1px solid #d8d8d8;color:var(--muted)}
+  .seam.warn{border-color:var(--below);background:#fffdf6}
+  .seam.warn .k{color:var(--below)}
+  .seam.info{border-color:var(--struct);background:#f6fafc}
+  .seam.info .k{color:var(--struct)}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -2136,7 +2160,7 @@ function clientReport(){
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding,.chunk,.rphase,.rrail{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding,.chunk,.rphase,.rrail,.seam{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -2314,18 +2338,19 @@ function clientReport(){
 
   ${(cands.length||!ambList().length)?`<div class="sec pb" id="next"><div class="sh"><span class="num">${N()}</span><h2>Where this goes next</h2></div>
     ${!ambList().length
-      ? `<p class="flag">${RC.seamNoAmbitions()}</p>`
+      ? `<div class="seam warn"><div class="k">Where this goes next</div><p>${RC.seamNoAmbitions()}</p></div>`
       : `<p>${RC.seamIntro()}</p>
-      <table class="tbl"><thead><tr><th>What you said you want to be able to do</th><th style="width:34%">What stands in the way today</th></tr></thead><tbody>
-      ${cands.filter(c=>c.kind==="ambition").map(c=>`<tr class="${c===lg?"short":""}"><td>${E(c.t)}${c===lg?' <b style="color:#1e7e44">— least blocked</b>':""}</td>
-        <td>${c.gates.length
-          ? c.gates.map(x=>E(lc(x.dim.name))+" (Stage "+x.stage+(x.parked?", not on this year's plan":"")+")").join("; ")
-          : ambDimsOf(c.i).length?"<b>Nothing you scored below Stage 3</b>":"<i>not tagged, so we cannot say</i>"}</td></tr>`).join("")}
-      </tbody></table>
-      ${lg?`<p class="why">${RC.seamRecommendation({name:lg.t,gates:lg.gates})}</p>`
+      ${lg
+        ? `<div class="seam"><div class="k">The first piece of value work</div>
+          <h3>${E(lg.t)}</h3>
+          <p class="why">${RC.seamRecommendation({name:lg.t,gates:lg.gates})}</p>
+          <div class="schips">${ambChips}</div></div>`
       : cands.filter(c=>c.kind==="ambition"&&ambDimsOf(c.i).length&&!c.gates.length).length>1
-        ? `<p class="why">${RC.seamNoSequencing()}</p>`
-        : ""}`}
+        ? `<div class="seam info"><div class="k">The next piece of work</div>
+          <p class="why">${RC.seamNoSequencing()}</p>
+          <div class="schips">${ambChips}</div></div>`
+        : `<div class="seam info"><div class="k">The candidates you named</div>
+          <div class="schips">${ambChips}</div></div>`}`}
     ${cands.filter(c=>c.kind==="running").length?`<h4 class="sub-h">Already running, whether or not anyone planned it</h4>
       ${cands.filter(c=>c.kind==="running").map(c=>`<p>${RC.seamRunning({name:c.dim.name,note:c.note})}</p>`).join("")}`:""}
     <p class="method">${RC.seamNextEngagement({lowMaturity:ceil.stage<=2})}</p>
