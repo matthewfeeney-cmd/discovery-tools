@@ -2,128 +2,146 @@
 <title>Ardent Risk Group — AI Readiness Assessment</title>
 <style>
  @page{size:A4;margin:16mm 14mm}
+ :root{
+  --brand:#e8112d; --now:#b3261e; --struct:#0b5c8a; --go:#1e7e44; --below:#a86b00; --grey:#8a8a8a;
+  --ink:#14181b; --muted:#5f6368; --faint:#8a8f95; --hair:#e6e8ea; --bg:#eef0f2; --panel:#fff;
+ }
  *{box-sizing:border-box;margin:0;padding:0}
- body{font:15px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;background:#f4f4f5}
- .page{max-width:820px;margin:0 auto;background:#fff;padding:46px 54px}
+ body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+ .page{max-width:900px;margin:0 auto;background:var(--panel);padding:40px 54px;counter-reset:exhibit}
  h1{font-size:31px;line-height:1.2;letter-spacing:-.4px}
  h2{font-size:21px;margin:0 0 4px;letter-spacing:-.2px}
- h3.grp{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#e8112d;font-weight:800;margin:26px 0 10px;padding-bottom:5px;border-bottom:1px solid #eee}
+ h3.grp{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--brand);font-weight:800;margin:26px 0 10px;padding-bottom:5px;border-bottom:1px solid #eee}
  h4{font-size:16px}
  h4.sub-h{margin:20px 0 6px;font-size:15px}
  p{margin:0 0 9px}
- .sec{margin-top:34px;page-break-inside:auto}
- .sec>.sh{display:flex;align-items:baseline;gap:10px;border-top:3px solid #e8112d;padding-top:9px;margin-bottom:12px}
- .sec>.sh .num{font-size:12px;font-weight:800;color:#e8112d;letter-spacing:.1em}
- .cover{border-bottom:3px solid #e8112d;padding-bottom:26px;margin-bottom:8px}
- .cover .tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#e8112d;font-weight:800}
- .cover .meta{color:#5f6368;font-size:13.5px;margin-top:14px}
- .cover .amb{margin-top:16px;padding:13px 16px;background:#faf7f8;border-left:3px solid #e8112d;font-size:14.5px}
+ .sec{margin-top:38px;page-break-inside:auto;counter-increment:exhibit}
+ .sec>.sh{position:relative;border-top:2.5px solid var(--ink);padding-top:12px;margin-bottom:14px;padding-right:80px}
+  .sec>.sh::after{content:"Exhibit " counter(exhibit);position:absolute;top:12px;right:0;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+  .kick,.sec>.sh h2{font-size:11px;line-height:1.5;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);font-weight:800}
+  .atitle{font-size:21px;line-height:1.3;letter-spacing:-.3px;margin:5px 0 2px;font-weight:700;color:var(--ink)}
+  .atitle b{color:var(--brand);font-weight:700}
+  .exsrc{font-size:11px;color:var(--faint);margin-top:12px;border-top:1px solid var(--hair);padding-top:7px}
+  .exsrc b{color:var(--muted)}
+ .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
+  .sec>.sh .num::after{content:" · "}
+ .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
+ .cover .tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:800}
+ .cover .meta{color:var(--muted);font-size:13.5px;margin-top:14px}
+ .cover .amb{margin-top:16px;padding:13px 16px;background:#faf7f8;border-left:3px solid var(--brand);font-size:14.5px}
  .lede{font-size:18.5px;line-height:1.5;margin:18px 0 10px;letter-spacing:-.2px}
  .kpis{display:flex;gap:11px;margin:16px 0 6px;flex-wrap:wrap}
  .kpi{flex:1 1 150px;border:1px solid #e3e3e3;border-radius:9px;padding:12px 14px}
  .kpi b{display:block;font-size:26px;line-height:1.15;letter-spacing:-.6px}
- .kpi span{font-size:11.5px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
- .kpi small{display:block;font-size:12px;color:#5f6368;font-weight:400;margin-top:2px;line-height:1.35}
- .kpi.red b{color:#b3261e}
+ .kpi span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+ .kpi small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px;line-height:1.35}
+ .kpi.red b{color:var(--now)}
  .scale{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}
  .scale td{padding:6px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
  .scale td:first-child{white-space:nowrap;font-weight:700;width:1%}
  .scale tr.you td{background:#fff6f7}
- .scale tr.you td:first-child::after{content:" ← you";color:#e8112d;font-weight:800;font-size:11px}
+ .scale tr.you td:first-child::after{content:" ← you";color:var(--brand);font-weight:800;font-size:11px}
  .bar{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
  .bar i{width:26px;height:8px;border-radius:2px;background:#e9e9ea;display:block}
- .bar i.on{background:#0b5c8a}
- .dim.cap .bar i.on{background:#e8112d}
- .wt{font-size:11.5px;color:#5f6368}
+ .bar i.on{background:var(--struct)}
+ .dim.cap .bar i.on{background:var(--brand)}
+ .wt{font-size:11.5px;color:var(--muted)}
  .dim{border:1px solid #e8e8e8;border-radius:10px;padding:15px 17px;margin-bottom:11px;page-break-inside:avoid}
- .dim.cap{border-color:#e8112d;border-width:1.5px;background:#fffafb}
+ .dim.cap{border-color:var(--brand);border-width:1.5px;background:#fffafb}
  .dh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px}
- .dh .sc{font-size:13px;color:#5f6368;white-space:nowrap}
- .cap-tag{background:#e8112d;color:#fff;font-size:10px;padding:2px 6px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
+ .dh .sc{font-size:13px;color:var(--muted);white-space:nowrap}
+ .cap-tag{background:var(--brand);color:#fff;font-size:10px;padding:2px 6px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
  .dim p{font-size:14.2px;margin:7px 0 0}
- .why{color:#1a1a1a}
- .ctx{color:#5f6368;font-size:13.4px;font-style:italic;border-left:2px solid #e8e8e8;padding-left:11px}
- .src{color:#8a8a8a;font-size:11.5px}
- .miss{color:#8a8a8a;font-size:13.5px}
+ .why{color:var(--ink)}
+ .ctx{color:var(--muted);font-size:13.4px;font-style:italic;border-left:2px solid #e8e8e8;padding-left:11px}
+ .src{color:var(--grey);font-size:11.5px}
+ .miss{color:var(--grey);font-size:13.5px}
  .risks{display:flex;gap:11px;margin-top:11px;flex-wrap:wrap}
  .risks>div{flex:1 1 210px;background:#faf7f8;border-radius:7px;padding:9px 12px;font-size:13.4px}
- .risks b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#b3261e;margin-bottom:3px}
- .flag{background:#fff8e6;border-left:3px solid #b8860b;padding:9px 12px;font-size:13.6px;border-radius:0 6px 6px 0}
- .expo{background:#fdeceb;border:1.5px solid #b3261e;border-radius:10px;padding:16px 18px;margin:14px 0}
- .expo h4{color:#b3261e;font-size:15px;margin-bottom:7px}
+ .risks b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--now);margin-bottom:3px}
+ .flag{background:#fff8e6;border-left:3px solid var(--below);padding:9px 12px;font-size:13.6px;border-radius:0 6px 6px 0}
+ .expo{background:#fdeceb;border:1.5px solid var(--now);border-radius:10px;padding:16px 18px;margin:14px 0}
+ .expo h4{color:var(--now);font-size:15px;margin-bottom:7px}
  .expo-item{padding:10px 0;border-top:1px solid #f2c9c6}
  .expo-item:first-of-type{border-top:none;padding-top:2px}
  .expo-item>b{font-size:14.5px}
  .expo-item p{font-size:14.2px;margin:3px 0 0}
  .expo-item .ex-why{color:#7a3b36;font-size:13.6px}
  .tbl{width:100%;border-collapse:collapse;font-size:13.6px;margin:10px 0 14px}
- .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#5f6368;border-bottom:1.5px solid #ddd;padding:6px 9px}
+ .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1.5px solid #ddd;padding:6px 9px}
  .tbl td{padding:7px 9px;border-bottom:1px solid #f0f0f0;vertical-align:top}
  .tbl tr.short td{background:#fffaf9}
- .sub2{display:block;font-size:11.8px;color:#8a8a8a;line-height:1.35}
- .b-red{color:#b3261e;font-weight:800}.b-amber{color:#8a6d00;font-weight:800}.b-green{color:#1e7e44;font-weight:800}
+ .sub2{display:block;font-size:11.8px;color:var(--grey);line-height:1.35}
+ .b-red{color:var(--now);font-weight:800}.b-amber{color:var(--below);font-weight:800}.b-green{color:var(--go);font-weight:800}
  .two{display:flex;gap:11px;margin:12px 0}
- .stat{flex:1;border:1px solid #e3e3e3;border-radius:9px;padding:13px 15px;font-size:12px;color:#5f6368;text-transform:uppercase;letter-spacing:.05em}
- .stat span{display:block;font-size:29px;color:#1a1a1a;font-weight:700;letter-spacing:-.6px;text-transform:none}
- .stat small{font-size:15px;color:#8a8a8a;font-weight:400}
+ .stat{flex:1;border:1px solid #e3e3e3;border-radius:9px;padding:13px 15px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+ .stat span{display:block;font-size:29px;color:var(--ink);font-weight:700;letter-spacing:-.6px;text-transform:none}
+ .stat small{font-size:15px;color:var(--grey);font-weight:400}
  .phase{margin-bottom:20px;page-break-inside:avoid}
- .phase h4{border-left:4px solid #e8112d;padding-left:10px;margin-bottom:7px}
- .phase.now h4{border-color:#b3261e;color:#b3261e}
- .phase.later h4{border-color:#b0b0b0;color:#5f6368}
- .phase .lead{font-size:13.6px;color:#5f6368;margin:0 0 10px 14px}
+ .phase h4{border-left:4px solid var(--brand);padding-left:10px;margin-bottom:7px}
+ .phase.now h4{border-color:var(--now);color:var(--now)}
+ .phase.later h4{border-color:#b0b0b0;color:var(--muted)}
+ .phase .lead{font-size:13.6px;color:var(--muted);margin:0 0 10px 14px}
  .act{border:1px solid #e8e8e8;border-radius:9px;padding:13px 15px;margin:0 0 9px 14px;page-break-inside:avoid}
  /* the urgency board — the one page a sponsor will actually act on */
  .board{margin:4px 0 14px}
  .ub{display:flex;gap:14px;align-items:stretch;margin-bottom:10px;page-break-inside:avoid}
  .ubn{flex:0 0 40px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;
-      color:#fff;background:#8a8a8a;border-radius:9px 0 0 9px}
- .ub.live .ubn{background:#b3261e} .ub.heavy .ubn{background:#0b5c8a} .ub.cheap .ubn{background:#1e7e44}
+      color:#fff;background:var(--grey);border-radius:9px 0 0 9px}
+ .ub.live .ubn{background:var(--now)} .ub.heavy .ubn{background:var(--struct)} .ub.cheap .ubn{background:var(--go)}
  .ubb{flex:1;border:1px solid #e2e2e2;border-left:none;border-radius:0 9px 9px 0;padding:12px 16px}
  .ub.live .ubb{background:#fdf6f5;border-color:#f0d4d1}
  .ub.heavy .ubb{background:#f6fafc;border-color:#d3e3ec}
  .ub.cheap .ubb{background:#f7fbf8;border-color:#d3e7da}
  .ubtag{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#6b6b6b;margin-bottom:3px}
- .ub.live .ubtag{color:#b3261e} .ub.heavy .ubtag{color:#0b5c8a} .ub.cheap .ubtag{color:#1e7e44}
+ .ub.live .ubtag{color:var(--now)} .ub.heavy .ubtag{color:var(--struct)} .ub.cheap .ubtag{color:var(--go)}
  .ubb h4{font-size:16px;line-height:1.35;margin-bottom:5px}
  .ubb p{font-size:13.4px;line-height:1.5;margin:0 0 6px;color:#2e2e2e}
- .ubm{font-size:11.6px;color:#5f6368}
+ .ubm{font-size:11.6px;color:var(--muted)}
  .cap-box{border:1px solid #d8e3ea;background:#f6fafc;border-radius:9px;padding:14px 18px;margin:14px 0;page-break-inside:avoid}
- .cap-box h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#0b5c8a;margin-bottom:7px}
+ .cap-box h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--struct);margin-bottom:7px}
  .cap-box p{font-size:13.6px;margin:0 0 8px}
  .cap-bar{height:12px;background:#e4ecf1;border-radius:6px;overflow:hidden;margin:0 0 9px}
- .cap-bar span{display:block;height:100%;background:#0b5c8a}
- .cap-cav{font-size:11.6px!important;color:#5f6368;margin:0!important}
+ .cap-bar span{display:block;height:100%;background:var(--struct)}
+ .cap-cav{font-size:11.6px!important;color:var(--muted);margin:0!important}
  .act .rl{font-size:13.2px;background:#fdf8ec;border-left:3px solid #d8ccb0;padding:7px 11px;margin:0 0 8px;border-radius:0 5px 5px 0}
- .act.big{margin-left:0;border:2px solid #1e7e44;border-radius:10px;padding:16px 18px;margin-bottom:12px;background:#fbfdfb}
+ .act.big{margin-left:0;border:2px solid var(--go);border-radius:10px;padding:16px 18px;margin-bottom:12px;background:#fbfdfb}
  .act.big .ah{font-size:17.5px;line-height:1.35}
  .act.big .ah b{font-weight:700}
  .act .ah{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:15px}
  .act .aid{font-size:11px;color:#a0a0a0;font-weight:700;letter-spacing:.05em}
- .act .meta{font-size:11.8px;color:#5f6368;margin:2px 0 6px}
+ .act .meta{font-size:11.8px;color:var(--muted);margin:2px 0 6px}
  .act p{font-size:13.8px;margin:0 0 7px}
  .mini{width:100%;border-collapse:collapse;font-size:12.8px}
  .mini td{padding:3px 0;vertical-align:top}
- .mini td:first-child{color:#8a8a8a;width:96px;white-space:nowrap;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em;padding-top:5px}
+ .mini td:first-child{color:var(--grey);width:96px;white-space:nowrap;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em;padding-top:5px}
  .radar{text-align:center;margin:8px 0}
- .legend{font-size:12.5px;color:#5f6368;text-align:center;margin-top:-6px}
+ .legend{font-size:12.5px;color:var(--muted);text-align:center;margin-top:-6px}
  .method{font-size:13.4px;color:#4a4a4a}
  .method li{margin:5px 0 0 18px}
  .sell{border:1px solid #e3e3e3;border-radius:10px;padding:18px 20px;margin-top:14px;background:#fafafa}
- .foot{margin-top:36px;padding-top:14px;border-top:1px solid #e8e8e8;font-size:11.8px;color:#8a8a8a}
+ .foot{margin-top:36px;padding-top:14px;border-top:1px solid #e8e8e8;font-size:11.8px;color:var(--grey)}
  .noprint{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:5}
- .noprint button{font:inherit;font-size:13px;font-weight:700;padding:9px 15px;border:none;border-radius:8px;background:#e8112d;color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
- .noprint button.alt{background:#fff;color:#1a1a1a;border:1px solid #ddd}
+ .noprint button{font:inherit;font-size:13px;font-weight:700;padding:9px 15px;border:none;border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+ .noprint button.alt{background:#fff;color:var(--ink);border:1px solid #ddd}
+ /* screen-only sticky section nav */
+ nav.rnav{position:sticky;top:0;z-index:9;background:rgba(255,255,255,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--hair);display:flex;gap:3px;padding:9px 24px;flex-wrap:wrap}
+ nav.rnav a{font-size:12.5px;font-weight:700;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:7px}
+ nav.rnav a:hover{background:#f2f3f5;color:var(--ink)}
+ nav.rnav .sp{flex:1}
+ nav.rnav .close{border:1px solid var(--hair);color:var(--ink)}
+ nav.rnav .print{background:var(--brand);color:#fff}
  @media print{
    body{background:#fff}
    .page{max-width:none;padding:0;margin:0}
-   .noprint{display:none!important}
+   .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
-   h2,h3.grp,h4{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi{page-break-inside:avoid}
+   .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
-<div class="noprint"><button onclick="window.print()">Print / save as PDF</button><button class="alt" onclick="window.close()">Close</button></div>
+<nav class="rnav"><a href="#where">Where you are</a><a href="#fix">Fix first</a><a href="#pic">Maturity</a><a href="#find">Findings</a><a href="#plan">Plan</a><a href="#next">Next</a><a href="#method">Evidence</a><span class="sp"></span><a href="#" class="close" onclick="window.close();return false">Close</a><a href="#" class="print" onclick="window.print();return false">Print / PDF</a></nav>
 <div class="page">
 
   <div class="cover">
@@ -133,7 +151,7 @@
     <div class="amb"><b>What you told us you are trying to do</b><br>Take 400bps out of the cost base before the 2027 exit, and have a credible AI story in the IM — without a Consumer Duty incident on the personal-lines book.</div>
   </div>
 
-  <div class="sec"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
+  <div class="sec" id="where"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
     <p class="lede">You are at Stage 1 of 5 against a Stage 3 ambition, and the picture is flat rather than spiky — 7 of the 15 dimensions sit at the same level. There is no single unlock here.</p>
     <p>Weighted across all 15 dimensions you average 1.6 today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.</p>
     <p class="flag"><b>One thing to be clear about before anything else.</b> Of the 7 dimensions setting your ceiling, one — internal platform quality — is deliberately not on this year's plan. That is a legitimate decision and we have recorded it as one. It also means your ceiling cannot pass Stage 1 however well the rest of the plan goes. The work below lifts AI-accessible internal context, skills, enablement & champions, agentic readiness, evaluation & monitoring, third-party AI assurance and incident response & reversibility, which is worth doing on its own terms, but the constraint moves only when that dimension does.</p>
@@ -169,7 +187,7 @@
 
   
 
-  <div class="sec pb"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
+  <div class="sec pb" id="fix"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
     <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on. There are 4 more on the plan behind these; they are in the sequenced section and they are not urgent yet.</p>
     <div class="board">
       <div class="ub live">
@@ -268,7 +286,7 @@
     <p><b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.</p>
   </div>
 
-  <div class="sec"><div class="sh"><span class="num">05</span><h2>The picture across all 15 dimensions</h2></div>
+  <div class="sec" id="pic"><div class="sh"><span class="num">05</span><h2>The picture across all 15 dimensions</h2></div>
     <div class="radar"><svg viewBox="0 0 420 350" style="width:100%;max-width:400px;height:auto"><polygon points="210,148.6 220.73784737720112,150.88239991823534 229.6190233926032,157.33495199212615 235.10789203019206,166.8419513485014 236.2553780377224,177.75955143026604 232.86307065990917,188.2 225.5175306605213,196.35804865149862 215.48886863758884,200.82309665937248 204.51113136241116,200.82309665937248 194.4824693394787,196.35804865149862 187.13692934009083,188.20000000000002 183.7446219622776,177.75955143026607 184.89210796980794,166.8419513485014 190.3809766073968,157.33495199212612 199.26215262279888,150.88239991823534" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,122.19999999999999 231.47569475440224,126.76479983647067 249.23804678520642,139.66990398425227 260.2157840603841,158.68390269700276 262.5107560754448,180.5191028605321 255.72614131981837,201.4 241.03506132104258,217.71609730299724 220.97773727517767,226.64619331874493 199.02226272482233,226.64619331874493 178.96493867895742,217.71609730299724 164.27385868018166,201.40000000000003 157.48924392455518,180.51910286053214 159.78421593961588,158.6839026970028 170.7619532147936,139.66990398425227 188.52430524559776,126.76479983647067" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 242.2135421316034,102.64719975470601 268.85707017780965,122.00485597637842 285.32367609057616,150.52585404550416 288.76613411316725,183.27865429079816 278.58921197972757,214.6 256.55259198156386,239.07414595449586 226.46660591276654,252.46928997811742 193.5333940872335,252.46928997811742 163.44740801843614,239.07414595449586 141.41078802027246,214.60000000000002 131.23386588683275,183.27865429079822 134.67632390942384,150.52585404550416 151.1429298221904,122.0048559763784 177.78645786839664,102.647199754706" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,69.39999999999999 252.95138950880448,78.52959967294134 288.47609357041284,104.33980796850456 310.43156812076825,142.36780539400556 315.02151215088963,186.0382057210642 301.45228263963673,227.79999999999998 272.07012264208515,260.4321946059945 231.95547455035538,278.29238663748987 188.04452544964462,278.29238663748987 147.92987735791485,260.4321946059945 118.5477173603633,227.80000000000004 104.97848784911034,186.0382057210643 109.56843187923177,142.36780539400556 131.5239064295872,104.33980796850453 167.04861049119552,78.52959967294133" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,43 263.68923688600563,54.41199959117668 308.09511696301604,86.67475996063071 335.5394601509603,134.20975674250695 341.2768901886121,188.79775715133025 324.3153532995459,240.99999999999997 287.58765330260644,281.79024325749305 237.4443431879442,304.11548329686235 182.5556568120558,304.11548329686235 132.41234669739356,281.79024325749305 95.68464670045412,241.00000000000006 78.72310981138793,188.79775715133036 84.46053984903972,134.20975674250695 111.904883036984,86.67475996063067 156.3107631139944,54.41199959117667" fill="none" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="210" y2="43" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="263.68923688600563" y2="54.41199959117668" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="308.09511696301604" y2="86.67475996063071" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="335.5394601509603" y2="134.20975674250695" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="341.2768901886121" y2="188.79775715133025" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="324.3153532995459" y2="240.99999999999997" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="287.58765330260644" y2="281.79024325749305" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="237.4443431879442" y2="304.11548329686235" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="182.5556568120558" y2="304.11548329686235" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="132.41234669739356" y2="281.79024325749305" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="95.68464670045412" y2="241.00000000000006" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="78.72310981138793" y2="188.79775715133036" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="84.46053984903972" y2="134.20975674250695" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="111.904883036984" y2="86.67475996063067" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="156.3107631139944" y2="54.41199959117667" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 242.2135421316034,102.64719975470601 268.85707017780965,122.00485597637842 285.32367609057616,150.52585404550416 288.76613411316725,183.27865429079816 278.58921197972757,214.6 256.55259198156386,239.07414595449586 226.46660591276654,252.46928997811742 193.5333940872335,252.46928997811742 163.44740801843614,239.07414595449586 141.41078802027246,214.60000000000002 131.23386588683275,183.27865429079822 134.67632390942384,150.52585404550416 151.1429298221904,122.0048559763784 177.78645786839664,102.647199754706" fill="none" stroke="#1e7e44" stroke-width="1.6" stroke-dasharray="5 4"/><polygon points="210,122.19999999999999 236.84461844300282,114.70599979558834 249.23804678520642,139.66990398425227 260.2157840603841,158.68390269700276 236.2553780377224,177.75955143026604 232.86307065990917,188.2 256.55259198156386,239.07414595449586 220.97773727517767,226.64619331874493 204.51113136241116,200.82309665937248 178.96493867895742,217.71609730299724 187.13692934009083,188.20000000000002 157.48924392455518,180.51910286053214 184.89210796980794,166.8419513485014 190.3809766073968,157.33495199212612 199.26215262279888,150.88239991823534" fill="rgba(11,92,138,.20)" stroke="#0b5c8a" stroke-width="2.2"/><circle cx="210" cy="122.19999999999999" r="2.8" fill="#0b5c8a"/><circle cx="236.84461844300282" cy="114.70599979558834" r="2.8" fill="#0b5c8a"/><circle cx="249.23804678520642" cy="139.66990398425227" r="2.8" fill="#0b5c8a"/><circle cx="260.2157840603841" cy="158.68390269700276" r="2.8" fill="#0b5c8a"/><circle cx="236.2553780377224" cy="177.75955143026604" r="2.8" fill="#0b5c8a"/><circle cx="232.86307065990917" cy="188.2" r="2.8" fill="#0b5c8a"/><circle cx="256.55259198156386" cy="239.07414595449586" r="2.8" fill="#0b5c8a"/><circle cx="220.97773727517767" cy="226.64619331874493" r="2.8" fill="#0b5c8a"/><circle cx="204.51113136241116" cy="200.82309665937248" r="2.8" fill="#0b5c8a"/><circle cx="178.96493867895742" cy="217.71609730299724" r="2.8" fill="#0b5c8a"/><circle cx="187.13692934009083" cy="188.20000000000002" r="2.8" fill="#0b5c8a"/><circle cx="157.48924392455518" cy="180.51910286053214" r="2.8" fill="#0b5c8a"/><circle cx="184.89210796980794" cy="166.8419513485014" r="2.8" fill="#0b5c8a"/><circle cx="190.3809766073968" cy="157.33495199212612" r="2.8" fill="#0b5c8a"/><circle cx="199.26215262279888" cy="150.88239991823534" r="2.8" fill="#0b5c8a"/><text x="210" y="34.91199999999998" text-anchor="middle" font-size="11" font-weight="700" fill="#5f6368">1</text><text x="268.1991327844301" y="47.2826075568355" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">2</text><text x="316.3351067879094" y="82.25543979732367" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">3</text><text x="346.0847748036409" y="133.7833763088775" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">4</text><text x="352.3041489644555" y="192.956768752042" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">5</text><text x="333.9178429767078" y="249.54399999999998" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">6</text><text x="294.1050161800254" y="293.76062369112253" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">9</text><text x="239.74966801573154" y="317.9611838937988" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">10</text><text x="180.25033198426848" y="317.9611838937988" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">11</text><text x="125.89498381997461" y="293.76062369112253" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">12</text><text x="86.08215702329224" y="249.54400000000004" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">13</text><text x="67.69585103554448" y="192.9567687520421" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">14</text><text x="73.91522519635905" y="133.78337630887754" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">15</text><text x="103.66489321209065" y="82.25543979732363" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">16</text><text x="151.8008672155699" y="47.2826075568355" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">17</text></svg></div>
     <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage 3 ambition</p>
     <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th><th>Target</th></tr></thead><tbody>
@@ -307,7 +325,7 @@
     <p class="method"><b>Not this year</b> means we assessed the dimension, scored it, and agreed with you that closing it is not a priority for the next twelve months. It still counts toward your ceiling. It is listed rather than hidden because a gap you have decided to live with is a decision, and decisions should be visible.</p>
   </div>
 
-  <div class="sec pb"><div class="sh"><span class="num">06</span><h2>Dimension by dimension</h2></div>
+  <div class="sec pb" id="find"><div class="sh"><span class="num">06</span><h2>Dimension by dimension</h2></div>
     <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
     <h3 class="grp">Intent and control</h3><div class="dim">
         <div class="dh"><h4>1. AI stance &amp; policy clarity</h4>
@@ -558,7 +576,7 @@
 
   
 
-  <div class="sec pb"><div class="sh"><span class="num">08</span><h2>The plan, in sequence</h2></div>
+  <div class="sec pb" id="plan"><div class="sh"><span class="num">08</span><h2>The plan, in sequence</h2></div>
     <p>The board above is the summary. This is every item in order, each with a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.</p>
     <p class="method">The 5 items already happening are listed on the board above and do not appear again here — they sit outside the sequence by design.</p>
     
@@ -869,7 +887,7 @@
 
   
 
-  <div class="sec pb"><div class="sh"><span class="num">09</span><h2>Where this goes next</h2></div>
+  <div class="sec pb" id="next"><div class="sh"><span class="num">09</span><h2>Where this goes next</h2></div>
     <p>Readiness is not the destination. It is what determines whether anything you build on top of it works. Below are the candidates this assessment surfaced for the next piece of work, and — the useful part — which of them your own findings least stand in the way of.</p>
       <table class="tbl"><thead><tr><th>What you said you want to be able to do</th><th style="width:34%">What stands in the way today</th></tr></thead><tbody>
       <tr class=""><td>Put a first-draft renewal report in front of a broker in an hour instead of half a day</td>
@@ -883,7 +901,7 @@
     <p class="method">The first piece of value work belongs inside the first 90 days: the foundations and the first candidate move together, not one after the other. The only things that come before it are the containment items and any do-not-accelerate stop-flag above — those close first. It takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed go, adjust or stop against each. The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point.</p>
   </div>
 
-  <div class="sec pb"><div class="sh"><span class="num">10</span><h2>How we assessed this</h2></div>
+  <div class="sec pb" id="method"><div class="sh"><span class="num">10</span><h2>How we assessed this</h2></div>
     <div class="method">
       <p>So that you can weigh the findings, and challenge them.</p>
       <ul>
