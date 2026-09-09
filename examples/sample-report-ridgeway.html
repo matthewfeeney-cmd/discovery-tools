@@ -23,6 +23,18 @@
   .atitle b{color:var(--brand);font-weight:700}
   .exsrc{font-size:11px;color:var(--faint);margin-top:12px;border-top:1px solid var(--hair);padding-top:7px}
   .exsrc b{color:var(--muted)}
+  .apex{border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:14px}
+  .apex .gov{background:var(--ink);color:#fff;padding:22px 26px}
+  .apex .gov .g-k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ff9aa6;font-weight:800}
+  .apex .gov .g-t{font-size:20px;line-height:1.42;margin-top:8px;letter-spacing:-.2px}
+  .apex .gov .g-t b{color:#ff5b6b;font-weight:700}
+  .apex .supports{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .apex .sp{padding:18px 20px;border-right:1px solid var(--hair)}
+  .apex .sp:last-child{border-right:none}
+  .apex .sp .num{font-size:12px;font-weight:800;color:var(--brand)}
+  .apex .sp h4{font-size:14.5px;line-height:1.35;margin:5px 0 5px}
+  .apex .sp p{font-size:12.6px;color:var(--muted);line-height:1.5}
+  @media(max-width:640px){.apex .supports{grid-template-columns:1fr}.apex .sp{border-right:none;border-bottom:1px solid var(--hair)}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -137,11 +149,11 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
-<nav class="rnav"><a href="#where">Where you are</a><a href="#fix">Fix first</a><a href="#pic">Maturity</a><a href="#find">Findings</a><a href="#plan">Plan</a><a href="#next">Next</a><a href="#method">Evidence</a><span class="sp"></span><a href="#" class="close" onclick="window.close();return false">Close</a><a href="#" class="print" onclick="window.print();return false">Print / PDF</a></nav>
+<nav class="rnav"><a href="#sum">Summary</a><a href="#where">Where you are</a><a href="#fix">Fix first</a><a href="#pic">Maturity</a><a href="#find">Findings</a><a href="#plan">Plan</a><a href="#next">Next</a><a href="#method">Evidence</a><span class="sp"></span><a href="#" class="close" onclick="window.close();return false">Close</a><a href="#" class="print" onclick="window.print();return false">Print / PDF</a></nav>
 <div class="page">
 
   <div class="cover">
@@ -151,7 +163,20 @@
     <div class="amb"><b>What you told us you are trying to do</b><br>Get cost-to-serve down across the six depots and stop the B2C last-mile arm losing money on failed first-time deliveries, in time for a 2027 exit process that is already a year late.</div>
   </div>
 
-  <div class="sec" id="where"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
+  <div class="sec" id="sum"><div class="sh"><span class="num">01</span><h2>Executive summary</h2></div>
+    <div class="atitle">Ridgeway Logistics Group can be ready to build on AI within the year — <b>but four unmanaged exposures must close first</b>.</div>
+    <div class="apex">
+      <div class="gov"><div class="g-k">The finding, in one line</div><div class="g-t">You are at <b>Stage 1 of 5</b> against a Stage 3 ambition, held there by <b>AI stance &amp; policy clarity, AI governance, risk &amp; assurance and third-party AI assurance</b> — you average 2.3 across the 17 dimensions, so the constraint is the weakest links rather than the general level. <b>Four of these are live exposures</b> rather than maturity gaps, and they close inside 90 days.</div></div>
+      <div class="supports">
+        <div class="sp"><div class="num">01</div><h4>The foundation is stronger than the score suggests</h4><p>Value stream visibility &amp; flow (Stage 4), data ecosystem health (Stage 3), internal platform quality (Stage 3). The raw material is here — the score is set by the weakest links, not the general level.</p></div>
+        <div class="sp"><div class="num">02</div><h4>Four exposures live today</h4><p>AI governance, risk &amp; assurance, agentic readiness, third-party AI assurance and incident response &amp; reversibility are in play now with no owner — exposure, not a maturity gap, and sit before the plan.</p></div>
+        <div class="sp"><div class="num">03</div><h4>Start the value work early</h4><p>Cut failed first-time delivery on the B2C arm without adding head office people is the least-blocked ambition. Take it through Full AI Discovery while the foundations close — not a year of groundwork first.</p></div>
+      </div>
+    </div>
+    <p class="exsrc"><b>Basis:</b> 11 interviews and direct observation; 34 of 34 questions scored across 17 dimensions, 41% confirmed against evidence; source code independently audited; not self-reported. Full evidence base under “How we assessed this”.</p>
+  </div>
+
+  <div class="sec" id="where"><div class="sh"><span class="num">02</span><h2>Where you are</h2></div>
     <p class="lede">You are at Stage 1 of 5 against a Stage 3 ambition — and it is AI stance &amp; policy clarity, AI governance, risk &amp; assurance and third-party AI assurance that puts you there.</p>
     <p>Weighted across all 17 dimensions you average 2.3 today. The distance between that and Stage 1 is the point of this report: most of the organisation is already operating above what these dimensions allow. Deliver the plan and that average moves to 2.6 — but the ceiling moves further, which is what actually changes what you can do.</p>
     
@@ -171,7 +196,7 @@
     
   </div>
 
-  <div class="sec pb"><div class="sh"><span class="num">02</span><h2>Obligations, before anything about maturity</h2></div>
+  <div class="sec pb"><div class="sh"><span class="num">03</span><h2>Obligations, before anything about maturity</h2></div>
     <p class="lede">These are not scores and they are not our opinion. Each is something in force today that we found is not in place. They sit above the rest of this document because they are not aspirations.</p>
     <div class="expo-item"><b>UK GDPR Art 22C — in force 5 Feb 2026 (Data (Use and Access) Act 2025 s.80)</b>
       <p>For any significant decision made without meaningful human involvement: are the four safeguards documented — inform, representations, human intervention, contest — <b>no</b>.</p>
@@ -183,7 +208,7 @@
 
   
 
-  <div class="sec pb" id="fix"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
+  <div class="sec pb" id="fix"><div class="sh"><span class="num">04</span><h2>Fix these first</h2></div>
     <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on.</p>
     <div class="board">
       <div class="ub live">
@@ -263,12 +288,12 @@
     <p class="ctx"><b>You told us your own three were:</b> Write down what people are allowed to put into AI tools · Name someone who owns AI risk · Stop consignee addresses going into consumer tools. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.</p>
   </div>
 
-  <div class="sec"><div class="sh"><span class="num">04</span><h2>And one thing not to do yet</h2></div>
+  <div class="sec"><div class="sh"><span class="num">05</span><h2>And one thing not to do yet</h2></div>
       <p><b>User-centric focus — Stage 2.</b> Do not accelerate delivery until this is addressed. The research finding is that AI makes organisations at this level worse, not slower to improve — speed applied to the wrong work.</p><p class="method">This is the dimension where the research is unambiguous: applying AI to a workflow nobody has validated with its actual users makes outcomes worse, not better. Route optimisation aimed at a failure reason recorded by the driver will confidently optimise the wrong thing.</p>
       <p class="method">This is not something already happening. It is a warning about sequence: applying AI here before this is addressed tends to make the outcome worse rather than merely leaving value unclaimed.</p>
   </div>
 
-  <div class="sec pb"><div class="sh"><span class="num">05</span><h2>How to read the scores</h2></div>
+  <div class="sec pb"><div class="sh"><span class="num">06</span><h2>How to read the scores</h2></div>
     <p>Every dimension is scored from 1 to 5 on the same scale. The stages describe how deliberate and repeatable a practice is, not how much technology is in use.</p>
     <table class="scale">
       <tr class="you"><td>1 · Exploring</td><td>curious, nothing running</td></tr><tr class=""><td>2 · Experimenting</td><td>pilots, no repeatable path</td></tr><tr class=""><td>3 · Operationalising</td><td>first things running for real</td></tr><tr class=""><td>4 · Scaling</td><td>repeatable, spreading, measured</td></tr><tr class=""><td>5 · AI-native</td><td>how the business works</td></tr>
@@ -277,7 +302,7 @@
     <p><b>How we arrived at each number.</b> Every dimension was scored twice, by different means: our assessment against a written description of each stage, and a checklist of things that either exist in your organisation or do not — a published policy, named data owners, prompts under version control, a log of what your automations have done. Where the two disagreed we have taken the midpoint and said so in the text, rather than reporting the more comfortable of the two.</p>
   </div>
 
-  <div class="sec" id="pic"><div class="sh"><span class="num">06</span><h2>The picture across all 17 dimensions</h2></div>
+  <div class="sec" id="pic"><div class="sh"><span class="num">07</span><h2>The picture across all 17 dimensions</h2></div>
     <div class="radar"><svg viewBox="0 0 420 350" style="width:100%;max-width:400px;height:auto"><polygon points="210,148.6 219.53677998734085,150.382733143725 227.78556499226912,155.4901645853746 233.63231089177364,163.23250740749938 236.2873822541889,172.56411531016883 235.39219697976242,182.224702937903 231.0676548001983,190.90955440041236 223.8978090999622,197.44573238326183 214.85098727035745,200.950489831655 205.14901272964255,200.950489831655 196.1021909000378,197.44573238326183 188.9323451998017,190.9095544004124 184.60780302023758,182.224702937903 183.7126177458111,172.5641153101688 186.36768910822636,163.2325074074994 192.21443500773088,155.4901645853746 200.46322001265915,150.382733143725" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,122.19999999999999 229.07355997468167,125.76546628745001 245.57112998453823,135.9803291707492 257.2646217835473,151.46501481499877 262.5747645083778,170.12823062033766 260.78439395952483,189.44940587580598 252.13530960039665,206.81910880082472 237.7956181999244,219.89146476652363 219.7019745407149,226.90097966331 200.2980254592851,226.90097966331 182.2043818000756,219.89146476652363 167.86469039960338,206.81910880082478 159.21560604047517,189.44940587580598 157.42523549162217,170.12823062033763 162.7353782164527,151.4650148149988 174.42887001546174,135.98032917074923 190.92644002531833,125.76546628745001" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 238.61033996202252,101.14819943117502 263.3566949768073,116.4704937561238 280.89693267532095,139.69752222249818 288.86214676256674,167.6923459305065 286.1765909392873,196.67410881370898 273.20296440059496,222.7286632012371 251.6934272998866,242.33719714978542 224.55296181107238,252.85146949496504 195.44703818892765,252.85146949496504 168.3065727001134,242.33719714978542 146.79703559940506,222.72866320123717 133.82340906071272,196.67410881370898 131.13785323743326,167.69234593050643 139.10306732467905,139.6975222224982 156.64330502319262,116.47049375612383 181.38966003797748,101.14819943117502" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,69.39999999999999 248.14711994936337,76.53093257490002 281.14225996907646,96.96065834149839 304.52924356709457,127.93002962999756 315.14952901675565,165.25646124067532 311.56878791904967,203.89881175161196 294.2706192007933,238.63821760164947 265.5912363998488,264.78292953304725 229.40394908142983,278.80195932662 190.5960509185702,278.80195932662 154.40876360015122,264.78292953304725 125.72938079920677,238.63821760164956 108.4312120809503,203.89881175161196 104.85047098324435,165.25646124067526 115.47075643290539,127.93002962999762 138.85774003092348,96.96065834149844 171.85288005063666,76.53093257490002" fill="none" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,43 257.6838999367042,51.913665718625026 298.92782496134555,77.450822926873 328.16155445886824,116.16253703749695 341.43691127094456,162.82057655084415 336.9609848988121,211.12351468951493 315.33827400099165,254.54777200206183 279.489045499811,287.2286619163091 234.25493635178728,304.752449158275 185.74506364821275,304.752449158275 140.51095450018903,287.2286619163091 104.66172599900845,254.54777200206195 83.03901510118789,211.12351468951496 78.56308872905544,162.82057655084407 91.83844554113175,116.16253703749702 121.07217503865438,77.45082292687306 162.3161000632958,51.913665718625026" fill="none" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="210" y2="43" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="257.6838999367042" y2="51.913665718625026" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="298.92782496134555" y2="77.450822926873" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="328.16155445886824" y2="116.16253703749695" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="341.43691127094456" y2="162.82057655084415" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="336.9609848988121" y2="211.12351468951493" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="315.33827400099165" y2="254.54777200206183" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="279.489045499811" y2="287.2286619163091" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="234.25493635178728" y2="304.752449158275" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="185.74506364821275" y2="304.752449158275" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="140.51095450018903" y2="287.2286619163091" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="104.66172599900845" y2="254.54777200206195" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="83.03901510118789" y2="211.12351468951496" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="78.56308872905544" y2="162.82057655084407" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="91.83844554113175" y2="116.16253703749702" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="121.07217503865438" y2="77.45082292687306" stroke="#dcdcdc" stroke-width="1"/><line x1="210" y1="175" x2="162.3161000632958" y2="51.913665718625026" stroke="#dcdcdc" stroke-width="1"/><polygon points="210,95.8 238.61033996202252,101.14819943117502 263.3566949768073,116.4704937561238 280.89693267532095,139.69752222249818 288.86214676256674,167.6923459305065 286.1765909392873,196.67410881370898 273.20296440059496,222.7286632012371 251.6934272998866,242.33719714978542 224.55296181107238,252.85146949496504 195.44703818892765,252.85146949496504 168.3065727001134,242.33719714978542 146.79703559940506,222.72866320123717 133.82340906071272,196.67410881370898 131.13785323743326,167.69234593050643 139.10306732467905,139.6975222224982 156.64330502319262,116.47049375612383 181.38966003797748,101.14819943117502" fill="none" stroke="#1e7e44" stroke-width="1.6" stroke-dasharray="5 4"/><polygon points="210,148.6 219.53677998734085,150.382733143725 245.57112998453823,135.9803291707492 280.89693267532095,139.69752222249818 262.5747645083778,170.12823062033766 286.1765909392873,196.67410881370898 273.20296440059496,222.7286632012371 251.6934272998866,242.33719714978542 219.7019745407149,226.90097966331 190.5960509185702,278.80195932662 182.2043818000756,219.89146476652363 167.86469039960338,206.81910880082478 146.51950755059394,193.0617573447575 131.13785323743326,167.69234593050643 162.7353782164527,151.4650148149988 183.3216525115963,145.73524687806193 190.92644002531833,125.76546628745001" fill="rgba(11,92,138,.20)" stroke="#0b5c8a" stroke-width="2.2"/><circle cx="210" cy="148.6" r="2.8" fill="#0b5c8a"/><circle cx="219.53677998734085" cy="150.382733143725" r="2.8" fill="#0b5c8a"/><circle cx="245.57112998453823" cy="135.9803291707492" r="2.8" fill="#0b5c8a"/><circle cx="280.89693267532095" cy="139.69752222249818" r="2.8" fill="#0b5c8a"/><circle cx="262.5747645083778" cy="170.12823062033766" r="2.8" fill="#0b5c8a"/><circle cx="286.1765909392873" cy="196.67410881370898" r="2.8" fill="#0b5c8a"/><circle cx="273.20296440059496" cy="222.7286632012371" r="2.8" fill="#0b5c8a"/><circle cx="251.6934272998866" cy="242.33719714978542" r="2.8" fill="#0b5c8a"/><circle cx="219.7019745407149" cy="226.90097966331" r="2.8" fill="#0b5c8a"/><circle cx="190.5960509185702" cy="278.80195932662" r="2.8" fill="#0b5c8a"/><circle cx="182.2043818000756" cy="219.89146476652363" r="2.8" fill="#0b5c8a"/><circle cx="167.86469039960338" cy="206.81910880082478" r="2.8" fill="#0b5c8a"/><circle cx="146.51950755059394" cy="193.0617573447575" r="2.8" fill="#0b5c8a"/><circle cx="131.13785323743326" cy="167.69234593050643" r="2.8" fill="#0b5c8a"/><circle cx="162.7353782164527" cy="151.4650148149988" r="2.8" fill="#0b5c8a"/><circle cx="183.3216525115963" cy="145.73524687806193" r="2.8" fill="#0b5c8a"/><circle cx="190.92644002531833" cy="125.76546628745001" r="2.8" fill="#0b5c8a"/><text x="210" y="34.91199999999998" text-anchor="middle" font-size="11" font-weight="700" fill="#5f6368">1</text><text x="261.68934753138734" y="44.57441363898951" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">2</text><text x="306.3977622580986" y="72.25669205273032" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">3</text><text x="338.08712503341314" y="114.22019014864668" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">4</text><text x="352.4776118177039" y="164.79750498111505" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">5</text><text x="347.6257076303124" y="217.1578899234342" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">6</text><text x="324.1866890170749" y="264.22978485023503" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">7</text><text x="285.32612532179513" y="299.65586951727903" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">8</text><text x="236.29235100533742" y="318.6516548875702" text-anchor="start" font-size="11" font-weight="700" fill="#5f6368">9</text><text x="183.7076489946626" y="318.6516548875702" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">10</text><text x="134.67387467820487" y="299.65586951727903" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">11</text><text x="95.81331098292516" y="264.22978485023515" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">12</text><text x="72.37429236968765" y="217.15788992343423" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">13</text><text x="67.52238818229608" y="164.79750498111497" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">14</text><text x="81.9128749665868" y="114.22019014864676" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">15</text><text x="113.60223774190133" y="72.25669205273037" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">16</text><text x="158.31065246861266" y="44.57441363898951" text-anchor="end" font-size="11" font-weight="700" fill="#5f6368">17</text></svg></div>
     <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage 3 ambition</p>
     <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th><th>Target</th></tr></thead><tbody>
@@ -320,7 +345,7 @@
     
   </div>
 
-  <div class="sec pb" id="find"><div class="sh"><span class="num">07</span><h2>Dimension by dimension</h2></div>
+  <div class="sec pb" id="find"><div class="sh"><span class="num">08</span><h2>Dimension by dimension</h2></div>
     <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
     <h3 class="grp">Intent and control</h3><div class="dim cap">
         <div class="dh"><h4>1. AI stance &amp; policy clarity</h4>
@@ -551,7 +576,7 @@
       </div>
   </div>
 
-  <div class="sec pb"><div class="sh"><span class="num">08</span><h2>Your people</h2></div>
+  <div class="sec pb"><div class="sh"><span class="num">09</span><h2>Your people</h2></div>
     <p>Seven capabilities, scored on two axes: how deep the skill goes, and how widely it is held. Depth without reach is a key-person risk rather than a capability. The level each one needs rises with your ambition — these are measured against Stage 3.</p>
     
     <table class="tbl"><thead><tr><th>Capability</th><th>Needed</th><th>Today</th><th>How widely held</th></tr></thead><tbody>
@@ -587,7 +612,7 @@
     <p><b>Held too narrowly.</b> Task and prompt design, Redesigning how work gets done — strong enough, but concentrated in too few people to survive a resignation.</p>
   </div>
 
-  <div class="sec pb"><div class="sh"><span class="num">09</span><h2>Your codebase</h2></div>
+  <div class="sec pb"><div class="sh"><span class="num">10</span><h2>Your codebase</h2></div>
     
     <p>Rather than ask your engineers to rate their own codebase, we audited it. 3 repositories were in scope across 12 dimensions, each scored out of 100. Every finding is marked according to whether it was measured by a tool or inferred, and any check that failed to complete is reported as incomplete rather than scored as clean.</p>
     <div class="two">
@@ -602,7 +627,7 @@
     <p><b>In summary.</b> Better engineering than the leadership believes it has. The constraint is not capability — it is that agent-generated volume is outrunning test coverage, and one undocumented integration carries the whole TMS relationship. Neither is an AI problem; both get worse if AI volume increases before they are fixed.</p>
   </div>
 
-  <div class="sec pb" id="plan"><div class="sh"><span class="num">10</span><h2>The plan, in sequence</h2></div>
+  <div class="sec pb" id="plan"><div class="sh"><span class="num">11</span><h2>The plan, in sequence</h2></div>
     <p>The board above is the summary. This is every item in order, each with a sponsor, an owner, a horizon and a definition of done — the observable thing that has to exist for it to count as complete. The order is not a preference. Several of these depend on a state that another one creates, and doing them out of sequence tends to produce work that has to be redone.</p>
     <p class="method">The 4 items already happening are listed on the board above and do not appear again here — they sit outside the sequence by design.</p>
     
@@ -836,7 +861,7 @@
 
   
 
-  <div class="sec pb" id="next"><div class="sh"><span class="num">11</span><h2>Where this goes next</h2></div>
+  <div class="sec pb" id="next"><div class="sh"><span class="num">12</span><h2>Where this goes next</h2></div>
     <p>Readiness is not the destination. It is what determines whether anything you build on top of it works. Below are the candidates this assessment surfaced for the next piece of work, and — the useful part — which of them your own findings least stand in the way of.</p>
       <table class="tbl"><thead><tr><th>What you said you want to be able to do</th><th style="width:34%">What stands in the way today</th></tr></thead><tbody>
       <tr class="short"><td>Cut failed first-time delivery on the B2C arm without adding head office people <b style="color:#1e7e44">— least blocked</b></td>
@@ -850,7 +875,7 @@
     <p class="method">The first piece of value work belongs inside the first 90 days: the foundations and the first candidate move together, not one after the other. The only things that come before it are the containment items and any do-not-accelerate stop-flag above — those close first. It takes one workflow end to end, sizes three or four candidate use cases against your own numbers, and returns a costed go, adjust or stop against each. The gating above carries straight into it — a use case sitting on a Stage 1 dimension is not a use case yet, and knowing that before you build is the point.</p>
   </div>
 
-  <div class="sec pb" id="method"><div class="sh"><span class="num">12</span><h2>How we assessed this</h2></div>
+  <div class="sec pb" id="method"><div class="sh"><span class="num">13</span><h2>How we assessed this</h2></div>
     <div class="method">
       <p>So that you can weigh the findings, and challenge them.</p>
       <ul>

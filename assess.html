@@ -666,6 +666,43 @@ const RC={
   phaseGated(){ return "Not yet — gated by a dimension that has to move first"; },
   phaseNoLib(){ return "No library action — needs a bespoke recommendation"; },
   phaseParked(){ return "Parked — real gaps, deliberately not this year"; },
+  /* --- executive-summary apex (Exhibit 1). Values are pre-escaped by the caller; these
+     assemble the HTML, including the bold emphasis, so the render inserts them raw. --- */
+  apexTitle({client,stage,t,atTarget,exposures,expWord,flatAll,nCeil}){
+    if(atTarget) return `${client} is at or above its Stage ${t} ambition — <b>the next question is which workflows are worth building</b>.`;
+    if(exposures) return `${client} can be ready to build on AI within the year — <b>but ${expWord} unmanaged exposure${exposures>1?"s":""} must close first</b>.`;
+    if(flatAll) return `${client} sits high and even across the instrument — <b>the next move is a value decision, not a maturity one</b>.`;
+    return `${client} is within reach of its Stage ${t} ambition — <b>the constraint is ${nCeil>4?nCeil+" dimensions just below target":"a handful of weak links"}, not the general level</b>.`;
+  },
+  apexFinding({stage,t,atTarget,flatAll,nCeil,ceilList,pot,nDims,controlGap,exposures,expWord}){
+    const expClause = exposures ? ` <b>${cap1(expWord)} of these are live exposures</b> rather than maturity gaps, and they close inside 90 days.` : ` Nothing found is a live exposure.`;
+    if(atTarget) return `You are at <b>Stage ${stage} of 5</b>, at or above your Stage ${t} ambition — nothing at organisational level is holding you back.${expClause}`;
+    const ceilClause = flatAll ? `the picture is even — every dimension sits at the same level, so there is <b>no single unlock</b>`
+      : nCeil>4 ? `held there by <b>${nCeil} dimensions</b> clustered just below your target`
+      : `held there by <b>${ceilList}</b>`;
+    const capClause = (!flatAll && controlGap) ? ` — you average ${pot} across the ${nDims} dimensions, so the constraint is the weakest links rather than the general level` : ``;
+    return `You are at <b>Stage ${stage} of 5</b> against a Stage ${t} ambition, ${ceilClause}${capClause}.${expClause}`;
+  },
+  apexFoundation({num,strongList,controlGap,flatAll}){
+    const h = controlGap?"The foundation is stronger than the score suggests":flatAll?"The foundation is uniformly strong":"Where you are strongest";
+    const p = `${strongList}. ${controlGap?"The raw material is here — the score is set by the weakest links, not the general level.":flatAll?"The whole profile is high and even — there is no weak foundation to shore up.":"These are the areas to build from."}`;
+    return `<div class="sp"><div class="num">${num}</div><h4>${h}</h4><p>${p}</p></div>`;
+  },
+  apexExposure({num,exposures,expWord,exposureList}){
+    const h = exposures ? `${cap1(expWord)} exposure${exposures>1?"s":""} live today` : "No live exposures";
+    const p = exposures ? `${exposureList} ${exposures>1?"are":"is"} in play now with no owner — exposure, not a maturity gap, and ${exposures>1?"sit":"sits"} before the plan.`
+      : "Nothing running today carries harm — there is nothing to contain before the plan begins.";
+    return `<div class="sp"><div class="num">${num}</div><h4>${h}</h4><p>${p}</p></div>`;
+  },
+  apexCandidate({num,hasCandidate,pickName,ranked}){
+    const h = hasCandidate ? "Start the value work early" : "Name the ambition first";
+    const p = hasCandidate ? `${pickName} is the ${ranked?"least-blocked ambition":"ambition to size first"}. Take it through Full AI Discovery while the foundations close — not a year of groundwork first.`
+      : "No AI ambition was named on the day. The leadership conversation about what AI should change comes before any use-case work — the assessment stands, but it cannot say where to point the capability.";
+    return `<div class="sp"><div class="num">${num}</div><h4>${h}</h4><p>${p}</p></div>`;
+  },
+  apexBasis({nInt,answered,total,nDims,ev,scan}){
+    return `<b>Basis:</b> ${nInt||"several"} interview${nInt===1?"":"s"} and direct observation; ${answered} of ${total} questions scored across ${nDims} dimensions${ev!==null?`, ${ev}% confirmed against evidence`:""}${scan?"; source code independently audited":""}; not self-reported. Full evidence base under “How we assessed this”.`;
+  },
 };
 </script>
 
@@ -1500,6 +1537,7 @@ function rptPortfolio(E){
 
 /* lowercase for mid-sentence use, without flattening acronyms */
 function lc(x){return String(x).toLowerCase().replace(/\bai\b/g,"AI").replace(/\bsre\b/g,"SRE");}
+function cap1(s){s=String(s);return s.charAt(0).toUpperCase()+s.slice(1);}
 function clientReport(){
   const E=esc, ceil=ceiling(), pot=potential(), t=TGT(), D=activeDims();
   const con=containment(), stop=stopFlags(), hi=riskDims("hi"), ph=phasedGaps(), proj=projected();
@@ -1631,6 +1669,16 @@ function clientReport(){
   const urg=urgentList(), liveN=urg.filter(u=>u.band==="live").length;
   const unEst=unestKind("unknown"), unAsk=unestKind("notasked"), fit=capacityFit(), abst=abstained();
   const cands=candidates(), lgi=leastGatedIdx(cands), lg=lgi>=0?cands[lgi]:null;
+  /* ---- executive-summary apex (Exhibit 1) — driven from the data ---- */
+  const apAtTarget=ceil.stage>=t, apFlatAll=ceil.dims.length>=D.length, apControlGap=pot!==null&&pot>ceil.stage+0.7;
+  const apCeil=ceil.dims.map(d=>lc(d.name));
+  const apCeilStr=apCeil.length>1?apCeil.slice(0,-1).join(", ")+" and "+apCeil.slice(-1):apCeil[0];
+  const apStrong=D.map(d=>({d,a:orgDim(d.id).avg})).filter(x=>x.a!==null).sort((a,b)=>b.a-a.a).slice(0,3);
+  const apStrongStr=cap1(apStrong.map(x=>`${lc(x.d.name)} (Stage ${fmtS(x.a)})`).join(", "));
+  const apExp=con.length, apExpL=con.map(c=>lc(c.dim.name));
+  const apExpStr=cap1(apExpL.length>1?apExpL.slice(0,-1).join(", ")+" and "+apExpL.slice(-1):(apExpL[0]||""));
+  const apPick=lg||cands.find(c=>c.kind==="ambition")||cands[0];
+  const apNW=n=>["zero","one","two","three","four","five","six","seven","eight","nine"][n]||String(n);
   const hits=screenHits(), over=urgentOverflow();
   const cap={days:capDays(),people:capPeople()};
   const spon=(S.frame.spon3||[]).filter(x=>x&&x.trim());
@@ -1677,6 +1725,18 @@ function clientReport(){
   .atitle b{color:var(--brand);font-weight:700}
   .exsrc{font-size:11px;color:var(--faint);margin-top:12px;border-top:1px solid var(--hair);padding-top:7px}
   .exsrc b{color:var(--muted)}
+  .apex{border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:14px}
+  .apex .gov{background:var(--ink);color:#fff;padding:22px 26px}
+  .apex .gov .g-k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ff9aa6;font-weight:800}
+  .apex .gov .g-t{font-size:20px;line-height:1.42;margin-top:8px;letter-spacing:-.2px}
+  .apex .gov .g-t b{color:#ff5b6b;font-weight:700}
+  .apex .supports{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .apex .sp{padding:18px 20px;border-right:1px solid var(--hair)}
+  .apex .sp:last-child{border-right:none}
+  .apex .sp .num{font-size:12px;font-weight:800;color:var(--brand)}
+  .apex .sp h4{font-size:14.5px;line-height:1.35;margin:5px 0 5px}
+  .apex .sp p{font-size:12.6px;color:var(--muted);line-height:1.5}
+  @media(max-width:640px){.apex .supports{grid-template-columns:1fr}.apex .sp{border-right:none;border-bottom:1px solid var(--hair)}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -1791,11 +1851,11 @@ function clientReport(){
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
-<nav class="rnav"><a href="#where">Where you are</a>${urg.length?`<a href="#fix">Fix first</a>`:""}<a href="#pic">Maturity</a><a href="#find">Findings</a><a href="#plan">Plan</a>${(cands.length||!ambList().length)?`<a href="#next">Next</a>`:""}<a href="#method">Evidence</a><span class="sp"></span><a href="#" class="close" onclick="window.close();return false">Close</a><a href="#" class="print" onclick="window.print();return false">Print / PDF</a></nav>
+<nav class="rnav"><a href="#sum">Summary</a><a href="#where">Where you are</a>${urg.length?`<a href="#fix">Fix first</a>`:""}<a href="#pic">Maturity</a><a href="#find">Findings</a><a href="#plan">Plan</a>${(cands.length||!ambList().length)?`<a href="#next">Next</a>`:""}<a href="#method">Evidence</a><span class="sp"></span><a href="#" class="close" onclick="window.close();return false">Close</a><a href="#" class="print" onclick="window.print();return false">Print / PDF</a></nav>
 <div class="page">
 
   <div class="cover">
@@ -1805,7 +1865,20 @@ function clientReport(){
     ${S.meta.ambition?`<div class="amb"><b>What you told us you are trying to do</b><br>${E(S.meta.ambition)}</div>`:""}
   </div>
 
-  <div class="sec" id="where"><div class="sh"><span class="num">01</span><h2>Where you are</h2></div>
+  <div class="sec" id="sum"><div class="sh"><span class="num">01</span><h2>Executive summary</h2></div>
+    <div class="atitle">${RC.apexTitle({client:E(S.meta.client||"Client"),stage:ceil.stage,t,atTarget:apAtTarget,exposures:apExp,expWord:apNW(apExp),flatAll:apFlatAll,nCeil:ceil.dims.length})}</div>
+    <div class="apex">
+      <div class="gov"><div class="g-k">The finding, in one line</div><div class="g-t">${RC.apexFinding({stage:ceil.stage,t,atTarget:apAtTarget,flatAll:apFlatAll,nCeil:ceil.dims.length,ceilList:E(apCeilStr),pot:pot!==null?pot.toFixed(1):null,nDims:D.length,controlGap:apControlGap,exposures:apExp,expWord:apNW(apExp)})}</div></div>
+      <div class="supports">
+        ${RC.apexFoundation({num:"01",strongList:E(apStrongStr),controlGap:apControlGap,flatAll:apFlatAll})}
+        ${RC.apexExposure({num:"02",exposures:apExp,expWord:apNW(apExp),exposureList:E(apExpStr)})}
+        ${RC.apexCandidate({num:"03",hasCandidate:cands.length>0,pickName:apPick?E(apPick.t):"",ranked:!!lg})}
+      </div>
+    </div>
+    <p class="exsrc">${RC.apexBasis({nInt,answered:orgAnswered(),total:orgTotalQ(),nDims:D.length,ev,scan:!!scan})}</p>
+  </div>
+
+  <div class="sec" id="where"><div class="sh"><span class="num">${N()}</span><h2>Where you are</h2></div>
     <p class="lede">${E(headline)}</p>
     ${gapNote?p(gapNote):""}
     ${parkNote?`<p class="flag">${parkNote}</p>`:""}
