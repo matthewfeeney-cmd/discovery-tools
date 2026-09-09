@@ -211,6 +211,21 @@
   .seam.warn .k{color:var(--below)}
   .seam.info{border-color:var(--struct);background:#f6fafc}
   .seam.info .k{color:var(--struct)}
+  /* the evidence base — the method/research content promoted to a credential exhibit */
+  .evbase{border:1px solid var(--hair);border-radius:12px;overflow:hidden;margin-top:12px;page-break-inside:avoid;break-inside:avoid}
+  .evbase .claim{display:flex;flex-wrap:wrap}
+  .evbase .claim>div{flex:1 1 150px;padding:15px 18px;border-right:1px solid var(--hair)}
+  .evbase .claim>div:last-child{border-right:none}
+  .evbase .claim .v{font-size:23px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+  .evbase .claim .l{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+  .frameworks{border-top:1px solid var(--hair);padding:14px 18px;background:#fafbfc}
+  .frameworks h5{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:800;margin-bottom:9px}
+  .fw{display:flex;flex-wrap:wrap;gap:8px}
+  .fw span{font-size:12px;border:1px solid var(--hair);background:#fff;border-radius:7px;padding:6px 11px;line-height:1.3}
+  .fw span b{display:block;font-size:12.5px;color:var(--ink)}
+  .fw span small{color:var(--faint);font-size:11px}
+  .fwcav{font-size:12.4px;color:var(--muted);line-height:1.5;margin-top:10px}
+  @media screen and (max-width:620px){.evbase .claim>div{flex-basis:100%;border-right:none}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -325,7 +340,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding,.chunk,.rphase,.rrail,.seam{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding,.chunk,.rphase,.rrail,.seam,.evbase{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -727,18 +742,35 @@
   </div>
 
   <div class="sec pb" id="method"><div class="sh"><span class="num">09</span><h2>How we assessed this</h2></div>
-    <div class="method">
-      <p>So that you can weigh the findings, and challenge them.</p>
+    <div class="atitle">Scored from what we could see and verify — <b>not from a self-assessment survey</b></div>
+    <p class="method" style="margin:6px 0 0">So that you can weigh the findings, and challenge them.</p>
+    <div class="evbase">
+      <div class="claim">
+        <div><div class="v">1</div><div class="l">interview across technical &amp; engineering, plus direct observation</div></div>
+        <div><div class="v">34/34</div><div class="l">questions scored across 17 dimensions</div></div>
+        <div><div class="v">3%</div><div class="l">confirmed against something we could see, not description alone</div></div>
+        <div><div class="v">0</div><div class="l">dimensions we could not establish — a finding, not a blank</div></div>
+      </div>
+      <div class="frameworks">
+        <h5>What the scoring rests on</h5>
+        <div class="fw">
+          <span><b>DORA amplification research (2025)</b><small>seven dimensions &amp; their weights</small></span>
+          <span><b>ISO/IEC 42001:2023 Annex A</b><small>governance control objectives</small></span>
+          <span><b>NIST AI RMF</b><small>Govern · Map · Measure · Manage</small></span>
+          <span><b>EU AI Act · UK GDPR (DUAA 2025)</b><small>the regulatory screen</small></span>
+          <span style="border-style:dashed"><b>Enablis</b><small>the stages, ceiling rule &amp; sequencing</small></span>
+        </div>
+        <p class="fwcav"><b>Where the framework comes from.</b> Seven of the 17 dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.</p>
+      </div>
+    </div>
+    <div class="method" style="margin-top:14px">
       <ul>
-        <li><b>1 interview</b> across technical & engineering, alongside direct observation of how work is done.</li>
-        <li><b>34 of 34 questions</b> answered across 17 dimensions, of which <b>3%</b> were confirmed against something we could see rather than taken on description alone.</li>
-        
         <li><b>Nothing here is self-reported.</b> No survey was circulated for your teams to score themselves.</li>
-      
+        
+        
       </ul>
       <p style="margin-top:10px"><b>What this assessment does not cover.</b> It examines your organisation's readiness. It does not price individual use cases, model return on a specific investment, or assess any workflow in depth, and no code was audited. We would rather say so than imply otherwise.</p>
       <p><b>What the plan covers.</b> The plan covers the next six months, with the first 90 days in detail; the 12-month ambition is the bar each gap is measured against, and the Beyond items are listed for a re-plan rather than scheduled.</p>
-      <p><b>Where the framework comes from.</b> Seven of the 17 dimensions and their relative weights are adapted from published 2025 research into the capabilities that predict whether AI investment produces results; that research measures amplification rather than maturity, so the stages, the ceiling rule and the sequencing are ours. The governance dimension is additionally anchored to the ISO/IEC 42001:2023 Annex A control objectives and the NIST AI RMF core functions, so that what we found there can be carried into a certification or assurance programme rather than sitting beside one. That anchoring is at objective and function level; it is not a control-level Statement of Applicability and does not constitute an audit.</p>
     </div>
   </div>
 
