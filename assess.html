@@ -1428,17 +1428,43 @@ function downloadReport(){
   const ov=document.getElementById("rptOverlay"); if(ov)ov.remove();
 }
 /* radar as standalone SVG for the report */
-function reportRadar(){
-  const D=activeDims(),t=TGT(),R=132,cx=210,cy=175,n=D.length;
-  const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n,r=R*(v/5);return[cx+r*Math.cos(a),cy+r*Math.sin(a)];};
-  const rings=[1,2,3,4,5].map(v=>`<polygon points="${D.map((_,i)=>pt(i,v).join(",")).join(" ")}" fill="none" stroke="#dcdcdc" stroke-width="1"/>`).join("");
-  const spokes=D.map((_,i)=>{const[x,y]=pt(i,5);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#dcdcdc" stroke-width="1"/>`;}).join("");
-  const cur=`<polygon points="${D.map((d,i)=>pt(i,orgDim(d.id).avg||0).join(",")).join(" ")}" fill="rgba(11,92,138,.20)" stroke="#0b5c8a" stroke-width="2.2"/>`;
-  const tgt=t?`<polygon points="${D.map((_,i)=>pt(i,t).join(",")).join(" ")}" fill="none" stroke="#1e7e44" stroke-width="1.6" stroke-dasharray="5 4"/>`:"";
-  const dots=D.map((d,i)=>{const v=orgDim(d.id).avg;return v?`<circle cx="${pt(i,v)[0]}" cy="${pt(i,v)[1]}" r="2.8" fill="#0b5c8a"/>`:"";}).join("");
-  const labels=D.map((d,i)=>{const[x,y]=pt(i,5.42);
-    return `<text x="${x}" y="${y+3}" text-anchor="${Math.abs(x-cx)<9?"middle":(x>cx?"start":"end")}" font-size="11" font-weight="700" fill="#5f6368">${d.n}</text>`;}).join("");
-  return `<svg viewBox="0 0 420 350" style="width:100%;max-width:400px;height:auto">${rings}${spokes}${tgt}${cur}${dots}${labels}</svg>`;
+/* Maturity dot chart — one row per active dimension, grouped A–E. One dot at today's stage
+   coloured by state, a single blue target rule (via --tgt) through every row, a connector
+   from each dot to the target (green where past it), and a confidence dot + state label.
+   pos(v)=(v-1)/4*100 maps Stage 1→0% … Stage 5→100%. Unscored dims render no dot (no NaN). */
+function dimDotChart(){
+  const D=activeDims(), t=TGT(), tgtPos=(t-1)/4*100, ceil=ceiling();
+  const exposed=containment().map(c=>c.dim.id);
+  /* when every dimension is at the ceiling the profile is flat — "ceiling" no longer
+     distinguishes anything, so don't ring them all; colour by distance to target instead */
+  const flatAll=ceil.dims.length>=D.length;
+  const rows=GKEYS.map(g=>{const ds=D.filter(d=>d.g===g); if(!ds.length)return"";
+    return `<div class="mpg">${esc(GROUPS[g])}</div>`+ds.map(d=>{
+      const s=orgDim(d.id), avg=s.avg, isC=!flatAll&&ceil.dims.some(x=>x.id===d.id),
+        isE=exposed.includes(d.id), pk=DTGT(d.id)===0;
+      const ec=(S.orgEv[(qOf(d.id,"s")||{}).k]||{}).c;
+      const conf=ec==="confirmed"?"hi":(ec==="told"||ec==="guessed")?"med":"no";
+      let dot="",conn="",label,labColor;
+      if(avg===null){ label="not assessed"; labColor="var(--faint)"; }
+      else{
+        const dp=(avg-1)/4*100;
+        const cls=isC?"ceild":isE?"expod":pk?"parkd":avg>=t?"okd":"belowd";
+        dot=`<div class="dt ${cls}" style="left:${dp.toFixed(1)}%"></div>`;
+        if(!pk){const lo=Math.min(dp,tgtPos),w=Math.abs(dp-tgtPos);
+          if(w>0.1)conn=`<div class="gapl ${avg>t?"up":""}" style="left:${lo.toFixed(1)}%;width:${w.toFixed(1)}%"></div>`;}
+        label = pk&&!isC&&!isE ? "parked — not this year"
+          : "Stage "+fmtS(avg)+" · "+(isC&&isE?"ceiling + exposure":isC?"ceiling":isE?"exposure":avg>t?"above target":avg>=t?"at target":"below target")+(pk?" · parked":"");
+        labColor = pk&&!isC&&!isE?"var(--grey)":isC?"var(--brand)":isE?"var(--now)":avg>=t?"var(--go)":"var(--below)";
+      }
+      return `<div class="mpn"><span class="id">${d.id}</span>${esc(d.name)}</div>`
+        +`<div class="mpt">${conn}${dot}</div>`
+        +`<div class="mps" style="color:${labColor}"><span class="cdot ${conf}"></span>${esc(label)}</div>`;
+    }).join("");}).join("");
+  return `<div class="mp" style="--tgt:${tgtPos.toFixed(1)}%">
+    <div class="hdcell"></div>
+    <div class="mpax hdcell"><div class="tflag">TARGET · STAGE ${t}</div>${[1,2,3,4,5].map(n=>`<div class="axl" style="left:${((n-1)/4*100)}%;top:16px"><b>${n}</b>${esc(STAGES[n-1].name)}</div>`).join("")}</div>
+    <div class="hdcell"></div>
+    ${rows}</div>`;
 }
 /* ---- full-toolkit sections: workflow, use cases, portfolio ---- */
 function rptWorkflow(E,lc){
@@ -1807,6 +1833,32 @@ function clientReport(){
   .meter{height:26px;border-radius:7px;background:var(--track);overflow:hidden;display:flex;font-size:11px;font-weight:700;color:#fff}
   .meter .fits{background:var(--go);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
   .meter .gap{background:var(--now);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
+  /* maturity dot chart (replaces the radar) */
+  .mp{display:grid;grid-template-columns:236px 1fr 172px;margin-top:12px;page-break-inside:avoid}
+  .mpg{grid-column:1/4;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:14px 0 5px;border-bottom:1px solid var(--hair)}
+  .mpn{font-size:13px;font-weight:600;padding:0 14px 0 0;display:flex;align-items:center;line-height:1.2;border-bottom:1px solid #f4f5f6;min-height:31px}
+  .mpn .id{color:var(--faint);font-weight:700;font-size:11px;margin-right:6px}
+  .mpt{position:relative;height:31px;border-bottom:1px solid #f4f5f6;background-image:linear-gradient(var(--struct),var(--struct)),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee);background-size:2px 100%,1px 100%,1px 100%,1px 100%,1px 100%,1px 100%;background-position:var(--tgt) 0,0% 0,25% 0,50% 0,75% 0,100% 0;background-repeat:no-repeat}
+  .mps{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;white-space:nowrap;padding-left:14px;border-bottom:1px solid #f4f5f6;min-height:31px}
+  .gapl{position:absolute;top:50%;height:3px;transform:translateY(-50%);background:#d9dce0;border-radius:2px}
+  .gapl.up{background:#cfe6d8}
+  .dt{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);z-index:1}
+  .dt.ceild{background:var(--brand);box-shadow:0 0 0 2.5px #fff,0 0 0 5px rgba(232,17,45,.72)}
+  .dt.expod{background:var(--now);box-shadow:0 0 0 2.5px #fff}
+  .dt.belowd{background:var(--below);box-shadow:0 0 0 2.5px #fff}
+  .dt.okd{background:var(--go);box-shadow:0 0 0 2.5px #fff}
+  .dt.parkd{background:#fff;border:2px dashed #9aa0a6;box-shadow:0 0 0 2px #fff}
+  .mpax{position:relative;height:44px;background-image:linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee),linear-gradient(#e9ebee,#e9ebee);background-size:1px 46%,1px 46%,1px 46%,1px 46%,1px 46%;background-position:0% 100%,25% 100%,50% 100%,75% 100%,100% 100%;background-repeat:no-repeat}
+  .axl{position:absolute;transform:translateX(-50%);text-align:center;font-size:9.5px;color:var(--faint);font-weight:700;line-height:1.15;white-space:nowrap}
+  .axl b{display:block;font-size:11.5px;color:var(--muted)}
+  .tflag{position:absolute;top:-4px;left:var(--tgt);transform:translateX(-50%);background:var(--struct);color:#fff;font-size:8.5px;font-weight:800;padding:2px 8px;border-radius:9px;letter-spacing:.06em;z-index:2;white-space:nowrap}
+  .mp .hdcell{border-bottom:2px solid var(--hair)}
+  .cdot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .cdot.hi{background:var(--ink)}.cdot.med{background:#fff;border:2px solid #9aa0a6}.cdot.no{background:#fff;border:2px dotted var(--now)}
+  .mplegend{display:flex;gap:14px 18px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:10px 0 2px;align-items:center}
+  .mplegend span{display:inline-flex;align-items:center;gap:6px}
+  .mplegend i{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
+  @media(max-width:730px){.mp{grid-template-columns:150px 1fr}.mps{display:none}.mpg{grid-column:1/3}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -1921,7 +1973,7 @@ function clientReport(){
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter,.mp{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -2045,14 +2097,16 @@ function clientReport(){
   </div>
 
   <div class="sec" id="pic"><div class="sh"><span class="num">${N()}</span><h2>The picture across all ${D.length} dimensions</h2></div>
-    <div class="radar">${reportRadar()}</div>
-    <p class="legend"><b style="color:#0b5c8a">■</b> where you are &nbsp; <b style="color:#1e7e44">▭</b> your Stage ${t} ambition</p>
-    <table class="tbl"><thead><tr><th>#</th><th>Dimension</th><th>Weight</th><th>Today</th><th>Target</th></tr></thead><tbody>
-    ${D.map(d=>{const s=orgDim(d.id),isC=ceil.dims.some(x=>x.id===d.id),pk=DTGT(d.id)===0;
-      return `<tr class="${isC?"short":""}"><td>${d.n}</td><td>${E(d.name)}${isC?' <b style="color:#e8112d">— the constraint</b>':""}${pk?' <b style="color:#6b6b6b">— not this year</b>':""}</td>
-        <td>${wPct(d)}%</td><td><b>${s.avg!==null?"Stage "+fmtS(s.avg):"—"}</b></td>
-        <td>${pk?"—":"Stage "+DTGT(d.id)}</td></tr>`;}).join("")}
-    </tbody></table>
+    ${dimDotChart()}
+    <div class="mplegend">
+      <span><i style="background:var(--brand);box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(232,17,45,.72)"></i>sets the ceiling</span>
+      <span><i style="background:var(--now)"></i>exposure now</span>
+      <span><i style="background:var(--below)"></i>below target</span>
+      <span><i style="background:var(--go)"></i>at or above target</span>
+      <span><i style="background:#fff;border:2px dashed #9aa0a6"></i>parked</span>
+      <span><span style="display:inline-block;width:2px;height:13px;background:var(--struct);vertical-align:-2px"></span> target &nbsp; <span style="display:inline-block;width:16px;height:3px;background:#d9dce0;border-radius:2px;vertical-align:2px"></span> distance to close</span>
+      <span><span class="cdot hi"></span>&nbsp;confirmed &nbsp;<span class="cdot med"></span>&nbsp;told/inferred &nbsp;<span class="cdot no"></span>&nbsp;couldn’t establish</span>
+    </div>
     ${parked().length?`<p class="method">${RC.notThisYearNote()}</p>`:""}
   </div>
 
