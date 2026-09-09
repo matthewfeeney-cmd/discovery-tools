@@ -704,6 +704,46 @@ const RC={
   apexBasis({nInt,answered,total,nDims,ev,scan}){
     return `<b>Basis:</b> ${nInt||"several"} interview${nInt===1?"":"s"} and direct observation; ${answered} of ${total} questions scored across ${nDims} dimensions${ev!==null?`, ${ev}% confirmed against evidence`:""}${scan?"; source code independently audited":""}; not self-reported. Full evidence base under “How we assessed this”.`;
   },
+  /* ---- section action titles: full-sentence, data-driven takeaways in the mockup's voice.
+     Each returns "" where the client-specific case cannot support a claim, and the section
+     then falls back to its neutral topic heading alone. ---- */
+  titleWhereYouAre({stage,t,atTarget,controlGap,flatAll}){
+    if(atTarget) return `Readiness is <b>Stage ${stage} of 5 — at the Stage ${t} ambition</b>, so the next question is which workflows are worth building.`;
+    if(controlGap) return `Readiness is <b>Stage ${stage} of 5 — a control problem, not a capability one</b>.`;
+    if(flatAll) return `Readiness is <b>Stage ${stage} of 5, and the profile is flat</b> — the level itself is the ceiling.`;
+    return `Readiness is <b>Stage ${stage} of 5</b> — set by the weakest load-bearing dimension, not the general level.`;
+  },
+  titleObligations({n}){
+    return `${n===1?"A legal obligation is unmet":n+" legal obligations are unmet"} today — <b>${n===1?"it comes":"they come"} before anything about maturity</b>.`;
+  },
+  titleUrgentNone(){
+    return `Nothing is carrying live exposure today — <b>the urgent list is clear</b>.`;
+  },
+  titleFixFirst({word,n}){
+    return `${word} thing${n===1?"":"s"} carry exposure today — <b>they sit before the plan, not in it</b>.`;
+  },
+  titleNotToDo({n}){
+    return `${n===1?"One capability":n+" capabilities"} must not be accelerated yet — <b>speed there makes the outcome worse, not better</b>.`;
+  },
+  titleDotChart({avg,flatAll,stage}){
+    if(flatAll) return `Every dimension sits at Stage ${stage} — <b>there is no single weak link to point at</b>.`;
+    if(avg) return `Strength is uneven — readiness is set by the weakest load-bearing dimension, <b>not the ${avg} average</b>.`;
+    return "";
+  },
+  titleDimByDim(){
+    return `Every finding leads with <b>the decision it forces</b> — the good news and the bad read the same way.`;
+  },
+  titlePlan({contain,hasDiscovery}){
+    return contain
+      ? `Three chunks of work — <b>contain now, a priority 90 days${hasDiscovery?" with Discovery inside it":""}, and beyond</b> — and what lifts the ceiling sits in the first two.`
+      : `The work in sequence — <b>a priority 90 days${hasDiscovery?" with Discovery inside it":""}, then beyond</b> — with what lifts the ceiling brought forward.`;
+  },
+  titleSeam({n,ranked,noAmb,noSeq}){
+    if(noAmb) return `No one could name an ambition for AI to serve — <b>that is itself the finding</b>.`;
+    if(noSeq) return `Your ambitions are equally unblocked — <b>the choice is commercial, not technical</b>.`;
+    if(ranked) return `Of your ${n} ambitions, <b>one is the least-blocked place to start</b> — and the plan already moves it.`;
+    return "";
+  },
 };
 </script>
 
@@ -2198,6 +2238,7 @@ function clientReport(){
   </div>
 
   <div class="sec" id="where"><div class="sh"><span class="num">${N()}</span><h2>Where you are</h2></div>
+    <div class="atitle">${RC.titleWhereYouAre({stage:ceil.stage,t,atTarget:apAtTarget,controlGap:apControlGap,flatAll})}</div>
     <p class="lede">${E(headline)}</p>
     ${gapNote?p(gapNote):""}
     ${parkNote?`<p class="flag">${parkNote}</p>`:""}
@@ -2241,6 +2282,7 @@ function clientReport(){
   </div>
 
   ${hits.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Obligations, before anything about maturity</h2></div>
+    <div class="atitle">${RC.titleObligations({n:hits.length})}</div>
     <p class="lede">${RC.obligationsLede()}</p>
     ${hits.map(x=>`<div class="expo-item"><b>${E(x.law)}</b>
       <p>${E(x.q.replace(/\?$/,""))} — <b>no</b>.</p>
@@ -2249,12 +2291,14 @@ function clientReport(){
   </div>`:""}
 
   ${!board.length?`<div class="sec pb"><div class="sh"><span class="num">${N()}</span><h2>Nothing on the urgent list</h2></div>
+    <div class="atitle">${RC.titleUrgentNone()}</div>
     <p class="lede">${RC.urgentNoneLede()}</p>
     <p>${RC.urgentNoneBody({atTarget:ceil.stage>=t})}</p>
     <p class="method">${RC.urgentNoneClosing()}</p>
   </div>`:""}
 
   ${board.length?`<div class="sec pb" id="fix"><div class="sh"><span class="num">${N()}</span><h2>Fix these first</h2></div>
+    <div class="atitle">${RC.titleFixFirst({word:cap1(apNW(board.length)),n:board.length})}</div>
     <p class="lede">${RC.fixFirstLede({n:board.length})}</p>
     <div class="board">
       ${board.map((u,i)=>`<div class="row">
@@ -2279,6 +2323,7 @@ function clientReport(){
   </div>`:""}
 
   ${stop.length?`<div class="sec"><div class="sh"><span class="num">${N()}</span><h2>And one thing not to do yet</h2></div>
+      <div class="atitle">${RC.titleNotToDo({n:stop.length})}</div>
       ${stop.map(c=>{const n=S.dimNote[c.dim.id]||{};
         return `<p><b>${E(c.dim.name)} — Stage ${c.stage}.</b> ${E(c.ca)}</p>${n.riskGo?`<p class="method">${E(n.riskGo)}</p>`:""}`;}).join("")}
       <p class="method">${RC.notToDoNote()}</p>
@@ -2294,6 +2339,7 @@ function clientReport(){
   </div>
 
   <div class="sec" id="pic"><div class="sh"><span class="num">${N()}</span><h2>The picture across all ${D.length} dimensions</h2></div>
+    ${(tt=>tt?`<div class="atitle">${tt}</div>`:"")(RC.titleDotChart({avg:pot!==null?pot.toFixed(1):null,flatAll,stage:ceil.stage}))}
     ${dimDotChart()}
     <div class="mplegend">
       <span><i style="background:var(--brand);box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(232,17,45,.72)"></i>sets the ceiling</span>
@@ -2308,6 +2354,7 @@ function clientReport(){
   </div>
 
   <div class="sec pb" id="find"><div class="sh"><span class="num">${N()}</span><h2>Dimension by dimension</h2></div>
+    <div class="atitle">${RC.titleDimByDim()}</div>
     <p>${RC.dimByDimIntro()}</p>
     ${dimHTML}
   </div>
@@ -2322,6 +2369,7 @@ function clientReport(){
   </div>`:""}
 
   <div class="sec pb" id="plan"><div class="sh"><span class="num">${N()}</span><h2>The plan, in sequence</h2></div>
+    <div class="atitle">${RC.titlePlan({contain:con.length>0,hasDiscovery:cands.length>0})}</div>
     <p>${RC.planIntro()}</p>
     ${roadmapOnAPage()}
     <p class="method" style="margin-top:18px"><b>The detail behind every chunk.</b> Each action in full below — owner, sponsor, effort, definition of done and what it depends on.</p>
@@ -2347,6 +2395,7 @@ function clientReport(){
   </div>`:""}
 
   ${(cands.length||!ambList().length)?`<div class="sec pb" id="next"><div class="sh"><span class="num">${N()}</span><h2>Where this goes next</h2></div>
+    ${(tt=>tt?`<div class="atitle">${tt}</div>`:"")(RC.titleSeam({n:cands.filter(c=>c.kind==="ambition").length,ranked:!!lg,noAmb:!ambList().length,noSeq:cands.filter(c=>c.kind==="ambition"&&ambDimsOf(c.i).length&&!c.gates.length).length>1}))}
     ${!ambList().length
       ? `<div class="seam warn"><div class="k">Where this goes next</div><p>${RC.seamNoAmbitions()}</p></div>`
       : `<p>${RC.seamIntro()}</p>
