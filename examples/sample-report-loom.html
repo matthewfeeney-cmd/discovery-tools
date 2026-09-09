@@ -4,7 +4,7 @@
  @page{size:A4;margin:16mm 14mm}
  :root{
   --brand:#e8112d; --now:#b3261e; --struct:#0b5c8a; --go:#1e7e44; --below:#a86b00; --grey:#8a8a8a;
-  --ink:#14181b; --muted:#5f6368; --faint:#8a8f95; --hair:#e6e8ea; --bg:#eef0f2; --panel:#fff;
+  --ink:#14181b; --muted:#5f6368; --faint:#8a8f95; --hair:#e6e8ea; --bg:#eef0f2; --panel:#fff; --track:#e7e8ea;
  }
  *{box-sizing:border-box;margin:0;padding:0}
  body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
@@ -35,6 +35,46 @@
   .apex .sp h4{font-size:14.5px;line-height:1.35;margin:5px 0 5px}
   .apex .sp p{font-size:12.6px;color:var(--muted);line-height:1.5}
   @media(max-width:640px){.apex .supports{grid-template-columns:1fr}.apex .sp{border-right:none;border-bottom:1px solid var(--hair)}}
+  .hero{margin-top:14px;border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+  .hero-top{display:flex;align-items:stretch}
+  .hero-headline{flex:1.5;padding:22px 26px;border-right:1px solid var(--hair)}
+  .hero-headline .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .hero-headline .big{font-size:44px;line-height:1.03;letter-spacing:-1.2px;margin:6px 0 4px}
+  .hero-headline .big b{color:var(--brand)}
+  .hero-headline .big span{font-size:24px;color:var(--muted);letter-spacing:0}
+  .hero-headline .sub{font-size:14.5px;line-height:1.5;margin-top:8px}
+  .hero-headline .sub b{color:var(--now)}
+  .hero-side{flex:1;padding:20px 24px;background:#fafbfc;display:flex;flex-direction:column;justify-content:center;gap:14px}
+  .stat-row{display:flex;align-items:baseline;gap:10px}
+  .stat-row .v{font-size:30px;font-weight:800;letter-spacing:-.6px;line-height:1}
+  .stat-row .lab{font-size:12.5px;color:var(--muted);line-height:1.35}
+  .stat-row.tgt .v{color:var(--struct)}
+  .ladder{padding:18px 26px 24px}
+  .ladder-scale{position:relative;height:74px;margin:26px 8px 0}
+  .rung{position:absolute;top:26px;height:20px;border-radius:4px}
+  .rung.base{left:0;right:0;background:var(--track)}
+  .rung.fill{left:0;background:linear-gradient(90deg,#f3b6bd,var(--brand))}
+  .tick{position:absolute;top:18px;width:1px;height:36px;background:#d4d6d9}
+  .tick .lab{position:absolute;top:40px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap;text-align:center;width:120px}
+  .tick .lab b{display:block;color:var(--ink);font-size:12px}
+  .you{position:absolute;top:6px;transform:translateX(-50%);text-align:center;z-index:2}
+  .you .dot{width:18px;height:18px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 0 0 1px var(--brand);margin:0 auto}
+  .you .cap{font-size:11px;font-weight:800;color:var(--brand);margin-top:3px;white-space:nowrap}
+  .you .tflag{font-size:10.5px;font-weight:800;color:#fff;background:var(--struct);padding:2px 6px;border-radius:4px;white-space:nowrap;margin-bottom:4px;display:inline-block}
+  .flag{position:absolute;top:-2px;transform:translateX(-50%);text-align:center;z-index:1}
+  .flag .pole{width:2px;height:30px;background:var(--struct);margin:0 auto}
+  .flag .fl{font-size:10.5px;font-weight:800;color:#fff;background:var(--struct);padding:2px 6px;border-radius:4px;white-space:nowrap;margin-bottom:1px}
+  .avgtick{position:absolute;top:22px;width:2px;height:28px;background:#111;opacity:.5}
+  .avgtick .lab{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:10.5px;color:#111;white-space:nowrap}
+  .ladder-cap{font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.5}
+  .ladder-cap b{color:var(--ink)}
+  .ev{display:flex;margin-top:12px;border:1px solid var(--hair);border-radius:11px;overflow:hidden}
+  .ev>div{flex:1;padding:13px 16px;border-right:1px solid var(--hair)}
+  .ev>div:last-child{border-right:none}
+  .ev .v{font-size:24px;font-weight:800;letter-spacing:-.5px}
+  .ev .l{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
+  .ev .ok .v{color:var(--go)} .ev .part .v{color:var(--below)} .ev .no .v{color:var(--grey)}
+  @media(max-width:640px){.hero-top{flex-direction:column}.hero-headline{border-right:none;border-bottom:1px solid var(--hair)}.ev{flex-direction:column}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -149,7 +189,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -180,13 +220,34 @@
     <p class="lede">You are at Stage 4 of 5 against a Stage 5 ambition, and the picture is flat rather than spiky — every one of the dimensions sits at the same level. There is no single unlock here.</p>
     <p>Weighted across all 17 dimensions you average 4.5 today, so the gap is broad rather than concentrated. There is no single unlock here; the sequenced plan later in this report is the route.</p>
     
-    <div class="kpis">
-      <div class="kpi red"><span>Today</span><b>Stage 4</b><small>Scaling</small></div>
-      <div class="kpi"><span>Your 12-month ambition</span><b>Stage 5</b><small>AI-native</small></div>
-      <div class="kpi"><span>Weighted average today</span><b>4.5</b><small>across all 17 dimensions as they stand — not a projection</small></div>
-      <div class="kpi"><span>If the plan is delivered</span><b>5.0</b><small>the same average with those dimensions at Stage 5</small></div>
+    <div class="hero">
+      <div class="hero-top">
+        <div class="hero-headline">
+          <div class="l">Readiness today</div>
+          <div class="big">Stage <b>4</b> <span>of 5</span></div>
+          <div class="sub">Every dimension sits at the same level, so no single dimension caps you — the profile is even, not spiky.</div>
+        </div>
+        <div class="hero-side">
+          <div class="stat-row tgt"><span class="v">5</span><span class="lab">Where you want to be<br>in 12 months</span></div>
+          <div class="stat-row"><span class="v">4.5</span><span class="lab">Weighted average across the 17<br>dimensions — context, not the score</span></div>
+        </div>
+      </div>
+      <div class="ladder">
+        <div class="ladder-scale">
+          <div class="rung base"></div><div class="rung fill" style="width:80%"></div>
+          <div class="tick" style="left:10%"><div class="lab"><b>Exploring</b>curious, nothing running</div></div><div class="tick" style="left:30%"><div class="lab"><b>Experimenting</b>pilots, no repeatable path</div></div><div class="tick" style="left:50%"><div class="lab"><b>Operationalising</b>first things running for real</div></div><div class="tick" style="left:70%"><div class="lab"><b>Scaling</b>repeatable, spreading, measured</div></div><div class="tick" style="left:90%"><div class="lab"><b>AI-native</b>how the business works</div></div>
+          <div class="avgtick" style="left:80.0%"><span class="lab">avg 4.5</span></div>
+          <div class="flag" style="left:90%"><div class="fl">Target</div><div class="pole"></div></div>
+               <div class="you" style="left:70%"><div class="dot"></div><div class="cap">You are here</div></div>
+        </div>
+        <div class="ladder-cap"><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. In your case that rule bites differently: every dimension sits at Stage 4, so there is no weak one hiding behind a strong one and no single move that lifts the number. Broad, even improvement is genuinely the answer here, which is the opposite of the advice we give most clients.</div>
+      </div>
     </div>
-    <p><b>Why one number and not an average.</b> A maturity average lets a strong area hide a weak one. In practice the weakest of these dimensions sets the limit for everything above it — an organisation cannot operate AI more maturely than its least mature foundation allows. In your case that rule bites differently: every dimension sits at Stage 4, so there is no weak one hiding behind a strong one and no single move that lifts the number. Broad, even improvement is genuinely the answer here, which is the opposite of the advice we give most clients.</p>
+    <div class="ev">
+      <div class="ok"><div class="v">1</div><div class="l">dimension confirmed against evidence we could see</div></div>
+      <div class="part"><div class="v">16</div><div class="l">taken from what we were told or inferred</div></div>
+      <div class="no"><div class="v">0</div><div class="l">we could not establish — a finding, not a blank</div></div>
+    </div>
     <p class="method"><b>A note on a Stage 5 target.</b> The evidence checklist behind each dimension caps at Stage 4 by design — a checklist can show that something exists, not that it is continuously improving from evidence, which is what Stage 5 describes. So an organisation genuinely operating at Stage 5 will still read as Stage 4 here, and the residual gap you see against a Stage 5 target is partly an artefact of the instrument rather than a finding about you. We would rather say that than let you chase it.</p>
     
     
