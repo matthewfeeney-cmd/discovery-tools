@@ -117,6 +117,48 @@
   .mplegend span{display:inline-flex;align-items:center;gap:6px}
   .mplegend i{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
   @media(max-width:730px){.mp{grid-template-columns:150px 1fr}.mps{display:none}.mpg{grid-column:1/3}}
+  /* dimension write-up as a finding exhibit */
+  .finding{border:1px solid var(--hair);border-radius:12px;margin-top:12px;overflow:hidden;page-break-inside:avoid}
+  .finding.ceil{border-color:#f0cfcb}
+  .finding.good{border-color:#cfe6d8}
+  .finding .top{display:flex;align-items:stretch;border-bottom:1px solid var(--hair)}
+  .finding .sb{flex:0 0 92px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--hair);background:#f6f7f8;text-align:center}
+  .finding.ceil .sb{background:#fbf3f3}
+  .finding.good .sb{background:#f1f8f4}
+  .finding .sb .s{font-size:30px;font-weight:800;line-height:1;color:var(--ink)}
+  .finding.ceil .sb .s{color:var(--brand)}
+  .finding.good .sb .s{color:var(--go)}
+  .finding .sb .of{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .finding .sb .tg{font-size:10.5px;color:var(--struct);margin-top:6px;font-weight:700}
+  .finding .hd{flex:1;padding:13px 18px}
+  .finding .hd .dl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700}
+  .finding .hd .so{font-size:16px;line-height:1.33;font-weight:700;margin-top:3px}
+  .finding .hd .chips{margin-top:7px}
+  .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;margin:0 5px 3px 0}
+  .chip.expo{background:var(--now);color:#fff}
+  .chip.good{background:var(--go);color:#fff}
+  .chip.no{background:#fff;border:1px dotted var(--now);color:var(--now)}
+  .chip.hi{background:#eef2f0;border:1px solid #cbd6cf;color:#2b5f43}
+  .chip.below{background:#fff;border:1px solid #e6cfa8;color:var(--below)}
+  .chip.told{background:#f2f3f5;color:var(--muted)}
+  .chip.park{background:#fff;border:1px dashed #9aa0a6;color:var(--grey)}
+  .finding .bd{display:grid;grid-template-columns:1fr 1fr}
+  .finding .bd.one{grid-template-columns:1fr}
+  .finding .bd>div{padding:12px 18px}
+  .finding .bd .evid{border-right:1px solid var(--hair)}
+  .finding .bd.one .evid{border-right:none}
+  .finding .bd h5{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:800;margin-bottom:5px}
+  .finding .bd p{font-size:13.2px;line-height:1.5;margin:0 0 6px}
+  .finding .bd p:last-child{margin-bottom:0}
+  .finding .quote{font-size:12.8px;font-style:italic;color:#4a4f54;border-left:2px solid var(--hair);padding-left:11px}
+  .finding .fnote{font-size:11.5px;color:var(--faint)}
+  .finding .fnote b{color:var(--muted)}
+  .finding .risks{display:flex;border-top:1px solid var(--hair);background:#fcfcfd}
+  .finding .risks>div{flex:1;padding:10px 18px;font-size:12.6px;line-height:1.45}
+  .finding .risks>div:first-child{border-right:1px solid var(--hair)}
+  .finding .risks b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--now);margin-bottom:3px}
+  .finding.good .risks b{color:var(--go)}
+  @media(max-width:640px){.finding .bd{grid-template-columns:1fr}.finding .bd .evid{border-right:none}.finding .risks{flex-direction:column}.finding .risks>div:first-child{border-right:none;border-bottom:1px solid var(--hair)}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -231,7 +273,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter,.mp{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -364,215 +406,164 @@
 
   <div class="sec pb" id="find"><div class="sh"><span class="num">06</span><h2>Dimension by dimension</h2></div>
     <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
-    <h3 class="grp">Intent and control</h3><div class="dim">
-        <div class="dh"><h4>1. AI stance &amp; policy clarity</h4>
-          <span class="sc">Stage 3.5</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
+    <h3 class="grp">Intent and control</h3><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d1 · AI stance &amp; policy clarity · below target</div>
+            <div class="so">do people know what they're expected, supported and permitted to do?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 4 against 3. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 6% of the score.</p></div></div>
         
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d2 · AI governance, risk &amp; assurance · below target</div>
+            <div class="so">is there a route to a yes, and does anyone own the risk?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 6% of the score.</p></div></div>
         
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d3 · Leadership sponsorship &amp; AI strategy · below target</div>
+            <div class="so">is there a funded, owned ambition tied to business outcomes?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 4 against 3. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 6% of the score.</p></div></div>
         
-        
-        
-        
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 4 against 3. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
-        
-      </div><div class="dim">
-        <div class="dh"><h4>2. AI governance, risk &amp; assurance</h4>
-          <span class="sc">Stage 3</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim">
-        <div class="dh"><h4>3. Leadership sponsorship &amp; AI strategy</h4>
-          <span class="sc">Stage 3.5</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        
-        
-        
-        
-        
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 4 against 3. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>13. Agentic readiness</h4>
-          <span class="sc">Stage 2 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> You are about to repeat, in fulfilment, the mistake you spent a year fixing in customer service.</p>
-        <p><b>What is working.</b> The restraint on the customer-facing side is deliberate and correct.</p>
-        <p><b>What needs to change.</b> Two agentic workflows are in pilot in fulfilment and the governance that covers your assistant does not mention agents. Nobody has decided whether it should — that decision is now overdue rather than premature.</p>
-        <p class="ctx">Two agentic workflows are being piloted in fulfilment. The governance that covers the service assistant does not mention agents at all, and nobody has decided whether it should.</p>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d13 · Agentic readiness · sets the ceiling · live exposure</div>
+            <div class="so">Two agentic workflows are in pilot in fulfilment and the governance that covers your assistant does not mention agents. Nobody has decided whether it should — that decision is now overdue rather than premature.</div>
+            <div class="chips"><span class="chip expo">Ceiling + exposure</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>The restraint on the customer-facing side is deliberate and correct.</p><p class="quote">Two agentic workflows are being piloted in fulfilment. The governance that covers the service assistant does not mention agents at all, and nobody has decided whether it should.</p><p class="fnote">Weighted 5% of the score.</p></div><div><h5>Why it matters</h5><p>You are about to repeat, in fulfilment, the mistake you spent a year fixing in customer service.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Agents reach production under governance written for something else.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>This is the one thing that would undo an otherwise well-run programme.</span></div></div>
-        
-        
-      </div><h3 class="grp">Data and technical foundations</h3><div class="dim">
-        <div class="dh"><h4>4. Data ecosystem health</h4>
-          <span class="sc">Stage 3</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim">
-        <div class="dh"><h4>5. AI-accessible internal context</h4>
-          <span class="sc">Stage 3</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>6. Internal platform quality</h4>
-          <span class="sc">Stage 2.5 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
-        
-        
-        
-        
-        
-        
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
-        
-      </div><div class="dim">
-        <div class="dh"><h4>7. Version control &amp; change safety</h4>
-          <span class="sc">Stage 4</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><h3 class="grp">How work flows</h3><div class="dim">
-        <div class="dh"><h4>8. Working in small batches</h4>
-          <span class="sc">Stage 4</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim">
-        <div class="dh"><h4>9. User-centric focus</h4>
-          <span class="sc">Stage 4</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>10. Value stream visibility &amp; flow</h4>
-          <span class="sc">Stage 2.5 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
-        
-      </div><h3 class="grp">People and value</h3><div class="dim cap">
-        <div class="dh"><h4>11. Skills, enablement &amp; champions</h4>
-          <span class="sc">Stage 2.5 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>12. AI adoption breadth &amp; measured value</h4>
-          <span class="sc">Stage 2.5 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> The ceiling on this is not capability, it is that nothing makes it spread except one person.</p>
-        <p><b>What is working.</b> Customer service is genuinely operational and the value is measured.</p>
-        <p><b>What needs to change.</b> Spread has tracked one director's personal energy rather than any mechanism. Merchandising is experimenting; supply chain and finance have nothing.</p>
-        <p class="ctx">Real in customer service, experimental in merchandising, nothing anywhere else. The pattern is that AI has spread where the CX director has personally pushed it and nowhere she has not.</p>
+          <div><b>The risk of leaving it</b>Agents reach production under governance written for something else.</div>
+          <div><b>The risk of pressing on anyway</b>This is the one thing that would undo an otherwise well-run programme.</div></div>
+      </div><h3 class="grp">Data and technical foundations</h3><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d4 · Data ecosystem health · below target</div>
+            <div class="so">is it findable, trusted, joined up and owned?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 8% of the score — one of the four the research weights ×1.5.</p></div></div>
+        
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d5 · AI-accessible internal context · below target</div>
+            <div class="so">can AI tools actually see their code, docs and tickets?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 8% of the score — one of the four the research weights ×1.5.</p></div></div>
+        
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">2.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d6 · Internal platform quality · sets the ceiling</div>
+            <div class="so">paved roads, or does every team rebuild the plumbing?</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 8% of the score — one of the four the research weights ×1.5.</p></div></div>
+        
+      </div><div class="finding good">
+        <div class="top">
+          <div class="sb"><div class="s">4</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d7 · Version control &amp; change safety · at target</div>
+            <div class="so">frequent commits, fast rollback — and are prompts versioned too?</div>
+            <div class="chips"><span class="chip good">At target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 5% of the score.</p></div></div>
+        
+      </div><h3 class="grp">How work flows</h3><div class="finding good">
+        <div class="top">
+          <div class="sb"><div class="s">4</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d8 · Working in small batches · at target</div>
+            <div class="so">small, frequent, reversible changes — the safety net for AI volume</div>
+            <div class="chips"><span class="chip good">At target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 5% of the score.</p></div></div>
+        
+      </div><div class="finding good">
+        <div class="top">
+          <div class="sb"><div class="s">4</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d9 · User-centric focus · at target</div>
+            <div class="so">the one where a low score makes AI actively harmful</div>
+            <div class="chips"><span class="chip good">At target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 8% of the score — one of the four the research weights ×1.5.</p></div></div>
+        
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">2.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d10 · Value stream visibility &amp; flow · sets the ceiling</div>
+            <div class="so">can they draw how work flows, and name where it waits?</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 5% of the score.</p></div></div>
+        
+      </div><h3 class="grp">People and value</h3><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">2.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d11 · Skills, enablement &amp; champions · sets the ceiling</div>
+            <div class="so">does capability survive the best people leaving?</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 5% of the score.</p></div></div>
+        
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">2.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d12 · AI adoption breadth &amp; measured value · sets the ceiling</div>
+            <div class="so">Spread has tracked one director's personal energy rather than any mechanism. Merchandising is experimenting; supply chain and finance have nothing.</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>Customer service is genuinely operational and the value is measured.</p><p class="quote">Real in customer service, experimental in merchandising, nothing anywhere else. The pattern is that AI has spread where the CX director has personally pushed it and nowhere she has not.</p><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 5% of the score.</p></div><div><h5>Why it matters</h5><p>The ceiling on this is not capability, it is that nothing makes it spread except one person.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>When she moves on, so does the programme.</span></div>
+          <div><b>The risk of leaving it</b>When she moves on, so does the programme.</div>
           </div>
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d14 · Cost &amp; licensing economics · below target</div>
+            <div class="so">do they know what AI costs them, and what a unit of it buys?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 5% of the score.</p></div></div>
         
-      </div><div class="dim">
-        <div class="dh"><h4>14. Cost &amp; licensing economics</h4>
-          <span class="sc">Stage 3</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><h3 class="grp">Operating what you already have</h3><div class="dim">
-        <div class="dh"><h4>15. Evaluation &amp; monitoring</h4>
-          <span class="sc">Stage 4</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> You have the practice. What you do not have is a way to make it the default, and that is the difference between one success and four.</p>
-        <p><b>What is working.</b> Genuinely strong, and the best thing in this assessment. Weekly evaluation against a held-back set, tracked by a named owner, with escalation quality measured rather than assumed. Most organisations claim this; you can show it.</p>
-        <p><b>What needs to change.</b> It exists for one system. Nothing says how the second one gets the same treatment, and the fulfilment agents currently have none of it.</p>
-        <p class="ctx">The service assistant is evaluated properly: containment rate, escalation quality and CSAT tracked weekly against a held-back set, with a named owner. It took them a year to get here and they know it.</p>
+      </div><h3 class="grp">Operating what you already have</h3><div class="finding good">
+        <div class="top">
+          <div class="sb"><div class="s">4</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d15 · Evaluation &amp; monitoring · at target</div>
+            <div class="so">It exists for one system. Nothing says how the second one gets the same treatment, and the fulfilment agents currently have none of it.</div>
+            <div class="chips"><span class="chip good">At target</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>Genuinely strong, and the best thing in this assessment. Weekly evaluation against a held-back set, tracked by a named owner, with escalation quality measured rather than assumed. Most organisations claim this; you can show it.</p><p class="quote">The service assistant is evaluated properly: containment rate, escalation quality and CSAT tracked weekly against a held-back set, with a named owner. It took them a year to get here and they know it.</p><p class="fnote">Weighted 5% of the score.</p></div><div><h5>Why it matters</h5><p>You have the practice. What you do not have is a way to make it the default, and that is the difference between one success and four.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>The second system will be evaluated by whoever happens to care, which is how the first one nearly failed.</span></div>
+          <div><b>The risk of leaving it</b>The second system will be evaluated by whoever happens to care, which is how the first one nearly failed.</div>
           </div>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">3</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d16 · Third-party AI assurance · below target</div>
+            <div class="so">what do your AI vendors do with your data, and could you leave?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 5% of the score.</p></div></div>
         
-        
-      </div><div class="dim">
-        <div class="dh"><h4>16. Third-party AI assurance</h4>
-          <span class="sc">Stage 3</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>17. Incident response &amp; reversibility</h4>
-          <span class="sc">Stage 2.5 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 5%</span>
-        
-        
-        
-        
-        
-        
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">2.5</div><div class="of">of 5</div><div class="tg">target 4</div></div>
+          <div class="hd"><div class="dl">d17 · Incident response &amp; reversibility · sets the ceiling · live exposure</div>
+            <div class="so">what happens when it gets it wrong, and could you turn it off?</div>
+            <div class="chips"><span class="chip expo">Ceiling + exposure</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 5% of the score.</p></div></div>
         
       </div>
   </div>

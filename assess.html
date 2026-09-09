@@ -1602,23 +1602,55 @@ function clientReport(){
   const dimHTML=GKEYS.map(g=>{
     const ds=D.filter(d=>d.g===g); if(!ds.length)return"";
     return `<h3 class="grp">${E(GROUPS[g])}</h3>`+ds.map(d=>{
-      const s=orgDim(d.id),n=S.dimNote[d.id]||{},isC=ceil.dims.some(x=>x.id===d.id);
-      const ctx=[qOf(d.id,"s"),qOf(d.id,"c")].map(q=>(S.orgEv[q.k]||{}).x).filter(Boolean);
+      const s=orgDim(d.id),n=S.dimNote[d.id]||{},avg=s.avg,tg=DTGT(d.id);
+      const isC=ceil.dims.some(x=>x.id===d.id), isE=con.some(c=>c.dim.id===d.id), pk=tg===0;
+      const cx=[qOf(d.id,"s"),qOf(d.id,"c")].map(q=>(S.orgEv[q.k]||{}).x).filter(Boolean);
       const srcs=RPT.src?[qOf(d.id,"s"),qOf(d.id,"c")].map(q=>(S.orgEv[q.k]||{}).t).filter(Boolean):[];
-      return `<div class="dim${isC?" cap":""}">
-        <div class="dh"><h4>${d.n}. ${E(d.name)}</h4>
-          <span class="sc">${s.avg!==null?"Stage "+fmtS(s.avg):"not assessed"}${isC?' <b class="cap-tag">the constraint</b>':""}</span></div>
-        ${bar(s.avg)} <span class="wt">weighted ${wPct(d)}%${d.w>1?" — one of the four the research treats as an amplifier":""}</span>
-        ${s.avg===null?`<p class="miss">${RC.dimNotAssessed()}</p>`:""}
-        ${n.why?`<p class="why"><b>Why this matters to you.</b> ${E(n.why)}</p>`:""}
-        ${n.well?`<p><b>What is working.</b> ${E(n.well)}</p>`:""}
-        ${n.improve?`<p><b>What needs to change.</b> ${E(n.improve)}</p>`:""}
-        ${ctx.length?`<p class="ctx">${ctx.map(E).join(" ")}</p>`:""}
+      const ec=(S.orgEv[(qOf(d.id,"s")||{}).k]||{}).c;
+      const kind=isC?"ceil":(avg!==null&&!pk&&avg>=tg)?"good":"";
+      const state=avg===null?"not assessed":pk?"parked — not this year"
+        :isC&&isE?"sets the ceiling · live exposure":isC?"sets the ceiling":isE?"live exposure"
+        :avg>tg?"above target":avg>=tg?"at target":"below target";
+      /* so-what = what needs to change; falls back to the tailored why, then the dimension's own
+         question. why-it-matters carries the tailored why when it is not already the so-what. */
+      const so = n.improve || n.why || (avg===null?RC.dimNotAssessed():d.sub);
+      const why = n.improve ? n.why : "";
+      const found=[];
+      if(avg===null&&!n.well) found.push(`<p>${RC.dimNotAssessed()}</p>`);
+      if(n.well) found.push(`<p>${E(n.well)}</p>`);
+      cx.forEach(q=>found.push(`<p class="quote">${E(q)}</p>`));
+      if(s.flag) found.push(`<p class="fnote">${RC.dimScoreFlag({sp:s.flag.sp,co:s.flag.co})}</p>`);
+      found.push(`<p class="fnote">Weighted ${wPct(d)}% of the score${d.w>1?" — one of the four the research weights ×1.5":""}.</p>`);
+      if(srcs.length) found.push(`<p class="fnote">Sources: ${srcs.map(E).join(" · ")}</p>`);
+      const whyHTML = why?`<p>${E(why)}</p>`:"";
+      const stateChip = pk?`<span class="chip park">Parked — not this year</span>`
+        :isC&&isE?`<span class="chip expo">Ceiling + exposure</span>`
+        :isC?`<span class="chip expo">Sets the ceiling</span>`
+        :isE?`<span class="chip expo">Live exposure</span>`
+        :avg===null?``
+        :avg>tg?`<span class="chip good">Ahead of target</span>`
+        :avg>=tg?`<span class="chip good">At target</span>`
+        :`<span class="chip below">Below target</span>`;
+      const confChip = ec==="confirmed"?`<span class="chip hi">Confirmed on the ground</span>`
+        :ec==="told"||ec==="guessed"?`<span class="chip told">Told or inferred</span>`
+        :ec==="absent"?`<span class="chip no">Checked — nothing there</span>`
+        :ec==="unknown"?`<span class="chip no">Nobody could say</span>`
+        :ec==="notasked"?`<span class="chip no">Not examined</span>`
+        :avg!==null?`<span class="chip told">On description</span>`:``;
+      const bd = whyHTML
+        ? `<div class="bd"><div class="evid"><h5>What we found</h5>${found.join("")}</div><div><h5>Why it matters</h5>${whyHTML}</div></div>`
+        : `<div class="bd one"><div class="evid"><h5>What we found</h5>${found.join("")}</div></div>`;
+      return `<div class="finding ${kind}">
+        <div class="top">
+          <div class="sb"><div class="s">${avg!==null?fmtS(avg):"–"}</div><div class="of">of 5</div><div class="tg">${pk?"parked":"target "+tg}</div></div>
+          <div class="hd"><div class="dl">${d.id} · ${E(d.name)} · ${state}</div>
+            <div class="so">${E(so)}</div>
+            <div class="chips">${stateChip}${confChip}</div></div>
+        </div>
+        ${bd}
         ${(n.riskNot||n.riskGo)?`<div class="risks">
-          ${n.riskNot?`<div><b>The risk of leaving it</b><span>${E(n.riskNot)}</span></div>`:""}
-          ${n.riskGo?`<div><b>The risk of pressing on anyway</b><span>${E(n.riskGo)}</span></div>`:""}</div>`:""}
-        ${s.flag?`<p class="flag">${RC.dimScoreFlag({sp:s.flag.sp,co:s.flag.co})}</p>`:""}
-        ${srcs.length?`<p class="src">Sources: ${srcs.map(E).join(" · ")}</p>`:""}
+          ${n.riskNot?`<div><b>The risk of leaving it</b>${E(n.riskNot)}</div>`:""}
+          ${n.riskGo?`<div><b>The risk of pressing on anyway</b>${E(n.riskGo)}</div>`:""}</div>`:""}
       </div>`;}).join("");}).join("");
 
   /* ---- skills ---- */
@@ -1859,6 +1891,48 @@ function clientReport(){
   .mplegend span{display:inline-flex;align-items:center;gap:6px}
   .mplegend i{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
   @media(max-width:730px){.mp{grid-template-columns:150px 1fr}.mps{display:none}.mpg{grid-column:1/3}}
+  /* dimension write-up as a finding exhibit */
+  .finding{border:1px solid var(--hair);border-radius:12px;margin-top:12px;overflow:hidden;page-break-inside:avoid}
+  .finding.ceil{border-color:#f0cfcb}
+  .finding.good{border-color:#cfe6d8}
+  .finding .top{display:flex;align-items:stretch;border-bottom:1px solid var(--hair)}
+  .finding .sb{flex:0 0 92px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--hair);background:#f6f7f8;text-align:center}
+  .finding.ceil .sb{background:#fbf3f3}
+  .finding.good .sb{background:#f1f8f4}
+  .finding .sb .s{font-size:30px;font-weight:800;line-height:1;color:var(--ink)}
+  .finding.ceil .sb .s{color:var(--brand)}
+  .finding.good .sb .s{color:var(--go)}
+  .finding .sb .of{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .finding .sb .tg{font-size:10.5px;color:var(--struct);margin-top:6px;font-weight:700}
+  .finding .hd{flex:1;padding:13px 18px}
+  .finding .hd .dl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700}
+  .finding .hd .so{font-size:16px;line-height:1.33;font-weight:700;margin-top:3px}
+  .finding .hd .chips{margin-top:7px}
+  .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;margin:0 5px 3px 0}
+  .chip.expo{background:var(--now);color:#fff}
+  .chip.good{background:var(--go);color:#fff}
+  .chip.no{background:#fff;border:1px dotted var(--now);color:var(--now)}
+  .chip.hi{background:#eef2f0;border:1px solid #cbd6cf;color:#2b5f43}
+  .chip.below{background:#fff;border:1px solid #e6cfa8;color:var(--below)}
+  .chip.told{background:#f2f3f5;color:var(--muted)}
+  .chip.park{background:#fff;border:1px dashed #9aa0a6;color:var(--grey)}
+  .finding .bd{display:grid;grid-template-columns:1fr 1fr}
+  .finding .bd.one{grid-template-columns:1fr}
+  .finding .bd>div{padding:12px 18px}
+  .finding .bd .evid{border-right:1px solid var(--hair)}
+  .finding .bd.one .evid{border-right:none}
+  .finding .bd h5{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:800;margin-bottom:5px}
+  .finding .bd p{font-size:13.2px;line-height:1.5;margin:0 0 6px}
+  .finding .bd p:last-child{margin-bottom:0}
+  .finding .quote{font-size:12.8px;font-style:italic;color:#4a4f54;border-left:2px solid var(--hair);padding-left:11px}
+  .finding .fnote{font-size:11.5px;color:var(--faint)}
+  .finding .fnote b{color:var(--muted)}
+  .finding .risks{display:flex;border-top:1px solid var(--hair);background:#fcfcfd}
+  .finding .risks>div{flex:1;padding:10px 18px;font-size:12.6px;line-height:1.45}
+  .finding .risks>div:first-child{border-right:1px solid var(--hair)}
+  .finding .risks b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--now);margin-bottom:3px}
+  .finding.good .risks b{color:var(--go)}
+  @media(max-width:640px){.finding .bd{grid-template-columns:1fr}.finding .bd .evid{border-right:none}.finding .risks{flex-direction:column}.finding .risks>div:first-child{border-right:none;border-bottom:1px solid var(--hair)}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -1973,7 +2047,7 @@ function clientReport(){
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter,.mp{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>

@@ -117,6 +117,48 @@
   .mplegend span{display:inline-flex;align-items:center;gap:6px}
   .mplegend i{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
   @media(max-width:730px){.mp{grid-template-columns:150px 1fr}.mps{display:none}.mpg{grid-column:1/3}}
+  /* dimension write-up as a finding exhibit */
+  .finding{border:1px solid var(--hair);border-radius:12px;margin-top:12px;overflow:hidden;page-break-inside:avoid}
+  .finding.ceil{border-color:#f0cfcb}
+  .finding.good{border-color:#cfe6d8}
+  .finding .top{display:flex;align-items:stretch;border-bottom:1px solid var(--hair)}
+  .finding .sb{flex:0 0 92px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--hair);background:#f6f7f8;text-align:center}
+  .finding.ceil .sb{background:#fbf3f3}
+  .finding.good .sb{background:#f1f8f4}
+  .finding .sb .s{font-size:30px;font-weight:800;line-height:1;color:var(--ink)}
+  .finding.ceil .sb .s{color:var(--brand)}
+  .finding.good .sb .s{color:var(--go)}
+  .finding .sb .of{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .finding .sb .tg{font-size:10.5px;color:var(--struct);margin-top:6px;font-weight:700}
+  .finding .hd{flex:1;padding:13px 18px}
+  .finding .hd .dl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700}
+  .finding .hd .so{font-size:16px;line-height:1.33;font-weight:700;margin-top:3px}
+  .finding .hd .chips{margin-top:7px}
+  .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;margin:0 5px 3px 0}
+  .chip.expo{background:var(--now);color:#fff}
+  .chip.good{background:var(--go);color:#fff}
+  .chip.no{background:#fff;border:1px dotted var(--now);color:var(--now)}
+  .chip.hi{background:#eef2f0;border:1px solid #cbd6cf;color:#2b5f43}
+  .chip.below{background:#fff;border:1px solid #e6cfa8;color:var(--below)}
+  .chip.told{background:#f2f3f5;color:var(--muted)}
+  .chip.park{background:#fff;border:1px dashed #9aa0a6;color:var(--grey)}
+  .finding .bd{display:grid;grid-template-columns:1fr 1fr}
+  .finding .bd.one{grid-template-columns:1fr}
+  .finding .bd>div{padding:12px 18px}
+  .finding .bd .evid{border-right:1px solid var(--hair)}
+  .finding .bd.one .evid{border-right:none}
+  .finding .bd h5{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:800;margin-bottom:5px}
+  .finding .bd p{font-size:13.2px;line-height:1.5;margin:0 0 6px}
+  .finding .bd p:last-child{margin-bottom:0}
+  .finding .quote{font-size:12.8px;font-style:italic;color:#4a4f54;border-left:2px solid var(--hair);padding-left:11px}
+  .finding .fnote{font-size:11.5px;color:var(--faint)}
+  .finding .fnote b{color:var(--muted)}
+  .finding .risks{display:flex;border-top:1px solid var(--hair);background:#fcfcfd}
+  .finding .risks>div{flex:1;padding:10px 18px;font-size:12.6px;line-height:1.45}
+  .finding .risks>div:first-child{border-right:1px solid var(--hair)}
+  .finding .risks b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--now);margin-bottom:3px}
+  .finding.good .risks b{color:var(--go)}
+  @media(max-width:640px){.finding .bd{grid-template-columns:1fr}.finding .bd .evid{border-right:none}.finding .risks{flex-direction:column}.finding .risks>div:first-child{border-right:none;border-bottom:1px solid var(--hair)}}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -231,7 +273,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter,.mp{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.apex,.hero,.ev,.board .row,.cap-meter,.mp,.finding{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -402,214 +444,169 @@
 
   <div class="sec pb" id="find"><div class="sh"><span class="num">07</span><h2>Dimension by dimension</h2></div>
     <p>For each: where you are, what is working, what needs to change, and the risk both of leaving it and of pressing on regardless. The second of those is the one most assessments leave out.</p>
-    <h3 class="grp">Intent and control</h3><div class="dim">
-        <div class="dh"><h4>1. AI stance &amp; policy clarity</h4>
-          <span class="sc">Stage 2</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> This is the cheapest thing on the list to fix and it unblocks the most. Two pages, signed by the CEO, distributed to all four businesses.</p>
-        <p><b>What is working.</b> Compliance moved fast when the risk was raised, and the instinct to protect client data is right.</p>
-        <p><b>What needs to change.</b> A prohibition is not a position. Staff know they are not allowed to use ChatGPT and nothing else — not what is permitted, not what support exists, not whether it applies to their role. Three of the four acquired businesses never received even that.</p>
-        <p class="ctx">An all-staff email in March said 'do not use ChatGPT with client data'. That is the entire written position. Three of four acquired businesses had never seen it — it went to the legacy Ardent distribution list only. Every one of them said 'we're not allowed'. None could say what they were allowed to use, whether the firm would help them, or whether it applied to their role. Prohibition is not a stance.</p>
+    <h3 class="grp">Intent and control</h3><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d1 · AI stance &amp; policy clarity · below target</div>
+            <div class="so">A prohibition is not a position. Staff know they are not allowed to use ChatGPT and nothing else — not what is permitted, not what support exists, not whether it applies to their role. Three of the four acquired businesses never received even that.</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>Compliance moved fast when the risk was raised, and the instinct to protect client data is right.</p><p class="quote">An all-staff email in March said 'do not use ChatGPT with client data'. That is the entire written position. Three of four acquired businesses had never seen it — it went to the legacy Ardent distribution list only.</p><p class="quote">Every one of them said 'we're not allowed'. None could say what they were allowed to use, whether the firm would help them, or whether it applied to their role. Prohibition is not a stance.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>This is the cheapest thing on the list to fix and it unblocks the most. Two pages, signed by the CEO, distributed to all four businesses.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Prohibition without an alternative produces exactly what we found: a claims team leader running an unauthorised automation on a personal account because there was no sanctioned route.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Rolling out Copilot on top of a blanket prohibition sends two contradictory instructions at once. Adoption will stall, and the people already working around the rule will keep doing it — now with more tools.</span></div></div>
-        
-        
-      </div><div class="dim">
-        <div class="dh"><h4>2. AI governance, risk &amp; assurance</h4>
-          <span class="sc">Stage 2.5</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> In a regulated business the route to a yes is the constraint on everything. Right now there is no route — only a belief that one exists.</p>
-        <p><b>What is working.</b> A named executive owns AI risk, which most firms this size cannot say. Regulatory exposure has been assessed properly, and the Consumer Duty implications of the personal-lines book are understood.</p>
-        <p><b>What needs to change.</b> The controls do not match the confidence. The model-risk framework covers pricing models and predates generative AI. There is no approved-vendor list, no human-in-the-loop requirement for consequential actions, and no audit trail of AI-assisted decisions.</p>
-        <p class="ctx">The CRO has taken AI risk into her remit and is confident it is covered by the existing model-risk framework. The model-risk framework predates generative AI and covers pricing models only. No approved-vendor list, no human-in-the-loop requirement, no audit trail of AI-assisted decisions. The confidence and the controls do not match.</p>
+          <div><b>The risk of leaving it</b>Prohibition without an alternative produces exactly what we found: a claims team leader running an unauthorised automation on a personal account because there was no sanctioned route.</div>
+          <div><b>The risk of pressing on anyway</b>Rolling out Copilot on top of a blanket prohibition sends two contradictory instructions at once. Adoption will stall, and the people already working around the rule will keep doing it — now with more tools.</div></div>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2.5</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d2 · AI governance, risk &amp; assurance · live exposure</div>
+            <div class="so">The controls do not match the confidence. The model-risk framework covers pricing models and predates generative AI. There is no approved-vendor list, no human-in-the-loop requirement for consequential actions, and no audit trail of AI-assisted decisions.</div>
+            <div class="chips"><span class="chip expo">Live exposure</span><span class="chip told">Told or inferred</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>A named executive owns AI risk, which most firms this size cannot say. Regulatory exposure has been assessed properly, and the Consumer Duty implications of the personal-lines book are understood.</p><p class="quote">The CRO has taken AI risk into her remit and is confident it is covered by the existing model-risk framework.</p><p class="quote">The model-risk framework predates generative AI and covers pricing models only. No approved-vendor list, no human-in-the-loop requirement, no audit trail of AI-assisted decisions. The confidence and the controls do not match.</p><p class="fnote"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>In a regulated business the route to a yes is the constraint on everything. Right now there is no route — only a belief that one exists.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>An FCA-regulated firm cannot evidence how an AI-assisted customer decision was reached. On the personal-lines book that is a Consumer Duty exposure, not a maturity gap.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Proceeding on the belief that this is already covered is the more dangerous path than proceeding knowing it is not. The framework will be cited in a file review and it will not hold.</span></div></div>
-        <p class="flag"><b>A note on this score.</b> Our assessment and the evidence we could verify pointed to different levels — 3 against 2. We have scored the midpoint and are flagging it rather than choosing the more comfortable number. It usually means the intent is real and the mechanism is not yet.</p>
-        
-      </div><div class="dim">
-        <div class="dh"><h4>3. Leadership sponsorship &amp; AI strategy</h4>
-          <span class="sc">Stage 2</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> PE-backed businesses do not lack the ability to fund things. They lack the framing that makes funding defensible at exit.</p>
-        <p><b>What is working.</b> There is genuine executive attention and the sponsor is asking. Money would be found for the right proposal.</p>
-        <p><b>What needs to change.</b> The ambition is expressed as a tool rollout, not an outcome. Nobody has connected AI to the 400bps mandate, so there is no test for whether any of it worked.</p>
-        <p class="ctx">Kestrel asked 'what's your AI story for the IM' at the June board. The answer being prepared is a Copilot rollout. Nobody has connected it to the 400bps.</p>
+          <div><b>The risk of leaving it</b>An FCA-regulated firm cannot evidence how an AI-assisted customer decision was reached. On the personal-lines book that is a Consumer Duty exposure, not a maturity gap.</div>
+          <div><b>The risk of pressing on anyway</b>Proceeding on the belief that this is already covered is the more dangerous path than proceeding knowing it is not. The framework will be cited in a file review and it will not hold.</div></div>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d3 · Leadership sponsorship &amp; AI strategy · below target</div>
+            <div class="so">The ambition is expressed as a tool rollout, not an outcome. Nobody has connected AI to the 400bps mandate, so there is no test for whether any of it worked.</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>There is genuine executive attention and the sponsor is asking. Money would be found for the right proposal.</p><p class="quote">Kestrel asked 'what's your AI story for the IM' at the June board. The answer being prepared is a Copilot rollout. Nobody has connected it to the 400bps.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>PE-backed businesses do not lack the ability to fund things. They lack the framing that makes funding defensible at exit.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>A Copilot rollout with no outcome attached is the 'more for show' strategy the sponsor will eventually ask about.</span></div>
+          <div><b>The risk of leaving it</b>A Copilot rollout with no outcome attached is the 'more for show' strategy the sponsor will eventually ask about.</div>
           </div>
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>13. Agentic readiness</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> This is not a maturity gap. It is an unauthorised system acting on customers, and it should be raised at the readout rather than folded into a score.</p>
-        
-        <p><b>What needs to change.</b> A claims team leader has been running an unattended automation against the claims inbox for four months — drafting and sending acknowledgements to policyholders on her personal Microsoft account. IT and Risk did not know. There is no reviewable log.</p>
-        <p class="ctx">A team leader in claims built a Power Automate flow that reads the claims inbox, drafts an acknowledgement and sends it, running on her personal Microsoft account. It has been live for four months. Nobody in IT or Risk knew. There is no log anyone reads and no way to reconstruct what it has sent to policyholders.</p>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d13 · Agentic readiness · sets the ceiling · live exposure</div>
+            <div class="so">A claims team leader has been running an unattended automation against the claims inbox for four months — drafting and sending acknowledgements to policyholders on her personal Microsoft account. IT and Risk did not know. There is no reviewable log.</div>
+            <div class="chips"><span class="chip expo">Ceiling + exposure</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p class="quote">A team leader in claims built a Power Automate flow that reads the claims inbox, drafts an acknowledgement and sends it, running on her personal Microsoft account. It has been live for four months. Nobody in IT or Risk knew. There is no log anyone reads and no way to reconstruct what it has sent to policyholders.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>This is not a maturity gap. It is an unauthorised system acting on customers, and it should be raised at the readout rather than folded into a score.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Nobody can reconstruct what has been sent to policyholders, or on whose authority. For an FCA-regulated firm that is an evidencing failure with a live customer population.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Scaling agents from this position multiplies an exposure nobody has bounded. The inventory has to come first.</span></div></div>
-        
-        
-      </div><h3 class="grp">Data and technical foundations</h3><div class="dim">
-        <div class="dh"><h4>4. Data ecosystem health</h4>
-          <span class="sc">Stage 2</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 9% — one of the four the research treats as an amplifier</span>
-        
-        <p class="why"><b>Why this matters to you.</b> Platform consolidation is already on the integration plan for other reasons. Sequencing AI behind it costs nothing; sequencing it ahead costs twice.</p>
-        <p><b>What is working.</b> The Acturis book is well managed and the data lead is capable and responsive.</p>
-        <p><b>What needs to change.</b> Two legacy platforms from the 2023 and 2024 acquisitions still run in parallel. The same client exists three times with no golden record, so a cross-sold renewal is manual reconciliation.</p>
-        <p class="ctx">Acturis for commercial lines, two legacy platforms from the 2023 and 2024 acquisitions still running in parallel. Client records exist in all three with no golden record. A renewal for a client of two acquired firms is manual reconciliation.</p>
+          <div><b>The risk of leaving it</b>Nobody can reconstruct what has been sent to policyholders, or on whose authority. For an FCA-regulated firm that is an evidencing failure with a live customer population.</div>
+          <div><b>The risk of pressing on anyway</b>Scaling agents from this position multiplies an exposure nobody has bounded. The inventory has to come first.</div></div>
+      </div><h3 class="grp">Data and technical foundations</h3><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d4 · Data ecosystem health · live exposure</div>
+            <div class="so">Two legacy platforms from the 2023 and 2024 acquisitions still run in parallel. The same client exists three times with no golden record, so a cross-sold renewal is manual reconciliation.</div>
+            <div class="chips"><span class="chip expo">Live exposure</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>The Acturis book is well managed and the data lead is capable and responsive.</p><p class="quote">Acturis for commercial lines, two legacy platforms from the 2023 and 2024 acquisitions still running in parallel. Client records exist in all three with no golden record. A renewal for a client of two acquired firms is manual reconciliation.</p><p class="fnote">Weighted 9% of the score — one of the four the research weights ×1.5.</p></div><div><h5>Why it matters</h5><p>Platform consolidation is already on the integration plan for other reasons. Sequencing AI behind it costs nothing; sequencing it ahead costs twice.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Every AI use case will pay the integration cost again, and the first one will be quoted as if it were the last.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>AI on three unreconciled client records produces confident answers about the wrong client. In a regulated advice context that is a complaint, not an inconvenience.</span></div></div>
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>5. AI-accessible internal context</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 9% — one of the four the research treats as an amplifier</span>
-        
-        <p class="why"><b>Why this matters to you.</b> This is the difference between a tool that drafts a generic letter and one that drafts theirs.</p>
-        
-        <p><b>What needs to change.</b> Nothing internal is reachable. Eleven years of wordings, endorsements and claims correspondence — the thing that would make an answer Ardent's rather than generic — sits in a store nothing can query.</p>
-        <p class="ctx">Nothing internal is reachable by any AI tool. Eleven years of policy wordings, endorsements and claims correspondence sit in a document store nothing can query.</p>
+          <div><b>The risk of leaving it</b>Every AI use case will pay the integration cost again, and the first one will be quoted as if it were the last.</div>
+          <div><b>The risk of pressing on anyway</b>AI on three unreconciled client records produces confident answers about the wrong client. In a regulated advice context that is a complaint, not an inconvenience.</div></div>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d5 · AI-accessible internal context · sets the ceiling</div>
+            <div class="so">Nothing internal is reachable. Eleven years of wordings, endorsements and claims correspondence — the thing that would make an answer Ardent's rather than generic — sits in a store nothing can query.</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p class="quote">Nothing internal is reachable by any AI tool. Eleven years of policy wordings, endorsements and claims correspondence sit in a document store nothing can query.</p><p class="fnote">Weighted 9% of the score — one of the four the research weights ×1.5.</p></div><div><h5>Why it matters</h5><p>This is the difference between a tool that drafts a generic letter and one that drafts theirs.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Any AI deployed here answers like a search engine, because that is all it can see. Staff will conclude AI does not work in insurance.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Connecting it before governance exists is the sequencing error we see most often. The roadmap holds this back until the risk controls are real.</span></div></div>
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>6. Internal platform quality</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
-        
-        <p class="why"><b>Why this matters to you.</b> The outsourcing contract is up for renewal in 2027. The right ask is a small sanctioned sandbox now, not a renegotiation.</p>
-        
-        <p><b>What needs to change.</b> IT is outsourced on a ticket SLA. A new environment is a 15-day change request with a charge attached. There is no sanctioned way for anyone to try anything.</p>
-        <p class="ctx">IT is outsourced to a managed provider on a ticket SLA. A new environment is a change request with a 15-day lead time and a charge. There is no route for a team to try anything.</p>
+          <div><b>The risk of leaving it</b>Any AI deployed here answers like a search engine, because that is all it can see. Staff will conclude AI does not work in insurance.</div>
+          <div><b>The risk of pressing on anyway</b>Connecting it before governance exists is the sequencing error we see most often. The roadmap holds this back until the risk controls are real.</div></div>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">parked</div></div>
+          <div class="hd"><div class="dl">d6 · Internal platform quality · parked — not this year</div>
+            <div class="so">IT is outsourced on a ticket SLA. A new environment is a 15-day change request with a charge attached. There is no sanctioned way for anyone to try anything.</div>
+            <div class="chips"><span class="chip park">Parked — not this year</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p class="quote">IT is outsourced to a managed provider on a ticket SLA. A new environment is a change request with a 15-day lead time and a charge. There is no route for a team to try anything.</p><p class="fnote">Weighted 8% of the score — one of the four the research weights ×1.5.</p></div><div><h5>Why it matters</h5><p>The outsourcing contract is up for renewal in 2027. The right ask is a small sanctioned sandbox now, not a renegotiation.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Nothing gets piloted, so nothing gets learned, and the AI story stays theoretical until someone builds it on a personal account.</span></div>
+          <div><b>The risk of leaving it</b>Nothing gets piloted, so nothing gets learned, and the AI story stays theoretical until someone builds it on a personal account.</div>
           </div>
-        
-        
-      </div><h3 class="grp">How work flows</h3><div class="dim">
-        <div class="dh"><h4>9. User-centric focus</h4>
-          <span class="sc">Stage 3</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 8% — one of the four the research treats as an amplifier</span>
-        
-        <p class="why"><b>Why this matters to you.</b> This is why an AI programme here should aim at the admin around the broker, not at the broking.</p>
-        <p><b>What is working.</b> The strongest dimension in the business and the one to protect. Brokers know their clients' operations in detail and will challenge a client's own assumptions on cover. Account executives can name what a bad renewal costs the client.</p>
-        <p><b>What needs to change.</b> The knowledge is individual rather than institutional. It leaves when the broker leaves, which for a business being sold in 2027 is a diligence question.</p>
-        <p class="ctx">Genuinely strong. Brokers know their clients' businesses in detail, challenge the client's own assumptions on cover, and can name what a bad renewal costs the client. This is the firm's actual product and it should be protected, not automated over.</p>
+      </div><h3 class="grp">How work flows</h3><div class="finding good">
+        <div class="top">
+          <div class="sb"><div class="s">3</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d9 · User-centric focus · at target</div>
+            <div class="so">The knowledge is individual rather than institutional. It leaves when the broker leaves, which for a business being sold in 2027 is a diligence question.</div>
+            <div class="chips"><span class="chip good">At target</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>The strongest dimension in the business and the one to protect. Brokers know their clients' operations in detail and will challenge a client's own assumptions on cover. Account executives can name what a bad renewal costs the client.</p><p class="quote">Genuinely strong. Brokers know their clients' businesses in detail, challenge the client's own assumptions on cover, and can name what a bad renewal costs the client. This is the firm's actual product and it should be protected, not automated over.</p><p class="fnote">Weighted 8% of the score — one of the four the research weights ×1.5.</p></div><div><h5>Why it matters</h5><p>This is why an AI programme here should aim at the admin around the broker, not at the broking.</p></div></div>
         <div class="risks">
           
-          <div><b>The risk of pressing on anyway</b><span>The research finding is that AI makes weak-user-focus organisations worse. Ardent is the opposite case — the risk here is automating over the judgement that is the product.</span></div></div>
-        
-        
-      </div><div class="dim">
-        <div class="dh"><h4>10. Value stream visibility &amp; flow</h4>
-          <span class="sc">Stage 2</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> This is the cheapest measurement on the list and it decides where AI is worth pointing.</p>
-        
-        <p><b>What needs to change.</b> The renewals path is understood as a sequence but has never been measured. Our sample of 20 suggested 9 of 14 elapsed days are queue time — awaiting insurer response and internal referral.</p>
-        <p class="ctx">The renewals path is well understood as a sequence. Nobody has ever measured where a renewal waits. Our own sample of 20 suggested 9 of 14 elapsed days are queue time, mostly awaiting insurer response and internal referral.</p>
+          <div><b>The risk of pressing on anyway</b>The research finding is that AI makes weak-user-focus organisations worse. Ardent is the opposite case — the risk here is automating over the judgement that is the product.</div></div>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d10 · Value stream visibility &amp; flow · below target</div>
+            <div class="so">The renewals path is understood as a sequence but has never been measured. Our sample of 20 suggested 9 of 14 elapsed days are queue time — awaiting insurer response and internal referral.</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p class="quote">The renewals path is well understood as a sequence. Nobody has ever measured where a renewal waits. Our own sample of 20 suggested 9 of 14 elapsed days are queue time, mostly awaiting insurer response and internal referral.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>This is the cheapest measurement on the list and it decides where AI is worth pointing.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Speeding up broker drafting when two thirds of the elapsed time is queue will produce no change the client can feel, and no change the sponsor can see.</span></div>
+          <div><b>The risk of leaving it</b>Speeding up broker drafting when two thirds of the elapsed time is queue will produce no change the client can feel, and no change the sponsor can see.</div>
           </div>
-        
-        
-      </div><h3 class="grp">People and value</h3><div class="dim cap">
-        <div class="dh"><h4>11. Skills, enablement &amp; champions</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> Champions here already exist. They just have no mandate, no time and no cover.</p>
-        
-        <p><b>What needs to change.</b> No training has been provided. Two self-taught people in claims are quietly doing other people's drafting for them.</p>
-        <p class="ctx">No AI training has been provided. Two people in claims are self-taught and are quietly doing everyone else's drafting for them.</p>
+      </div><h3 class="grp">People and value</h3><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d11 · Skills, enablement &amp; champions · sets the ceiling</div>
+            <div class="so">No training has been provided. Two self-taught people in claims are quietly doing other people's drafting for them.</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p class="quote">No AI training has been provided. Two people in claims are self-taught and are quietly doing everyone else's drafting for them.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>Champions here already exist. They just have no mandate, no time and no cover.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Capability sits with two people who were not asked to have it and are not recognised for it. If either leaves, the only working AI practice in the business goes with them.</span></div>
+          <div><b>The risk of leaving it</b>Capability sits with two people who were not asked to have it and are not recognised for it. If either leaves, the only working AI practice in the business goes with them.</div>
           </div>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d12 · AI adoption breadth &amp; measured value · below target</div>
+            <div class="so">has it spread past engineering — and is anyone measuring the value?</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip told">On description</span></div></div>
+        </div>
+        <div class="bd one"><div class="evid"><h5>What we found</h5><p class="fnote">Weighted 6% of the score.</p></div></div>
         
-        
-      </div><div class="dim">
-        <div class="dh"><h4>12. AI adoption breadth &amp; measured value</h4>
-          <span class="sc">Stage 2</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        
-        
-        
-        
-        
-        
-        
-      </div><div class="dim">
-        <div class="dh"><h4>14. Cost &amp; licensing economics</h4>
-          <span class="sc">Stage 2</span></div>
-        <span class="bar"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> The discipline already exists in this business. It just has not been pointed at this yet.</p>
-        <p><b>What is working.</b> Cost discipline everywhere else is genuinely strong — cost-to-serve is known by branch, which most firms this size cannot do.</p>
-        <p><b>What needs to change.</b> AI is the exception. No line item, and at least nine personal Copilot and ChatGPT subscriptions coming through expenses.</p>
-        <p class="ctx">Cost discipline everywhere else is excellent — this is a PE-backed business that knows its cost-to-serve by branch. AI spend is the exception: no line item, and at least nine personal Copilot and ChatGPT subscriptions on expenses.</p>
+      </div><div class="finding ">
+        <div class="top">
+          <div class="sb"><div class="s">2</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d14 · Cost &amp; licensing economics · below target</div>
+            <div class="so">AI is the exception. No line item, and at least nine personal Copilot and ChatGPT subscriptions coming through expenses.</div>
+            <div class="chips"><span class="chip below">Below target</span><span class="chip no">Not examined</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>Cost discipline everywhere else is genuinely strong — cost-to-serve is known by branch, which most firms this size cannot do.</p><p class="quote">Cost discipline everywhere else is excellent — this is a PE-backed business that knows its cost-to-serve by branch. AI spend is the exception: no line item, and at least nine personal Copilot and ChatGPT subscriptions on expenses.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>The discipline already exists in this business. It just has not been pointed at this yet.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>The business case for the first real build will be argued against a baseline nobody can state.</span></div>
+          <div><b>The risk of leaving it</b>The business case for the first real build will be argued against a baseline nobody can state.</div>
           </div>
-        
-        
-      </div><h3 class="grp">Operating what you already have</h3><div class="dim cap">
-        <div class="dh"><h4>15. Evaluation &amp; monitoring</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> You cannot improve, defend or expand something you are not measuring, and the Consumer Duty case rests on being able to show you were.</p>
-        <p><b>What is working.</b> Nothing to report — this is the gap.</p>
-        <p><b>What needs to change.</b> Nobody has defined what a correct output looks like for the one system already running, so nobody is counting the wrong ones. This is cheaper to fix than it sounds: one page and a weekly sample.</p>
-        <p class="ctx">The acknowledgement automation has never been checked. Nobody has written down what a correct acknowledgement looks like, so nobody can say how often it is wrong.</p>
+      </div><h3 class="grp">Operating what you already have</h3><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d15 · Evaluation &amp; monitoring · sets the ceiling</div>
+            <div class="so">Nobody has defined what a correct output looks like for the one system already running, so nobody is counting the wrong ones. This is cheaper to fix than it sounds: one page and a weekly sample.</div>
+            <div class="chips"><span class="chip expo">Sets the ceiling</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>Nothing to report — this is the gap.</p><p class="quote">The acknowledgement automation has never been checked. Nobody has written down what a correct acknowledgement looks like, so nobody can say how often it is wrong.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>You cannot improve, defend or expand something you are not measuring, and the Consumer Duty case rests on being able to show you were.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>An FCA-regulated firm is sending customer correspondence generated by a system whose accuracy has never been measured.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Scaling AI before anyone can measure output quality means scaling the error rate too, and finding out from a complaint.</span></div></div>
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>16. Third-party AI assurance</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> You buy rather than build, so what your vendors do with your data is not a footnote to your AI risk — it is most of it.</p>
-        <p><b>What is working.</b> The licence spend itself is visible, which is more than many.</p>
-        <p><b>What needs to change.</b> No AI vendor has been asked what happens to the data you send them. Training use, retention, processing location and sub-processors are all unknown, and all answerable in a fortnight by asking.</p>
-        <p class="ctx">Nobody has read the AI terms of any tool in use. Whether the vendors train on submitted client data is unknown, and the personal-lines correspondence going through the automation is client data.</p>
+          <div><b>The risk of leaving it</b>An FCA-regulated firm is sending customer correspondence generated by a system whose accuracy has never been measured.</div>
+          <div><b>The risk of pressing on anyway</b>Scaling AI before anyone can measure output quality means scaling the error rate too, and finding out from a complaint.</div></div>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d16 · Third-party AI assurance · sets the ceiling · live exposure</div>
+            <div class="so">No AI vendor has been asked what happens to the data you send them. Training use, retention, processing location and sub-processors are all unknown, and all answerable in a fortnight by asking.</div>
+            <div class="chips"><span class="chip expo">Ceiling + exposure</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>The licence spend itself is visible, which is more than many.</p><p class="quote">Nobody has read the AI terms of any tool in use. Whether the vendors train on submitted client data is unknown, and the personal-lines correspondence going through the automation is client data.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>You buy rather than build, so what your vendors do with your data is not a footnote to your AI risk — it is most of it.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Client data may already be training third-party models under terms nobody has read.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Every further tool compounds an exposure you have not quantified, and the exit position gets worse with each one.</span></div></div>
-        
-        
-      </div><div class="dim cap">
-        <div class="dh"><h4>17. Incident response &amp; reversibility</h4>
-          <span class="sc">Stage 1 <b class="cap-tag">the constraint</b></span></div>
-        <span class="bar"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span> <span class="wt">weighted 6%</span>
-        
-        <p class="why"><b>Why this matters to you.</b> The ability to turn something off is the cheapest control you can have, and you do not currently have it.</p>
-        <p><b>What is working.</b> The exposure was found and acknowledged quickly once raised.</p>
-        <p><b>What needs to change.</b> Nobody can suspend the automation without the account holder, and no broker has been told how to report a wrong output. Both are a day's work.</p>
-        <p class="ctx">The automation runs from a personal account. Switching it off means asking the person whose account it is. There is no route for a broker who spots a wrong letter to report it.</p>
+          <div><b>The risk of leaving it</b>Client data may already be training third-party models under terms nobody has read.</div>
+          <div><b>The risk of pressing on anyway</b>Every further tool compounds an exposure you have not quantified, and the exit position gets worse with each one.</div></div>
+      </div><div class="finding ceil">
+        <div class="top">
+          <div class="sb"><div class="s">1</div><div class="of">of 5</div><div class="tg">target 3</div></div>
+          <div class="hd"><div class="dl">d17 · Incident response &amp; reversibility · sets the ceiling · live exposure</div>
+            <div class="so">Nobody can suspend the automation without the account holder, and no broker has been told how to report a wrong output. Both are a day's work.</div>
+            <div class="chips"><span class="chip expo">Ceiling + exposure</span><span class="chip hi">Confirmed on the ground</span></div></div>
+        </div>
+        <div class="bd"><div class="evid"><h5>What we found</h5><p>The exposure was found and acknowledged quickly once raised.</p><p class="quote">The automation runs from a personal account. Switching it off means asking the person whose account it is. There is no route for a broker who spots a wrong letter to report it.</p><p class="fnote">Weighted 6% of the score.</p></div><div><h5>Why it matters</h5><p>The ability to turn something off is the cheapest control you can have, and you do not currently have it.</p></div></div>
         <div class="risks">
-          <div><b>The risk of leaving it</b><span>Something is generating customer correspondence that the firm cannot stop and cannot correct.</span></div>
-          <div><b>The risk of pressing on anyway</b><span>Adding systems before there is a stop button multiplies the same problem.</span></div></div>
-        
-        
+          <div><b>The risk of leaving it</b>Something is generating customer correspondence that the firm cannot stop and cannot correct.</div>
+          <div><b>The risk of pressing on anyway</b>Adding systems before there is a stop button multiplies the same problem.</div></div>
       </div>
   </div>
 
