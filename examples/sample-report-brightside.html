@@ -75,6 +75,22 @@
   .ev .l{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
   .ev .ok .v{color:var(--go)} .ev .part .v{color:var(--below)} .ev .no .v{color:var(--grey)}
   @media(max-width:640px){.hero-top{flex-direction:column}.hero-headline{border-right:none;border-bottom:1px solid var(--hair)}.ev{flex-direction:column}}
+  .board .row{display:flex;align-items:stretch;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .board .row .n{flex:0 0 54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;background:var(--now)}
+  .board .row .n .num{font-size:24px;line-height:1}
+  .board .row .n .of{font-size:10px;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
+  .board .row .body{flex:1;padding:13px 18px;background:#fff;border:1px solid var(--hair);border-left:none}
+  .board .row .kind{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;margin-bottom:4px;color:var(--now)}
+  .board .row h4{font-size:16px;line-height:1.3;margin-bottom:4px}
+  .board .row p{font-size:13.4px;color:#2e2e2e;margin:0 0 6px;line-height:1.5}
+  .board .row .who{font-size:11.6px;color:var(--muted)}
+  .cap-meter{border:1px solid #d8e3ea;background:#f6fafc;border-radius:12px;padding:16px 20px;margin-top:4px;page-break-inside:avoid}
+  .cap-meter h4{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--struct);margin-bottom:9px}
+  .cap-meter p{font-size:13px;color:#37474a;margin:10px 0 0;line-height:1.5}
+  .cap-meter .cap-cav{font-size:11.6px;color:var(--muted)}
+  .meter{height:26px;border-radius:7px;background:var(--track);overflow:hidden;display:flex;font-size:11px;font-weight:700;color:#fff}
+  .meter .fits{background:var(--go);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
+  .meter .gap{background:var(--now);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -189,7 +205,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -260,63 +276,31 @@
   
 
   <div class="sec pb" id="fix"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
-    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on. There are 1 more on the plan behind these; they are in the sequenced section and they are not urgent yet.</p>
+    <p class="lede">In order. These are already happening and carry exposure today — they sit before the plan, not in it. The moves that lift your ceiling are in the ninety-day plan that follows.</p>
     <div class="board">
-      <div class="ub live">
-        <div class="ubn">1</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      <div class="row">
+        <div class="n"><span class="num">1</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list.</h4>
           <p>Agents reach production under governance written for something else.</p>
-          <div class="ubm"><b>Agentic readiness</b> · A named executive, on the day</div>
+          <div class="who"><b>Agentic readiness</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">2</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">2</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Name who can switch each AI system off, and tell the people using it how to report a bad output. Both should take a day.</h4>
           <p>Something is running that nobody has a route to stop, and no one has been told how to report it going wrong.</p>
-          <div class="ubm"><b>Incident response &amp; reversibility</b> · A named executive, on the day</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">3</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, Light effort</div>
-          <h4>Map the main value stream end-to-end and name the wait states</h4>
-          <p>This is the earliest value-stream action and covers 1→2 and 2→3 in one move because the Level 2 shape (local segments, no end-to-end view) is not a stable state</p>
-          <div class="ubm"><b>Value stream visibility &amp; flow</b> · A named value-stream owner (typically Head of Delivery) · lifts the ceiling</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">4</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, Light effort</div>
-          <h4>Name who can switch each AI system off, and tell people how to report a bad output</h4>
-          <p>The cheapest possible containment for anything already running</p>
-          <div class="ubm"><b>Incident response &amp; reversibility</b> · The service owner, with IT · lifts the ceiling</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">5</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · 3–6 months, Light effort</div>
-          <h4>Deliberately distribute AI champions across teams and seniority</h4>
-          <p>The Level 2-to-3 move on Dimension 11, with a genuine nudge on Dimension 12 because distributed champions are the human vehicle by which AI adoption reaches BA, QA</p>
-          <div class="ubm"><b>Skills, enablement &amp; champions</b> · Head of L&amp;D with the executive owner · after A029</div>
-        </div>
-      </div><div class="ub heavy">
-        <div class="ubn">6</div>
-        <div class="ubb">
-          <div class="ubtag">Real work — nothing moves until it is done · 3–6 months, Moderate effort</div>
-          <h4>Inventory agents in use and publish a written delegation policy</h4>
-          <p>Two agentic workflows are in pilot in fulfilment and the governance that covers your assistant does not mention agents. Nobody has decided whether it should — that decision is now overdue rather than premature.</p>
-          <div class="ubm"><b>Agentic readiness</b> · The AI risk owner · lifts the ceiling</div>
+          <div class="who"><b>Incident response &amp; reversibility</b> · Owner: A named executive, on the day · This week</div>
         </div>
       </div>
     </div>
-    <p class="method">The first 2 items are not maturity gaps — they are already happening in your organisation, so they do not wait for a plan. Each should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving them open is not, and that is the state we found them in. The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done. Behind these sits the full plan of 20 items, sequenced.</p>
-    <div class="cap-box">
+    <p class="method">Each should be closed, or consciously accepted in writing by a named executive with a date against it. Leaving one open is itself a decision — just not a deliberate one, and that is the state we found them in.</p>
+    <div class="cap-meter">
       <h4>What fits in the first 90 days, on the people you have</h4>
       <p>You told us <b>4 people have 16 days a month</b> for this — about <b>48 days</b> across the first 90.</p>
-      <div class="cap-bar"><span style="width:100%"></span></div>
+      <div class="meter"><div class="fits" style="width:100%">Fits inside your first-90 capacity</div></div>
       <p><b>The containment and first-90-day work fits, but only just — nothing spare for running it while you do it.</b> That is a first 90 days you can commit to, though not one with slack.</p>
       <p class="cap-cav">The days available are your own figure; whether the work fits inside them is our judgement from the effort on each action, not a precise count. Only containment and the first-90-day work are set against them — everything in Beyond is sequenced by dependency and re-planned at the six-month review, not weighed here.</p>
     </div>

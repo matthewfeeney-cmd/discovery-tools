@@ -75,6 +75,22 @@
   .ev .l{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
   .ev .ok .v{color:var(--go)} .ev .part .v{color:var(--below)} .ev .no .v{color:var(--grey)}
   @media(max-width:640px){.hero-top{flex-direction:column}.hero-headline{border-right:none;border-bottom:1px solid var(--hair)}.ev{flex-direction:column}}
+  .board .row{display:flex;align-items:stretch;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .board .row .n{flex:0 0 54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;background:var(--now)}
+  .board .row .n .num{font-size:24px;line-height:1}
+  .board .row .n .of{font-size:10px;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
+  .board .row .body{flex:1;padding:13px 18px;background:#fff;border:1px solid var(--hair);border-left:none}
+  .board .row .kind{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;margin-bottom:4px;color:var(--now)}
+  .board .row h4{font-size:16px;line-height:1.3;margin-bottom:4px}
+  .board .row p{font-size:13.4px;color:#2e2e2e;margin:0 0 6px;line-height:1.5}
+  .board .row .who{font-size:11.6px;color:var(--muted)}
+  .cap-meter{border:1px solid #d8e3ea;background:#f6fafc;border-radius:12px;padding:16px 20px;margin-top:4px;page-break-inside:avoid}
+  .cap-meter h4{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--struct);margin-bottom:9px}
+  .cap-meter p{font-size:13px;color:#37474a;margin:10px 0 0;line-height:1.5}
+  .cap-meter .cap-cav{font-size:11.6px;color:var(--muted)}
+  .meter{height:26px;border-radius:7px;background:var(--track);overflow:hidden;display:flex;font-size:11px;font-weight:700;color:#fff}
+  .meter .fits{background:var(--go);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
+  .meter .gap{background:var(--now);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -189,7 +205,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -257,31 +273,13 @@
 
   
 
-  
-
-  <div class="sec pb" id="fix"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
-    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on.</p>
-    <div class="board">
-      <div class="ub cheap">
-        <div class="ubn">1</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · 3–6 months, Light effort</div>
-          <h4>Name a stance owner and put the stance to work in decisions</h4>
-          <p>This is the move that separates a polished document from an operating instrument</p>
-          <div class="ubm"><b>AI stance &amp; policy clarity</b> · A named executive with People or IT in remit · lifts the ceiling</div>
-        </div>
-      </div>
-    </div>
-    <p class="method">The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done. Behind this sits the full plan of 9 items, sequenced.</p>
-    <div class="cap-box">
-      <h4>What fits in the first 90 days, on the people you have</h4>
-      <p>You told us <b>3 people have 15 days a month</b> for this — about <b>45 days</b> across the first 90.</p>
-      <div class="cap-bar"><span style="width:100%"></span></div>
-      <p><b>The containment and first-90-day work fits inside that, with room to spare.</b> That is a first 90 days you can commit to rather than aspire to.</p>
-      <p class="cap-cav">The days available are your own figure; whether the work fits inside them is our judgement from the effort on each action, not a precise count. Only containment and the first-90-day work are set against them — everything in Beyond is sequenced by dependency and re-planned at the six-month review, not weighed here.</p>
-    </div>
-    <p class="ctx"><b>You told us your own three were:</b> Move the autonomy thresholds on evidence · Get a second provider tested. Where those agree with the order above, start there — a plan the sponsor already believes in beats a better plan they do not.</p>
+  <div class="sec pb"><div class="sh"><span class="num">03</span><h2>Nothing on the urgent list</h2></div>
+    <p class="lede">No live exposures to contain. Nothing we found is happening today that carries harm and has to be closed before the plan begins — and that is a finding, not an omission.</p>
+    <p>The gaps are real, but they are maturity to build over the next ninety days, not exposure to contain now. They are sequenced in the plan that follows — this list is empty because nothing has to jump that queue, not because there is nothing to do.</p>
+    <p class="method">Most organisations we assess have one to three live exposures here. Having none is a good position — the ninety-day plan is where your work is; none of it has to happen before everything else.</p>
   </div>
+
+  
 
   
 

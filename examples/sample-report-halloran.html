@@ -75,6 +75,22 @@
   .ev .l{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
   .ev .ok .v{color:var(--go)} .ev .part .v{color:var(--below)} .ev .no .v{color:var(--grey)}
   @media(max-width:640px){.hero-top{flex-direction:column}.hero-headline{border-right:none;border-bottom:1px solid var(--hair)}.ev{flex-direction:column}}
+  .board .row{display:flex;align-items:stretch;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .board .row .n{flex:0 0 54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;background:var(--now)}
+  .board .row .n .num{font-size:24px;line-height:1}
+  .board .row .n .of{font-size:10px;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
+  .board .row .body{flex:1;padding:13px 18px;background:#fff;border:1px solid var(--hair);border-left:none}
+  .board .row .kind{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;margin-bottom:4px;color:var(--now)}
+  .board .row h4{font-size:16px;line-height:1.3;margin-bottom:4px}
+  .board .row p{font-size:13.4px;color:#2e2e2e;margin:0 0 6px;line-height:1.5}
+  .board .row .who{font-size:11.6px;color:var(--muted)}
+  .cap-meter{border:1px solid #d8e3ea;background:#f6fafc;border-radius:12px;padding:16px 20px;margin-top:4px;page-break-inside:avoid}
+  .cap-meter h4{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--struct);margin-bottom:9px}
+  .cap-meter p{font-size:13px;color:#37474a;margin:10px 0 0;line-height:1.5}
+  .cap-meter .cap-cav{font-size:11.6px;color:var(--muted)}
+  .meter{height:26px;border-radius:7px;background:var(--track);overflow:hidden;display:flex;font-size:11px;font-weight:700;color:#fff}
+  .meter .fits{background:var(--go);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
+  .meter .gap{background:var(--now);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -189,7 +205,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -268,71 +284,55 @@
   
 
   <div class="sec pb" id="fix"><div class="sh"><span class="num">04</span><h2>Fix these first</h2></div>
-    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on.</p>
+    <p class="lede">In order. These are already happening and carry exposure today — they sit before the plan, not in it. The moves that lift your ceiling are in the ninety-day plan that follows.</p>
     <div class="board">
-      <div class="ub live">
-        <div class="ubn">1</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      <div class="row">
+        <div class="n"><span class="num">1</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.</h4>
           <p>AI is in use with nobody accountable for the risk. The exposure is live, not theoretical.</p>
-          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive, on the day</div>
+          <div class="who"><b>AI governance, risk &amp; assurance</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">2</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">2</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Stop any AI work that depends on the unreconciled data until the first use case has a golden record. Reconcile one domain, not all of them.</h4>
           <p>AI on this data won't just underperform — it will produce confident, plausible, wrong answers.</p>
-          <div class="ubm"><b>Data ecosystem health</b> · A named executive, on the day</div>
+          <div class="who"><b>Data ecosystem health</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">3</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">3</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Inventory every agent already running and put it on scoped, non-personal credentials or switch it off. Do this in week one, before anything else on this list.</h4>
           <p>Agents are acting on their behalf, often on personal credentials, with no inventory, no agreed limits and no reviewable record. That is unbounded exposure, not a maturity gap.</p>
-          <div class="ubm"><b>Agentic readiness</b> · A named executive, on the day</div>
+          <div class="who"><b>Agentic readiness</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">4</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">4</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Establish, for the AI tools already in use, whether the vendor trains on your data and what happens to it. Ask in writing and keep the answer.</h4>
           <p>Client specifications and drawings are in third-party tools under terms nobody has seen. For a practice carrying professional indemnity, that is a live problem.</p>
-          <div class="ubm"><b>Third-party AI assurance</b> · A named executive, on the day</div>
+          <div class="who"><b>Third-party AI assurance</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">5</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">5</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Name who can switch each AI system off, and tell the people using it how to report a bad output. Both should take a day.</h4>
           <p>Something is running that nobody has a route to stop, and no one has been told how to report it going wrong.</p>
-          <div class="ubm"><b>Incident response &amp; reversibility</b> · A named executive, on the day</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">6</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, Light effort</div>
-          <h4>Ask every AI vendor in use, in writing, what they do with your data</h4>
-          <p>Tools bought on personal cards, terms unread, client drawings in consumer products.</p>
-          <div class="ubm"><b>Third-party AI assurance</b> · Whoever owns each vendor relationship · lifts the ceiling</div>
-        </div>
-      </div><div class="ub heavy">
-        <div class="ubn">7</div>
-        <div class="ubb">
-          <div class="ubtag">Real work — nothing moves until it is done · 3–6 months, Moderate effort</div>
-          <h4>Define what a good answer looks like for one live system, and have someone check it weekly</h4>
-          <p>Not one of the nine pilots was assessed. The bid assistant one studio swears by is the same product another abandoned, and nobody has asked why.</p>
-          <div class="ubm"><b>Evaluation &amp; monitoring</b> · The owner of the first system in production · lifts the ceiling</div>
+          <div class="who"><b>Incident response &amp; reversibility</b> · Owner: A named executive, on the day · This week</div>
         </div>
       </div>
     </div>
-    <p class="method">The first 5 items are not maturity gaps — they are already happening in your organisation, so they do not wait for a plan. Each should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving them open is not, and that is the state we found them in. The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done. Behind these sits the full plan of 21 items, sequenced.</p>
-    <div class="cap-box">
+    <p class="method">Each should be closed, or consciously accepted in writing by a named executive with a date against it. Leaving one open is itself a decision — just not a deliberate one, and that is the state we found them in.</p>
+    <div class="cap-meter">
       <h4>What fits in the first 90 days, on the people you have</h4>
       <p>You told us <b>2 people have 4 days a month</b> for this — about <b>12 days</b> across the first 90.</p>
-      <div class="cap-bar"><span style="width:11%"></span></div>
+      <div class="meter"><div class="fits" style="width:11%"></div><div class="gap" style="width:89%">Beyond your capacity</div></div>
       <p><b>The containment and first-90-day work needs more than that window holds.</b> That gap is the honest measure of how much of this you can carry alone, and it is the case for support: holding the sequence and starting the first value work is where outside help earns its place.</p>
       <p class="cap-cav">The days available are your own figure; whether the work fits inside them is our judgement from the effort on each action, not a precise count. Only containment and the first-90-day work are set against them — everything in Beyond is sequenced by dependency and re-planned at the six-month review, not weighed here.</p>
     </div>

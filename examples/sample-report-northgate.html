@@ -75,6 +75,22 @@
   .ev .l{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
   .ev .ok .v{color:var(--go)} .ev .part .v{color:var(--below)} .ev .no .v{color:var(--grey)}
   @media(max-width:640px){.hero-top{flex-direction:column}.hero-headline{border-right:none;border-bottom:1px solid var(--hair)}.ev{flex-direction:column}}
+  .board .row{display:flex;align-items:stretch;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .board .row .n{flex:0 0 54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;background:var(--now)}
+  .board .row .n .num{font-size:24px;line-height:1}
+  .board .row .n .of{font-size:10px;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
+  .board .row .body{flex:1;padding:13px 18px;background:#fff;border:1px solid var(--hair);border-left:none}
+  .board .row .kind{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;margin-bottom:4px;color:var(--now)}
+  .board .row h4{font-size:16px;line-height:1.3;margin-bottom:4px}
+  .board .row p{font-size:13.4px;color:#2e2e2e;margin:0 0 6px;line-height:1.5}
+  .board .row .who{font-size:11.6px;color:var(--muted)}
+  .cap-meter{border:1px solid #d8e3ea;background:#f6fafc;border-radius:12px;padding:16px 20px;margin-top:4px;page-break-inside:avoid}
+  .cap-meter h4{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--struct);margin-bottom:9px}
+  .cap-meter p{font-size:13px;color:#37474a;margin:10px 0 0;line-height:1.5}
+  .cap-meter .cap-cav{font-size:11.6px;color:var(--muted)}
+  .meter{height:26px;border-radius:7px;background:var(--track);overflow:hidden;display:flex;font-size:11px;font-weight:700;color:#fff}
+  .meter .fits{background:var(--go);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
+  .meter .gap{background:var(--now);display:flex;align-items:center;padding:0 11px;white-space:nowrap}
  .sec>.sh .num{font-size:11px;font-weight:800;color:var(--brand);letter-spacing:.12em}
   .sec>.sh .num::after{content:" · "}
  .cover{border-bottom:3px solid var(--brand);padding-bottom:26px;margin-bottom:8px}
@@ -189,7 +205,7 @@
    .noprint,nav.rnav{display:none!important}
    .sec{page-break-inside:auto}
    .sec>.sh,h2,h3.grp,h4,.atitle,.kick{page-break-after:avoid}
-   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev{page-break-inside:avoid}
+   .dim,.act,.phase,.expo,.kpi,.cap-box,.ub,.finding,.apex,.hero,.ev,.board .row,.cap-meter{page-break-inside:avoid}
    .pb{page-break-before:always}
  }
 </style></head><body>
@@ -262,63 +278,39 @@
   
 
   <div class="sec pb" id="fix"><div class="sh"><span class="num">03</span><h2>Fix these first</h2></div>
-    <p class="lede">In order. The rest of this document explains how we got here — this is the part to act on. There are 2 more on the plan behind these; they are in the sequenced section and they are not urgent yet.</p>
+    <p class="lede">In order. These are already happening and carry exposure today — they sit before the plan, not in it. The moves that lift your ceiling are in the ninety-day plan that follows.</p>
     <div class="board">
-      <div class="ub live">
-        <div class="ubn">1</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      <div class="row">
+        <div class="n"><span class="num">1</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Name who owns AI risk today, and state in writing what may not go into an AI tool until the controls exist. This is a holding position, not the policy.</h4>
           <p>A regulated utility is using a model to direct asset spend, with no confirmed governance route.</p>
-          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive, on the day</div>
+          <div class="who"><b>AI governance, risk &amp; assurance</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">2</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">2</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Establish, for the AI tools already in use, whether the vendor trains on your data and what happens to it. Ask in writing and keep the answer.</h4>
           <p>Network and asset data may be leaving under terms nobody at this level has seen.</p>
-          <div class="ubm"><b>Third-party AI assurance</b> · A named executive, on the day</div>
+          <div class="who"><b>Third-party AI assurance</b> · Owner: A named executive, on the day · This week</div>
         </div>
-      </div><div class="ub live">
-        <div class="ubn">3</div>
-        <div class="ubb">
-          <div class="ubtag">Happening now — does not wait for the plan · This week</div>
+      </div><div class="row">
+        <div class="n"><span class="num">3</span><span class="of">now</span></div>
+        <div class="body">
+          <div class="kind">Happening now — does not wait for the plan</div>
           <h4>Name who can switch each AI system off, and tell the people using it how to report a bad output. Both should take a day.</h4>
           <p>A wrong prediction directs a crew and nobody has a route to say so.</p>
-          <div class="ubm"><b>Incident response &amp; reversibility</b> · A named executive, on the day</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">4</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, Light effort</div>
-          <h4>Ask every AI vendor in use, in writing, what they do with your data</h4>
-          <p>Nobody knows what the ML platform or the two hosted APIs do with submitted data. For a utility submitting asset and network data, that is a question worth an answer.</p>
-          <div class="ubm"><b>Third-party AI assurance</b> · Whoever owns each vendor relationship · lifts the ceiling</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">5</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, Light effort</div>
-          <h4>3 questions had no answer inside the organisation — get them answered, and name who owns each</h4>
-          <p>On AI governance, risk &amp; assurance, value stream visibility &amp; flow, third-party AI assurance we asked and nobody could tell us. That is a different finding from a low score and we have not blurred the two: a control that does not exist is a gap you can close, and a control nobody can confirm or deny is a gap plus an accountability problem. 3 of them in one assessment is a pattern rather than an oversight, and the pattern is usually that the answers sit above the level being assessed.</p>
-          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · The sponsor — this is an escalation, not a work item · nobody could answer these</div>
-        </div>
-      </div><div class="ub cheap">
-        <div class="ubn">6</div>
-        <div class="ubb">
-          <div class="ubtag">Quick, and it unblocks the rest · first 3 months, Light effort</div>
-          <h4>Appoint a named AI risk owner and publish data-handling rules per tool category</h4>
-          <p>Whether it extends to an asset-failure model built inside a directorate is unresolved. We could not get an answer from group inside the engagement and nobody here could answer it either.</p>
-          <div class="ubm"><b>AI governance, risk &amp; assurance</b> · A named executive (typically CISO or Head of Risk) with the AI risk remit in writing · after A001 · prerequisite for agentic readiness</div>
+          <div class="who"><b>Incident response &amp; reversibility</b> · Owner: A named executive, on the day · This week</div>
         </div>
       </div>
     </div>
-    <p class="method">The first 3 items are not maturity gaps — they are already happening in your organisation, so they do not wait for a plan. Each should be closed, or consciously accepted in writing by a named executive with a date against it. Either is a decision; leaving them open is not, and that is the state we found them in. The rest are the moves that lift your ceiling — nothing else changes what you are capable of until they are done. Behind these sits the full plan of 11 items, sequenced.</p>
-    <div class="cap-box">
+    <p class="method">Each should be closed, or consciously accepted in writing by a named executive with a date against it. Leaving one open is itself a decision — just not a deliberate one, and that is the state we found them in.</p>
+    <div class="cap-meter">
       <h4>What fits in the first 90 days, on the people you have</h4>
       <p>You told us <b>4 people have 9 days a month</b> for this — about <b>27 days</b> across the first 90.</p>
-      <div class="cap-bar"><span style="width:56%"></span></div>
+      <div class="meter"><div class="fits" style="width:56%"></div><div class="gap" style="width:44%">Beyond your capacity</div></div>
       <p><b>The containment and first-90-day work needs more than that window holds.</b> That gap is the honest measure of how much of this you can carry alone, and it is the case for support: holding the sequence and starting the first value work is where outside help earns its place.</p>
       <p class="cap-cav">The days available are your own figure; whether the work fits inside them is our judgement from the effort on each action, not a precise count. Only containment and the first-90-day work are set against them — everything in Beyond is sequenced by dependency and re-planned at the six-month review, not weighed here.</p>
     </div>
